@@ -24,6 +24,9 @@ To add the frameworks to your project, open it in Xcode, choose the "General" ta
 
 # Example
 
+Too see how OAuth Code Grant flow works with DRACOON SDK, check out the example app in /Example/oauth2.example.
+Make sure to store your configuration to /Example/oauth2.example/oauth2.example/OAuthConfig.swift.
+
 ```swift
 
 // Create authMode
