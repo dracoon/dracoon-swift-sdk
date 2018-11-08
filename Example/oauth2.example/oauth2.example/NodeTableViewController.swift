@@ -72,7 +72,6 @@ class NodeTableViewController: UITableViewController {
         }
         
         cell.textLabel?.text = item.name
-        cell.detailTextLabel?.text = item.size != nil ? String(item.size!) : ""
         return cell
     }
     

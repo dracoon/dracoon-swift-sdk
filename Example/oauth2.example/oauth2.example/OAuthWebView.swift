@@ -37,9 +37,14 @@ class OAuthWebView: UIViewController, WKNavigationDelegate {
     }
     
     fileprivate func requestAuthorization() {
+        guard let serverUrl = URL(string: OAuthConfig.serverUrl) else {
+            print("Set OAuth configuration in OAuthConfig class before using this example")
+            return
+        }
+        
         let state = UUID().uuidString
         
-        let authorizationURL = OAuthHelper.createAuthorizationUrl(serverUrl: URL(string:OAuthConfig.serverUrl)!, clientId: OAuthConfig.clientId, state: state)
+        let authorizationURL = OAuthHelper.createAuthorizationUrl(serverUrl: serverUrl, clientId: OAuthConfig.clientId, state: state)
         
         var authorizationRequest = URLRequest(url: authorizationURL)
         authorizationRequest.addValue("application/json", forHTTPHeaderField: "Accept")

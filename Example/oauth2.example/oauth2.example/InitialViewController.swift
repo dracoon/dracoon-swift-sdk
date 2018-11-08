@@ -25,6 +25,8 @@ class InitialViewController: UIViewController, OAuthWebViewDelegate, OAuthTokenC
         button.setTitle("LOGIN", for: .normal)
         button.setTitleColor(UIColor.black, for: .normal)
         button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        button.layer.cornerRadius = 5
+        button.backgroundColor = .gray
         button.addTarget(self, action: #selector(startLogin), for: .touchUpInside)
         
         
@@ -34,6 +36,7 @@ class InitialViewController: UIViewController, OAuthWebViewDelegate, OAuthTokenC
         NSLayoutConstraint.activate([
             button.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             button.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
+            button.widthAnchor.constraint(equalToConstant: 100),
             button.heightAnchor.constraint(equalToConstant: 50)
             ])
     }
