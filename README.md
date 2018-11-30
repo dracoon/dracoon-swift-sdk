@@ -24,6 +24,9 @@ To add the frameworks to your project, open it in Xcode, choose the "General" ta
 
 # Example
 
+Too see how OAuth Code Grant flow works with DRACOON SDK, check out the example app in /Example/oauth2.example.
+Build it with carthage and make sure to store your configuration to /Example/oauth2.example/oauth2.example/OAuthConfig.swift first.
+
 ```swift
 
 // Create authMode

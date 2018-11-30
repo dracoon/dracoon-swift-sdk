@@ -188,6 +188,7 @@ public class FileUpload {
                                    encodingCompletion: { (encodingResult) in
                                     switch encodingResult {
                                     case .success(let upload, _, _):
+                                        upload.validate()
                                         upload.responseData { dataResponse in
                                             if let error = dataResponse.error {
                                                 if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
