@@ -15,4 +15,6 @@ public struct CustomerSettingsResponse: Codable {
     public var homeRoomQuota: Int64
     /** if set to true, every user with an Active Directory account gets a personal homeroom. Once activated, this cannot be deactivated **/
     public var homeRoomsActive: Bool?
+    /** is the id of the parent of all homerooms**/
+    public var homeRoomParentId: Int64?
 }
