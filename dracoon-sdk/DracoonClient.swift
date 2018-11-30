@@ -18,6 +18,7 @@ public protocol DracoonClient {
     var groups: DracoonGroups { get }
     var nodes: DracoonNodes { get }
     var shares: DracoonShares { get }
+    var settings: DracoonSettings { get }
     
     func getAccessToken() -> String?
     func getRefreshToken() -> String?
@@ -48,6 +49,11 @@ public protocol DracoonConfig {
 public protocol DracoonUsers {}
 
 public protocol DracoonGroups {}
+
+public protocol DracoonSettings {
+    func getServerSettings(completion: @escaping (Dracoon.Result<CustomerSettingsResponse>) -> Void)
+    func putServerSettings(request: CustomerSettingsRequest, completion: @escaping (Dracoon.Result<CustomerSettingsResponse>) -> Void) 
+}
 
 public protocol DracoonNodes {
     func getNodes(parentNodeId: Int64, limit: Int64?, offset: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>)
