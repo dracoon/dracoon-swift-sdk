@@ -22,7 +22,15 @@ public class DracoonClientImpl: DracoonClient {
                 sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
                 oauthClient: OAuthClient? = nil,
                 oauthCallback: OAuthTokenChangedDelegate? = nil) {
-        self.serverUrl = serverUrl
+        if serverUrl.absoluteString.hasSuffix("/") {
+            let stringRepresentation = String(serverUrl.absoluteString.dropLast())
+            guard let newServerUrl = URL(string: stringRepresentation) else {
+                fatalError("Invalid server address passed to Dracoon SDK: \"\(serverUrl)\" ")
+            }
+            self.serverUrl = newServerUrl
+        } else {
+            self.serverUrl = serverUrl
+        }
         self.authMode = authMode
         
         let sessionManager = Alamofire.SessionManager(configuration: sessionConfiguration)
