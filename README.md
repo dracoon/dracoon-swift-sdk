@@ -14,13 +14,38 @@ Add the SDK and its dependencies to your Cartfile:
 
 `github "dracoon/dracoon-swift-sdk.git" ~> 1.0`
 `github "Alamofire/Alamofire" ~> 4.7.3`
-`github "dracoon/dracoon-swift-crypto-sdk.git" ~> 1.0.1`
+`github "dracoon/dracoon-swift-crypto-sdk.git" ~> 1.0.2`
 
 Then run
 
 `carthage update --platform iOS --cache-builds`
 
 To add the frameworks to your project, open it in Xcode, choose the "General" tab in targets settings and add it to "Linked Frameworks and Libraries".
+
+#### CocoaPods
+
+Add to your Podfile:
+```
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '9.3'
+use_frameworks!
+
+target '<Your Target Name>' do
+pod 'DRACOON-SDK', '~> 1.0'
+end
+```
+Then run
+
+`pod install`
+
+#### Build examples
+
+The example app in /Example/oauth2.example shows a possible setup for Carthage or CocoaPods.
+Run `sh setupCarthage.sh` and `sh setupCocoaPods.sh`.
+The run `sh regenerateProjects` to generate both the example projects.
+
+To run the Carthage project open `oauth2.carthage.example.xcodeproj`
+To run the CocoaPods project open `oauth2.cocoapods.example.xcworkspace`
 
 # Example
 
