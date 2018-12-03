@@ -1,0 +1,11 @@
+project 'oauth2.cocoapods.example.xcodeproj'
+
+platform :ios, '9.3'
+
+target 'oauth2.example' do
+  use_frameworks!
+
+  pod 'DRACOON-SDK', :path => '../..'
+  pod 'Alamofire', '~> 4.7.3'
+
+end

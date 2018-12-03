@@ -1,0 +1,9 @@
+{
+  "commitish" : "v1.0.0",
+  "iOS" : [
+    {
+      "name" : "dracoon_sdk",
+      "hash" : "1515e7e6d9e0e5e861e9e98719468c6cdf070108188a170d216d0f3a85d4299c"
+    }
+  ]
+}
