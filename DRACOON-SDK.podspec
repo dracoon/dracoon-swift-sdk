@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DRACOON-SDK'
-  s.version          = '1.0.0'
+  s.version          = '1.0.1'
   s.summary          = 'Official DRACOON SDK'
 
   s.description      = <<-DESC
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://github.com/dracoon/dracoon-swift-sdk'
   s.license          = { :type => 'Apache 2.0', :file => 'LICENSE' }
   s.author           = { 'Mathias Schreiner' => 'm.schreiner@dracoon.com' }
-  s.source           = { :git => 'https://github.com/dracoon/dracoon-swift-sdk.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/dracoon/dracoon-swift-sdk.git', :tag => "v" + s.version.to_s }
   s.module_name      = 'dracoon_sdk'
 
   s.ios.deployment_target = '9.3'
