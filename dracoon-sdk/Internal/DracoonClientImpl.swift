@@ -12,8 +12,6 @@ import crypto_sdk
 
 public class DracoonClientImpl: DracoonClient {
     
-    fileprivate let serverUrl: URL
-    fileprivate let authMode: DracoonAuthMode
     fileprivate let oAuthTokenManager: OAuthTokenManager
     
     public init(serverUrl: URL,
@@ -22,21 +20,22 @@ public class DracoonClientImpl: DracoonClient {
                 sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
                 oauthClient: OAuthClient? = nil,
                 oauthCallback: OAuthTokenChangedDelegate? = nil) {
+        
+        let trimmedUrl: URL
         if serverUrl.absoluteString.hasSuffix("/") {
             let stringRepresentation = String(serverUrl.absoluteString.dropLast())
-            guard let newServerUrl = URL(string: stringRepresentation) else {
-                fatalError("Invalid server address passed to Dracoon SDK: \"\(serverUrl)\" ")
+            guard let newUrl = URL(string: stringRepresentation) else {
+                fatalError("Invalid server address passed to Dracoon SDK: \(serverUrl)")
             }
-            self.serverUrl = newServerUrl
+            trimmedUrl = newUrl
         } else {
-            self.serverUrl = serverUrl
+            trimmedUrl = serverUrl
         }
-        self.authMode = authMode
         
         let sessionManager = Alamofire.SessionManager(configuration: sessionConfiguration)
         
         oAuthTokenManager = OAuthTokenManager(authMode: authMode,
-                                              oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: serverUrl, sessionManager: sessionManager))
+                                              oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: trimmedUrl, sessionManager: sessionManager))
         oAuthTokenManager.delegate = oauthCallback
         
         sessionManager.retrier = oAuthTokenManager
@@ -47,7 +46,7 @@ public class DracoonClientImpl: DracoonClient {
         let encoder = JSONEncoder()
         let crypto = Crypto()
         
-        let requestConfig = DracoonRequestConfig(sessionManager: sessionManager, serverUrl: serverUrl, apiPath: "/api/v4", oauthTokenManager: oAuthTokenManager, encoder: encoder, decoder: decoder)
+        let requestConfig = DracoonRequestConfig(sessionManager: sessionManager, serverUrl: trimmedUrl, apiPath: DracoonConstants.API_PATH, oauthTokenManager: oAuthTokenManager, encoder: encoder, decoder: decoder)
         
         server = DracoonServerImpl(config: requestConfig)
         account = DracoonAccountImpl(config: requestConfig, crypto: crypto)
