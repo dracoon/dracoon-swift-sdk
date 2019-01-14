@@ -52,7 +52,7 @@ public protocol DracoonGroups {}
 
 public protocol DracoonSettings {
     func getServerSettings(completion: @escaping (Dracoon.Result<CustomerSettingsResponse>) -> Void)
-    func putServerSettings(request: CustomerSettingsRequest, completion: @escaping (Dracoon.Result<CustomerSettingsResponse>) -> Void) 
+    func updateServerSettings(request: CustomerSettingsRequest, completion: @escaping (Dracoon.Result<CustomerSettingsResponse>) -> Void) 
 }
 
 public protocol DracoonNodes {
