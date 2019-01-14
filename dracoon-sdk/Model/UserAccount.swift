@@ -62,6 +62,8 @@ public struct UserAccount: Codable {
     public var lastLoginSuccessIp: String?
     /** Last failed logon IP address */
     public var lastLoginFailIp: String?
+    /** The id of the users Home Room **/
+    public var homeRoomId: Int64?
 
 
     public enum CodingKeys: String, CodingKey { 
@@ -88,6 +90,7 @@ public struct UserAccount: Codable {
         case email
         case lastLoginSuccessIp
         case lastLoginFailIp
+        case homeRoomId
     }
 
 

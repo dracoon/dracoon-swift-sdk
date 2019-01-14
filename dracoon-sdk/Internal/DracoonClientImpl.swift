@@ -53,6 +53,7 @@ public class DracoonClientImpl: DracoonClient {
         config = DracoonConfigImpl(config: requestConfig)
         users = NotImplementedYet()
         groups = NotImplementedYet()
+        settings = DracoonSettingsImpl(config: requestConfig)
         nodes = DracoonNodesImpl(config: requestConfig, crypto: crypto, account: account, getEncryptionPassword: getEncryptionPassword)
         shares = DracoonSharesImpl(config: requestConfig, nodes: nodes, account: account, getEncryptionPassword: getEncryptionPassword)
     }
@@ -70,6 +71,8 @@ public class DracoonClientImpl: DracoonClient {
     public var nodes: DracoonNodes
     
     public var shares: DracoonShares
+    
+    public var settings: DracoonSettings
     
     
     class NotImplementedYet: DracoonUsers, DracoonGroups {
