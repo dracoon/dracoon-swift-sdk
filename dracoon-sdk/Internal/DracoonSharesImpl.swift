@@ -127,22 +127,8 @@ class DracoonSharesImpl: DracoonShares {
     }
     
     func createUploadShare(nodeId: Int64, name: String, password: String?, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
-        self.nodes.isNodeEncrypted(nodeId: nodeId, completion: { result in
-            
-            switch result {
-            case .error(let error):
-                completion(Dracoon.Result.error(DracoonError.shares(error: error)))
-            case .value(let isEncrypted):
-                if isEncrypted {
-                    guard password != nil else {
-                        completion(Dracoon.Result.error(DracoonError.encrypted_share_no_password_provided))
-                        return
-                    }
-                }
-                let request = CreateUploadShareRequest(targetId: nodeId, name: name){$0.password = password}
-                self.requestCreateUploadShare(request: request, completion: completion)
-            }
-        })
+        let request = CreateUploadShareRequest(targetId: nodeId, name: name){$0.password = password}
+        self.requestCreateUploadShare(request: request, completion: completion)
     }
     
     func requestCreateUploadShare(request: CreateUploadShareRequest, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
