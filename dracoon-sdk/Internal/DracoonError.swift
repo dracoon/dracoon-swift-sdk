@@ -33,6 +33,8 @@ public enum DracoonError: Error {
     
     case authorization_code_flow_in_progress(clientId: String, clientSecret: String, authorizationCode: String)
     case authorization_token_expired
+    
+    case connection_timeout
 }
 
 extension DracoonError {
