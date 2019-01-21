@@ -38,8 +38,12 @@ public extension DataRequest {
                     if let dracoonError = dataResponse.result.error as? DracoonError {
                         completion(Result.error(dracoonError))
                     } else {
-                        let error = try decoder.decode(ModelErrorResponse.self, from: dataResponse.data!)
-                        completion(Result.error(DracoonError.api(error: error)))
+                        if dataResponse.result.error?._code == NSURLErrorTimedOut {
+                            completion(Result.error(DracoonError.connection_timeout))
+                        } else {
+                            let error = try decoder.decode(ModelErrorResponse.self, from: dataResponse.data!)
+                            completion(Result.error(DracoonError.api(error: error)))
+                        }
                     }
                 }
                 

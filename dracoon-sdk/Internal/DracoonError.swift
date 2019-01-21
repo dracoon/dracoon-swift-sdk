@@ -33,13 +33,15 @@ public enum DracoonError: Error {
     
     case authorization_code_flow_in_progress(clientId: String, clientSecret: String, authorizationCode: String)
     case authorization_token_expired
+    
+    case connection_timeout
 }
 
 extension DracoonError {
     public var errorDescription: String? {
         switch self {
         case .api(let error):
-            return error.debugDescription
+            return error?.debugInfo ?? error.debugDescription
         case .account(let error):
             return error.localizedDescription
         case .nodes(error: let error):
