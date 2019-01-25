@@ -41,6 +41,10 @@ extension DracoonError {
     public var errorDescription: String? {
         switch self {
         case .api(let error):
+            let debugInfo = error?.debugInfo ?? ""
+            if debugInfo.isEmpty {
+                return error?.message ?? error.debugDescription
+            }
             return error?.debugInfo ?? error.debugDescription
         case .account(let error):
             return error.localizedDescription
