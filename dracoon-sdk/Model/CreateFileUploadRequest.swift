@@ -21,8 +21,10 @@ public struct CreateFileUploadRequest: Codable {
     public var parentId: Int64
     /** File name */
     public var name: String
-    /** Classification ID (for files only): * &#x60;1&#x60; - public * &#x60;2&#x60; - for internal use only * &#x60;3&#x60; - confidential * &#x60;4&#x60; - strictly confidential */
-    public var classification: Classification
+    /** Classification ID (for files only): * &#x60;1&#x60; - public * &#x60;2&#x60; - for internal use only * &#x60;3&#x60; - confidential * &#x60;4&#x60; - strictly confidential
+     This field is mandatory for API version < 4.9. From version 4.9 default classification is set if this field is empty.
+     */
+    public var classification: Classification?
     /** File size in byte */
     public var size: Int64?
     /** Expiration date / time */
