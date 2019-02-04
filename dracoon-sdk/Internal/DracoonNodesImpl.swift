@@ -377,7 +377,7 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     fileprivate func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?) {
-        let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.config, account: self.account, crypto: self.crypto,
+        let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.config, account: self.account, nodes: self, crypto: self.crypto,
                                     fileKey: fileKey, getEncryptionPassword: self.getEncryptionPassword)
         
         let innerCallback = DownloadCallback()
