@@ -19,7 +19,8 @@ extension CreateRoomRequest {
                   adminGroupIds: nil,
                   newGroupMemberAcceptance: nil,
                   notes: nil,
-                  hasActivitiesLog: nil)
+                  hasActivitiesLog: nil,
+                  classification: nil)
         customize?(&self)
     }
 }
