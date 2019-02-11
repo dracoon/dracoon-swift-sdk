@@ -15,6 +15,14 @@ public struct CreateRoomRequest: Codable {
         case autoallow = "autoallow"
         case pending = "pending"
     }
+    
+    public enum Classification: Int, Codable {
+        case PUBLIC = 1
+        case INTERNAL_USE = 2
+        case CONFIDENTAL = 3
+        case STRICTLY_CONFIDENTAL = 4
+    }
+    
     /** Name */
     public var name: String
     /** Parent room ID or &#x60;null&#x60; to create a top level room (default: &#x60;0&#x60;) */
@@ -37,7 +45,10 @@ public struct CreateRoomRequest: Codable {
     public var notes: String?
     /** Is activities log active (for rooms only) (default: true) */
     public var hasActivitiesLog: Bool?
-
+    /** Classification ID (for files only): * &#x60;1&#x60; - public * &#x60;2&#x60; - for internal use only * &#x60;3&#x60; - confidential * &#x60;4&#x60; - strictly confidential
+     Provided (or default) classification is taken from room when file gets uploaded without any classification.
+     (default: 2 - internal) */
+    public var classification: Classification?
 
 
 }
