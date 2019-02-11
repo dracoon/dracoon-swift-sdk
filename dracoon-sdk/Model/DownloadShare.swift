@@ -11,13 +11,6 @@ import Foundation
 
 public struct DownloadShare: Codable {
 
-    public enum Classification: Int, Codable {
-        case _0 = 0
-        case _1 = 1
-        case _2 = 2
-        case _3 = 3
-        case _4 = 4
-    }
     /** Share ID */
     public var _id: Int64
     /** Source node ID */
@@ -34,8 +27,6 @@ public struct DownloadShare: Codable {
     public var createdBy: UserInfo
     /** Alias name */
     public var name: String?
-    /** Classification ID (for files only): * &#x60;1&#x60; - public * &#x60;2&#x60; - for internal use only * &#x60;3&#x60; - confidential * &#x60;4&#x60; - strictly confidential */
-    public var classification: Classification?
     /** User notes Use empty string to remove. */
     public var notes: String?
     /** Show creator first and last name. (default: false) */
@@ -69,7 +60,6 @@ public struct DownloadShare: Codable {
         case createdAt
         case createdBy
         case name
-        case classification
         case notes
         case showCreatorName
         case showCreatorUsername
