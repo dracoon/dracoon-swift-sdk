@@ -36,10 +36,10 @@ extension CreateShareUploadChannelRequest {
 }
 
 extension CreateFileUploadRequest {
-    public init(parentId: Int64,name: String, classification: Classification, _ customize: ((inout CreateFileUploadRequest) -> Void)? = nil) {
+    public init(parentId: Int64,name: String, _ customize: ((inout CreateFileUploadRequest) -> Void)? = nil) {
         self.init(parentId: parentId,
                   name: name,
-                  classification: classification,
+                  classification: nil,
                   size: nil,
                   expiration: nil,
                   notes: nil)
