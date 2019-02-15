@@ -16,7 +16,7 @@ public struct UpdateFolderRequest: Codable {
     /** User notes Use empty string to remove. */
     public var notes: String?
 
-
+    public init() {}
 
 }
 
