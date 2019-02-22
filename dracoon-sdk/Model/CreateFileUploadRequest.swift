@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: CreateFileUploadRequest
 public struct CreateFileUploadRequest: Codable {
 
     public enum Classification: Int, Codable { 

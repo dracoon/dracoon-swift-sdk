@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: UpdateRoomRequest
 public struct UpdateRoomRequest: Codable {
 
     /** Name */

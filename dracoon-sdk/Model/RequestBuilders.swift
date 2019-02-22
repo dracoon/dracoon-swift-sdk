@@ -79,9 +79,9 @@ extension CreateDownloadShareRequest {
 }
 
 extension CreateUploadShareRequest {
-    public init(targetId:Int64, name: String, _ customize: ((inout CreateUploadShareRequest) -> Void)? = nil) {
+    public init(targetId:Int64, _ customize: ((inout CreateUploadShareRequest) -> Void)? = nil) {
         self.init(targetId: targetId,
-                  name: name,
+                  name: nil,
                   password: nil,
                   expiration: nil,
                   filesExpiryPeriod: nil,

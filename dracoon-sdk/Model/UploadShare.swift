@@ -47,7 +47,7 @@ public struct UploadShare: Codable {
     public var cntUploads: Int?
     /** Allow display of already uploaded files (default: false) */
     public var showUploadedFiles: Bool?
-    /** Upload Share URL */
+    /** Base64 encoded qr code image data */
     public var dataUrl: String?
     /** Maximal amount of files to upload */
     public var maxSlots: Int?

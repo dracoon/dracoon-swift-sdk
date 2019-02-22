@@ -8,14 +8,14 @@
 import Foundation
 import crypto_sdk
 
-
+/// - Tag: CreateDownloadShareRequest
 public struct CreateDownloadShareRequest: Codable {
 
     /** Source node ID */
     public var nodeId: Int64
     /** Alias name */
     public var name: String?
-    /** Access password, not allowed for encrypted shares */
+    /** Access password */
     public var password: String?
     /** Expiration date / time */
     public var expiration: ObjectExpiration?

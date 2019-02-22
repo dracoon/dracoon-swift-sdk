@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: CreateFolderRequest
 public struct CreateFolderRequest: Codable {
 
     /** Parent node ID (room or folder) */

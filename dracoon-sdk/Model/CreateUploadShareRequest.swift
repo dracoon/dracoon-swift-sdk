@@ -7,14 +7,14 @@
 
 import Foundation
 
-
-
+/// - Tag: CreateUploadShareRequest
 public struct CreateUploadShareRequest: Codable {
 
     /** Target room or folder ID */
     public var targetId: Int64
-    /** Alias name */
-    public var name: String
+    /** Alias name
+     Is mandatory for API version < 4.10.0, otherwise optional. */
+    public var name: String?
     /** Password */
     public var password: String?
     /** Expiration date / time */

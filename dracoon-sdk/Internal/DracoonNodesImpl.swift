@@ -620,7 +620,6 @@ class DracoonNodesImpl: DracoonNodes {
                     }
                 }
             })
-        
     }
     
     func decryptFileKey(fileKey: EncryptedFileKey, privateKey: UserPrivateKey, password: String) throws -> PlainFileKey {
