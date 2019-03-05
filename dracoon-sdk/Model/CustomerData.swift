@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: CustomerData
 public struct CustomerData: Codable {
 
     /** Unique identifier for the customer */

@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: InfrastructureProperties
 public struct InfrastructureProperties: Codable {
 
     /** Allow sending of share passwords via SMS */

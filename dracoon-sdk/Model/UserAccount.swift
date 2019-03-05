@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: UserAccount
 public struct UserAccount: Codable {
 
     public enum Gender: String, Codable { 

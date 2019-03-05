@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: GeneralSettings
 public struct GeneralSettings: Codable {
 
     /** Allow sending of share passwords via SMS */

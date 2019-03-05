@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: UploadShare
 public struct UploadShare: Codable {
 
     /** Share ID */

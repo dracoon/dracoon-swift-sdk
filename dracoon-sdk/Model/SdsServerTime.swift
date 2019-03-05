@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: SdsServerTime
 public struct SdsServerTime: Codable {
 
     /** DRACOON server time */

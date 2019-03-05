@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: UserKeyPairContainer
 public struct UserKeyPairContainer: Codable {
 
     /** Private key container (private key and version) */
