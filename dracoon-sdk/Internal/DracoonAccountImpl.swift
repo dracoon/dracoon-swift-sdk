@@ -86,30 +86,19 @@ class DracoonAccountImpl: DracoonAccount {
         
         self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
-            .responseJSON(completionHandler: { response in
-                switch response.result {
-                case .success(_):
-                    do {
-                        let userKeyPair = try self.decoder.decode(UserKeyPair.self, from: response.data!)
-                        let container = UserKeyPairContainer(publicKey: userKeyPair.publicKeyContainer.publicKey,
-                                                             publicVersion: userKeyPair.publicKeyContainer.version,
-                                                             privateKey: userKeyPair.privateKeyContainer.privateKey,
-                                                             privateVersion: userKeyPair.privateKeyContainer.version)
-                        completion(Dracoon.Result.value(container))
-                    } catch {
-                        completion(Dracoon.Result.error(DracoonError.decode(error: error)))
-                    }
-                    
-                case .failure(let error):
-                    if response.response?.statusCode == 404 {
-                        completion(Dracoon.Result.error(DracoonError.keypair_does_not_exist))
-                    } else {
-                        completion(Dracoon.Result.error(DracoonError.account(error: error)))
-                    }
+            .decode(UserKeyPair.self, decoder: self.decoder, completion: { result in
+                switch result {
+                case .error(let error):
+                    completion(Dracoon.Result.error(error))
+                    break
+                case .value(let userKeyPair):
+                    let container = UserKeyPairContainer(publicKey: userKeyPair.publicKeyContainer.publicKey,
+                                                         publicVersion: userKeyPair.publicKeyContainer.version,
+                                                         privateKey: userKeyPair.privateKeyContainer.privateKey,
+                                                         privateVersion: userKeyPair.privateKeyContainer.version)
+                    completion(Dracoon.Result.value(container))
                 }
-                
             })
-        
     }
     
     func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {

@@ -39,7 +39,7 @@ class DracoonSharesImpl: DracoonShares {
             
             switch result {
             case .error(let error):
-                completion(Dracoon.Result.error(DracoonError.shares(error: error)))
+                completion(Dracoon.Result.error(error))
             case .value(let isEncrypted):
                 if isEncrypted {
                     guard let shareEncryptionPassword = password else {
@@ -53,7 +53,7 @@ class DracoonSharesImpl: DracoonShares {
                     self.account.checkUserKeyPairPassword(password: encryptionPassword, completion: { result in
                         switch result {
                         case .error(let error):
-                            completion(Dracoon.Result.error(DracoonError.shares(error: error)))
+                            completion(Dracoon.Result.error(error))
                             
                         case .value(let userKeyPair):
                             
@@ -70,8 +70,14 @@ class DracoonSharesImpl: DracoonShares {
                                         let shareFileKey = try self.nodes.encryptFileKey(fileKey: plainFileKey, publicKey: shareKeyPair.publicKeyContainer)
                                         let request = CreateDownloadShareRequest(nodeId: nodeId){$0.keyPair = shareKeyPair; $0.fileKey = shareFileKey}
                                         self.requestCreateDownloadShare(request: request, completion: completion)
+                                    } catch CryptoError.decrypt(let message){
+                                        completion(Dracoon.Result.error(DracoonError.filekey_decryption_failure(description: message)))
+                                    } catch CryptoError.generate(let message){
+                                        completion(Dracoon.Result.error(DracoonError.keypair_failure(description: message)))
+                                    } catch CryptoError.encrypt(let message) {
+                                        completion(Dracoon.Result.error(DracoonError.filekey_encryption_failure(description: message)))
                                     } catch {
-                                        completion(Dracoon.Result.error(DracoonError.shares(error: error)))
+                                        completion(Dracoon.Result.error(DracoonError.generic(error: error)))
                                     }
                                 }
                             })
@@ -101,7 +107,7 @@ class DracoonSharesImpl: DracoonShares {
                 .decode(DownloadShare.self, decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.shares(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
     
@@ -147,7 +153,7 @@ class DracoonSharesImpl: DracoonShares {
                 .decode(UploadShare.self, decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.shares(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
     

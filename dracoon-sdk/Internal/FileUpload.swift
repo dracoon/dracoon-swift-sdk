@@ -84,7 +84,7 @@ public class FileUpload {
                 .decode(CreateFileUploadResponse.self, decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
     
@@ -115,8 +115,10 @@ public class FileUpload {
                             let publicKey = UserPublicKey(publicKey: userKeyPair.publicKeyContainer.publicKey, version: userKeyPair.publicKeyContainer.version)
                             let encryptedFileKey = try crypto.encryptFileKey(fileKey: cipher.fileKey, publicKey: publicKey)
                             self.completeRequest(uploadId: uploadId, encryptedFileKey: encryptedFileKey)
+                        } catch CryptoError.encrypt(let message){
+                            self.callback?.onError?(DracoonError.filekey_encryption_failure(description: message))
                         } catch {
-                            self.callback?.onError?(DracoonError.filekey_encryption_failure)
+                            self.callback?.onError?(DracoonError.generic(error: error))
                         }
                     }
                 })
@@ -245,7 +247,7 @@ public class FileUpload {
                 .decode(Node.self, decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
     

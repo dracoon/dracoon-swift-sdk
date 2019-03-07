@@ -29,21 +29,14 @@ public extension DataRequest {
         self.responseData(completionHandler: { dataResponse in
             do {
                 if dataResponse.result.isSuccess {
-                    
                     let success = try decoder.decode(type, from: dataResponse.result.value!)
                     completion(Result.value(success))
-                    
                 } else {
-                    
-                    if let dracoonError = dataResponse.result.error as? DracoonError {
-                        completion(Result.error(dracoonError))
+                    if dataResponse.result.error?._code == NSURLErrorTimedOut {
+                        completion(Result.error(DracoonError.connection_timeout))
                     } else {
-                        if dataResponse.result.error?._code == NSURLErrorTimedOut {
-                            completion(Result.error(DracoonError.connection_timeout))
-                        } else {
-                            let error = try decoder.decode(ModelErrorResponse.self, from: dataResponse.data!)
-                            completion(Result.error(DracoonError.api(error: error)))
-                        }
+                        let error = try decoder.decode(ModelErrorResponse.self, from: dataResponse.data!)
+                        completion(Result.error(DracoonError.api(error: error)))
                     }
                 }
                 

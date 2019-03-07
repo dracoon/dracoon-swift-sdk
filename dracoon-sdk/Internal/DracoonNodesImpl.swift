@@ -108,7 +108,7 @@ class DracoonNodesImpl: DracoonNodes {
                     }
                     
                 case .error(let error):
-                    completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
+                    completion(Dracoon.Result.error(error))
                 }
             })
     }
@@ -143,7 +143,7 @@ class DracoonNodesImpl: DracoonNodes {
                 .decode(Node.self, decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
     
@@ -164,7 +164,7 @@ class DracoonNodesImpl: DracoonNodes {
                 .decode(Node.self, decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
     
@@ -185,7 +185,7 @@ class DracoonNodesImpl: DracoonNodes {
                 .decode(Node.self, decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
     
@@ -207,7 +207,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
     
@@ -228,7 +228,7 @@ class DracoonNodesImpl: DracoonNodes {
                 .decode(Node.self, decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
     
@@ -274,7 +274,7 @@ class DracoonNodesImpl: DracoonNodes {
                 .decode(Node.self, decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
     
@@ -294,7 +294,7 @@ class DracoonNodesImpl: DracoonNodes {
                 .decode(Node.self, decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
     
@@ -589,7 +589,6 @@ class DracoonNodesImpl: DracoonNodes {
         } catch {
             completion(Dracoon.Response(error: error))
         }
-        
     }
     
     func createFileKey(version: String = CryptoConstants.DEFAULT_VERSION) throws -> PlainFileKey {
@@ -602,25 +601,7 @@ class DracoonNodesImpl: DracoonNodes {
         
         self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
-            .responseJSON(completionHandler: { response in
-                switch response.result {
-                case .success(_):
-                    do {
-                        let encryptedFileKey = try self.decoder.decode(EncryptedFileKey.self, from: response.data!)
-                        completion(Dracoon.Result.value(encryptedFileKey))
-                    } catch {
-                        completion(Dracoon.Result.error(DracoonError.decode(error: error)))
-                    }
-                    
-                case .failure(let error):
-                    if response.response?.statusCode == 404 {
-                        completion(Dracoon.Result.error(DracoonError.filekey_not_found))
-                    } else {
-                        completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
-                    }
-                }
-            })
-        
+            .decode(EncryptedFileKey.self, decoder: self.decoder, completion: completion)
     }
     
     func decryptFileKey(fileKey: EncryptedFileKey, privateKey: UserPrivateKey, password: String) throws -> PlainFileKey {

@@ -50,7 +50,7 @@ class DracoonSettingsImpl: DracoonSettings {
                 .decode(CustomerSettingsResponse.self, decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Result.error(DracoonError.nodes(error: error)))
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
         }
     }
 }
