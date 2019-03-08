@@ -58,7 +58,7 @@ class DracoonAccountImpl: DracoonAccount {
             let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Post"
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
             urlRequest.httpBody = jsonBody
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             
@@ -126,16 +126,10 @@ class DracoonAccountImpl: DracoonAccount {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-        urlRequest.httpMethod = "Delete"
+        urlRequest.httpMethod = HTTPMethod.delete.rawValue
         
         self.sessionManager.request(urlRequest)
             .validate()
-            .response(completionHandler: { response in
-                if let error = response.error {
-                    completion(Dracoon.Response(error: error))
-                } else {
-                    completion(Dracoon.Response(error: nil))
-                }
-            })
+            .handleResponse(decoder: self.decoder, completion: completion)
     }
 }

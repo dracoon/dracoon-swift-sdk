@@ -41,7 +41,7 @@ class DracoonSettingsImpl: DracoonSettings {
             let requestUrl = serverUrl.absoluteString + apiPath + "/settings"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Put"
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             

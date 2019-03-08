@@ -36,7 +36,6 @@ class DracoonSharesImpl: DracoonShares {
     func createDownloadShare(nodeId: Int64, password: String?, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
         
         self.nodes.isNodeEncrypted(nodeId: nodeId, completion: { result in
-            
             switch result {
             case .error(let error):
                 completion(Dracoon.Result.error(error))
@@ -98,13 +97,13 @@ class DracoonSharesImpl: DracoonShares {
             let requestUrl = self.serverUrl.absoluteString + self.apiPath + "/shares/downloads"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Post"
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .decode(DownloadShare.self, decoder: self.decoder, completion: completion)
+                .decode(DownloadShare.self, decoder: self.decoder, requestType: .createDLShare, completion: completion)
             
         } catch {
             completion(Dracoon.Result.error(DracoonError.encode(error: error)))
@@ -144,13 +143,13 @@ class DracoonSharesImpl: DracoonShares {
             let requestUrl = serverUrl.absoluteString + apiPath + "/shares/uploads"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Post"
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .decode(UploadShare.self, decoder: self.decoder, completion: completion)
+                .decode(UploadShare.self, decoder: self.decoder, requestType: .createULShare, completion: completion)
             
         } catch {
             completion(Dracoon.Result.error(DracoonError.encode(error: error)))

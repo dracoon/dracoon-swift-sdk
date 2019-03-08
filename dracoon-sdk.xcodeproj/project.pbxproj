@@ -219,6 +219,7 @@
 		E09236832151597E0080B97A /* OAuthTokenChangedDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09236822151597E0080B97A /* OAuthTokenChangedDelegate.swift */; };
 		E0AA72EB2089DD0B001BC290 /* FileUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AA72EA2089DD0B001BC290 /* FileUpload.swift */; };
 		E0AA72EF2089EE3C001BC290 /* DracoonAccountImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AA72EE2089EE3C001BC290 /* DracoonAccountImpl.swift */; };
+		E0B091E42232868700019D27 /* DracoonSDKErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B091E32232868700019D27 /* DracoonSDKErrorModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -436,6 +437,7 @@
 		E09236822151597E0080B97A /* OAuthTokenChangedDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenChangedDelegate.swift; sourceTree = "<group>"; };
 		E0AA72EA2089DD0B001BC290 /* FileUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUpload.swift; sourceTree = "<group>"; };
 		E0AA72EE2089EE3C001BC290 /* DracoonAccountImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonAccountImpl.swift; sourceTree = "<group>"; };
+		E0B091E32232868700019D27 /* DracoonSDKErrorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSDKErrorModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -701,6 +703,7 @@
 				84CD42F62113023000A2F6A4 /* RequestBuilders.swift */,
 				DE52662921AFCF3800050482 /* CustomerSettingsResponse.swift */,
 				DE52662B21AFD09600050482 /* CustomerSettingsRequest.swift */,
+				E0B091E32232868700019D27 /* DracoonSDKErrorModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -912,6 +915,7 @@
 				E00068742057D0BC009CDA70 /* ModelErrorResponse.swift in Sources */,
 				E000680F2057D0BC009CDA70 /* RoleGroup.swift in Sources */,
 				E00068912057EF11009CDA70 /* OAuthTokens.swift in Sources */,
+				E0B091E42232868700019D27 /* DracoonSDKErrorModel.swift in Sources */,
 				E00068542057D0BC009CDA70 /* UpdateGroupRequest.swift in Sources */,
 				84CD42F72113023000A2F6A4 /* RequestBuilders.swift in Sources */,
 				E000684D2057D0BC009CDA70 /* UpdateCustomerResponse.swift in Sources */,

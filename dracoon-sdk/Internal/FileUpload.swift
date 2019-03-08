@@ -75,13 +75,13 @@ public class FileUpload {
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Post"
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .decode(CreateFileUploadResponse.self, decoder: self.decoder, completion: completion)
+                .decode(CreateFileUploadResponse.self, decoder: self.decoder, requestType: .createUpload, completion: completion)
             
         } catch {
             completion(Dracoon.Result.error(DracoonError.encode(error: error)))
@@ -180,7 +180,7 @@ public class FileUpload {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-        urlRequest.httpMethod = "Post"
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
         urlRequest.addValue("bytes " + String(offset) + "-" + String(offset + chunk.count) + "/*", forHTTPHeaderField: "Content-Range")
         
         self.sessionManager.upload(multipartFormData: { (formData) in
@@ -238,7 +238,7 @@ public class FileUpload {
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Put"
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
@@ -256,14 +256,7 @@ public class FileUpload {
         
         self.sessionManager.request(requestUrl, method: .delete, parameters: Parameters())
             .validate()
-            .response(completionHandler: { response in
-                if let error = response.error {
-                    completion(Dracoon.Response(error: error))
-                } else {
-                    completion(Dracoon.Response(error: nil))
-                }
-            })
-        
+            .handleResponse(decoder: self.decoder, completion: completion)
     }
     
     // MARK: Helper

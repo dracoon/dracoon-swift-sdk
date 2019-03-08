@@ -66,7 +66,7 @@ public class FileDownload {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/" + String(nodeId) + "/downloads"
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-        urlRequest.httpMethod = "Post"
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
         
         self.sessionManager.request(urlRequest)
             .validate()
@@ -104,7 +104,7 @@ public class FileDownload {
         
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-        urlRequest.httpMethod = "Get"
+        urlRequest.httpMethod = HTTPMethod.get.rawValue
         
         self.downloadRequest = self.sessionManager.download(urlRequest, to: { _, _ in
             return (self.targetUrl, [.removePreviousFile, .createIntermediateDirectories])

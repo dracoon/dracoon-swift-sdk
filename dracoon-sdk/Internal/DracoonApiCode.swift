@@ -8,9 +8,9 @@
 
 import Foundation
 
-public enum DracoonApiCode : Int64, CustomStringConvertible {
+public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     
-    case UNDEFINED = 0
+    case UNKNOWN = 0
     
     // MARK: Authentication errors
     
@@ -140,6 +140,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible {
     case SERVER_INSUFFICIENT_ROOM_QUOTA = 5109
     case SERVER_INSUFFICIENT_UL_SHARE_QUOTA = 5110
     case SERVER_RESTORE_VERSION_NOT_FOUND = 5111
+    case SERVER_UPLOAD_NOT_FOUND = 5112
     
     // Shares
     
@@ -168,8 +169,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible {
     
     public var description: String {
         switch self {
-        case .UNDEFINED:
-            return ""
+        case .UNKNOWN:
+            return "No server error code"
         case .AUTH_UNKNOWN_ERROR:
             return "An authentication error occurred."
         case .AUTH_OAUTH_CLIENT_UNKNOWN:
@@ -367,6 +368,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible {
             return "Not enough quota for the upload share."
         case .SERVER_RESTORE_VERSION_NOT_FOUND:
             return "The restore version id was not found."
+        case .SERVER_UPLOAD_NOT_FOUND:
+            return "Upload was not found."
             
         case .SERVER_DL_SHARE_NOT_FOUND:
             return "Download share could not be found."

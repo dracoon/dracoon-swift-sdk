@@ -9,9 +9,10 @@
 import Foundation
 import Alamofire
 
-class DracoonErrorParser {
+public class DracoonErrorParser {
     
     public enum RequestType {
+        case other
         case createRoom
         case createFolder
         case updateRoom
@@ -20,17 +21,13 @@ class DracoonErrorParser {
         case copyNodes
         case moveNodes
         case deleteNodes
-        case getNode
         case getNodes
         case searchNodes
-        case setFavorite
-        case deleteFavorite
         case createDLShare
         case createULShare
         case deleteDLShare
         case deleteULShare
         case createUpload
-        case getDLToken
         case getMissingFileKeys
     }
     
@@ -48,9 +45,11 @@ class DracoonErrorParser {
     
     typealias Status = HTTPStatusCode
     
+    public static let shared = DracoonErrorParser()
+    
     public func parseApiErrorResponse(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
         guard let httpStatusCode = response.code else {
-            return DracoonApiCode.UNDEFINED
+            return DracoonApiCode.UNKNOWN
         }
         switch httpStatusCode {
         case Status.BAD_REQUEST:
@@ -233,8 +232,6 @@ class DracoonErrorParser {
                 fallthrough
             case .moveNodes:
                 return DracoonApiCode.PERMISSION_UPDATE_ERROR
-            case .getNode:
-                fallthrough
             case .getNodes:
                 fallthrough
             case .searchNodes:
@@ -242,8 +239,12 @@ class DracoonErrorParser {
             case .deleteNodes:
                 return DracoonApiCode.PERMISSION_DELETE_ERROR
             case .createDLShare:
+                fallthrough
+            case .deleteDLShare:
                 return DracoonApiCode.PERMISSION_MANAGE_DL_SHARES_ERROR
             case .createULShare:
+                fallthrough
+            case .deleteULShare:
                 return DracoonApiCode.PERMISSION_MANAGE_UL_SHARES_ERROR
             default:
                 return DracoonApiCode.PERMISSION_UNKNOWN_ERROR
@@ -291,7 +292,7 @@ class DracoonErrorParser {
         case -60500:
             fallthrough
         case -20501:
-            return DracoonApiCode.SERVER_UL_SHARE_NOT_FOUND
+            return DracoonApiCode.SERVER_UPLOAD_NOT_FOUND
         case -70020:
             return DracoonApiCode.SERVER_USER_KEY_PAIR_NOT_FOUND
         case -70501:

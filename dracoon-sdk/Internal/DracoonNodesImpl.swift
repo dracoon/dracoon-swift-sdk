@@ -56,7 +56,7 @@ class DracoonNodesImpl: DracoonNodes {
         
         self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
             .validate()
-            .decode(NodeList.self, decoder: self.decoder, completion: completion)
+            .decode(NodeList.self, decoder: self.decoder, requestType: .getNodes, completion: completion)
         
     }
     
@@ -65,7 +65,7 @@ class DracoonNodesImpl: DracoonNodes {
         
         self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
-            .decode(Node.self, decoder: self.decoder, completion: completion)
+            .decode(Node.self, decoder: self.decoder, requestType: .getNodes, completion: completion)
     }
     
     func getNode(nodePath: String, completion: @escaping DataRequest.DecodeCompletion<Node>) {
@@ -91,7 +91,7 @@ class DracoonNodesImpl: DracoonNodes {
         
         self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
             .validate()
-            .decode(NodeList.self, decoder: self.decoder, completion: { result in
+            .decode(NodeList.self, decoder: self.decoder, requestType: .getNodes, completion: { result in
                 switch result {
                 case .value(let nodes):
                     var searchedNode: Node?
@@ -114,7 +114,7 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     func isNodeEncrypted(nodeId: Int64, completion: @escaping (Dracoon.Result<Bool>) -> Void) {
-        getNode(nodeId: nodeId, completion: { result in
+        self.getNode(nodeId: nodeId, completion: { result in
             switch result {
             case .value(let node):
                 completion(Dracoon.Result.value(node.isEncrypted ?? false))
@@ -134,13 +134,13 @@ class DracoonNodesImpl: DracoonNodes {
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/rooms"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Post"
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .decode(Node.self, decoder: self.decoder, completion: completion)
+                .decode(Node.self, decoder: self.decoder, requestType: .createRoom, completion: completion)
             
         } catch {
             completion(Dracoon.Result.error(DracoonError.encode(error: error)))
@@ -155,13 +155,13 @@ class DracoonNodesImpl: DracoonNodes {
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/rooms/\(String(roomId))"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Put"
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .decode(Node.self, decoder: self.decoder, completion: completion)
+                .decode(Node.self, decoder: self.decoder, requestType: .updateRoom, completion: completion)
             
         } catch {
             completion(Dracoon.Result.error(DracoonError.encode(error: error)))
@@ -176,13 +176,13 @@ class DracoonNodesImpl: DracoonNodes {
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/folders"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Post"
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .decode(Node.self, decoder: self.decoder, completion: completion)
+                .decode(Node.self, decoder: self.decoder, requestType: .createFolder, completion: completion)
             
         } catch {
             completion(Dracoon.Result.error(DracoonError.encode(error: error)))
@@ -197,13 +197,13 @@ class DracoonNodesImpl: DracoonNodes {
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/folders/\(String(folderId))"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Put"
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .decode(Node.self, decoder: self.decoder, completion: completion)
+                .decode(Node.self, decoder: self.decoder, requestType: .updateFolder, completion: completion)
             
             
         } catch {
@@ -219,13 +219,13 @@ class DracoonNodesImpl: DracoonNodes {
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/\(String(fileId))"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Put"
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .decode(Node.self, decoder: self.decoder, completion: completion)
+                .decode(Node.self, decoder: self.decoder, requestType: .updateFile, completion: completion)
             
         } catch {
             completion(Dracoon.Result.error(DracoonError.encode(error: error)))
@@ -239,22 +239,16 @@ class DracoonNodesImpl: DracoonNodes {
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Delete"
+            urlRequest.httpMethod = HTTPMethod.delete.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .response(completionHandler: { response in
-                    if let error = response.error {
-                        completion(Dracoon.Response(error: error))
-                    } else {
-                        completion(Dracoon.Response(error: nil))
-                    }
-                })
+                .handleResponse(decoder: self.decoder, completion: completion)
             
         } catch {
-            completion(Dracoon.Response(error: error))
+            completion(Dracoon.Response(error: DracoonError.encode(error: error)))
         }
     }
     
@@ -265,13 +259,13 @@ class DracoonNodesImpl: DracoonNodes {
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(String(nodeId))/copy_to"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Post"
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .decode(Node.self, decoder: self.decoder, completion: completion)
+                .decode(Node.self, decoder: self.decoder, requestType: .copyNodes, completion: completion)
             
         } catch {
             completion(Dracoon.Result.error(DracoonError.encode(error: error)))
@@ -285,13 +279,13 @@ class DracoonNodesImpl: DracoonNodes {
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(String(nodeId))/move_to"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Post"
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .decode(Node.self, decoder: self.decoder, completion: completion)
+                .decode(Node.self, decoder: self.decoder, requestType: .moveNodes, completion: completion)
             
         } catch {
             completion(Dracoon.Result.error(DracoonError.encode(error: error)))
@@ -419,7 +413,7 @@ class DracoonNodesImpl: DracoonNodes {
         
         self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
             .validate()
-            .decode(NodeList.self, decoder: self.decoder, completion: completion)
+            .decode(NodeList.self, decoder: self.decoder, requestType: .searchNodes, completion: completion)
         
     }
     
@@ -449,13 +443,7 @@ class DracoonNodesImpl: DracoonNodes {
         
         self.sessionManager.request(requestUrl, method: .delete)
             .validate()
-            .response(completionHandler: { response in
-                if let error = response.error {
-                    completion(Dracoon.Response(error: error))
-                } else {
-                    completion(Dracoon.Response(error: nil))
-                }
-            })
+            .handleResponse(decoder: self.decoder, completion: completion)
     }
     
     // MARK: Crypto
@@ -479,13 +467,13 @@ class DracoonNodesImpl: DracoonNodes {
         
         self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
             .validate()
-            .decode(MissingKeysResponse.self, decoder: self.decoder, completion: completion)
+            .decode(MissingKeysResponse.self, decoder: self.decoder, requestType: .getMissingFileKeys, completion: completion)
         
     }
     
     fileprivate func setMissingFileKeysBatch(nodeId: Int64?, offset: Int64?, limit: Int64?, completion: @escaping (Dracoon.Response) -> Void) {
         
-        getMissingFileKeys(nodeId: nodeId, offset: offset, limit: limit, completion: { result in
+        self.getMissingFileKeys(nodeId: nodeId, offset: offset, limit: limit, completion: { result in
             switch result {
             case .value(let missingKeys):
                 self.generateMissingFileKey(missingKeys: missingKeys, progress: Progress(), results: [UserFileKeySetRequest](), completion: { items in
@@ -493,9 +481,6 @@ class DracoonNodesImpl: DracoonNodes {
                         self.uploadMissingFileKeys(request: UserFileKeySetBatchRequest(items: items), completion: completion)
                     }
                 })
-                
-                
-                break
             case .error(let error):
                 completion(Dracoon.Response(error: error))
                 break
@@ -573,21 +558,15 @@ class DracoonNodesImpl: DracoonNodes {
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/keys"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Post"
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .response(completionHandler: { response in
-                    if let error = response.error {
-                        completion(Dracoon.Response(error: error))
-                    } else {
-                        completion(Dracoon.Response(error: nil))
-                    }
-                })
+                .handleResponse(decoder: self.decoder, completion: completion)
         } catch {
-            completion(Dracoon.Response(error: error))
+            completion(Dracoon.Response(error: DracoonError.encode(error: error)))
         }
     }
     

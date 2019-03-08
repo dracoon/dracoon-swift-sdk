@@ -8,10 +8,10 @@
 import Foundation
 
 public enum DracoonError: Error {
-    case api(error: ModelErrorResponse?)
+    case api(error: DracoonSDKErrorModel)
     case encode(error: Error)
     case decode(error: Error)
-    case generic(error: Error)
+    case generic(error: Error?)
     
     case encrypted_share_no_password_provided
     
@@ -35,4 +35,5 @@ public enum DracoonError: Error {
     case authorization_token_expired
     
     case connection_timeout
+    case offline
 }
