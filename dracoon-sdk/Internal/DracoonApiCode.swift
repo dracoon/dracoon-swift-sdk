@@ -77,8 +77,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     case VALIDATION_ROOM_CANNOT_BE_UNENCRYPTED_WITH_FILES = 3122
     case VALIDATION_ROOM_CANNOT_BE_ENCRYPTED_WITH_FILES = 3123
     case VALIDATION_ROOM_ALREADY_HAS_RESCUE_KEY = 3124
-    case VALIDATION_ROOM_CANNOT_BE_ENCRYPTED_WITH_RECYCLEBIN = 3125
-    case VALIDATION_ROOM_CANNOT_BE_DECRYPTED_WITH_RECYCLEBIN = 3126
+    case VALIDATION_ROOM_CANNOT_SET_ENCRYPTED_WITH_RECYCLEBIN = 3125
+    case VALIDATION_ROOM_CANNOT_SET_UNENCRYPTED_WITH_RECYCLEBIN = 3126
     case VALIDATION_ENCRYPTED_FILE_CAN_ONLY_BE_RESTORED_IN_ORIGINAL_ROOM = 3127
     case VALIDATION_KEEPSHARELINKS_ONLY_WITH_OVERWRITE = 3128
     
@@ -96,7 +96,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     case VALIDATION_PLACEHOLDER_USERS = 3500
     case VALIDATION_USER_HAS_NO_KEY_PAIR = 3550
     case VALIDATION_USER_KEY_PAIR_INVALID = 3551
-    case VALIDATION_USER_HAS_NO_FILE_KEY = 3552
+    case VALIDATION_USER_FILE_KEY_MISSING = 3552
     
     // Groups
     
@@ -104,7 +104,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     
     // Other
     
-    case VALIDATION_PASSWORT_NOT_SECURE = 3800
+    case VALIDATION_PASSWORD_NOT_SECURE = 3800
     case VALIDATION_INVALID_EMAIL_ADDRESS = 3801
     
     // MARK: Permission errors
@@ -282,10 +282,10 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "Room with files cannot be encrypted."
         case .VALIDATION_ROOM_ALREADY_HAS_RESCUE_KEY:
             return "Only one room emergency password (rescue key) is allowed."
-        case .VALIDATION_ROOM_CANNOT_BE_ENCRYPTED_WITH_RECYCLEBIN:
-            return "Room with not empty recycle bin cannot be encrypted."
-        case .VALIDATION_ROOM_CANNOT_BE_DECRYPTED_WITH_RECYCLEBIN:
-            return "Room with not empty recycle bin cannot be decrypted."
+        case .VALIDATION_ROOM_CANNOT_SET_ENCRYPTED_WITH_RECYCLEBIN:
+            return "Room with not empty recycle bin cannot be set encrypted."
+        case .VALIDATION_ROOM_CANNOT_SET_UNENCRYPTED_WITH_RECYCLEBIN:
+            return "Room with not empty recycle bin cannot be set unencrypted."
         case .VALIDATION_ENCRYPTED_FILE_CAN_ONLY_BE_RESTORED_IN_ORIGINAL_ROOM:
             return "Encrypted files cannot be restored inside another than its original room."
         case .VALIDATION_KEEPSHARELINKS_ONLY_WITH_OVERWRITE:
@@ -305,13 +305,13 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "User has no encryption key pair."
         case .VALIDATION_USER_KEY_PAIR_INVALID:
             return "Invalid encryption key pair."
-        case .VALIDATION_USER_HAS_NO_FILE_KEY:
-            return "User has no encryption file key."
+        case .VALIDATION_USER_FILE_KEY_MISSING:
+            return "File key has to be provided"
             
         case .VALIDATION_PLACEHOLDER_GROUPS:
             return "Placeholder for groups validation errors"
             
-        case .VALIDATION_PASSWORT_NOT_SECURE:
+        case .VALIDATION_PASSWORD_NOT_SECURE:
             return "Password is not secure."
         case .VALIDATION_INVALID_EMAIL_ADDRESS:
             return "Invalid email address."

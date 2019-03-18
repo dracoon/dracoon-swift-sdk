@@ -82,7 +82,7 @@ public class DracoonErrorParser {
         
         switch apiErrorCode {
         case -10002:
-            return DracoonApiCode.VALIDATION_PASSWORT_NOT_SECURE
+            return DracoonApiCode.VALIDATION_PASSWORD_NOT_SECURE
         case -40001:
             switch requestType {
             case .copyNodes:
@@ -108,17 +108,17 @@ public class DracoonErrorParser {
         case -40008:
             return DracoonApiCode.VALIDATION_ROOM_CANNOT_BE_ENCRYPTED_WITH_FILES
         case -40012:
-            return DracoonApiCode.VALIDATION_ROOM_CANNOT_BE_ENCRYPTED_WITH_RECYCLEBIN
+            return DracoonApiCode.VALIDATION_ROOM_CANNOT_SET_ENCRYPTED_WITH_RECYCLEBIN
         case -40013:
             return DracoonApiCode.VALIDATION_ENCRYPTED_FILE_CAN_ONLY_BE_RESTORED_IN_ORIGINAL_ROOM
         case -40014:
-            return DracoonApiCode.VALIDATION_USER_HAS_NO_FILE_KEY
+            return DracoonApiCode.VALIDATION_USER_FILE_KEY_MISSING
         case -40018:
-            return DracoonApiCode.VALIDATION_ROOM_CANNOT_BE_DECRYPTED_WITH_RECYCLEBIN
+            return DracoonApiCode.VALIDATION_ROOM_CANNOT_SET_UNENCRYPTED_WITH_RECYCLEBIN
         case -40755:
             return DracoonApiCode.VALIDATION_BAD_FILE_NAME
         case -40761:
-            return DracoonApiCode.VALIDATION_USER_HAS_NO_FILE_KEY
+            return DracoonApiCode.VALIDATION_USER_FILE_KEY_MISSING
         case -41052:
             switch requestType {
             case .copyNodes:
@@ -259,7 +259,7 @@ public class DracoonErrorParser {
         
         switch apiErrorCode {
         case -40014:
-            return DracoonApiCode.VALIDATION_USER_HAS_NO_FILE_KEY
+            return DracoonApiCode.VALIDATION_USER_FILE_KEY_MISSING
         case -40751:
             return DracoonApiCode.SERVER_FILE_NOT_FOUND
         case -40761:
