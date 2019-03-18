@@ -45,9 +45,10 @@ public struct CreateRoomRequest: Codable {
     public var notes: String?
     /** Is activities log active (for rooms only) (default: true) */
     public var hasActivitiesLog: Bool?
-    /** Classification ID (for files only): * &#x60;1&#x60; - public * &#x60;2&#x60; - for internal use only * &#x60;3&#x60; - confidential * &#x60;4&#x60; - strictly confidential */
+    /** Classification ID (for files only): * &#x60;1&#x60; - public * &#x60;2&#x60; - for internal use only * &#x60;3&#x60; - confidential * &#x60;4&#x60; - strictly confidential
+     Provided (or default) classification is taken from room when file gets uploaded without any classification.
+     (default: 2 - internal) */
     public var classification: Classification?
-
 
 
 }
