@@ -36,7 +36,7 @@ public extension DataRequest {
                     completion(Result.error(error))
                 }
             } catch {
-                completion(Result.error(DracoonError.decode(error: error)))
+                completion(Result.error(DracoonError.decode(error: error, statusCode: self.response?.statusCode)))
             }
         })
     }
@@ -48,7 +48,7 @@ public extension DataRequest {
                     let dracoonError = try self.handleError(error: error, responseData: response.data, decoder: decoder, requestType: requestType)
                     completion(Dracoon.Response(error: dracoonError))
                 } catch {
-                    completion(Dracoon.Response(error: DracoonError.decode(error: error)))
+                    completion(Dracoon.Response(error: DracoonError.decode(error: error, statusCode: self.response?.statusCode)))
                 }
             } else {
                 completion(Dracoon.Response(error: nil))

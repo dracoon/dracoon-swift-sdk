@@ -10,7 +10,7 @@ import Foundation
 public enum DracoonError: Error {
     case api(error: DracoonSDKErrorModel)
     case encode(error: Error)
-    case decode(error: Error)
+    case decode(error: Error, statusCode: Int?)
     case generic(error: Error?)
     
     case encrypted_share_no_password_provided
