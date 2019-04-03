@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: CreateRoomRequest
 public struct CreateRoomRequest: Codable {
 
     public enum NewGroupMemberAcceptance: String, Codable { 

@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: SystemDefaults
 public struct SystemDefaults: Codable {
 
     /** Define which language should be default. */

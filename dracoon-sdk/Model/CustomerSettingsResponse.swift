@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// - Tag: CustomerSettingsResponse
 public struct CustomerSettingsResponse: Codable {
     
     /** the name of the container in which all user’s home rooms are located */

@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: DownloadShare
 public struct DownloadShare: Codable {
 
     /** Share ID */
@@ -45,7 +44,7 @@ public struct DownloadShare: Codable {
     public var smsRecipients: String?
     /** Path to shared download node */
     public var nodePath: String?
-    /** Path to shared download node */
+    /** Base64 encoded qr code image data */
     public var dataUrl: String?
     /** Encrypted share (this only applies to shared files, not folders) */
     public var isEncrypted: Bool?

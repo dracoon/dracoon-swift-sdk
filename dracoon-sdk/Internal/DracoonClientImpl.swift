@@ -9,11 +9,18 @@ import Foundation
 import Alamofire
 import crypto_sdk
 
-
 public class DracoonClientImpl: DracoonClient {
     
-    fileprivate let oAuthTokenManager: OAuthTokenManager
-    
+    /// Initializes a DracoonClient
+    ///
+    /// - Parameters:
+    ///   - serverUrl: The web address of a DRACOON instance
+    ///   - authMode: The OAuth2 mode. Mode _authorizationCode_ can be used during initial code flow
+    ///     and mode _accessRefreshToken_ once access and refresh token are retrieved.
+    ///   - getEncryptionPassword: Function which returns the password the user's private key is encrypted with
+    ///   - sessionConfiguration: Custom configuration can be passed here, otherwise default configuration is used.
+    ///   - oauthClient: Custom [OAuthClient](x-source-tag://OAuthClient) implementation can be passed here, otherwise internal implementation is used.
+    ///   - oauthCallback: The [OAuthTokenChangedDelegate](x-source-tag://OAuthTokenChangedDelegate) informs about token changes.
     public init(serverUrl: URL,
                 authMode: DracoonAuthMode,
                 getEncryptionPassword: @escaping () -> String?,
@@ -58,6 +65,8 @@ public class DracoonClientImpl: DracoonClient {
         shares = DracoonSharesImpl(config: requestConfig, nodes: nodes, account: account, getEncryptionPassword: getEncryptionPassword)
     }
     
+    fileprivate let oAuthTokenManager: OAuthTokenManager
+    
     public var server: DracoonServer
     
     public var account: DracoonAccount
@@ -73,7 +82,6 @@ public class DracoonClientImpl: DracoonClient {
     public var shares: DracoonShares
     
     public var settings: DracoonSettings
-    
     
     class NotImplementedYet: DracoonUsers, DracoonGroups {
     }

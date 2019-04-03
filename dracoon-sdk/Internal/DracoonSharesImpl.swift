@@ -34,7 +34,6 @@ class DracoonSharesImpl: DracoonShares {
     }
     
     func createDownloadShare(nodeId: Int64, password: String?, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
-        
         self.nodes.isNodeEncrypted(nodeId: nodeId, completion: { result in
             switch result {
             case .error(let error):
@@ -131,8 +130,8 @@ class DracoonSharesImpl: DracoonShares {
             .decode(DownloadShare.self, decoder: self.decoder, completion: completion)
     }
     
-    func createUploadShare(nodeId: Int64, name: String, password: String?, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
-        let request = CreateUploadShareRequest(targetId: nodeId, name: name){$0.password = password}
+    func createUploadShare(nodeId: Int64, name: String?, password: String?, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
+        let request = CreateUploadShareRequest(targetId: nodeId){$0.name = name; $0.password = password}
         self.requestCreateUploadShare(request: request, completion: completion)
     }
     
