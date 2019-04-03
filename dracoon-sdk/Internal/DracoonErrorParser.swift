@@ -295,6 +295,8 @@ public class DracoonErrorParser {
             return DracoonApiCode.SERVER_UPLOAD_NOT_FOUND
         case -70020:
             return DracoonApiCode.SERVER_USER_KEY_PAIR_NOT_FOUND
+        case -70028:
+            return DracoonApiCode.SERVER_AVATAR_NOT_FOUND
         case -70501:
             return DracoonApiCode.SERVER_USER_NOT_FOUND
         default:
