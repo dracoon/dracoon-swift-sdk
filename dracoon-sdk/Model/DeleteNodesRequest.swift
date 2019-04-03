@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: DeleteNodesRequest
 public struct DeleteNodesRequest: Codable {
 
     /** List of node IDs */

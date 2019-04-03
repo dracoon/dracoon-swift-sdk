@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// - Tag: DownloadCallback
 public class DownloadCallback {
     
     public var onError:((Error) -> Void)?

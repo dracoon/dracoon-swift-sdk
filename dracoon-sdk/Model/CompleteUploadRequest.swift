@@ -8,7 +8,7 @@
 import Foundation
 import crypto_sdk
 
-
+/// TAG: - CompleteUploadRequest.ResolutionStrategy
 public struct CompleteUploadRequest: Codable {
 
     public enum ResolutionStrategy: String, Codable { 

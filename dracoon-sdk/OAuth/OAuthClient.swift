@@ -8,6 +8,7 @@
 import Foundation
 import Alamofire
 
+/// - Tag: OAuthClient
 public protocol OAuthClient {
     
     var serverUrl: URL { get }

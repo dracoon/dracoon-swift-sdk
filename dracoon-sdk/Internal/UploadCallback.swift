@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// - Tag: UploadCallback
 public class UploadCallback {
     
     public var onStarted:((String) -> Void)?

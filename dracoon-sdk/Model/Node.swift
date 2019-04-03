@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: Node
 public struct Node: Codable {
 
     public enum ModelType: String, Codable { 

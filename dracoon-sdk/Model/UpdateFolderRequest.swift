@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: UpdateFolderRequest
 public struct UpdateFolderRequest: Codable {
 
     /** Folder name */

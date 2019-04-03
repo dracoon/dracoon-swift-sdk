@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// - Tag: OAuthTokenChangedDelegate
 public protocol OAuthTokenChangedDelegate: class {
     func tokenChanged(accessToken: String, refreshToken: String)
 }

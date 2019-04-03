@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: SoftwareVersionData
 public struct SoftwareVersionData: Codable {
 
     /** REST API version */

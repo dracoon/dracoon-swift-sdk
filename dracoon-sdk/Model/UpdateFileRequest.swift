@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: UpdateFileRequest
 public struct UpdateFileRequest: Codable {
 
     /** File name */
