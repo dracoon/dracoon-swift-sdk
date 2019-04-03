@@ -58,7 +58,7 @@ class DracoonAccountImpl: DracoonAccount {
             let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-            urlRequest.httpMethod = "Post"
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
             urlRequest.httpBody = jsonBody
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             
@@ -86,30 +86,19 @@ class DracoonAccountImpl: DracoonAccount {
         
         self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
-            .responseJSON(completionHandler: { response in
-                switch response.result {
-                case .success(_):
-                    do {
-                        let userKeyPair = try self.decoder.decode(UserKeyPair.self, from: response.data!)
-                        let container = UserKeyPairContainer(publicKey: userKeyPair.publicKeyContainer.publicKey,
-                                                             publicVersion: userKeyPair.publicKeyContainer.version,
-                                                             privateKey: userKeyPair.privateKeyContainer.privateKey,
-                                                             privateVersion: userKeyPair.privateKeyContainer.version)
-                        completion(Dracoon.Result.value(container))
-                    } catch {
-                        completion(Dracoon.Result.error(DracoonError.decode(error: error)))
-                    }
-                    
-                case .failure(let error):
-                    if response.response?.statusCode == 404 {
-                        completion(Dracoon.Result.error(DracoonError.keypair_does_not_exist))
-                    } else {
-                        completion(Dracoon.Result.error(DracoonError.account(error: error)))
-                    }
+            .decode(UserKeyPair.self, decoder: self.decoder, completion: { result in
+                switch result {
+                case .error(let error):
+                    completion(Dracoon.Result.error(error))
+                    break
+                case .value(let userKeyPair):
+                    let container = UserKeyPairContainer(publicKey: userKeyPair.publicKeyContainer.publicKey,
+                                                         publicVersion: userKeyPair.publicKeyContainer.version,
+                                                         privateKey: userKeyPair.privateKeyContainer.privateKey,
+                                                         privateVersion: userKeyPair.privateKeyContainer.version)
+                    completion(Dracoon.Result.value(container))
                 }
-                
             })
-        
     }
     
     func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
@@ -137,16 +126,10 @@ class DracoonAccountImpl: DracoonAccount {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-        urlRequest.httpMethod = "Delete"
+        urlRequest.httpMethod = HTTPMethod.delete.rawValue
         
         self.sessionManager.request(urlRequest)
             .validate()
-            .response(completionHandler: { response in
-                if let error = response.error {
-                    completion(Dracoon.Response(error: error))
-                } else {
-                    completion(Dracoon.Response(error: nil))
-                }
-            })
+            .handleResponse(decoder: self.decoder, completion: completion)
     }
 }

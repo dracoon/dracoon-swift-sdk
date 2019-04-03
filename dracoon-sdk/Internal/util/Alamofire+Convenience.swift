@@ -15,7 +15,7 @@ public struct Dracoon {
     }
     
     public struct Response {
-        public let error: Error?
+        public let error: DracoonError?
     }
 }
 
@@ -25,34 +25,54 @@ public extension DataRequest {
     
     typealias DecodeCompletion<T> = (_ result: Result<T>) -> Void
     
-    func decode<D: Decodable>(_ type: D.Type, decoder: JSONDecoder, completion: @escaping DecodeCompletion<D>) {
+    func decode<D: Decodable>(_ type: D.Type, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType = .other, completion: @escaping DecodeCompletion<D>) {
         self.responseData(completionHandler: { dataResponse in
             do {
                 if dataResponse.result.isSuccess {
-                    
                     let success = try decoder.decode(type, from: dataResponse.result.value!)
                     completion(Result.value(success))
-                    
                 } else {
-                    
-                    if let dracoonError = dataResponse.result.error as? DracoonError {
-                        completion(Result.error(dracoonError))
-                    } else {
-                        if dataResponse.result.error?._code == NSURLErrorTimedOut {
-                            completion(Result.error(DracoonError.connection_timeout))
-                        } else {
-                            let error = try decoder.decode(ModelErrorResponse.self, from: dataResponse.data!)
-                            completion(Result.error(DracoonError.api(error: error)))
-                        }
-                    }
+                    let error = try self.handleError(error: dataResponse.error, responseData: dataResponse.data, decoder: decoder, requestType: requestType)
+                    completion(Result.error(error))
                 }
-                
             } catch {
-                
                 completion(Result.error(DracoonError.decode(error: error)))
             }
-            
         })
+    }
+    
+    func handleResponse(decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType = .other, completion: @escaping (Dracoon.Response) -> Void) {
+        self.response(completionHandler: { response in
+            if let error = response.error {
+                do {
+                    let dracoonError = try self.handleError(error: error, responseData: response.data, decoder: decoder, requestType: requestType)
+                    completion(Dracoon.Response(error: dracoonError))
+                } catch {
+                    completion(Dracoon.Response(error: DracoonError.decode(error: error)))
+                }
+            } else {
+                completion(Dracoon.Response(error: nil))
+            }
+        })
+    }
+    
+    private func handleError(error: Error?, responseData: Data?, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType) throws -> DracoonError {
+        if error?._code == NSURLErrorTimedOut {
+            return DracoonError.connection_timeout
+        } else if error?._code == NSURLErrorNotConnectedToInternet {
+            return DracoonError.offline
+        }
+        guard let data = responseData else {
+            return DracoonError.generic(error: error)
+        }
+        let error = try decoder.decode(ModelErrorResponse.self, from: data)
+        let sdkError = self.parseError(error: error, requestType: requestType)
+        return DracoonError.api(error: sdkError)
+    }
+    
+    private func parseError(error: ModelErrorResponse, requestType: DracoonErrorParser.RequestType) -> DracoonSDKErrorModel {
+        let code = DracoonErrorParser.shared.parseApiErrorResponse(error, requestType: requestType)
+        return DracoonSDKErrorModel(errorCode: code, httpStatusCode: error.code)
     }
 }
 
