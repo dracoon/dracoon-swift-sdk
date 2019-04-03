@@ -157,6 +157,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     case SERVER_USER_KEY_PAIR_NOT_FOUND = 5550
     case SERVER_USER_KEY_PAIR_ALREADY_SET = 5551
     case SERVER_USER_FILE_KEY_NOT_FOUND = 5552
+    case SERVER_AVATAR_NOT_FOUND = 5553
     
     // Groups
     
@@ -386,6 +387,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "Encryption key pair was already set."
         case .SERVER_USER_FILE_KEY_NOT_FOUND:
             return "Encryption file key could not be found."
+        case .SERVER_AVATAR_NOT_FOUND:
+            return "Avatar could not be found."
             
         case .SERVER_PLACEHOLDER_GROUPS:
             return "Placeholder for groups errors"
