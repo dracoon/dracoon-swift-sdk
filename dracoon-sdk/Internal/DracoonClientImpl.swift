@@ -9,26 +9,40 @@ import Foundation
 import Alamofire
 import crypto_sdk
 
-
 public class DracoonClientImpl: DracoonClient {
     
-    fileprivate let serverUrl: URL
-    fileprivate let authMode: DracoonAuthMode
-    fileprivate let oAuthTokenManager: OAuthTokenManager
-    
+    /// Initializes a DracoonClient
+    ///
+    /// - Parameters:
+    ///   - serverUrl: The web address of a DRACOON instance
+    ///   - authMode: The OAuth2 mode. Mode _authorizationCode_ can be used during initial code flow
+    ///     and mode _accessRefreshToken_ once access and refresh token are retrieved.
+    ///   - getEncryptionPassword: Function which returns the password the user's private key is encrypted with
+    ///   - sessionConfiguration: Custom configuration can be passed here, otherwise default configuration is used.
+    ///   - oauthClient: Custom [OAuthClient](x-source-tag://OAuthClient) implementation can be passed here, otherwise internal implementation is used.
+    ///   - oauthCallback: The [OAuthTokenChangedDelegate](x-source-tag://OAuthTokenChangedDelegate) informs about token changes.
     public init(serverUrl: URL,
                 authMode: DracoonAuthMode,
                 getEncryptionPassword: @escaping () -> String?,
                 sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
                 oauthClient: OAuthClient? = nil,
                 oauthCallback: OAuthTokenChangedDelegate? = nil) {
-        self.serverUrl = serverUrl
-        self.authMode = authMode
+        
+        let trimmedUrl: URL
+        if serverUrl.absoluteString.hasSuffix("/") {
+            let stringRepresentation = String(serverUrl.absoluteString.dropLast())
+            guard let newUrl = URL(string: stringRepresentation) else {
+                fatalError("Invalid server address passed to Dracoon SDK: \(serverUrl)")
+            }
+            trimmedUrl = newUrl
+        } else {
+            trimmedUrl = serverUrl
+        }
         
         let sessionManager = Alamofire.SessionManager(configuration: sessionConfiguration)
         
         oAuthTokenManager = OAuthTokenManager(authMode: authMode,
-                                              oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: serverUrl, sessionManager: sessionManager))
+                                              oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: trimmedUrl, sessionManager: sessionManager))
         oAuthTokenManager.delegate = oauthCallback
         
         sessionManager.retrier = oAuthTokenManager
@@ -39,16 +53,19 @@ public class DracoonClientImpl: DracoonClient {
         let encoder = JSONEncoder()
         let crypto = Crypto()
         
-        let requestConfig = DracoonRequestConfig(sessionManager: sessionManager, serverUrl: serverUrl, apiPath: "/api/v4", oauthTokenManager: oAuthTokenManager, encoder: encoder, decoder: decoder)
+        let requestConfig = DracoonRequestConfig(sessionManager: sessionManager, serverUrl: trimmedUrl, apiPath: DracoonConstants.API_PATH, oauthTokenManager: oAuthTokenManager, encoder: encoder, decoder: decoder)
         
         server = DracoonServerImpl(config: requestConfig)
         account = DracoonAccountImpl(config: requestConfig, crypto: crypto)
         config = DracoonConfigImpl(config: requestConfig)
         users = NotImplementedYet()
         groups = NotImplementedYet()
+        settings = DracoonSettingsImpl(config: requestConfig)
         nodes = DracoonNodesImpl(config: requestConfig, crypto: crypto, account: account, getEncryptionPassword: getEncryptionPassword)
         shares = DracoonSharesImpl(config: requestConfig, nodes: nodes, account: account, getEncryptionPassword: getEncryptionPassword)
     }
+    
+    fileprivate let oAuthTokenManager: OAuthTokenManager
     
     public var server: DracoonServer
     
@@ -64,6 +81,7 @@ public class DracoonClientImpl: DracoonClient {
     
     public var shares: DracoonShares
     
+    public var settings: DracoonSettings
     
     class NotImplementedYet: DracoonUsers, DracoonGroups {
     }

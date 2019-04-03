@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: UpdateFileRequest
 public struct UpdateFileRequest: Codable {
 
     /** File name */
@@ -20,7 +19,7 @@ public struct UpdateFileRequest: Codable {
     /** User notes Use empty string to remove. */
     public var notes: String?
 
-
+    public init() {}
 
 }
 

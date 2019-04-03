@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: NodeList
 public struct NodeList: Codable {
 
     /** Range */

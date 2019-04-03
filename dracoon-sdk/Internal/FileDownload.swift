@@ -18,6 +18,7 @@ public class FileDownload {
     let encoder: JSONEncoder
     let decoder: JSONDecoder
     let account: DracoonAccount
+    let nodes: DracoonNodes
     let crypto: Crypto
     let getEncryptionPassword: () -> String?
     
@@ -26,9 +27,11 @@ public class FileDownload {
     
     var callback: DownloadCallback?
     var fileKey: EncryptedFileKey?
+    var fileSize: Int64?
     var downloadRequest: DownloadRequest?
     
-    init(nodeId: Int64, targetUrl: URL, config: DracoonRequestConfig, account: DracoonAccount, crypto: Crypto, fileKey: EncryptedFileKey?, getEncryptionPassword: @escaping () -> String?) {
+    init(nodeId: Int64, targetUrl: URL, config: DracoonRequestConfig, account: DracoonAccount, nodes: DracoonNodes,
+         crypto: Crypto, fileKey: EncryptedFileKey?, getEncryptionPassword: @escaping () -> String?) {
         self.sessionManager = config.sessionManager
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
@@ -36,6 +39,7 @@ public class FileDownload {
         self.encoder = config.encoder
         self.decoder = config.decoder
         self.account = account
+        self.nodes = nodes
         self.crypto = crypto
         self.getEncryptionPassword = getEncryptionPassword
         
@@ -62,7 +66,7 @@ public class FileDownload {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/" + String(nodeId) + "/downloads"
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-        urlRequest.httpMethod = "Post"
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
         
         self.sessionManager.request(urlRequest)
             .validate()
@@ -79,18 +83,10 @@ public class FileDownload {
                         return (self.targetUrl, [.removePreviousFile, .createIntermediateDirectories])
                     })
                         .downloadProgress(closure: { (progress) in
-                            self.callback?.onProgress?(Float(progress.fractionCompleted))
+                            self.handleProgress(progress)
                         })
                         .response(completionHandler: { downloadResponse in
-                            if let error = downloadResponse.error {
-                                self.callback?.onError?(error)
-                            } else {
-                                if let fileKey = self.fileKey {
-                                    self.decryptDownloadedFile(fileKey: fileKey)
-                                } else {
-                                    self.callback?.onComplete?(downloadResponse.destinationURL!)
-                                }
-                            }
+                            self.handleDownloadResponse(downloadResponse)
                         })
                 } else {
                     self.downloadToken(token: tokenResponse.token)
@@ -108,26 +104,58 @@ public class FileDownload {
         
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-        urlRequest.httpMethod = "Get"
+        urlRequest.httpMethod = HTTPMethod.get.rawValue
         
         self.downloadRequest = self.sessionManager.download(urlRequest, to: { _, _ in
             return (self.targetUrl, [.removePreviousFile, .createIntermediateDirectories])
         })
             .downloadProgress(closure: { (progress) in
-                self.callback?.onProgress?(Float(progress.fractionCompleted))
+                self.handleProgress(progress)
             })
             .response(completionHandler: { downloadResponse in
-                if let error = downloadResponse.error {
-                    self.callback?.onError?(error)
-                } else {
-                    if let fileKey = self.fileKey {
-                        self.decryptDownloadedFile(fileKey: fileKey)
-                    } else {
-                        self.callback?.onComplete?(downloadResponse.destinationURL!)
-                    }
-                }
+                self.handleDownloadResponse(downloadResponse)
             })
         
+    }
+    
+    fileprivate func handleProgress(_ progress: Progress) {
+        if progress.totalUnitCount == -1 {
+            if let fileSize = self.fileSize {
+                self.notifyProgress(completed: progress.completedUnitCount, total: fileSize)
+            } else {
+                self.fileSize = -1
+                self.nodes.getNode(nodeId: self.nodeId, completion: { result in
+                    switch result {
+                    case .error(_):
+                        break
+                    case .value(let node):
+                        self.fileSize = node.size
+                    }
+                })
+            }
+        } else {
+            self.callback?.onProgress?(Float(progress.fractionCompleted))
+        }
+    }
+    
+    fileprivate func notifyProgress(completed: Int64, total: Int64) {
+        guard total > 0 else {
+            return
+        }
+        let progress = Float(completed)/Float(total)
+        callback?.onProgress?(progress)
+    }
+    
+    fileprivate func handleDownloadResponse(_ downloadResponse: DefaultDownloadResponse) {
+        if let error = downloadResponse.error {
+            self.callback?.onError?(error)
+        } else {
+            if let fileKey = self.fileKey {
+                self.decryptDownloadedFile(fileKey: fileKey)
+            } else {
+                self.callback?.onComplete?(downloadResponse.destinationURL!)
+            }
+        }
     }
     
     fileprivate func decryptDownloadedFile(fileKey: EncryptedFileKey) {

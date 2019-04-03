@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: UploadShareList
 public struct UploadShareList: Codable {
 
     /** Range */

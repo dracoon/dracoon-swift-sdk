@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: UpdateRoomRequest
 public struct UpdateRoomRequest: Codable {
 
     /** Name */
@@ -18,7 +17,7 @@ public struct UpdateRoomRequest: Codable {
     /** User notes Use empty string to remove. */
     public var notes: String?
 
-
+    public init() {}
 
 }
 

@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-
+/// - Tag: MoveNodesRequest
 public struct MoveNodesRequest: Codable {
 
     public enum ResolutionStrategy: String, Codable { 

@@ -1,9 +1,0 @@
-{
-  "commitish" : "v1.0.1",
-  "iOS" : [
-    {
-      "name" : "crypto_sdk",
-      "hash" : "9665f382edb34467e652c2250b63db5d19aa2e703914dd42ea55091ed24655a6"
-    }
-  ]
-}
