@@ -208,11 +208,10 @@ public class FileDownload {
             outputStream.close()
         }
         
-        try autoreleasepool {
-            while inputStream.hasBytesAvailable {
+        while inputStream.hasBytesAvailable {
+            try autoreleasepool {
                 let read = inputStream.read(buffer, maxLength: DracoonConstants.DECRYPTION_BUFFER_SIZE)
                 if read > 0 {
-                    
                     var encData = Data()
                     encData.append(buffer, count: read)
                     let plainData = try decryptionCipher.processBlock(fileData: encData)
