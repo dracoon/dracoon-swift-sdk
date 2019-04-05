@@ -182,16 +182,20 @@ public class FileDownload {
     }
     
     fileprivate func decryptFile(fileKey: PlainFileKey, fileUrl: URL) throws {
-        let encryptedData = try Data(contentsOf: fileUrl)
+        guard FileManager.default.fileExists(atPath: fileUrl.path) else {
+            throw DracoonError.file_does_not_exist(at: fileUrl)
+        }
+        guard let inputStream = InputStream(fileAtPath: fileUrl.path) else {
+            throw DracoonError.read_data_failure(at: fileUrl)
+        }
         let decryptionCipher = try self.crypto.createDecryptionCipher(fileKey: fileKey)
-        let inputStream = InputStream(data: encryptedData)
         let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: DracoonConstants.DECRYPTION_BUFFER_SIZE)
         inputStream.open()
         
         var offset = 0
         var range = NSMakeRange(offset, DracoonConstants.DECRYPTION_BUFFER_SIZE)
         let tempPath = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-        let tempFilePath = tempPath.appendingPathComponent(String(encryptedData.hashValue))
+        let tempFilePath = tempPath.appendingPathComponent(UUID().uuidString)
         guard let outputStream = OutputStream(toFileAtPath: tempFilePath.path, append: false) else {
             self.callback?.onError?(DracoonError.file_decryption_error(nodeId: self.nodeId))
             return
