@@ -254,6 +254,26 @@ public protocol DracoonNodes {
     ///   - completion: Returns a [list of nodes](x-source-tag://NodeList) on success or an error.
     func searchNodes(parentNodeId: Int64, searchString: String, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>)
     
+    /// Searches child nodes by their name. Parameters _offset_ and _limit_ restrict the result to a specific range,
+    /// _depthLevel_ determines how many node levels are searched (0 for top level nodes, -1 for full tree).
+    /// _filter_ parameter can be used as follows:
+    /// Filter string syntax: FIELD_NAME:OPERATOR:VALUE[:VALUE...]
+    /// Examples:
+    ///
+    /// type:eq:room
+    /// Get nodes where type equals room
+    ///
+    /// type:eq:file|createdAt:ge:2019-01-01
+    /// Get nodes where type equals file AND file creation date is >= 2019-01-01
+    ///
+    /// - Parameters:
+    ///   - parentNodeId: The ID of the parent node
+    ///   - searchString: Must not be empty.
+    ///   - offset: Puts an offset on the returned nodes. Must be 0 or positive.
+    ///   - limit: Limits the number of returned nodes. Must be positive.
+    ///   - completion: Returns a [list of nodes](x-source-tag://NodeList) on success or an error.
+    func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>)
+    
     /// Rerieves favorite nodes.
     ///
     /// - Parameter completion: Returns a [list of nodes](x-source-tag://NodeList) on success or an error.

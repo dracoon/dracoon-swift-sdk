@@ -371,7 +371,7 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     fileprivate func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?) {
-
+        
         let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.config, account: self.account, nodes: self,
                                     crypto: self.crypto, fileKey: fileKey, getEncryptionPassword: self.getEncryptionPassword)
         
@@ -411,6 +411,29 @@ class DracoonNodesImpl: DracoonNodes {
         }
         parameters["search_string"] = searchString
         
+        self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
+            .validate()
+            .decode(NodeList.self, decoder: self.decoder, requestType: .searchNodes, completion: completion)
+        
+    }
+    
+    func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/search"
+        
+        var parameters = Parameters()
+        if let limit = limit {
+            parameters["limit"] = limit
+        }
+        if let offset = offset {
+            parameters["offset"] = offset
+        }
+        if let depthLevel = depthLevel {
+            parameters["depth_level"] = String(depthLevel)
+        }
+        if let filter = filter?.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) {
+            parameters["filter"] = filter
+        }
+        parameters["search_string"] = searchString
         
         self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
             .validate()
