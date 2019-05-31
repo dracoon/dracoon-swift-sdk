@@ -402,7 +402,10 @@ class DracoonNodesImpl: DracoonNodes {
     func searchNodes(parentNodeId: Int64, searchString: String, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/search"
         
-        var parameters = Parameters()
+        var parameters: Parameters = [
+            "search_string": searchString,
+            "parent_id": parentNodeId
+        ]
         if let limit = limit {
             parameters["limit"] = limit
         }
@@ -420,7 +423,10 @@ class DracoonNodesImpl: DracoonNodes {
     func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/search"
         
-        var parameters = Parameters()
+        var parameters: Parameters = [
+            "search_string": searchString,
+            "parent_id": parentNodeId
+        ]
         if let limit = limit {
             parameters["limit"] = limit
         }
@@ -433,7 +439,6 @@ class DracoonNodesImpl: DracoonNodes {
         if let filter = filter?.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) {
             parameters["filter"] = filter
         }
-        parameters["search_string"] = searchString
         
         self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
             .validate()
