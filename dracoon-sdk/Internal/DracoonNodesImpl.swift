@@ -428,7 +428,7 @@ class DracoonNodesImpl: DracoonNodes {
             parameters["offset"] = offset
         }
         if let depthLevel = depthLevel {
-            parameters["depth_level"] = String(depthLevel)
+            parameters["depth_level"] = depthLevel
         }
         if let filter = filter?.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) {
             parameters["filter"] = filter

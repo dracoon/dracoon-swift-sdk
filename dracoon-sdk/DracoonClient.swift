@@ -269,6 +269,8 @@ public protocol DracoonNodes {
     /// - Parameters:
     ///   - parentNodeId: The ID of the parent node
     ///   - searchString: Must not be empty.
+    ///   - depthLevel: Depth level of search
+    ///   - filter: Filters for specific nodes
     ///   - offset: Puts an offset on the returned nodes. Must be 0 or positive.
     ///   - limit: Limits the number of returned nodes. Must be positive.
     ///   - completion: Returns a [list of nodes](x-source-tag://NodeList) on success or an error.
