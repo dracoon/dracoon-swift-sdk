@@ -78,6 +78,12 @@ public extension DataRequest {
 
 public extension OutputStream {
     func write(data: Data) -> Int {
-        return data.withUnsafeBytes { write($0, maxLength: data.count) }
+        return data.withUnsafeBytes({ (rawBufferPointer: UnsafeRawBufferPointer) -> Int in
+            let bufferPointer = rawBufferPointer.bindMemory(to: UInt8.self)
+            guard let pointer = bufferPointer.baseAddress else {
+                return 0
+            }
+            return self.write(pointer, maxLength: data.count)
+        })
     }
 }

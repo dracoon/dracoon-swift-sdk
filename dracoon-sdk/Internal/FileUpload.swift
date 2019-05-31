@@ -281,7 +281,7 @@ public class FileUpload {
         
         let maxLength = size - offset
         
-        guard maxLength >= 0 else {
+        guard maxLength > 0 else {
             return nil
         }
         
