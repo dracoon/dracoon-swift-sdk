@@ -436,7 +436,7 @@ class DracoonNodesImpl: DracoonNodes {
         if let depthLevel = depthLevel {
             parameters["depth_level"] = depthLevel
         }
-        if let filter = filter?.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) {
+        if let filter = filter {
             parameters["filter"] = filter
         }
         
