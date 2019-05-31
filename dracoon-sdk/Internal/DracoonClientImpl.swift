@@ -95,7 +95,7 @@ public class DracoonClientImpl: DracoonClient {
     }
 }
 
-extension Formatter {
+public extension Formatter {
     static let dracoonFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .iso8601)
