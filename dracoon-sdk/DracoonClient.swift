@@ -97,7 +97,7 @@ public protocol DracoonAccount {
     /// - Parameters:
     ///   - fileUrl: A file url pointing to an image
     ///   - completion: Returns the user's avatar on success or an error.
-    func updateAvatar(fileUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void)
+    func updateUserAvatar(fileUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void)
     
     /// Deletes the user's avatar.
     ///
