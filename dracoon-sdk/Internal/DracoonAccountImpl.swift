@@ -141,6 +141,31 @@ class DracoonAccountImpl: DracoonAccount {
             .decode(Avatar.self, decoder: self.decoder, completion: completion)
     }
     
+    func downloadUserAvatar(targetUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+        self.getUserAvatar(completion: { result in
+            switch result {
+            case .error(let error):
+                completion(Dracoon.Result.error(error))
+            case .value(let avatar):
+                let downloadUrl = URL(string: avatar.avatarUri)!
+                var request = URLRequest(url: downloadUrl)
+                request.addValue("application/octet-stream", forHTTPHeaderField: "Accept")
+                
+                self.sessionManager
+                    .download(request, to: { _, _ in
+                        return (targetUrl, [.removePreviousFile, .createIntermediateDirectories])
+                    })
+                    .response(completionHandler: { downloadResponse in
+                        if let downloadError = downloadResponse.error {
+                            completion(Dracoon.Result.error(DracoonError.generic(error: downloadError)))
+                        } else {
+                            completion(Dracoon.Result.value(avatar))
+                        }
+                    })
+            }
+        })
+    }
+    
     func updateAvatar(fileUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
         guard FileManager.default.fileExists(atPath: fileUrl.path) else {
             completion(Dracoon.Result.error(DracoonError.file_does_not_exist(at: fileUrl)))
