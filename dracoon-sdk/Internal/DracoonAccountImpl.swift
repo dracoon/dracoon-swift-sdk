@@ -152,7 +152,8 @@ class DracoonAccountImpl: DracoonAccount {
         }
         
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/avatar"
-        var request = try! URLRequest(url: URL(string: requestUrl)!, method: .post)
+        var request = URLRequest(url: URL(string: requestUrl)!)
+        request.httpMethod = HTTPMethod.post.rawValue
         request.addValue("multipart/formdata", forHTTPHeaderField: "Content-Type")
         
         self.sessionManager.upload(multipartFormData: { formdata in
