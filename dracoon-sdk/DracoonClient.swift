@@ -79,6 +79,23 @@ public protocol DracoonAccount {
     ///
     /// - Parameter completion: Returns an empty response on success or an error.
     func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Retrieves the user's avatar.
+    ///
+    /// - Parameter completion: Returns user avatar on success or an error.
+    func getUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void)
+    
+    /// Retrieves the user's avatar.
+    ///
+    /// - Parameters:
+    ///   - fileUrl: A file url pointing to an image
+    ///   - completion: Returns the user's avatar on success or an error.
+    func updateAvatar(fileUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void)
+    
+    /// Deletes the user's avatar.
+    ///
+    /// - Parameter completion: Returns default avatar on success or an error.
+    func deleteUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void)
 }
 
 public protocol DracoonConfig {
