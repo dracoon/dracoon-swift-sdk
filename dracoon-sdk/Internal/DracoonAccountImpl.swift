@@ -132,4 +132,76 @@ class DracoonAccountImpl: DracoonAccount {
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
     }
+    
+    func getUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/avatar"
+        
+        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+            .validate()
+            .decode(Avatar.self, decoder: self.decoder, completion: completion)
+    }
+    
+    func downloadUserAvatar(targetUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+        self.getUserAvatar(completion: { result in
+            switch result {
+            case .error(let error):
+                completion(Dracoon.Result.error(error))
+            case .value(let avatar):
+                let downloadUrl = URL(string: avatar.avatarUri)!
+                var request = URLRequest(url: downloadUrl)
+                request.addValue("application/octet-stream", forHTTPHeaderField: "Accept")
+                
+                self.sessionManager
+                    .download(request, to: { _, _ in
+                        return (targetUrl, [.removePreviousFile, .createIntermediateDirectories])
+                    })
+                    .response(completionHandler: { downloadResponse in
+                        if let downloadError = downloadResponse.error {
+                            completion(Dracoon.Result.error(DracoonError.generic(error: downloadError)))
+                        } else {
+                            completion(Dracoon.Result.value(avatar))
+                        }
+                    })
+            }
+        })
+    }
+    
+    func updateUserAvatar(fileUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+        guard FileManager.default.fileExists(atPath: fileUrl.path) else {
+            completion(Dracoon.Result.error(DracoonError.file_does_not_exist(at: fileUrl)))
+            return
+        }
+        guard let data = try? Data(contentsOf: fileUrl) else {
+            completion(Dracoon.Result.error(DracoonError.read_data_failure(at: fileUrl)))
+            return
+        }
+        
+        let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/avatar"
+        var request = URLRequest(url: URL(string: requestUrl)!)
+        request.httpMethod = HTTPMethod.post.rawValue
+        request.addValue("multipart/formdata", forHTTPHeaderField: "Content-Type")
+        
+        self.sessionManager.upload(multipartFormData: { formdata in
+            formdata.append(data, withName: "file", fileName: "file.name", mimeType: "application/octet-stream")
+            
+        }, with: request, encodingCompletion: { result in
+            switch result {
+            case .failure(let error):
+                let dracoonError = DracoonError.generic(error: error)
+                completion(Dracoon.Result.error(dracoonError))
+            case .success(let request, _, _):
+                request.validate()
+                request.decode(Avatar.self, decoder: self.decoder, completion: completion)
+            }
+        })
+        
+    }
+    
+    func deleteUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/avatar"
+        
+        self.sessionManager.request(requestUrl, method: .delete, parameters: Parameters())
+            .validate()
+            .decode(Avatar.self, decoder: self.decoder, completion: completion)
+    }
 }
