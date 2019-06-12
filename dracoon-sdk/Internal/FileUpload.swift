@@ -8,6 +8,7 @@
 import Foundation
 import Alamofire
 import crypto_sdk
+import CommonCrypto
 
 public class FileUpload {
     
@@ -199,7 +200,16 @@ public class FileUpload {
                                                     chunkCallback(error)
                                                 }
                                             } else {
-                                                chunkCallback(nil)
+                                                if self.checkMD5(result: dataResponse.result, localFileMD5: chunk.md5) {
+                                                    chunkCallback(nil)
+                                                } else {
+                                                 print("MD5 check failed")
+                                                    if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
+                                                        self.uploadNextChunk(uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
+                                                    } else {
+                                                        chunkCallback(DracoonError.connection_timeout)
+                                                    }
+                                                }
                                             }
                                         }
                                         upload.uploadProgress(closure: { progress in
@@ -214,6 +224,15 @@ public class FileUpload {
                                         }
                                     }
         })
+    }
+    
+    func checkMD5(result: Result<Data>, localFileMD5: String) -> Bool {
+        if let response = result.value {
+            if let responseModel = try? self.decoder.decode(ChunkUploadResponse.self, from: response) {
+                return responseModel.hash == localFileMD5
+            }
+        }
+        return true
     }
     
     fileprivate func completeRequest(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
@@ -291,5 +310,19 @@ public class FileUpload {
         let data = fileHandle.readData(ofLength: secureLength)
         
         return data
+    }
+}
+
+extension Data {
+    var md5 : String {
+        var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
+        _ =  self.withUnsafeBytes { bytes in
+            CC_MD5(bytes, CC_LONG(self.count), &digest)
+        }
+        var digestHex = ""
+        for index in 0..<Int(CC_MD5_DIGEST_LENGTH) {
+            digestHex += String(format: "%02x", digest[index])
+        }
+        return digestHex
     }
 }
