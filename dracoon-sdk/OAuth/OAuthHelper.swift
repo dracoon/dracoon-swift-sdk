@@ -9,15 +9,19 @@ import Foundation
 
 public class OAuthHelper {
     
-    public static func createAuthorizationUrl(serverUrl: URL, clientId: String, state: String) -> URL {
+    public static func createAuthorizationUrl(serverUrl: URL, clientId: String, state: String, deviceName: String?) -> URL {
         ValidatorUtils.validate(serverUrl: serverUrl)
         precondition(!clientId.isEmpty)
         precondition(!state.isEmpty)
         let base = serverUrl.absoluteString + OAuthConstants.OAUTH_PATH + OAuthConstants.OAUTH_AUTHORIZE_PATH
         
-        let query = "response_type=" + OAuthConstants.OAUTH_FLOW + "&"
+        var query = "response_type=" + OAuthConstants.OAUTH_FLOW + "&"
             + "client_id=" + clientId + "&"
             + "state=" + state
+        
+        if let name = deviceName {
+            query = query + "&" + "user_agent_info=" + Data(name.utf8).base64EncodedString()
+        }
         
         let url = URL(string: base + "?" + query)!
         return url
