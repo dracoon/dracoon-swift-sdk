@@ -20,7 +20,10 @@ public class OAuthHelper {
             + "state=" + state
         
         if let name = deviceName {
-            query = query + "&" + "user_agent_info=" + Data(name.utf8).base64EncodedString()
+            let base64String = Data(name.utf8).base64EncodedString()
+            if let userAgentInfo = base64String.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                query = query + "&" + "user_agent_info=" + userAgentInfo
+            }
         }
         
         let url = URL(string: base + "?" + query)!
