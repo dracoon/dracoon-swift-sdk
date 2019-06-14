@@ -21,7 +21,10 @@ public class OAuthHelper {
         
         if let name = deviceName {
             let base64String = Data(name.utf8).base64EncodedString()
-            if let userAgentInfo = base64String.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            if let userAgentInfo = base64String.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?
+                                                .replacingOccurrences(of: "+", with: "%2B")
+                                                .replacingOccurrences(of: "/", with: "%2F")
+                                                .replacingOccurrences(of: "=", with: "%3D") {
                 query = query + "&" + "user_agent_info=" + userAgentInfo
             }
         }
