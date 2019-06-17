@@ -147,12 +147,20 @@ public class FileDownload {
     }
     
     fileprivate func handleDownloadResponse(_ downloadResponse: DefaultDownloadResponse) {
-        if let statusCode = downloadResponse.response?.statusCode, statusCode > 300 {
-            print("\(statusCode)")
-            if downloadResponse.response?.allHeaderFields["X-Forbidden"] as? String == "403" {
-                self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: 403)))
-                return
+        if let statusCode = downloadResponse.response?.statusCode, statusCode >= 400 {
+            switch statusCode {
+            case DracoonErrorParser.HTTPStatusCode.FORBIDDEN:
+                if downloadResponse.response?.allHeaderFields["X-Forbidden"] as? String == "403" {
+                    self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: statusCode)))
+                    return
+                }
+                fallthrough
+            default:
+                let errorResponse = ModelErrorResponse(code: statusCode, message: nil, debugInfo: nil, errorCode: nil)
+                let errorCode = DracoonErrorParser.shared.parseApiErrorResponse(errorResponse, requestType: .other)
+                self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: errorCode, httpStatusCode: statusCode)))
             }
+            return
         }
         if let error = downloadResponse.error {
             self.callback?.onError?(error)

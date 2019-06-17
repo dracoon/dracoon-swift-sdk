@@ -28,13 +28,13 @@ public extension DataRequest {
     func decode<D: Decodable>(_ type: D.Type, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType = .other, completion: @escaping DecodeCompletion<D>) {
         self.responseData(completionHandler: { dataResponse in
             do {
-                if let responseError = dataResponse.error {
-                    let error = try self.handleError(error: responseError, urlResponse: dataResponse.response,
-                                         responseData: dataResponse.data, decoder: decoder, requestType: requestType)
-                    completion(Result.error(error))
-                } else if dataResponse.result.isSuccess {
+                if dataResponse.result.isSuccess {
                     let success = try decoder.decode(type, from: dataResponse.result.value!)
                     completion(Result.value(success))
+                } else {
+                    let error = try self.handleError(error: dataResponse.error, urlResponse: dataResponse.response,
+                                                     responseData: dataResponse.data, decoder: decoder, requestType: requestType)
+                    completion(Result.error(error))
                 }
             } catch {
                 completion(Result.error(DracoonError.decode(error: error, statusCode: self.response?.statusCode)))
