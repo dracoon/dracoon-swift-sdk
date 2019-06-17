@@ -147,6 +147,13 @@ public class FileDownload {
     }
     
     fileprivate func handleDownloadResponse(_ downloadResponse: DefaultDownloadResponse) {
+        if let statusCode = downloadResponse.response?.statusCode, statusCode > 300 {
+            print("\(statusCode)")
+            if downloadResponse.response?.allHeaderFields["X-Forbidden"] as? String == "403" {
+                self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: 403)))
+                return
+            }
+        }
         if let error = downloadResponse.error {
             self.callback?.onError?(error)
         } else {
