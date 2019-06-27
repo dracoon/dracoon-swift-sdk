@@ -194,21 +194,13 @@ public class FileUpload {
                                         upload.validate()
                                         upload.responseData { dataResponse in
                                             if let error = dataResponse.error {
-                                                if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
-                                                    self.uploadNextChunk(uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
-                                                } else {
-                                                    chunkCallback(error)
-                                                }
+                                                self.handleUploadError(error: error, uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
                                             } else {
                                                 if self.checkMD5(result: dataResponse.result, localFileMD5: chunk.md5) {
                                                     chunkCallback(nil)
                                                 } else {
-                                                 print("MD5 check failed")
-                                                    if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
-                                                        self.uploadNextChunk(uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
-                                                    } else {
-                                                        chunkCallback(DracoonError.connection_timeout)
-                                                    }
+                                                 // MD5 check failed
+                                                    self.handleUploadError(error: DracoonError.hash_check_failed, uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
                                                 }
                                             }
                                         }
@@ -217,13 +209,18 @@ public class FileUpload {
                                         })
                                         
                                     case .failure(let error):
-                                        if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
-                                            self.uploadNextChunk(uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
-                                        } else {
-                                            chunkCallback(error)
-                                        }
+                                       self.handleUploadError(error: error, uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
                                     }
         })
+    }
+    
+    fileprivate func handleUploadError(error: Error, uploadId: String, chunk: Data, offset: Int, totalFileSize: Int64, retryCount: Int,
+                           chunkCallback: @escaping (Error?) -> Void, callback: UploadCallback?) {
+        if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
+            self.uploadNextChunk(uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
+        } else {
+            chunkCallback(error)
+        }
     }
     
     func checkMD5(result: Result<Data>, localFileMD5: String) -> Bool {
