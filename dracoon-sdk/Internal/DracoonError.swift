@@ -14,6 +14,7 @@ public enum DracoonError: Error {
     case generic(error: Error?)
     
     case encrypted_share_no_password_provided
+    case hash_check_failed
     
     case read_data_failure(at: URL)
     case node_path_invalid(path: String)
