@@ -1,3 +1,0 @@
-github "Alamofire/Alamofire" ~> 4.7.3
-git "ssh://git@git.ssp-europe.eu/~mathias.schreiner/crypto_asn1_fix.git" "develop"
-git "ssh://git@git.ssp-europe.eu/~mathias.schreiner/dracoon_sdk.git" "develop"
