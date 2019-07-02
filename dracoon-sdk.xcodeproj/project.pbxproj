@@ -248,6 +248,7 @@
 		E0F5DF3E22EF31A300844012 /* ValidatorUtilsMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5DF3D22EF31A300844012 /* ValidatorUtilsMock.swift */; };
 		E0F5DF4022EF320200844012 /* FileUtilsMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5DF3F22EF320200844012 /* FileUtilsMock.swift */; };
 		E0F5DF4222EF380D00844012 /* TestQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5DF4122EF380D00844012 /* TestQueue.swift */; };
+		E0C7A13D22CBB2A2003D2141 /* S3FileUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -505,6 +506,7 @@
 		E0F5DF3D22EF31A300844012 /* ValidatorUtilsMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatorUtilsMock.swift; sourceTree = "<group>"; };
 		E0F5DF3F22EF320200844012 /* FileUtilsMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtilsMock.swift; sourceTree = "<group>"; };
 		E0F5DF4122EF380D00844012 /* TestQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestQueue.swift; sourceTree = "<group>"; };
+		E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUpload.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -550,6 +552,7 @@
 				DE52662D21AFF2AB00050482 /* DracoonSettingsImpl.swift */,
 				E030CDFC20FCF03F001DEB31 /* FileDownload.swift */,
 				E0AA72EA2089DD0B001BC290 /* FileUpload.swift */,
+				E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -984,6 +987,7 @@
 				E00067FF2057D0BC009CDA70 /* UploadShare.swift in Sources */,
 				E00067FB2057D0BC009CDA70 /* UpdateUserRequest.swift in Sources */,
 				E000686A2057D0BC009CDA70 /* NewCustomerResponse.swift in Sources */,
+				E0C7A13D22CBB2A2003D2141 /* S3FileUpload.swift in Sources */,
 				E0107DC62163A19E008AAE6C /* DracoonConfigImpl.swift in Sources */,
 				E00068342057D0BC009CDA70 /* UserIds.swift in Sources */,
 				E00068242057D0BC009CDA70 /* SystemInfo.swift in Sources */,

@@ -16,7 +16,9 @@ public struct InfrastructureProperties: Codable {
     public var mediaServerConfigEnabled: Bool?
     /** Suggested S3 Region */
     public var s3DefaultRegion: String?
-
+    /** Enforce direct upload to S3
+     [Since version 4.13.0] */
+    public var s3EnforceDirectUpload: Bool?
 
 
 }
