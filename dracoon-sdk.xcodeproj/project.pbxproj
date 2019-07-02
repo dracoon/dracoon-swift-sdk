@@ -249,6 +249,10 @@
 		E0F5DF4022EF320200844012 /* FileUtilsMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5DF3F22EF320200844012 /* FileUtilsMock.swift */; };
 		E0F5DF4222EF380D00844012 /* TestQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5DF4122EF380D00844012 /* TestQueue.swift */; };
 		E0C7A13D22CBB2A2003D2141 /* S3FileUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */; };
+		E0C7A13F22CBB44F003D2141 /* DracoonUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */; };
+		E0C7A14122CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14022CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift */; };
+		E0C7A14322CBBDAE003D2141 /* PresignedUrlList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14222CBBDAE003D2141 /* PresignedUrlList.swift */; };
+		E0C7A14522CBBE11003D2141 /* PresignedUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14422CBBE11003D2141 /* PresignedUrl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -507,6 +511,10 @@
 		E0F5DF3F22EF320200844012 /* FileUtilsMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtilsMock.swift; sourceTree = "<group>"; };
 		E0F5DF4122EF380D00844012 /* TestQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestQueue.swift; sourceTree = "<group>"; };
 		E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUpload.swift; sourceTree = "<group>"; };
+		E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonUpload.swift; sourceTree = "<group>"; };
+		E0C7A14022CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePresignedUrlsRequest.swift; sourceTree = "<group>"; };
+		E0C7A14222CBBDAE003D2141 /* PresignedUrlList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresignedUrlList.swift; sourceTree = "<group>"; };
+		E0C7A14422CBBE11003D2141 /* PresignedUrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresignedUrl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -552,6 +560,7 @@
 				DE52662D21AFF2AB00050482 /* DracoonSettingsImpl.swift */,
 				E030CDFC20FCF03F001DEB31 /* FileDownload.swift */,
 				E0AA72EA2089DD0B001BC290 /* FileUpload.swift */,
+				E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */,
 				E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */,
 			);
 			path = Internal;
@@ -660,6 +669,7 @@
 				E00067342057D0AB009CDA70 /* FileKeyContainer.swift */,
 				E000673E2057D0AC009CDA70 /* FirstAdminUser.swift */,
 				E00067162057D0A8009CDA70 /* GeneralSettings.swift */,
+				E0C7A14022CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift */,
 				E00067A12057D0B4009CDA70 /* Group.swift */,
 				E00067BC2057D0B6009CDA70 /* GroupIds.swift */,
 				E00067812057D0B1009CDA70 /* GroupList.swift */,
@@ -700,6 +710,8 @@
 				E00067532057D0AD009CDA70 /* PendingAssignmentsRequest.swift */,
 				E000675A2057D0AE009CDA70 /* PendingGroupData.swift */,
 				E00067212057D0A9009CDA70 /* PendingUserData.swift */,
+				E0C7A14422CBBE11003D2141 /* PresignedUrl.swift */,
+				E0C7A14222CBBDAE003D2141 /* PresignedUrlList.swift */,
 				E00067612057D0AE009CDA70 /* PrivateKeyContainer.swift */,
 				E00067722057D0B0009CDA70 /* PublicDownloadShare.swift */,
 				E00067A52057D0B4009CDA70 /* PublicDownloadTokenGenerateRequest.swift */,
@@ -994,6 +1006,7 @@
 				E00068752057D0BC009CDA70 /* ObjectExpiration.swift in Sources */,
 				E00068552057D0BC009CDA70 /* UserFileKeySetRequest.swift in Sources */,
 				E00067EC2057D0BC009CDA70 /* Language.swift in Sources */,
+				E0C7A14322CBBDAE003D2141 /* PresignedUrlList.swift in Sources */,
 				E00067EF2057D0BC009CDA70 /* UpdateSyslogConfig.swift in Sources */,
 				E00067ED2057D0BC009CDA70 /* DeletedNode.swift in Sources */,
 				E02CB9E3205AAF8100E29948 /* DracoonConstants.swift in Sources */,
@@ -1055,6 +1068,7 @@
 				E00068322057D0BC009CDA70 /* CustomerAttributes.swift in Sources */,
 				E000681E2057D0BC009CDA70 /* CustomerData.swift in Sources */,
 				E000683C2057D0BC009CDA70 /* CreateShareUploadChannelRequest.swift in Sources */,
+				E0C7A14522CBBE11003D2141 /* PresignedUrl.swift in Sources */,
 				E000682B2057D0BC009CDA70 /* UpdateActiveDirectoryConfigRequest.swift in Sources */,
 				E00067E82057D0BC009CDA70 /* DownloadShare.swift in Sources */,
 				8496F3BA20592080000EE909 /* Alamofire+Convenience.swift in Sources */,
@@ -1134,6 +1148,7 @@
 				E000681B2057D0BC009CDA70 /* UpdateSystemDefaults.swift in Sources */,
 				E00067F72057D0BC009CDA70 /* NodeBatchOperationErrorResponse.swift in Sources */,
 				E000683B2057D0BC009CDA70 /* ChangeGroupMembersRequest.swift in Sources */,
+				E0C7A14122CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift in Sources */,
 				E00067C92057D0BC009CDA70 /* ConflictNode.swift in Sources */,
 				E00067FD2057D0BC009CDA70 /* CustomerList.swift in Sources */,
 				E000680E2057D0BC009CDA70 /* OpenIdAuthInfo.swift in Sources */,
@@ -1163,6 +1178,7 @@
 				E00068672057D0BC009CDA70 /* UserAuthMethod.swift in Sources */,
 				E09236832151597E0080B97A /* OAuthTokenChangedDelegate.swift in Sources */,
 				E00067EB2057D0BC009CDA70 /* PublicUploadShare.swift in Sources */,
+				E0C7A13F22CBB44F003D2141 /* DracoonUpload.swift in Sources */,
 				E00068032057D0BC009CDA70 /* RoomGroupList.swift in Sources */,
 				E000681D2057D0BC009CDA70 /* LogEventList.swift in Sources */,
 				E00068642057D0BC009CDA70 /* UserAttributes.swift in Sources */,

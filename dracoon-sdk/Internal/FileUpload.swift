@@ -10,7 +10,7 @@ import Alamofire
 import crypto_sdk
 import CommonCrypto
 
-public class FileUpload {
+public class FileUpload: DracoonUpload {
     
     let sessionManager: Alamofire.SessionManager
     let serverUrl: URL
