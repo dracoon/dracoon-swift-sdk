@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PresignedUrl {
+struct PresignedUrl: Codable {
     
     /** S3 presigned URL */
     public var url: String

@@ -42,7 +42,8 @@ extension CreateFileUploadRequest {
                   classification: nil,
                   size: nil,
                   expiration: nil,
-                  notes: nil)
+                  notes: nil,
+                  directS3Upload: nil)
         customize?(&self)
     }
 }

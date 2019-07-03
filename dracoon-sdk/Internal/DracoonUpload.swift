@@ -23,4 +23,27 @@ extension DracoonUpload {
         } catch {}
         return nil
     }
+    
+    func readData(_ path: URL?, range: NSRange) throws -> Data? {
+        guard let path = path, let fileHandle = try? FileHandle(forReadingFrom: path) else {
+            return nil
+        }
+        
+        let offset = UInt64(range.location)
+        let length = UInt64(range.length)
+        let size = fileHandle.seekToEndOfFile()
+        
+        let maxLength = size - offset
+        
+        guard maxLength > 0 else {
+            return nil
+        }
+        
+        let secureLength = Int(min(length, maxLength))
+        
+        fileHandle.seek(toFileOffset: offset)
+        let data = fileHandle.readData(ofLength: secureLength)
+        
+        return data
+    }
 }
