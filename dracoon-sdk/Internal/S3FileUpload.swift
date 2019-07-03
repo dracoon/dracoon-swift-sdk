@@ -278,7 +278,7 @@ public class S3FileUpload: DracoonUpload {
             if let error = response.error {
                 self.callback?.onError?(error)
             } else {
-                self.callback?.onComplete?(nil)
+                self.pollForStatus(uploadId: uploadId)
             }
         })
     }
@@ -300,6 +300,31 @@ public class S3FileUpload: DracoonUpload {
         } catch {
             completion(Dracoon.Response(error: DracoonError.encode(error: error)))
         }
+    }
+    
+    func pollForStatus(uploadId: String) {
+        self.getS3UploadStatus(uploadId: uploadId, completion: { result in
+            switch result {
+            case .error(let error):
+                self.callback?.onError?(error)
+            case .value(let response):
+                if response.status == S3FileUploadStatus.S3UploadStatus.done.rawValue {
+                    self.callback?.onComplete?(nil)
+                } else {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
+                        self.pollForStatus(uploadId: uploadId)
+                    })
+                }
+            }
+        })
+    }
+    
+    func getS3UploadStatus(uploadId: String, completion: @escaping DataRequest.DecodeCompletion<S3FileUploadStatus>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
+        
+        self.sessionManager.request(requestUrl, method: .get, parameters: nil)
+            .validate()
+            .decode(S3FileUploadStatus.self, decoder: self.decoder, requestType: .getNodes, completion: completion)
     }
     
 }
