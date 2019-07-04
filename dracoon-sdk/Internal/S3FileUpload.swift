@@ -191,7 +191,7 @@ public class S3FileUpload: DracoonUpload {
                 self.handleUploadError(error: error)
             } else {
                 if dataResponse.response!.statusCode < 300 {
-                    if let eTag = dataResponse.response?.allHeaderFields["ETag"] as? String {
+                    if let eTag = dataResponse.response?.allHeaderFields["Etag"] as? String {
                         let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: eTag)
                         self.eTags.append(uploadPart)
                         chunkCallback(nil)
