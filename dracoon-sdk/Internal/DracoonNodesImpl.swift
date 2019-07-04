@@ -23,7 +23,7 @@ class DracoonNodesImpl: DracoonNodes {
     let config: DracoonConfig
     let getEncryptionPassword: () -> String?
     
-    private var uploads = [String : FileUpload]()
+    private var uploads = [String : DracoonUpload]()
     private var downloads = [Int64 : FileDownload]()
     
     init(requestConfig: DracoonRequestConfig, crypto: Crypto, account: DracoonAccount, config: DracoonConfig, getEncryptionPassword: @escaping () -> String?) {
@@ -358,6 +358,8 @@ class DracoonNodesImpl: DracoonNodes {
                                     crypto: cryptoImpl, account: self.account)
         // TODO add to uploads to be able to cancel
         s3upload.callback = callback
+        
+        self.uploads[uploadId] = s3upload
         s3upload.start()
     }
     
