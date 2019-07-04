@@ -106,7 +106,7 @@ public class S3FileUpload: DracoonUpload {
             
             do {
                 let jsonBody = try encoder.encode(request)
-                let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(self.uploadId ?? "")/s3urls"
+                let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(self.uploadId ?? "")/s3_urls"
                 
                 var urlRequest = URLRequest(url: URL(string: requestUrl)!)
                 urlRequest.httpMethod = HTTPMethod.post.rawValue
