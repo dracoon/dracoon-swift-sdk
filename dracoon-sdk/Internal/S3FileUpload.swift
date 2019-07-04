@@ -181,26 +181,26 @@ public class S3FileUpload: DracoonUpload {
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
         urlRequest.httpMethod = HTTPMethod.put.rawValue
         
-        var headers = HTTPHeaders()
-        headers["Content-Type"] = "application/octet-stream"
+//        var headers = HTTPHeaders()
+//        headers["Content-Type"] = "application/octet-stream"
+//
+//        let request = self.sessionManager.upload(chunk, to: requestUrl, method: .put, headers: headers)
         
-        let request = self.sessionManager.upload(chunk, to: requestUrl, method: .put, headers: headers)
-        
-        request.response(completionHandler: { dataResponse in
-            if let error = dataResponse.error {
-                self.handleUploadError(error: error)
-            } else {
-                if dataResponse.response!.statusCode < 300 {
-                    if let eTag = dataResponse.response?.allHeaderFields["Etag"] as? String {
-                        let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: eTag)
-                        self.eTags.append(uploadPart)
-                        chunkCallback(nil)
-                    }
-                } else {
-                    print("no etag returned")
-                }
-            }
-        })
+//        request.response(completionHandler: { dataResponse in
+//            if let error = dataResponse.error {
+//                self.handleUploadError(error: error)
+//            } else {
+//                if dataResponse.response!.statusCode < 300 {
+//                    if let eTag = dataResponse.response?.allHeaderFields["Etag"] as? String {
+//                        let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: eTag)
+//                        self.eTags.append(uploadPart)
+//                        chunkCallback(nil)
+//                    }
+//                } else {
+//                    print("no etag returned")
+//                }
+//            }
+//        })
         
         self.sessionManager.upload(multipartFormData: { (formData) in
             formData.append(chunk, withName: "file", fileName: "file.name", mimeType: "application/octet-stream")
@@ -215,7 +215,7 @@ public class S3FileUpload: DracoonUpload {
                                                 self.handleUploadError(error: error)
                                             } else {
                                                 // store ETag
-                                                if let eTag = upload.response?.allHeaderFields["ETag"] as? String {
+                                                if let eTag = upload.response?.allHeaderFields["Etag"] as? String {
                                                     let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: eTag)
                                                     self.eTags.append(uploadPart)
                                                     chunkCallback(nil)
@@ -243,7 +243,7 @@ public class S3FileUpload: DracoonUpload {
     fileprivate func createNextChunk(uploadId: String, presignedUrl: PresignedUrl, fileSize: Int64, cipher: FileEncryptionCipher?, completion: @escaping () -> Void) {
         let offset: Int = Int((presignedUrl.partNumber - 1)) * Int(self.chunkSize)
         let range = NSMakeRange(offset, Int(self.chunkSize))
-        let lastBlock = Int64(offset + Int(self.chunkSize)) >= fileSize
+        let lastBlock = presignedUrl.partNumber == self.s3Urls?.last?.partNumber
         do {
             guard let data = try self.readData(self.filePath, range: range) else {
                 self.callback?.onError?(DracoonError.read_data_failure(at: self.filePath))
