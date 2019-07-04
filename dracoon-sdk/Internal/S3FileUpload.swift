@@ -227,7 +227,8 @@ public class S3FileUpload: DracoonUpload {
             } else {
                 if dataResponse.response!.statusCode < 300 {
                     if let eTag = dataResponse.response?.allHeaderFields["Etag"] as? String {
-                        let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: eTag)
+                        let cleanEtag = eTag.replacingOccurrences(of: "\"", with: "")
+                        let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: cleanEtag)
                         self.eTags.append(uploadPart)
                         chunkCallback(nil)
                     }
