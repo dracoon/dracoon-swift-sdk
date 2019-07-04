@@ -313,28 +313,52 @@ class DracoonNodesImpl: DracoonNodes {
                 if isEncrypted {
                     cryptoImpl = self.crypto
                 }
-                let upload = FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
-                                        crypto: cryptoImpl, account: self.account)
                 
-                let innerCallback = UploadCallback()
-                innerCallback.onCanceled = callback.onCanceled
-                innerCallback.onComplete = { node in
-                    if isEncrypted, let returnedNode = node {
-                        self.setMissingFileKeysBatch(nodeId: returnedNode._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
-                        })
+                self.isS3Upload(onComplete: { result in
+                    switch result {
+                    case .error(_):
+                        self.startUpload(uploadId: uploadId, request: request, filePath: filePath, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                    case .value(let isS3Upload):
+                        if isS3Upload {
+                            self.startS3Upload(uploadId: uploadId, request: request, filePath: filePath, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                        }
                     }
-                    callback.onComplete?(node)
-                    self.uploads.removeValue(forKey: uploadId)
-                }
-                innerCallback.onError = callback.onError
-                innerCallback.onProgress = callback.onProgress
-                
-                upload.callback = innerCallback
-                
-                self.uploads[uploadId] = upload
-                upload.start()
+                })
             }
         })
+    }
+    
+    private func startUpload(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback,
+                             resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: Crypto?) {
+        let upload = FileUpload(config: self.requestConfig, request: request, filePath: filePath, resolutionStrategy: resolutionStrategy,
+                                crypto: cryptoImpl, account: self.account)
+        
+        let innerCallback = UploadCallback()
+        innerCallback.onCanceled = callback.onCanceled
+        innerCallback.onComplete = { node in
+            if cryptoImpl != nil, let returnedNode = node {
+                self.setMissingFileKeysBatch(nodeId: returnedNode._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
+                })
+            }
+            callback.onComplete?(node)
+            self.uploads.removeValue(forKey: uploadId)
+        }
+        innerCallback.onError = callback.onError
+        innerCallback.onProgress = callback.onProgress
+        
+        upload.callback = innerCallback
+        
+        self.uploads[uploadId] = upload
+        upload.start()
+    }
+    
+    private func startS3Upload(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback,
+                               resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: Crypto?) {
+        let s3upload = S3FileUpload(config: self.requestConfig, request: request, filePath: filePath, resolutionStrategy: resolutionStrategy,
+                                    crypto: cryptoImpl, account: self.account)
+        // TODO add to uploads to be able to cancel
+        s3upload.callback = callback
+        s3upload.start()
     }
     
     private func isS3Upload(onComplete: @escaping (Dracoon.Result<Bool>) -> Void) {
