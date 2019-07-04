@@ -63,7 +63,11 @@ public class S3FileUpload: DracoonUpload {
                         self.callback?.onError?(error)
                     case .value(let response):
                         // TODO check for sorted
-                        self.s3Urls = response.urls
+                        if self.s3Urls != nil {
+                            self.s3Urls?.append(contentsOf: response.urls)
+                        } else {
+                            self.s3Urls = response.urls
+                        }
                         self.uploadWithPresignedUrls()
                     }
                 })
@@ -100,30 +104,61 @@ public class S3FileUpload: DracoonUpload {
     fileprivate func obtainUrls(completion: @escaping DataRequest.DecodeCompletion<PresignedUrlList>) {
         if let fileSize = self.calculateFileSize(filePath: self.filePath) {
             self.fileSize = fileSize
-            let neededParts = (fileSize/chunkSize) + 1
-            // TODO 0 byte file, file fits exactly in chunks
-            let request = GeneratePresignedUrlsRequest(size: chunkSize, firstPartNumber: 1, lastPartNumber: Int32(neededParts))
-            
-            do {
-                let jsonBody = try encoder.encode(request)
-                let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(self.uploadId ?? "")/s3_urls"
+            let neededParts = (fileSize/chunkSize)
+            let lastPartSize = fileSize%chunkSize
+            if neededParts > 0 {
+                let request = GeneratePresignedUrlsRequest(size: chunkSize, firstPartNumber: 1, lastPartNumber: Int32(neededParts))
                 
-                var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-                urlRequest.httpMethod = HTTPMethod.post.rawValue
-                urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-                urlRequest.httpBody = jsonBody
-                
-                self.sessionManager.request(urlRequest)
-                    .validate()
-                    .decode(PresignedUrlList.self, decoder: self.decoder, requestType: .createUpload, completion: completion)
-            } catch {
-                self.callback?.onError?(error)
+                do {
+                    let jsonBody = try encoder.encode(request)
+                    let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(self.uploadId ?? "")/s3_urls"
+                    
+                    var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+                    urlRequest.httpMethod = HTTPMethod.post.rawValue
+                    urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+                    urlRequest.httpBody = jsonBody
+                    
+                    self.sessionManager.request(urlRequest)
+                        .validate()
+                        .decode(PresignedUrlList.self, decoder: self.decoder, requestType: .createUpload, completion: { urlResult in
+                            switch urlResult {
+                            case .error(let error):
+                                self.callback?.onError?(error)
+                            case .value(let response):
+                                self.s3Urls = response.urls
+                                self.obtainUrlForLastPart(size: lastPartSize, partNumber: Int32(neededParts) + 1, completion: completion)
+                            }
+                        })
+                } catch {
+                    self.callback?.onError?(error)
+                }
+            } else {
+                self.obtainUrlForLastPart(size: lastPartSize, partNumber: Int32(neededParts) + 1, completion: completion)
             }
+
         } else {
             // TODO handle fileSize unknown
         }
+    }
+    
+    fileprivate func obtainUrlForLastPart(size: Int64, partNumber: Int32, completion: @escaping DataRequest.DecodeCompletion<PresignedUrlList>) {
+        let request = GeneratePresignedUrlsRequest(size: size, firstPartNumber: partNumber, lastPartNumber: partNumber)
         
-       
+        do {
+            let jsonBody = try encoder.encode(request)
+            let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(self.uploadId ?? "")/s3_urls"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.sessionManager.request(urlRequest)
+                .validate()
+                .decode(PresignedUrlList.self, decoder: self.decoder, requestType: .createUpload, completion: completion)
+        } catch {
+            self.callback?.onError?(error)
+        }
     }
     
     fileprivate func uploadWithPresignedUrls() {
