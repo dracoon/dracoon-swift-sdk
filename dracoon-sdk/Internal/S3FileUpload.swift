@@ -216,59 +216,59 @@ public class S3FileUpload: DracoonUpload {
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
         urlRequest.httpMethod = HTTPMethod.put.rawValue
         
-//        var headers = HTTPHeaders()
-//        headers["Content-Type"] = "application/octet-stream"
-//
-//        let request = self.sessionManager.upload(chunk, to: requestUrl, method: .put, headers: headers)
-        
-//        request.response(completionHandler: { dataResponse in
-//            if let error = dataResponse.error {
-//                self.handleUploadError(error: error)
-//            } else {
-//                if dataResponse.response!.statusCode < 300 {
-//                    if let eTag = dataResponse.response?.allHeaderFields["Etag"] as? String {
-//                        let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: eTag)
-//                        self.eTags.append(uploadPart)
-//                        chunkCallback(nil)
-//                    }
-//                } else {
-//                    print("no etag returned")
-//                }
-//            }
-//        })
-        
-        self.sessionManager.upload(multipartFormData: { (formData) in
-            formData.append(chunk, withName: "file", fileName: "file.name", mimeType: "application/octet-stream")
-        },
-                                   with: urlRequest,
-                                   encodingCompletion: { (encodingResult) in
-                                    switch encodingResult {
-                                    case .success(let upload, _, _):
-                                        upload.validate()
-                                        upload.responseData { dataResponse in
-                                            if let error = dataResponse.error {
-                                                self.handleUploadError(error: error)
-                                            } else {
-                                                // store ETag
-                                                if let eTag = upload.response?.allHeaderFields["Etag"] as? String {
-                                                    let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: eTag)
-                                                    self.eTags.append(uploadPart)
-                                                    chunkCallback(nil)
-                                                } else {
-                                                    print("no etag returned!!")
-                                                }
-                                            }
-                                        }
-                                        upload.uploadProgress(closure: { progress in
-                                            let recentChunkProgress = Float(progress.fractionCompleted)*Float(chunk.count)
-                                            let overallProgress = recentChunkProgress + Float(Int(self.chunkSize)*(Int(presignedUrl.partNumber) - 1))
-                                            self.callback?.onProgress?(overallProgress/Float(self.fileSize!))
-                                        })
+        var headers = HTTPHeaders()
+        headers["Content-Type"] = "application/octet-stream"
 
-                                    case .failure(let error):
-                                        self.handleUploadError(error: error)
-                                    }
+        let request = self.sessionManager.upload(chunk, to: requestUrl, method: .put, headers: headers)
+        
+        request.response(completionHandler: { dataResponse in
+            if let error = dataResponse.error {
+                self.handleUploadError(error: error)
+            } else {
+                if dataResponse.response!.statusCode < 300 {
+                    if let eTag = dataResponse.response?.allHeaderFields["Etag"] as? String {
+                        let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: eTag)
+                        self.eTags.append(uploadPart)
+                        chunkCallback(nil)
+                    }
+                } else {
+                    print("no etag returned")
+                }
+            }
         })
+        
+//        self.sessionManager.upload(multipartFormData: { (formData) in
+//            formData.append(chunk, withName: "file", fileName: "file.name", mimeType: "application/octet-stream")
+//        },
+//                                   with: urlRequest,
+//                                   encodingCompletion: { (encodingResult) in
+//                                    switch encodingResult {
+//                                    case .success(let upload, _, _):
+//                                        upload.validate()
+//                                        upload.responseData { dataResponse in
+//                                            if let error = dataResponse.error {
+//                                                self.handleUploadError(error: error)
+//                                            } else {
+//                                                // store ETag
+//                                                if let eTag = upload.response?.allHeaderFields["Etag"] as? String {
+//                                                    let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: eTag)
+//                                                    self.eTags.append(uploadPart)
+//                                                    chunkCallback(nil)
+//                                                } else {
+//                                                    print("no etag returned!!")
+//                                                }
+//                                            }
+//                                        }
+//                                        upload.uploadProgress(closure: { progress in
+//                                            let recentChunkProgress = Float(progress.fractionCompleted)*Float(chunk.count)
+//                                            let overallProgress = recentChunkProgress + Float(Int(self.chunkSize)*(Int(presignedUrl.partNumber) - 1))
+//                                            self.callback?.onProgress?(overallProgress/Float(self.fileSize!))
+//                                        })
+//
+//                                    case .failure(let error):
+//                                        self.handleUploadError(error: error)
+//                                    }
+//        })
     }
     
     fileprivate func handleUploadError(error: Error) {
