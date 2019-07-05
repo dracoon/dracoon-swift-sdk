@@ -166,7 +166,7 @@ public class S3FileUpload: DracoonUpload {
             print("invalid params")
             return
         }
-        
+        print("number of parts \(urls.count)")
         var cipher: FileEncryptionCipher?
         if let crypto = self.crypto {
             do {
