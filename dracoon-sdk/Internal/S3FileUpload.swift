@@ -211,6 +211,7 @@ public class S3FileUpload: DracoonUpload {
     }
     
     fileprivate func uploadPresignedUrl(_ presignedUrl: PresignedUrl, chunk: Data, chunkCallback: @escaping (Error?) -> Void, callback: UploadCallback?) {
+        print("upload \(presignedUrl.partNumber)")
         let requestUrl = presignedUrl.url
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
@@ -341,7 +342,7 @@ public class S3FileUpload: DracoonUpload {
                 self.callback?.onError?(error)
             case .value(let response):
                 if response.status == S3FileUploadStatus.S3UploadStatus.done.rawValue {
-                    self.callback?.onComplete?(nil)
+                    self.callback?.onComplete?(response.node)
                 } else {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
                         self.pollForStatus(uploadId: uploadId)

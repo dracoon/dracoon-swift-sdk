@@ -17,7 +17,5 @@ struct S3FileUploadStatus: Codable {
     }
     
     public var status: String
-    public var fileName: String
-    public var parentId: Int64
-    public var size: Int64?
+    public var node: Node?
 }
