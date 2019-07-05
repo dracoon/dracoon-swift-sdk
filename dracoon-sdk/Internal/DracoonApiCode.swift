@@ -37,6 +37,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     case PRECONDITION_MUST_ACCEPT_EULA = 2101
     case PRECONDITION_MUST_CHANGE_USER_NAME = 2102
     case PRECONDITION_MUST_CHANGE_PASSWORD = 2103
+    case PRECONDITION_S3_STORAGE_DISABLED = 2104
     
     // MARK: Validation errors
     
@@ -81,6 +82,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     case VALIDATION_ROOM_CANNOT_SET_UNENCRYPTED_WITH_RECYCLEBIN = 3126
     case VALIDATION_ENCRYPTED_FILE_CAN_ONLY_BE_RESTORED_IN_ORIGINAL_ROOM = 3127
     case VALIDATION_KEEPSHARELINKS_ONLY_WITH_OVERWRITE = 3128
+    case VALIDATION_INVALID_ETAGS = 3129
     
     // Shares
     
@@ -141,6 +143,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     case SERVER_INSUFFICIENT_UL_SHARE_QUOTA = 5110
     case SERVER_RESTORE_VERSION_NOT_FOUND = 5111
     case SERVER_UPLOAD_NOT_FOUND = 5112
+    case S3_UPLOAD_ID_NOT_FOUND = 5113
     
     // Shares
     
@@ -167,6 +170,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     
     case SERVER_SMS_IS_DISABLED = 5800
     case SERVER_SMS_COULD_NOT_BE_SENT = 5801
+    case S3_DIRECT_UPLOAD_ENFORCED = 5802
     
     public var description: String {
         switch self {
@@ -213,6 +217,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "User must change his user name."
         case .PRECONDITION_MUST_CHANGE_PASSWORD:
             return "User must change his password."
+        case .PRECONDITION_S3_STORAGE_DISABLED:
+            return "S3 storage disabled."
             
         case .VALIDATION_UNKNOWN_ERROR:
             return "The server request was invalid."
@@ -291,6 +297,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "Encrypted files cannot be restored inside another than its original room."
         case .VALIDATION_KEEPSHARELINKS_ONLY_WITH_OVERWRITE:
             return "Keep share links is only allowed with resolution strategy 'overwrite'."
+        case .VALIDATION_INVALID_ETAGS:
+            return "Invalid Etag(s)"
             
         case .VALIDATION_DL_SHARE_CANNOT_CREATE_ON_ENCRYPTED_ROOM_FOLDER:
             return "A download share cannot be created on a encrypted room or folder."
@@ -371,6 +379,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "The restore version id was not found."
         case .SERVER_UPLOAD_NOT_FOUND:
             return "Upload was not found."
+        case .S3_UPLOAD_ID_NOT_FOUND:
+            return "Corresponding S3 upload ID not found."
             
         case .SERVER_DL_SHARE_NOT_FOUND:
             return "Download share could not be found."
@@ -397,6 +407,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "Sending SMS is disabled."
         case .SERVER_SMS_COULD_NOT_BE_SENT:
             return "SMS could not be sent."
+        case .S3_DIRECT_UPLOAD_ENFORCED:
+            return "S3 direct upload is enforced."
         }
     }
 }
