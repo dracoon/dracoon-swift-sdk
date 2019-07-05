@@ -135,7 +135,7 @@ public class S3FileUpload: DracoonUpload {
             } else {
                 self.obtainUrlForLastPart(size: lastPartSize, partNumber: Int32(neededParts) + 1, completion: completion)
             }
-
+            
         } else {
             // TODO handle fileSize unknown
         }
@@ -218,8 +218,16 @@ public class S3FileUpload: DracoonUpload {
         
         var headers = HTTPHeaders()
         headers["Content-Type"] = "application/octet-stream"
-
+        
         let request = self.sessionManager.upload(chunk, to: requestUrl, method: .put, headers: headers)
+        
+        request.uploadProgress(closure: { progress in
+            if let fileSize = self.fileSize {
+                let recentChunkProgress = Float(progress.fractionCompleted)*Float(chunk.count)
+                let overallProgress = recentChunkProgress + Float(Int(self.chunkSize)*(Int(presignedUrl.partNumber) - 1))
+                self.callback?.onProgress?(overallProgress/Float(fileSize))
+            }
+        })
         
         request.response(completionHandler: { dataResponse in
             if let error = dataResponse.error {
@@ -237,39 +245,6 @@ public class S3FileUpload: DracoonUpload {
                 }
             }
         })
-        
-//        self.sessionManager.upload(multipartFormData: { (formData) in
-//            formData.append(chunk, withName: "file", fileName: "file.name", mimeType: "application/octet-stream")
-//        },
-//                                   with: urlRequest,
-//                                   encodingCompletion: { (encodingResult) in
-//                                    switch encodingResult {
-//                                    case .success(let upload, _, _):
-//                                        upload.validate()
-//                                        upload.responseData { dataResponse in
-//                                            if let error = dataResponse.error {
-//                                                self.handleUploadError(error: error)
-//                                            } else {
-//                                                // store ETag
-//                                                if let eTag = upload.response?.allHeaderFields["Etag"] as? String {
-//                                                    let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: eTag)
-//                                                    self.eTags.append(uploadPart)
-//                                                    chunkCallback(nil)
-//                                                } else {
-//                                                    print("no etag returned!!")
-//                                                }
-//                                            }
-//                                        }
-//                                        upload.uploadProgress(closure: { progress in
-//                                            let recentChunkProgress = Float(progress.fractionCompleted)*Float(chunk.count)
-//                                            let overallProgress = recentChunkProgress + Float(Int(self.chunkSize)*(Int(presignedUrl.partNumber) - 1))
-//                                            self.callback?.onProgress?(overallProgress/Float(self.fileSize!))
-//                                        })
-//
-//                                    case .failure(let error):
-//                                        self.handleUploadError(error: error)
-//                                    }
-//        })
     }
     
     fileprivate func handleUploadError(error: Error) {
@@ -312,16 +287,11 @@ public class S3FileUpload: DracoonUpload {
                     completion()
                 }
                 else {
-                    if self.s3Urls!.count > presignedUrl.partNumber {
-                        if let urls = self.s3Urls, urls.count >= presignedUrl.partNumber + 1 {
-                            let nextUrl = urls[Int(presignedUrl.partNumber + 1)]
-                            self.createNextChunk(uploadId: uploadId, presignedUrl: nextUrl, fileSize: fileSize, cipher: cipher, completion: completion)
-                        } else {
-                            print("no urls")
-                        }
-                        
+                    if let urls = self.s3Urls, urls.count >= presignedUrl.partNumber + 1 {
+                        let nextUrl = urls[Int(presignedUrl.partNumber + 1)]
+                        self.createNextChunk(uploadId: uploadId, presignedUrl: nextUrl, fileSize: fileSize, cipher: cipher, completion: completion)
                     } else {
-                        print("invalid url count")
+                        print("no urls")
                     }
                 }
             }, callback: callback)
