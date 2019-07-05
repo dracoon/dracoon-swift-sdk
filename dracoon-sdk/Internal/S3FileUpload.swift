@@ -311,7 +311,7 @@ public class S3FileUpload: DracoonUpload {
             if let error = response.error {
                 self.callback?.onError?(error)
             } else {
-                self.pollForStatus(uploadId: uploadId)
+                self.pollForStatus(uploadId: uploadId, waitTimeSec: 1)
             }
         })
     }
@@ -335,7 +335,7 @@ public class S3FileUpload: DracoonUpload {
         }
     }
     
-    func pollForStatus(uploadId: String) {
+    func pollForStatus(uploadId: String, waitTimeSec: Int) {
         self.getS3UploadStatus(uploadId: uploadId, completion: { result in
             switch result {
             case .error(let error):
@@ -344,8 +344,9 @@ public class S3FileUpload: DracoonUpload {
                 if response.status == S3FileUploadStatus.S3UploadStatus.done.rawValue {
                     self.callback?.onComplete?(response.node)
                 } else {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-                        self.pollForStatus(uploadId: uploadId)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + Double(waitTimeSec), execute: {
+                        let waitTime = waitTimeSec >= 4 ? waitTimeSec : waitTimeSec * 2
+                        self.pollForStatus(uploadId: uploadId, waitTimeSec: waitTime)
                     })
                 }
             }
