@@ -147,6 +147,21 @@ public class FileDownload {
     }
     
     fileprivate func handleDownloadResponse(_ downloadResponse: DefaultDownloadResponse) {
+        if let statusCode = downloadResponse.response?.statusCode, statusCode >= 400 {
+            switch statusCode {
+            case DracoonErrorParser.HTTPStatusCode.FORBIDDEN:
+                if downloadResponse.response?.allHeaderFields["X-Forbidden"] as? String == "403" {
+                    self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: statusCode)))
+                    return
+                }
+                fallthrough
+            default:
+                let errorResponse = ModelErrorResponse(code: statusCode, message: nil, debugInfo: nil, errorCode: nil)
+                let errorCode = DracoonErrorParser.shared.parseApiErrorResponse(errorResponse, requestType: .other)
+                self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: errorCode, httpStatusCode: statusCode)))
+            }
+            return
+        }
         if let error = downloadResponse.error {
             self.callback?.onError?(error)
         } else {
@@ -212,7 +227,6 @@ public class FileDownload {
             try autoreleasepool {
                 let read = inputStream.read(buffer, maxLength: DracoonConstants.DECRYPTION_BUFFER_SIZE)
                 if read > 0 {
-                    
                     var encData = Data()
                     encData.append(buffer, count: read)
                     let plainData = try decryptionCipher.processBlock(fileData: encData)
