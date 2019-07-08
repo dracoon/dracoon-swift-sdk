@@ -8,6 +8,7 @@
 import Foundation
 import Alamofire
 import crypto_sdk
+import CommonCrypto
 
 public class FileUpload {
     
@@ -193,13 +194,14 @@ public class FileUpload {
                                         upload.validate()
                                         upload.responseData { dataResponse in
                                             if let error = dataResponse.error {
-                                                if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
-                                                    self.uploadNextChunk(uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
-                                                } else {
-                                                    chunkCallback(error)
-                                                }
+                                                self.handleUploadError(error: error, uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
                                             } else {
-                                                chunkCallback(nil)
+                                                if self.checkMD5(result: dataResponse.result, localFileMD5: chunk.md5) {
+                                                    chunkCallback(nil)
+                                                } else {
+                                                    // MD5 check failed
+                                                    self.handleUploadError(error: DracoonError.hash_check_failed, uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
+                                                }
                                             }
                                         }
                                         upload.uploadProgress(closure: { progress in
@@ -207,13 +209,27 @@ public class FileUpload {
                                         })
                                         
                                     case .failure(let error):
-                                        if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
-                                            self.uploadNextChunk(uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
-                                        } else {
-                                            chunkCallback(error)
-                                        }
+                                        self.handleUploadError(error: error, uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
                                     }
         })
+    }
+    
+    fileprivate func handleUploadError(error: Error, uploadId: String, chunk: Data, offset: Int, totalFileSize: Int64, retryCount: Int,
+                                       chunkCallback: @escaping (Error?) -> Void, callback: UploadCallback?) {
+        if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
+            self.uploadNextChunk(uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
+        } else {
+            chunkCallback(error)
+        }
+    }
+    
+    func checkMD5(result: Result<Data>, localFileMD5: String) -> Bool {
+        if let response = result.value {
+            if let responseModel = try? self.decoder.decode(ChunkUploadResponse.self, from: response) {
+                return responseModel.hash == localFileMD5
+            }
+        }
+        return true
     }
     
     fileprivate func completeRequest(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
@@ -291,5 +307,23 @@ public class FileUpload {
         let data = fileHandle.readData(ofLength: secureLength)
         
         return data
+    }
+}
+
+extension Data {
+    var md5 : String {
+        var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
+        _ =  self.withUnsafeBytes( { (rawBufferPointer: UnsafeRawBufferPointer) in
+            let bufferPointer = rawBufferPointer.bindMemory(to: UInt8.self)
+            guard let pointer = bufferPointer.baseAddress else {
+                return
+            }
+            CC_MD5(pointer, CC_LONG(self.count), &digest)
+        })
+        var digestHex = ""
+        for index in 0..<Int(CC_MD5_DIGEST_LENGTH) {
+            digestHex += String(format: "%02x", digest[index])
+        }
+        return digestHex
     }
 }
