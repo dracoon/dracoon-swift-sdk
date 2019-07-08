@@ -40,7 +40,7 @@ public class DracoonErrorParser {
         public static let PRECONDITION_FAILED = 412
         public static let BAD_GATEWAY = 502
         public static let INSUFFICIENT_STORAGE = 507
-        public static let MALEWARE_FOUND = 901
+        public static let MALWARE_FOUND = 901
     }
     
     typealias Status = HTTPStatusCode
@@ -68,8 +68,8 @@ public class DracoonErrorParser {
             return self.parseBadGateway(response, requestType: requestType)
         case Status.INSUFFICIENT_STORAGE:
             return self.parseInsufficientStorage(response, requestType: requestType)
-        case Status.MALEWARE_FOUND:
-            return self.parseMalewareFound(response, requestType: requestType)
+        case Status.MALWARE_FOUND:
+            return self.parseMalwareFound(response, requestType: requestType)
         default:
             return DracoonApiCode.SERVER_UNKNOWN_ERROR
         }
@@ -390,7 +390,7 @@ public class DracoonErrorParser {
         }
     }
     
-    private func parseMalewareFound(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
+    private func parseMalwareFound(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
         return DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED
     }
 }
