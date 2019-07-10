@@ -336,8 +336,8 @@ class DracoonNodesImpl: DracoonNodes {
         let innerCallback = UploadCallback()
         innerCallback.onCanceled = callback.onCanceled
         innerCallback.onComplete = { node in
-            if cryptoImpl != nil, let returnedNode = node {
-                self.setMissingFileKeysBatch(nodeId: returnedNode._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
+            if cryptoImpl != nil {
+                self.setMissingFileKeysBatch(nodeId: node._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
                 })
             }
             callback.onComplete?(node)

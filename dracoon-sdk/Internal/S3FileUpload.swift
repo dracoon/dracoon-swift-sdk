@@ -77,8 +77,18 @@ public class S3FileUpload: DracoonUpload {
         })
     }
     
-    func cancel() {
-        
+    public func cancel() {
+        guard !isCanceled else {
+            return
+        }
+        self.isCanceled = true
+        if let uploadId = self.uploadId {
+            self.deleteUpload(uploadId: uploadId, completion: { _ in
+                self.callback?.onCanceled?()
+            })
+        } else {
+            self.callback?.onCanceled?()
+        }
     }
     
     // same as FileUpload
@@ -253,6 +263,9 @@ public class S3FileUpload: DracoonUpload {
     }
     
     fileprivate func createNextChunk(uploadId: String, presignedUrl: PresignedUrl, fileSize: Int64, cipher: FileEncryptionCipher?, completion: @escaping () -> Void) {
+        if self.isCanceled {
+            return
+        }
         let offset: Int = Int((presignedUrl.partNumber - 1)) * Int(self.chunkSize)
         let range = NSMakeRange(offset, Int(self.chunkSize))
         let lastBlock = presignedUrl.partNumber == self.s3Urls?.last?.partNumber
@@ -342,7 +355,12 @@ public class S3FileUpload: DracoonUpload {
                 self.callback?.onError?(error)
             case .value(let response):
                 if response.status == S3FileUploadStatus.S3UploadStatus.done.rawValue {
-                    self.callback?.onComplete?(response.node)
+                    if let responseNode = response.node {
+                        self.callback?.onComplete?(responseNode)
+                    } else {
+                        let errorModel = DracoonSDKErrorModel(errorCode: .SERVER_NODE_NOT_FOUND, httpStatusCode: nil)
+                        self.callback?.onError?(DracoonError.api(error: errorModel))
+                    }
                 } else {
                     DispatchQueue.main.asyncAfter(deadline: .now() + Double(waitTimeSec), execute: {
                         let waitTime = waitTimeSec >= 4 ? waitTimeSec : waitTimeSec * 2
@@ -359,6 +377,14 @@ public class S3FileUpload: DracoonUpload {
         self.sessionManager.request(requestUrl, method: .get, parameters: nil)
             .validate()
             .decode(S3FileUploadStatus.self, decoder: self.decoder, requestType: .getNodes, completion: completion)
+    }
+    
+    fileprivate func deleteUpload(uploadId: String, completion: @escaping (Dracoon.Response) -> Void) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
+        
+        self.sessionManager.request(requestUrl, method: .delete, parameters: Parameters())
+            .validate()
+            .handleResponse(decoder: self.decoder, completion: completion)
     }
     
 }
