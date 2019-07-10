@@ -19,14 +19,14 @@ public class FileUpload: DracoonUpload {
     let encoder: JSONEncoder
     let decoder: JSONDecoder
     let account: DracoonAccount
-    let request: CreateFileUploadRequest
+    var request: CreateFileUploadRequest
     let resolutionStrategy: CompleteUploadRequest.ResolutionStrategy
     let fileUrl: URL
     
     var callback: UploadCallback?
     let crypto: CryptoProtocol?
-    fileprivate var isCanceled = false
-    fileprivate var uploadId: String?
+    var isCanceled = false
+    var uploadId: String?
     
     init(config: DracoonRequestConfig, request: CreateFileUploadRequest, fileUrl: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
          account: DracoonAccount) {
@@ -69,7 +69,7 @@ public class FileUpload: DracoonUpload {
         }
     }
     
-    fileprivate func createFileUpload(request: CreateFileUploadRequest, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
+    func createFileUpload(request: CreateFileUploadRequest, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
         do {
             let jsonBody = try encoder.encode(request)
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads"
@@ -266,7 +266,7 @@ public class FileUpload: DracoonUpload {
         }
     }
     
-    fileprivate func deleteUpload(uploadId: String, completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteUpload(uploadId: String, completion: @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
         
         self.sessionManager.request(requestUrl, method: .delete, parameters: Parameters())
