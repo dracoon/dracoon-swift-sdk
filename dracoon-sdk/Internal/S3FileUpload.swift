@@ -16,7 +16,9 @@ public class S3FileUpload: FileUpload {
     var s3Urls: [PresignedUrl]?
     // chunkSize from Constants or 5 MB
     let chunkSize: Int64 = DracoonConstants.UPLOAD_CHUNK_SIZE < 1024*1024*5 ? 1024*1024*5 : Int64(DracoonConstants.UPLOAD_CHUNK_SIZE)
-    var fileSize: Int64?
+    var fileSize: Int64 = 0
+    var neededParts: Int32 = 0
+    var lastPartSize: Int64 = 0
     var eTags = [S3FileUploadPart]()
     
     override init(config: DracoonRequestConfig, request: CreateFileUploadRequest, filePath: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: Crypto?,
@@ -25,6 +27,10 @@ public class S3FileUpload: FileUpload {
         var s3DirectUploadRequest = request
         s3DirectUploadRequest.directS3Upload = true
         self.request = s3DirectUploadRequest
+        
+        self.fileSize = self.calculateFileSize(filePath: self.filePath) ?? 0
+        self.neededParts = Int32(fileSize/chunkSize)
+        self.lastPartSize = fileSize%chunkSize
     }
     
     
@@ -68,27 +74,23 @@ public class S3FileUpload: FileUpload {
     }
     
     fileprivate func obtainUrls(completion: @escaping DataRequest.DecodeCompletion<PresignedUrlList>) {
-        if let fileSize = self.calculateFileSize(filePath: self.filePath) {
-            self.fileSize = fileSize
-            let neededParts = Int32(fileSize/chunkSize)
-            let lastPartSize = fileSize%chunkSize
-            if neededParts > 0 {
-                self.requestPresignedUrls(firstPartNumber: 1, lastPartNumber: neededParts, size: self.chunkSize, completion: { urlResult in
-                    switch urlResult {
-                    case .error(let error):
-                        self.callback?.onError?(error)
-                    case .value(let response):
-                        self.s3Urls = response.urls
+        let remainingParts = self.neededParts - Int32(self.eTags.count)
+        if remainingParts > 0 {
+            let lastPartNumber = remainingParts <= MAXIMAL_URL_FETCH_COUNT ? remainingParts : Int32(self.eTags.count) + MAXIMAL_URL_FETCH_COUNT
+            self.requestPresignedUrls(firstPartNumber: 1, lastPartNumber: lastPartNumber, size: self.chunkSize, completion: { urlResult in
+                switch urlResult {
+                case .error(let error):
+                    self.callback?.onError?(error)
+                case .value(let response):
+                    self.s3Urls = response.urls
+                    if lastPartNumber == self.neededParts {
                         // request last part
-                        self.requestPresignedUrls(firstPartNumber: neededParts + 1, lastPartNumber: neededParts + 1, size: lastPartSize, completion: completion)
+                        self.requestPresignedUrls(firstPartNumber: self.neededParts + 1, lastPartNumber: self.neededParts + 1, size: self.lastPartSize, completion: completion)
                     }
-                })
-            } else {
-                self.requestPresignedUrls(firstPartNumber: neededParts + 1, lastPartNumber: neededParts + 1, size: lastPartSize, completion: completion)
-            }
-            
+                }
+            })
         } else {
-            self.callback?.onError?(DracoonError.read_data_failure(at: self.filePath))
+            self.requestPresignedUrls(firstPartNumber: neededParts + 1, lastPartNumber: neededParts + 1, size: self.lastPartSize, completion: completion)
         }
     }
     
@@ -113,7 +115,7 @@ public class S3FileUpload: FileUpload {
     }
     
     fileprivate func uploadWithPresignedUrls() {
-        guard let urls = self.s3Urls, urls.count > 0, let uploadId = self.uploadId else {
+        guard let urls = self.s3Urls, let firstUrl = urls.first, let uploadId = self.uploadId else {
             print("invalid params")
             return
         }
@@ -130,7 +132,6 @@ public class S3FileUpload: FileUpload {
             
         }
         
-        let firstUrl = urls[0]
         self.createNextChunk(uploadId: uploadId, presignedUrl: firstUrl, cipher: cipher, completion: {
             if let crypto = self.crypto, let cipher = cipher {
                 self.account.getUserKeyPair(completion: { result in
@@ -169,11 +170,9 @@ public class S3FileUpload: FileUpload {
         let request = self.sessionManager.upload(chunk, to: requestUrl, method: .put, headers: headers)
         
         request.uploadProgress(closure: { progress in
-            if let fileSize = self.fileSize {
-                let recentChunkProgress = Float(progress.fractionCompleted)*Float(chunk.count)
-                let overallProgress = recentChunkProgress + Float(Int(self.chunkSize)*(Int(presignedUrl.partNumber) - 1))
-                self.callback?.onProgress?(overallProgress/Float(fileSize))
-            }
+            let recentChunkProgress = Float(progress.fractionCompleted)*Float(chunk.count)
+            let overallProgress = recentChunkProgress + Float(Int(self.chunkSize)*(Int(presignedUrl.partNumber) - 1))
+            self.callback?.onProgress?(overallProgress/Float(self.fileSize))
         })
         
         request.response(completionHandler: { dataResponse in
@@ -204,7 +203,8 @@ public class S3FileUpload: FileUpload {
         }
         let offset: Int = Int((presignedUrl.partNumber - 1)) * Int(self.chunkSize)
         let range = NSMakeRange(offset, Int(self.chunkSize))
-        let lastBlock = presignedUrl.partNumber == self.s3Urls?.last?.partNumber
+        let lastBlock = presignedUrl.partNumber == self.neededParts + 1
+        
         do {
             guard let data = try self.readData(self.filePath, range: range) else {
                 self.callback?.onError?(DracoonError.read_data_failure(at: self.filePath))
@@ -241,17 +241,22 @@ public class S3FileUpload: FileUpload {
                         let nextUrl = urls[Int(presignedUrl.partNumber + 1)]
                         self.createNextChunk(uploadId: uploadId, presignedUrl: nextUrl, cipher: cipher, completion: completion)
                     } else {
-                        print("no urls")
+                        self.obtainUrls(completion: { result in
+                            switch result {
+                            case .error(let error):
+                                self.callback?.onError?(error)
+                            case .value(let response):
+                                self.s3Urls?.append(contentsOf: response.urls)
+                                let nextUrl = response.urls.first!
+                                self.createNextChunk(uploadId: uploadId, presignedUrl: nextUrl, cipher: cipher, completion: completion)
+                            }
+                        })
                     }
                 }
             }, callback: callback)
         } catch {
             print("error at createNextChunk \(error)")
         }
-    }
-    
-    func isLastBlock() -> Bool {
-        return false
     }
     
     func completeUpload(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
