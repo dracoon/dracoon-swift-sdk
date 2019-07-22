@@ -85,13 +85,17 @@ public class S3FileUpload: FileUpload {
                     self.callback?.onError?(error)
                 case .value(let response):
                     if lastPartNumber == self.neededParts {
-                        if self.s3Urls != nil {
-                            self.s3Urls?.append(contentsOf: response.urls)
-                        } else {
-                            self.s3Urls = response.urls
-                        }
+                        var lastParts = response.urls
                         // request last part
-                        self.requestPresignedUrls(firstPartNumber: self.neededParts + 1, lastPartNumber: self.neededParts + 1, size: self.lastPartSize, completion: completion)
+                        self.requestPresignedUrls(firstPartNumber: self.neededParts + 1, lastPartNumber: self.neededParts + 1, size: self.lastPartSize, completion: { lastUrlResult in
+                            switch lastUrlResult {
+                            case .error(let error):
+                                completion(Dracoon.Result.error(error))
+                            case .value(let response):
+                                lastParts.append(contentsOf: response.urls)
+                                completion(Dracoon.Result.value(PresignedUrlList(urls: lastParts)))
+                            }
+                        })
                     } else {
                         completion(Dracoon.Result.value(response))
                     }
