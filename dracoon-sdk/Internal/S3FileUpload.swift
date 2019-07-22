@@ -77,7 +77,7 @@ public class S3FileUpload: FileUpload {
         let remainingParts = self.neededParts - Int32(self.eTags.count)
         if remainingParts > 0 {
             let lastPartNumber = remainingParts <= MAXIMAL_URL_FETCH_COUNT ? remainingParts : Int32(self.eTags.count) + MAXIMAL_URL_FETCH_COUNT
-            self.requestPresignedUrls(firstPartNumber: 1, lastPartNumber: lastPartNumber, size: self.chunkSize, completion: { urlResult in
+            self.requestPresignedUrls(firstPartNumber: Int32(self.eTags.count) + 1, lastPartNumber: lastPartNumber, size: self.chunkSize, completion: { urlResult in
                 switch urlResult {
                 case .error(let error):
                     self.callback?.onError?(error)
