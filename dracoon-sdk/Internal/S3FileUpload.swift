@@ -86,16 +86,20 @@ public class S3FileUpload: FileUpload {
                 case .value(let response):
                     if lastPartNumber == self.neededParts {
                         var lastParts = response.urls
-                        // request last part
-                        self.requestPresignedUrls(firstPartNumber: self.neededParts + 1, lastPartNumber: self.neededParts + 1, size: self.lastPartSize, completion: { lastUrlResult in
-                            switch lastUrlResult {
-                            case .error(let error):
-                                completion(Dracoon.Result.error(error))
-                            case .value(let response):
-                                lastParts.append(contentsOf: response.urls)
-                                completion(Dracoon.Result.value(PresignedUrlList(urls: lastParts)))
-                            }
-                        })
+                        if self.lastPartSize > 0 {
+                            // request last part
+                            self.requestPresignedUrls(firstPartNumber: self.neededParts + 1, lastPartNumber: self.neededParts + 1, size: self.lastPartSize, completion: { lastUrlResult in
+                                switch lastUrlResult {
+                                case .error(let error):
+                                    completion(Dracoon.Result.error(error))
+                                case .value(let response):
+                                    lastParts.append(contentsOf: response.urls)
+                                    completion(Dracoon.Result.value(PresignedUrlList(urls: lastParts)))
+                                }
+                            })
+                        } else {
+                            completion(Dracoon.Result.value(response))
+                        }
                     } else {
                         completion(Dracoon.Result.value(response))
                     }
