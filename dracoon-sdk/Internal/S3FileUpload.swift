@@ -219,7 +219,7 @@ public class S3FileUpload: FileUpload {
         }
         let offset: Int = Int((presignedUrl.partNumber - 1)) * Int(self.chunkSize)
         let range = NSMakeRange(offset, Int(self.chunkSize))
-        let lastBlock = presignedUrl.partNumber == self.neededParts + 1
+        let lastBlock = self.isLastBlock(presignedUrl: presignedUrl)
         
         do {
             guard let data = try self.readData(self.filePath, range: range) else {
@@ -273,6 +273,13 @@ public class S3FileUpload: FileUpload {
         } catch {
             print("error at createNextChunk \(error)")
         }
+    }
+    
+    fileprivate func isLastBlock(presignedUrl: PresignedUrl) -> Bool {
+        if self.lastPartSize > 0 {
+            return presignedUrl.partNumber == self.neededParts + 1
+        }
+        return presignedUrl.partNumber == self.neededParts
     }
     
     func completeUpload(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
