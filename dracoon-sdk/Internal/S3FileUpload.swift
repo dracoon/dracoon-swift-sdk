@@ -74,10 +74,11 @@ public class S3FileUpload: FileUpload {
     }
     
     fileprivate func obtainUrls(completion: @escaping DataRequest.DecodeCompletion<PresignedUrlList>) {
-        let remainingParts = self.neededParts - Int32(self.eTags.count)
+        let completedParts = Int32(self.eTags.count)
+        let remainingParts = self.neededParts - completedParts
         if remainingParts > 0 {
-            let lastPartNumber = remainingParts <= MAXIMAL_URL_FETCH_COUNT ? remainingParts : Int32(self.eTags.count) + MAXIMAL_URL_FETCH_COUNT
-            self.requestPresignedUrls(firstPartNumber: Int32(self.eTags.count) + 1, lastPartNumber: lastPartNumber, size: self.chunkSize, completion: { urlResult in
+            let lastPartNumber = remainingParts <= MAXIMAL_URL_FETCH_COUNT ? completedParts + remainingParts : completedParts + MAXIMAL_URL_FETCH_COUNT
+            self.requestPresignedUrls(firstPartNumber: completedParts + 1, lastPartNumber: lastPartNumber, size: self.chunkSize, completion: { urlResult in
                 switch urlResult {
                 case .error(let error):
                     self.callback?.onError?(error)
