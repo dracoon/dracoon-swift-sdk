@@ -77,14 +77,19 @@ public class S3FileUpload: FileUpload {
         let completedParts = Int32(self.eTags.count)
         let remainingParts = self.neededParts - completedParts
         if remainingParts > 0 {
-            let lastPartNumber = remainingParts <= MAXIMAL_URL_FETCH_COUNT ? completedParts + remainingParts : completedParts + MAXIMAL_URL_FETCH_COUNT
+            let partsToFetch = remainingParts <= MAXIMAL_URL_FETCH_COUNT ? remainingParts : MAXIMAL_URL_FETCH_COUNT
+            let lastPartNumber = completedParts + partsToFetch
             self.requestPresignedUrls(firstPartNumber: completedParts + 1, lastPartNumber: lastPartNumber, size: self.chunkSize, completion: { urlResult in
                 switch urlResult {
                 case .error(let error):
                     self.callback?.onError?(error)
                 case .value(let response):
                     if lastPartNumber == self.neededParts {
-                        self.s3Urls = response.urls
+                        if self.s3Urls != nil {
+                            self.s3Urls?.append(contentsOf: response.urls)
+                        } else {
+                            self.s3Urls = response.urls
+                        }
                         // request last part
                         self.requestPresignedUrls(firstPartNumber: self.neededParts + 1, lastPartNumber: self.neededParts + 1, size: self.lastPartSize, completion: completion)
                     } else {
