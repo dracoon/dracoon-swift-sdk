@@ -240,7 +240,7 @@ public class S3FileUpload: FileUpload {
                 }
                 else {
                     if let urls = self.s3Urls, urls.count >= presignedUrl.partNumber + 1 {
-                        let nextUrl = urls[Int(presignedUrl.partNumber + 1)]
+                        let nextUrl = urls[Int(presignedUrl.partNumber)]
                         self.createNextChunk(uploadId: uploadId, presignedUrl: nextUrl, cipher: cipher, completion: completion)
                     } else {
                         self.obtainUrls(completion: { result in
