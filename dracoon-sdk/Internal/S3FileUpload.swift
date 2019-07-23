@@ -135,7 +135,6 @@ public class S3FileUpload: FileUpload {
             print("invalid params")
             return
         }
-        print("number of parts \(urls.count)")
         var cipher: FileEncryptionCipher?
         if let crypto = self.crypto {
             do {
@@ -193,7 +192,7 @@ public class S3FileUpload: FileUpload {
         
         request.response(completionHandler: { dataResponse in
             if let error = dataResponse.error {
-                self.handleUploadError(error: error)
+                self.callback?.onError?(DracoonError.generic(error: error))
             } else {
                 if dataResponse.response!.statusCode < 300 {
                     if let eTag = dataResponse.response?.allHeaderFields["Etag"] as? String {
@@ -207,10 +206,6 @@ public class S3FileUpload: FileUpload {
                 }
             }
         })
-    }
-    
-    fileprivate func handleUploadError(error: Error) {
-        print("upload Error \(error)")
     }
     
     fileprivate func createNextChunk(uploadId: String, presignedUrl: PresignedUrl, cipher: FileEncryptionCipher?, completion: @escaping () -> Void) {
@@ -271,7 +266,7 @@ public class S3FileUpload: FileUpload {
                 }
             }, callback: callback)
         } catch {
-            print("error at createNextChunk \(error)")
+            self.callback?.onError?(DracoonError.read_data_failure(at: self.filePath))
         }
     }
     
@@ -283,10 +278,6 @@ public class S3FileUpload: FileUpload {
     }
     
     func completeUpload(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
-        guard self.s3Urls!.count == self.eTags.count else {
-            print("number of urls does not match number of eTags")
-            return
-        }
         let completeRequest = CompleteS3FileUploadRequest(parts: self.eTags, resolutionStrategy: self.resolutionStrategy, keepShareLinks: false, fileName: self.request.name, fileKey: encryptedFileKey)
         self.sendCompleteRequest(uploadId: uploadId, request: completeRequest, completion: { response in
             if let error = response.error {
@@ -329,6 +320,9 @@ public class S3FileUpload: FileUpload {
                         let errorModel = DracoonSDKErrorModel(errorCode: .SERVER_NODE_NOT_FOUND, httpStatusCode: nil)
                         self.callback?.onError?(DracoonError.api(error: errorModel))
                     }
+                } else if response.status == S3FileUploadStatus.S3UploadStatus.error.rawValue {
+                    let errorModel = DracoonSDKErrorModel(errorCode: .S3_UPLOAD_COMPLETION_FAILED, httpStatusCode: nil)
+                    self.callback?.onError?(DracoonError.api(error: errorModel))
                 } else {
                     DispatchQueue.main.asyncAfter(deadline: .now() + Double(waitTimeSec), execute: {
                         let waitTime = waitTimeSec >= 4 ? waitTimeSec : waitTimeSec * 2
@@ -344,6 +338,6 @@ public class S3FileUpload: FileUpload {
         
         self.sessionManager.request(requestUrl, method: .get, parameters: nil)
             .validate()
-            .decode(S3FileUploadStatus.self, decoder: self.decoder, requestType: .getNodes, completion: completion)
+            .decode(S3FileUploadStatus.self, decoder: self.decoder, requestType: .other, completion: completion)
     }
 }

@@ -144,6 +144,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     case SERVER_RESTORE_VERSION_NOT_FOUND = 5111
     case SERVER_UPLOAD_NOT_FOUND = 5112
     case S3_UPLOAD_ID_NOT_FOUND = 5113
+    case S3_UPLOAD_COMPLETION_FAILED = 5114
     
     // Shares
     
@@ -381,6 +382,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "Upload was not found."
         case .S3_UPLOAD_ID_NOT_FOUND:
             return "Corresponding S3 upload ID not found."
+        case .S3_UPLOAD_COMPLETION_FAILED:
+            return "Server failed to complete S3 upload."
             
         case .SERVER_DL_SHARE_NOT_FOUND:
             return "Download share could not be found."
