@@ -195,7 +195,7 @@ public class S3FileUpload: FileUpload {
             } else {
                 if dataResponse.response!.statusCode < 300, let headerFields = dataResponse.response?.allHeaderFields {
                     if let result = headerFields.keys.first(where: { ($0 as? String)?.caseInsensitiveCompare("eTag") == .orderedSame}) as? String {
-                        if let eTag = headers[result] {
+                        if let eTag = headerFields[result] as? String {
                             let cleanEtag = eTag.replacingOccurrences(of: "\"", with: "")
                             let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: cleanEtag)
                             self.eTags.append(uploadPart)
