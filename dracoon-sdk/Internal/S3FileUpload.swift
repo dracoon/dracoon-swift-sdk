@@ -193,11 +193,15 @@ public class S3FileUpload: FileUpload {
             if let error = dataResponse.error {
                 self.handleUploadError(error: error, url: presignedUrl, chunk: chunk, retryCount: retryCount, chunkCallback: chunkCallback)
             } else {
-                if dataResponse.response!.statusCode < 300, let eTag = dataResponse.response?.allHeaderFields["Etag"] as? String {
-                    let cleanEtag = eTag.replacingOccurrences(of: "\"", with: "")
-                    let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: cleanEtag)
-                    self.eTags.append(uploadPart)
-                    chunkCallback(nil)
+                if dataResponse.response!.statusCode < 300, let headerFields = dataResponse.response?.allHeaderFields {
+                    if let result = headerFields.keys.first(where: { ($0 as? String)?.caseInsensitiveCompare("eTag") == .orderedSame}) as? String {
+                        if let eTag = headers[result] {
+                            let cleanEtag = eTag.replacingOccurrences(of: "\"", with: "")
+                            let uploadPart = S3FileUploadPart(partNumber: presignedUrl.partNumber, partEtag: cleanEtag)
+                            self.eTags.append(uploadPart)
+                            chunkCallback(nil)
+                        }
+                    }
                 } else {
                     let errorModel = DracoonSDKErrorModel(errorCode: .UNKNOWN, httpStatusCode: dataResponse.response?.statusCode)
                     self.handleUploadError(error: DracoonError.api(error: errorModel), url: presignedUrl, chunk: chunk, retryCount: retryCount, chunkCallback: chunkCallback)
