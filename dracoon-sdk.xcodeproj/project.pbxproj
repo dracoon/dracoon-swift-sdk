@@ -566,8 +566,8 @@
 				DE52662D21AFF2AB00050482 /* DracoonSettingsImpl.swift */,
 				E030CDFC20FCF03F001DEB31 /* FileDownload.swift */,
 				E0AA72EA2089DD0B001BC290 /* FileUpload.swift */,
-				E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */,
 				E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */,
+				E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";

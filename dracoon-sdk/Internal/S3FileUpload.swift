@@ -73,7 +73,7 @@ public class S3FileUpload: FileUpload {
         }
     }
     
-    fileprivate func obtainUrls(completion: @escaping DataRequest.DecodeCompletion<PresignedUrlList>) {
+    func obtainUrls(completion: @escaping DataRequest.DecodeCompletion<PresignedUrlList>) {
         let completedParts = Int32(self.eTags.count)
         let remainingParts = self.neededParts - completedParts
         if remainingParts > 0 {
@@ -110,7 +110,7 @@ public class S3FileUpload: FileUpload {
         }
     }
     
-    func requestPresignedUrls(firstPartNumber: Int32, lastPartNumber: Int32, size: Int64, completion: @escaping DataRequest.DecodeCompletion<PresignedUrlList>) {
+    fileprivate func requestPresignedUrls(firstPartNumber: Int32, lastPartNumber: Int32, size: Int64, completion: @escaping DataRequest.DecodeCompletion<PresignedUrlList>) {
         let request = GeneratePresignedUrlsRequest(size: size, firstPartNumber: firstPartNumber, lastPartNumber: lastPartNumber)
         
         do {
@@ -130,7 +130,7 @@ public class S3FileUpload: FileUpload {
         }
     }
     
-    fileprivate func startUploadWithPresignedUrls() {
+    func startUploadWithPresignedUrls() {
         guard let urls = self.s3Urls, let firstUrl = urls.first, let uploadId = self.uploadId else {
             self.callback?.onCanceled?()
             return
@@ -144,9 +144,7 @@ public class S3FileUpload: FileUpload {
                 self.callback?.onError?(DracoonError.encryption_cipher_failure)
                 return
             }
-            
         }
-        
         self.createNextChunk(uploadId: uploadId, presignedUrl: firstUrl, cipher: cipher, completion: {
             if let crypto = self.crypto, let cipher = cipher {
                 self.account.getUserKeyPair(completion: { result in
@@ -172,7 +170,7 @@ public class S3FileUpload: FileUpload {
         })
     }
     
-    fileprivate func uploadPresignedUrl(_ presignedUrl: PresignedUrl, chunk: Data, retryCount: Int, chunkCallback: @escaping (Error?) -> Void) {
+    fileprivate func uploadToPresignedUrl(_ presignedUrl: PresignedUrl, chunk: Data, retryCount: Int, chunkCallback: @escaping (Error?) -> Void) {
         let requestUrl = presignedUrl.url
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
@@ -212,7 +210,7 @@ public class S3FileUpload: FileUpload {
     
     fileprivate func handleUploadError(error: Error, url: PresignedUrl, chunk: Data, retryCount: Int, chunkCallback: @escaping (Error?) -> Void) {
         if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
-            self.uploadPresignedUrl(url, chunk: chunk, retryCount: retryCount + 1, chunkCallback: chunkCallback)
+            self.uploadToPresignedUrl(url, chunk: chunk, retryCount: retryCount + 1, chunkCallback: chunkCallback)
         } else {
             self.callback?.onError?(DracoonError.generic(error: error))
         }
@@ -249,7 +247,7 @@ public class S3FileUpload: FileUpload {
             } else {
                 uploadData = data
             }
-            self.uploadPresignedUrl(presignedUrl, chunk: uploadData, retryCount: 0, chunkCallback: { error in
+            self.uploadToPresignedUrl(presignedUrl, chunk: uploadData, retryCount: 0, chunkCallback: { error in
                 if let error = error {
                     self.callback?.onError?(error)
                     return
@@ -287,7 +285,7 @@ public class S3FileUpload: FileUpload {
         return presignedUrl.partNumber == self.neededParts
     }
     
-    func completeUpload(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
+    override func completeUpload(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
         let completeRequest = CompleteS3FileUploadRequest(parts: self.eTags, resolutionStrategy: self.resolutionStrategy, keepShareLinks: false, fileName: self.request.name, fileKey: encryptedFileKey)
         self.sendCompleteRequest(uploadId: uploadId, request: completeRequest, completion: { response in
             if let error = response.error {
@@ -298,7 +296,7 @@ public class S3FileUpload: FileUpload {
         })
     }
     
-    func sendCompleteRequest(uploadId: String, request: CompleteS3FileUploadRequest, completion: @escaping (Dracoon.Response) -> Void) {
+    fileprivate func sendCompleteRequest(uploadId: String, request: CompleteS3FileUploadRequest, completion: @escaping (Dracoon.Response) -> Void) {
         do {
             let jsonBody = try encoder.encode(request)
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)/s3"
@@ -343,7 +341,7 @@ public class S3FileUpload: FileUpload {
         })
     }
     
-    func getS3UploadStatus(uploadId: String, completion: @escaping DataRequest.DecodeCompletion<S3FileUploadStatus>) {
+    fileprivate func getS3UploadStatus(uploadId: String, completion: @escaping DataRequest.DecodeCompletion<S3FileUploadStatus>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
         
         self.sessionManager.request(requestUrl, method: .get, parameters: nil)

@@ -88,7 +88,7 @@ public class FileUpload: DracoonUpload {
         }
     }
     
-    fileprivate func uploadChunks(uploadId: String) {
+    func startChunkedUpload(uploadId: String) {
         
         let totalFileSize = FileUtils.calculateFileSize(filePath: self.fileUrl) ?? 0 as Int64
         
@@ -114,7 +114,7 @@ public class FileUpload: DracoonUpload {
                         do {
                             let publicKey = UserPublicKey(publicKey: userKeyPair.publicKeyContainer.publicKey, version: userKeyPair.publicKeyContainer.version)
                             let encryptedFileKey = try crypto.encryptFileKey(fileKey: cipher.fileKey, publicKey: publicKey)
-                            self.completeRequest(uploadId: uploadId, encryptedFileKey: encryptedFileKey)
+                            self.completeUpload(uploadId: uploadId, encryptedFileKey: encryptedFileKey)
                         } catch CryptoError.encrypt(let message){
                             self.callback?.onError?(DracoonError.filekey_encryption_failure(description: message))
                         } catch {
@@ -123,7 +123,7 @@ public class FileUpload: DracoonUpload {
                     }
                 })
             } else {
-                self.completeRequest(uploadId: uploadId, encryptedFileKey: nil)
+                self.completeUpload(uploadId: uploadId, encryptedFileKey: nil)
             }
             
         })
@@ -231,13 +231,13 @@ public class FileUpload: DracoonUpload {
         return true
     }
     
-    fileprivate func completeRequest(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
+    func completeUpload(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
         var completeRequest = CompleteUploadRequest()
         completeRequest.fileName = self.request.name
         completeRequest.resolutionStrategy = self.resolutionStrategy
         completeRequest.fileKey = encryptedFileKey
         
-        self.completeUpload(uploadId: uploadId, request: completeRequest, completion: { result in
+        self.sendCompleteRequest(uploadId: uploadId, request: completeRequest, completion: { result in
             switch result {
             case .value(let node):
                 self.callback?.onComplete?(node)
@@ -247,7 +247,7 @@ public class FileUpload: DracoonUpload {
         })
     }
     
-    fileprivate func completeUpload(uploadId: String, request: CompleteUploadRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    fileprivate func sendCompleteRequest(uploadId: String, request: CompleteUploadRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
         do {
             let jsonBody = try encoder.encode(request)
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
