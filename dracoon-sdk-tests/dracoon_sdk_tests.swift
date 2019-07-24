@@ -2,11 +2,12 @@
 //  dracoon_sdk_tests.swift
 //  dracoon-sdk-tests
 //
-//  Created by Mathias Schreiner on 06.06.19.
+//  Created by Mathias Schreiner on 24.07.19.
 //  Copyright © 2019 Dracoon. All rights reserved.
 //
 
 import XCTest
+@testable import dracoon_sdk
 
 class dracoon_sdk_tests: XCTestCase {
 
@@ -21,13 +22,14 @@ class dracoon_sdk_tests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
     }
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
+//    func testPerformanceExample() {
+//        // This is an example of a performance test case.
+//        self.measure {
+//            // Put the code you want to measure the time of here.
+//        }
+//    }
 
 }

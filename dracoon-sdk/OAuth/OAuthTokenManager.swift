@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-class OAuthTokenManager: RequestAdapter, RequestRetrier {
+class OAuthInterceptor: RequestAdapter, RequestRetrier {
     
     fileprivate let oAuthClient: OAuthClient
     public fileprivate(set) var mode: DracoonAuthMode
@@ -17,11 +17,24 @@ class OAuthTokenManager: RequestAdapter, RequestRetrier {
     init(authMode: DracoonAuthMode, oAuthClient: OAuthClient) {
         self.mode = authMode
         self.oAuthClient = oAuthClient
-        
-        self.getToken{_, _ in}
     }
     
     func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
+        return urlRequest
+    }
+    
+    func should(_ manager: SessionManager, retry request: Request, with error: Error, completion: @escaping RequestRetryCompletion) {}
+    
+}
+
+class OAuthTokenManager: OAuthInterceptor {
+    
+    override init(authMode: DracoonAuthMode, oAuthClient: OAuthClient) {
+        super.init(authMode: authMode, oAuthClient: oAuthClient)
+        self.getToken{_, _ in}
+    }
+    
+    override func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
         if urlRequest.allHTTPHeaderFields?.contains(where: { $0.key == DracoonConstants.AUTHORIZATION_HEADER }) ?? false {
             return urlRequest
         }
@@ -57,7 +70,7 @@ class OAuthTokenManager: RequestAdapter, RequestRetrier {
     // indicates that a request is trying to get a new access token
     private var isRefreshing = false
     
-    func should(_ manager: SessionManager, retry request: Request, with error: Error, completion: @escaping RequestRetryCompletion) {
+    override func should(_ manager: SessionManager, retry request: Request, with error: Error, completion: @escaping RequestRetryCompletion) {
         // either we get an unauthorized response or the error code explicitly state that the token is expired or we are in code flow
         if isUnauthorized(request: request) || isExpiredOrCodeFlow(error: error) {
             lock.lock(); defer { lock.unlock() }

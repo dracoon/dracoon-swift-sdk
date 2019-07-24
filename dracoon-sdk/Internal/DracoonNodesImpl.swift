@@ -15,7 +15,7 @@ class DracoonNodesImpl: DracoonNodes {
     let sessionManager: Alamofire.SessionManager
     let serverUrl: URL
     let apiPath: String
-    let oAuthTokenManager: OAuthTokenManager
+    let oAuthTokenManager: OAuthInterceptor
     let decoder: JSONDecoder
     let encoder: JSONEncoder
     let crypto: Crypto

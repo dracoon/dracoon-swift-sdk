@@ -15,7 +15,7 @@ public class FileUpload {
     let sessionManager: Alamofire.SessionManager
     let serverUrl: URL
     let apiPath: String
-    let oAuthTokenManager: OAuthTokenManager
+    let oAuthTokenManager: OAuthInterceptor
     let encoder: JSONEncoder
     let decoder: JSONDecoder
     let account: DracoonAccount

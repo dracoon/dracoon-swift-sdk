@@ -220,8 +220,24 @@
 		E09236832151597E0080B97A /* OAuthTokenChangedDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09236822151597E0080B97A /* OAuthTokenChangedDelegate.swift */; };
 		E0AA72EB2089DD0B001BC290 /* FileUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AA72EA2089DD0B001BC290 /* FileUpload.swift */; };
 		E0AA72EF2089EE3C001BC290 /* DracoonAccountImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AA72EE2089EE3C001BC290 /* DracoonAccountImpl.swift */; };
+		E0AD90F122E85B3000741634 /* dracoon_sdk_tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AD90F022E85B3000741634 /* dracoon_sdk_tests.swift */; };
+		E0AD90F322E85B3000741634 /* dracoon_sdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E00067052057C6CD009CDA70 /* dracoon_sdk.framework */; };
+		E0AD90FA22E85E9800741634 /* MockURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AD90F922E85E9800741634 /* MockURLProtocol.swift */; };
+		E0AD90FC22E8727700741634 /* DracoonAccountTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AD90FB22E8727700741634 /* DracoonAccountTests.swift */; };
+		E0AD90FE22E877C600741634 /* OAuthTokenManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AD90FD22E877C600741634 /* OAuthTokenManagerMock.swift */; };
+		E0AD910022E89BF600741634 /* OAuthClientMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AD90FF22E89BF600741634 /* OAuthClientMock.swift */; };
 		E0B091E42232868700019D27 /* DracoonSDKErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B091E32232868700019D27 /* DracoonSDKErrorModel.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E0AD90F422E85B3000741634 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E00066FC2057C6CD009CDA70 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E00067042057C6CD009CDA70;
+			remoteInfo = "dracoon-sdk";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		845044A121119EA0005C4806 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Alamofire.framework; sourceTree = "<group>"; };
@@ -439,6 +455,13 @@
 		E09236822151597E0080B97A /* OAuthTokenChangedDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenChangedDelegate.swift; sourceTree = "<group>"; };
 		E0AA72EA2089DD0B001BC290 /* FileUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUpload.swift; sourceTree = "<group>"; };
 		E0AA72EE2089EE3C001BC290 /* DracoonAccountImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonAccountImpl.swift; sourceTree = "<group>"; };
+		E0AD90EE22E85B3000741634 /* dracoon-sdk-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "dracoon-sdk-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0AD90F022E85B3000741634 /* dracoon_sdk_tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dracoon_sdk_tests.swift; sourceTree = "<group>"; };
+		E0AD90F222E85B3000741634 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E0AD90F922E85E9800741634 /* MockURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtocol.swift; sourceTree = "<group>"; };
+		E0AD90FB22E8727700741634 /* DracoonAccountTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonAccountTests.swift; sourceTree = "<group>"; };
+		E0AD90FD22E877C600741634 /* OAuthTokenManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenManagerMock.swift; sourceTree = "<group>"; };
+		E0AD90FF22E89BF600741634 /* OAuthClientMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthClientMock.swift; sourceTree = "<group>"; };
 		E0B091E32232868700019D27 /* DracoonSDKErrorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSDKErrorModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -449,6 +472,14 @@
 			files = (
 				845044A921119F56005C4806 /* Alamofire.framework in Frameworks */,
 				845044AA21119F56005C4806 /* crypto_sdk.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0AD90EB22E85B3000741634 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0AD90F322E85B3000741634 /* dracoon_sdk.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,6 +524,7 @@
 			children = (
 				E089B0D721B02A0F00442207 /* Supporting Files */,
 				E00067072057C6CD009CDA70 /* dracoon-sdk */,
+				E0AD90EF22E85B3000741634 /* dracoon-sdk-tests */,
 				E00067062057C6CD009CDA70 /* Products */,
 				E00068882057E6C8009CDA70 /* Frameworks */,
 			);
@@ -502,6 +534,7 @@
 			isa = PBXGroup;
 			children = (
 				E00067052057C6CD009CDA70 /* dracoon_sdk.framework */,
+				E0AD90EE22E85B3000741634 /* dracoon-sdk-tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -733,6 +766,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		E0AD90EF22E85B3000741634 /* dracoon-sdk-tests */ = {
+			isa = PBXGroup;
+			children = (
+				E0AD90F022E85B3000741634 /* dracoon_sdk_tests.swift */,
+				E0AD90F222E85B3000741634 /* Info.plist */,
+				E0AD90F922E85E9800741634 /* MockURLProtocol.swift */,
+				E0AD90FB22E8727700741634 /* DracoonAccountTests.swift */,
+				E0AD90FD22E877C600741634 /* OAuthTokenManagerMock.swift */,
+				E0AD90FF22E89BF600741634 /* OAuthClientMock.swift */,
+			);
+			path = "dracoon-sdk-tests";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -765,19 +811,41 @@
 			productReference = E00067052057C6CD009CDA70 /* dracoon_sdk.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		E0AD90ED22E85B3000741634 /* dracoon-sdk-tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0AD90F822E85B3000741634 /* Build configuration list for PBXNativeTarget "dracoon-sdk-tests" */;
+			buildPhases = (
+				E0AD90EA22E85B3000741634 /* Sources */,
+				E0AD90EB22E85B3000741634 /* Frameworks */,
+				E0AD90EC22E85B3000741634 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E0AD90F522E85B3000741634 /* PBXTargetDependency */,
+			);
+			name = "dracoon-sdk-tests";
+			productName = "dracoon-sdk-tests";
+			productReference = E0AD90EE22E85B3000741634 /* dracoon-sdk-tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		E00066FC2057C6CD009CDA70 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0920;
+				LastSwiftUpdateCheck = 1030;
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = Dracoon;
 				TargetAttributes = {
 					E00067042057C6CD009CDA70 = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1020;
+						ProvisioningStyle = Automatic;
+					};
+					E0AD90ED22E85B3000741634 = {
+						CreatedOnToolsVersion = 10.3;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -796,12 +864,20 @@
 			projectRoot = "";
 			targets = (
 				E00067042057C6CD009CDA70 /* dracoon-sdk */,
+				E0AD90ED22E85B3000741634 /* dracoon-sdk-tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E00067032057C6CD009CDA70 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0AD90EC22E85B3000741634 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1029,7 +1105,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E0AD90EA22E85B3000741634 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E0AD910022E89BF600741634 /* OAuthClientMock.swift in Sources */,
+				E0AD90F122E85B3000741634 /* dracoon_sdk_tests.swift in Sources */,
+				E0AD90FE22E877C600741634 /* OAuthTokenManagerMock.swift in Sources */,
+				E0AD90FC22E8727700741634 /* DracoonAccountTests.swift in Sources */,
+				E0AD90FA22E85E9800741634 /* MockURLProtocol.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E0AD90F522E85B3000741634 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E00067042057C6CD009CDA70 /* dracoon-sdk */;
+			targetProxy = E0AD90F422E85B3000741634 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		E000670B2057C6CD009CDA70 /* Debug */ = {
@@ -1208,6 +1304,51 @@
 			};
 			name = Release;
 		};
+		E0AD90F622E85B3000741634 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = DCJ6BPJV88;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/**",
+				);
+				INFOPLIST_FILE = "dracoon-sdk-tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E0AD90F722E85B3000741634 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = DCJ6BPJV88;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/**",
+				);
+				INFOPLIST_FILE = "dracoon-sdk-tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk-tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1225,6 +1366,15 @@
 			buildConfigurations = (
 				E000670E2057C6CD009CDA70 /* Debug */,
 				E000670F2057C6CD009CDA70 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0AD90F822E85B3000741634 /* Build configuration list for PBXNativeTarget "dracoon-sdk-tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0AD90F622E85B3000741634 /* Debug */,
+				E0AD90F722E85B3000741634 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

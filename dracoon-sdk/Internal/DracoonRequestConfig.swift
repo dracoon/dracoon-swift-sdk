@@ -12,7 +12,7 @@ struct DracoonRequestConfig {
     let sessionManager: Alamofire.SessionManager
     let serverUrl: URL
     let apiPath: String
-    let oauthTokenManager: OAuthTokenManager
+    let oauthTokenManager: OAuthInterceptor
     let encoder: JSONEncoder
     let decoder: JSONDecoder
 }
