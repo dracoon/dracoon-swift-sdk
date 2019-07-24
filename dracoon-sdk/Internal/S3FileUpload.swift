@@ -329,8 +329,14 @@ public class S3FileUpload: FileUpload {
                         self.callback?.onError?(DracoonError.api(error: errorModel))
                     }
                 } else if response.status == S3FileUploadStatus.S3UploadStatus.error.rawValue {
-                    let errorModel = DracoonSDKErrorModel(errorCode: .S3_UPLOAD_COMPLETION_FAILED, httpStatusCode: nil)
-                    self.callback?.onError?(DracoonError.api(error: errorModel))
+                    if let error = response.errorDetails {
+                        let code = DracoonErrorParser.shared.parseApiErrorResponse(error, requestType: .other)
+                        let errorModel = DracoonSDKErrorModel(errorCode: code, httpStatusCode: error.code)
+                        self.callback?.onError?(DracoonError.api(error: errorModel))
+                    } else {
+                        let errorModel = DracoonSDKErrorModel(errorCode: .S3_UPLOAD_COMPLETION_FAILED, httpStatusCode: nil)
+                        self.callback?.onError?(DracoonError.api(error: errorModel))
+                    }
                 } else {
                     DispatchQueue.main.asyncAfter(deadline: .now() + Double(waitTimeSec), execute: {
                         let waitTime = waitTimeSec >= 4 ? waitTimeSec : waitTimeSec * 2

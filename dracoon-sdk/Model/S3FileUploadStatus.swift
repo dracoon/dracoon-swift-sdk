@@ -18,4 +18,5 @@ struct S3FileUploadStatus: Codable {
     
     public var status: String
     public var node: Node?
+    public var errorDetails: ModelErrorResponse?
 }
