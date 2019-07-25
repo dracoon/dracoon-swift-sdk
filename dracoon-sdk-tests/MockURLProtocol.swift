@@ -57,7 +57,6 @@ extension MockURLProtocol: URLSessionDataDelegate {
         }
         
         client?.urlProtocolDidFinishLoading(self)
-        self.resetMockData()
     }
     
 }
@@ -73,12 +72,12 @@ extension MockURLProtocol {
         MockURLProtocol.responseError = error
     }
     
-    static func responseWithModel<E: Encodable>(_ type: E.Type,  model: Codable, statusCode: Int) {
+    static func responseWithModel<E: Encodable>(_ type: E.Type,  model: Encodable, statusCode: Int) {
         MockURLProtocol.statusCode = statusCode
         MockURLProtocol.responseData = try? JSONEncoder().encode(model as! E)
     }
     
-    func resetMockData() {
+    static func resetMockData() {
         MockURLProtocol.statusCode = nil
         MockURLProtocol.responseError = nil
         MockURLProtocol.responseData = nil
