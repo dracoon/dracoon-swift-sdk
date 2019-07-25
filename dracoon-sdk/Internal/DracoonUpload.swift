@@ -35,10 +35,6 @@ extension DracoonUpload {
         
         let maxLength = size - offset
         
-        guard maxLength > 0 else {
-            return nil
-        }
-        
         let secureLength = Int(min(length, maxLength))
         
         fileHandle.seek(toFileOffset: offset)
