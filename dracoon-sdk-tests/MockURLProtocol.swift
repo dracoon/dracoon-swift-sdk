@@ -47,28 +47,40 @@ extension MockURLProtocol: URLSessionDataDelegate {
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        switch MockURLProtocol.response! {
-        case .error(let error):
-            client?.urlProtocol(self, didFailWithError: error)
-        case .value(_):
+        if let responseError = MockURLProtocol.responseError {
+            client?.urlProtocol(self, didFailWithError: responseError)
+        } else if let data = MockURLProtocol.responseData {
+            client?.urlProtocol(self, didLoad: data)
+        } else {
             let urlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: MockURLProtocol.statusCode, httpVersion: nil, headerFields: nil)!
             client?.urlProtocol(self, didReceive: urlResponse, cacheStoragePolicy: .notAllowed)
         }
         
         client?.urlProtocolDidFinishLoading(self)
+        self.resetMockData()
     }
+    
 }
 
 extension MockURLProtocol {
     
-    static var response: Dracoon.Result<Codable>!
-    static var statusCode: Int!
+    private static var responseData: Data?
+    private static var responseError: Error?
+    private static var statusCode: Int!
     
-    static func responseWithError(_ error: DracoonError, statusCode: Int) {
-        MockURLProtocol.response = Dracoon.Result.error(error)
+    static func responseWithError(_ error: Error, statusCode: Int) {
+        MockURLProtocol.statusCode = statusCode
+        MockURLProtocol.responseError = error
     }
     
-    static func responseWithModel(_ model: Codable, statusCode: Int) {
-        MockURLProtocol.response = Dracoon.Result.value(model)
+    static func responseWithModel<E: Encodable>(_ type: E.Type,  model: Codable, statusCode: Int) {
+        MockURLProtocol.statusCode = statusCode
+        MockURLProtocol.responseData = try? JSONEncoder().encode(model as! E)
+    }
+    
+    func resetMockData() {
+        MockURLProtocol.statusCode = nil
+        MockURLProtocol.responseError = nil
+        MockURLProtocol.responseData = nil
     }
 }

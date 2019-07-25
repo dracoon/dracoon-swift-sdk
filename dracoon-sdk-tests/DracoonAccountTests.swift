@@ -33,9 +33,52 @@ class DracoonAccountTests: XCTestCase {
        
     }
     
-    func testThisIsRunning() {
+    func testGetUserAccount_responseTimesOut_returnsError() {
+        MockURLProtocol.responseWithError(NSError(domain: "SDKTest", code: NSURLErrorTimedOut, userInfo: nil), statusCode: 400)
         
-        XCTAssertTrue(true)
+        let expectation = XCTestExpectation(description: "")
+        self.account.getUserAccount(completion: { result in
+            switch result {
+            case .error(let error):
+                switch error {
+                case .connection_timeout:
+                    expectation.fulfill()
+                default:
+                    XCTFail()
+                }
+            case.value(_):
+                XCTFail()
+            }
+            
+        })
+        
+        XCTWaiter().wait(for: [expectation], timeout: 2.0)
     }
+    
+    func testGetUserAccount_returnsUserAccountModel() {
+        
+        let customerData = CustomerData(_id: 1, name: "Customer", isProviderCustomer: false, spaceLimit: 10000, spaceUsed: 1000, accountsLimit: 100, accountsUsed: 98, customerEncryptionEnabled: true, cntFiles: 2000000, cntFolders: 321, cntRooms: 10000)
+        let userRoles = RoleList(items: [])
+        
+        let responseModel = UserAccount(_id: 22, login: "tr", needsToChangePassword: false, firstName: "Test", lastName: "Test", lockStatus: 0, hasManageableRooms: true, customer: customerData, userRoles: userRoles, authMethods: [], needsToChangeUserName: nil, needsToAcceptEULA: nil, title: nil, gender: nil, expireAt: nil, isEncryptionEnabled: true, lastLoginSuccessAt: nil, lastLoginFailAt: nil, userGroups: nil, userAttributes: nil, email: nil, lastLoginSuccessIp: nil, lastLoginFailIp: nil, homeRoomId: 2345)
+        
+        MockURLProtocol.responseWithModel(UserAccount.self, model: responseModel, statusCode: 200)
+        
+        let expectation = XCTestExpectation(description: "")
+        self.account.getUserAccount(completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case.value(let response):
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+            
+        })
+        
+        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+    }
+    
+    
     
 }
