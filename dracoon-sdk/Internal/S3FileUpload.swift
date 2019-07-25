@@ -226,6 +226,7 @@ public class S3FileUpload: FileUpload {
         
         do {
             guard let data = try self.readData(self.filePath, range: range) else {
+                print("no Data")
                 self.callback?.onError?(DracoonError.read_data_failure(at: self.filePath))
                 return
             }
@@ -274,6 +275,7 @@ public class S3FileUpload: FileUpload {
                 }
             })
         } catch {
+            print("_ no data")
             self.callback?.onError?(DracoonError.read_data_failure(at: self.filePath))
         }
     }
