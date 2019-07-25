@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "840AFE0B205801F1003F8F31"
-               BuildableName = "dracoon_sdkTests.xctest"
-               BlueprintName = "dracoon_sdkTests"
+               BlueprintIdentifier = "E0AD90ED22E85B3000741634"
+               BuildableName = "dracoon-sdk-tests.xctest"
+               BlueprintName = "dracoon-sdk-tests"
                ReferencedContainer = "container:dracoon-sdk.xcodeproj">
             </BuildableReference>
          </TestableReference>
