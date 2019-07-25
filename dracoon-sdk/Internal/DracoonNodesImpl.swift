@@ -321,6 +321,8 @@ class DracoonNodesImpl: DracoonNodes {
                     case .value(let isS3Upload):
                         if isS3Upload {
                             self.startS3Upload(uploadId: uploadId, request: request, filePath: filePath, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                        } else {
+                            self.startUpload(uploadId: uploadId, request: request, filePath: filePath, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
                         }
                     }
                 })
