@@ -27,7 +27,7 @@ class DracoonErrorParserTest: XCTestCase {
     }
     
     func testStatusCodeUnknown() {
-        let modelToTest = ModelErrorResponse(code: nil, message: nil, debugInfo: nil, errorCode: -10000)
+        let modelToTest = ModelErrorResponse(code: nil, message: nil, debugInfo: nil, errorCode: 0)
         let apiCode = errorParser.parseApiErrorResponse(modelToTest, requestType: .other)
         XCTAssert(apiCode == DracoonApiCode.UNKNOWN)
     }

@@ -237,6 +237,93 @@ class DracoonNodesTests: DracoonSdkTestCase {
         XCTWaiter().wait(for: [expectation], timeout: 2.0)
     }
     
+    // MARK: Search nodes
+    
+    func testSearchNodes() {
+        
+        self.setResponseModel(NodeList.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns NodeList")
+        
+        self.nodes.searchNodes(parentNodeId: 42, searchString: "searchString", offset: nil, limit: nil, completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case .value(let response):
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+    }
+    
+    func testSearchNodesWithDepth() {
+        
+        self.setResponseModel(NodeList.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns NodeList")
+        
+        self.nodes.searchNodes(parentNodeId: 42, searchString: "searchString", depthLevel: 0, filter: nil, offset: nil, limit: nil, completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case .value(let response):
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+    }
+    
+    // MARK: Favourites
+    
+    func testGetFavourites() {
+        
+        self.setResponseModel(NodeList.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns NodeList")
+        
+        self.nodes.getFavorites(completion: {
+            result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case .value(let response):
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+    }
+    
+    func testSetFavourites() {
+        
+        self.setResponseModel(Node.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns node")
+        
+        self.nodes.setFavorite(nodeId: 42, completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case .value(let response):
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+    }
+    
+    func testDeleteFavourite() {
+        
+        MockURLProtocol.response(with: 204)
+        let expectation = XCTestExpectation(description: "Returns without error")
+        
+        self.nodes.removeFavorite(nodeId: 42, completion: { response in
+            if response.error != nil {
+                XCTFail()
+            } else {
+                expectation.fulfill()
+            }
+        })
+    }
+    
 }
 
 extension Node {
