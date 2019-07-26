@@ -15,8 +15,14 @@ struct ResponseModelFactory {
             return self.getTestUserAccount() as? E
         } else if type == CustomerData.self {
             return self.getTestCustomerData() as? E
+        } else if type == Node.self {
+            return self.getNode() as? E
         } else if type == NodeList.self {
             return self.getNodeList() as? E
+        } else if type == UserKeyPairContainer.self {
+            return self.getUserKeyPairContainer() as? E
+        } else if type == Avatar.self {
+            return self.getUserAvatar() as? E
         }
         return nil
     }
@@ -33,11 +39,23 @@ struct ResponseModelFactory {
         return CustomerData(_id: 1, name: "Customer", isProviderCustomer: false, spaceLimit: 10000, spaceUsed: 1000, accountsLimit: 100, accountsUsed: 98, customerEncryptionEnabled: true, cntFiles: 2000000, cntFolders: 321, cntRooms: 10000)
     }
     
+    private static func getNode() -> Node {
+        return Node(_id: 1337, type: .room, name: "name", parentId: nil, parentPath: nil, createdAt: nil, createdBy: nil, updatedAt: nil, updatedBy: nil, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, isEncrypted: nil, cntChildren: nil, cntDeletedVersions: nil, hasRecycleBin: nil, recycleBinRetentionPeriod: nil, quota: nil, cntDownloadShares: nil, cntUploadShares: nil, isFavorite: nil, inheritPermissions: nil, encryptionInfo: nil, branchVersion: nil, mediaToken: nil, s3Key: nil, hasActivitiesLog: nil, children: nil, cntAdmins: nil, cntUsers: nil)
+    }
+    
     private static func getNodeList() -> NodeList {
         
         let range = ModelRange(offset: 0, limit: 0, total: 1)
-        let nodes = [Node(_id: 1337, type: .room, name: "name", parentId: nil, parentPath: nil, createdAt: nil, createdBy: nil, updatedAt: nil, updatedBy: nil, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, isEncrypted: nil, cntChildren: nil, cntDeletedVersions: nil, hasRecycleBin: nil, recycleBinRetentionPeriod: nil, quota: nil, cntDownloadShares: nil, cntUploadShares: nil, isFavorite: nil, inheritPermissions: nil, encryptionInfo: nil, branchVersion: nil, mediaToken: nil, s3Key: nil, hasActivitiesLog: nil, children: nil, cntAdmins: nil, cntUsers: nil)]
+        let nodes = [ResponseModelFactory.getNode()]
         
         return NodeList(range: range, items: nodes)
+    }
+    
+    private static func getUserKeyPairContainer() -> UserKeyPairContainer {
+        return UserKeyPairContainer(publicKey: "public", publicVersion: "test", privateKey: "private", privateVersion: "test")
+    }
+    
+    private static func getUserAvatar() -> Avatar {
+        return Avatar(avatarUri: "https://dracoon.team/avatar", avatarUuid: "testUUID", isCustomAvatar: true)
     }
 }

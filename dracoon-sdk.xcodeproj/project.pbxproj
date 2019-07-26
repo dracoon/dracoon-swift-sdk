@@ -218,6 +218,7 @@
 		E030CDFD20FCF03F001DEB31 /* FileDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E030CDFC20FCF03F001DEB31 /* FileDownload.swift */; };
 		E07C89E522A528C900C7139E /* Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07C89E422A528C900C7139E /* Avatar.swift */; };
 		E09236832151597E0080B97A /* OAuthTokenChangedDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09236822151597E0080B97A /* OAuthTokenChangedDelegate.swift */; };
+		E0A9E11922EB28E4000C63DD /* DracoonErrorParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A9E11822EB28E4000C63DD /* DracoonErrorParserTest.swift */; };
 		E0AA72EB2089DD0B001BC290 /* FileUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AA72EA2089DD0B001BC290 /* FileUpload.swift */; };
 		E0AA72EF2089EE3C001BC290 /* DracoonAccountImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AA72EE2089EE3C001BC290 /* DracoonAccountImpl.swift */; };
 		E0AD90F322E85B3000741634 /* dracoon_sdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E00067052057C6CD009CDA70 /* dracoon_sdk.framework */; };
@@ -458,6 +459,7 @@
 		E07C89E422A528C900C7139E /* Avatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Avatar.swift; sourceTree = "<group>"; };
 		E089B0D721B02A0F00442207 /* Supporting Files */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Supporting Files"; sourceTree = "<group>"; };
 		E09236822151597E0080B97A /* OAuthTokenChangedDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthTokenChangedDelegate.swift; sourceTree = "<group>"; };
+		E0A9E11822EB28E4000C63DD /* DracoonErrorParserTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonErrorParserTest.swift; sourceTree = "<group>"; };
 		E0AA72EA2089DD0B001BC290 /* FileUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUpload.swift; sourceTree = "<group>"; };
 		E0AA72EE2089EE3C001BC290 /* DracoonAccountImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonAccountImpl.swift; sourceTree = "<group>"; };
 		E0AD90EE22E85B3000741634 /* dracoon-sdk-tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "dracoon-sdk-tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -800,6 +802,7 @@
 				E0AD90FF22E89BF600741634 /* OAuthClientMock.swift */,
 				E0AD911522E9F59900741634 /* ResponseModelFactory.swift */,
 				E0AD911E22EA049300741634 /* DracoonAccountMock.swift */,
+				E0A9E11822EB28E4000C63DD /* DracoonErrorParserTest.swift */,
 			);
 			name = Mocks;
 			sourceTree = "<group>";
@@ -1134,6 +1137,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0A9E11922EB28E4000C63DD /* DracoonErrorParserTest.swift in Sources */,
 				E0AD911F22EA049300741634 /* DracoonAccountMock.swift in Sources */,
 				E0AD910022E89BF600741634 /* OAuthClientMock.swift in Sources */,
 				E0AD90FE22E877C600741634 /* OAuthTokenManagerMock.swift in Sources */,

@@ -77,6 +77,10 @@ extension MockURLProtocol {
         MockURLProtocol.responseData = try? JSONEncoder().encode(model as! E)
     }
     
+    static func response(with statusCode: Int) {
+        MockURLProtocol.statusCode = statusCode
+    }
+    
     static func resetMockData() {
         MockURLProtocol.statusCode = nil
         MockURLProtocol.responseError = nil

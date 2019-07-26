@@ -19,6 +19,7 @@ class DracoonSdkTestCase: XCTestCase {
     
     override func setUp() {
         super.setUp()
+
         self.crypto = Crypto() // TODO Mock
         
         MockURLProtocol.resetMockData()

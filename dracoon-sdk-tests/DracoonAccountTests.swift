@@ -107,5 +107,117 @@ class DracoonAccountTests: DracoonSdkTestCase {
         XCTWaiter().wait(for: [expectation], timeout: 2.0)
     }
     
+    // MARK: GetUserKeyPair
     
+    func testGetUserKeyPair_returnsUserKeyPairContainer() {
+        
+        self.setResponseModel(UserKeyPairContainer.self, statusCode: 200)
+        
+        let expectation = XCTestExpectation(description: "Returns UserKeyPairContainer")
+        self.account.getUserKeyPair(completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case.value(let response):
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+            
+        })
+        
+        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+    }
+    
+    // MARK: DeleteUserKeyPair
+    
+    func testDeleteUserKeyPair() {
+        
+        let expectation = XCTestExpectation(description: "Returns without error")
+        MockURLProtocol.response(with: 204)
+        self.account.deleteUserKeyPair(completion: { response in
+            if response.error != nil {
+                XCTFail()
+            } else {
+                expectation.fulfill()
+            }
+        })
+        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+    }
+    
+    func testDeleteUserKeyPair_offline_returnsError() {
+        
+        let expectation = XCTestExpectation(description: "Returns error")
+        MockURLProtocol.responseWithError(NSError(domain: "SDKTest", code: NSURLErrorNotConnectedToInternet, userInfo: nil), statusCode: 400)
+        
+        self.account.deleteUserKeyPair(completion: { response in
+            if response.error != nil {
+                expectation.fulfill()
+            } else {
+                XCTFail()
+            }
+        })
+        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+    }
+    
+    // MARK: GetUserAvatar
+    
+    func testGetUserAvatar_returnsAvatar() {
+        
+        self.setResponseModel(Avatar.self, statusCode: 200)
+        
+        let expectation = XCTestExpectation(description: "Returns Avatar")
+        self.account.getUserAvatar(completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case.value(let response):
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+            
+        })
+        
+        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+    }
+    
+    // MARK: UpdateUserAvatar
+    
+//    func testUpdateUserAvatar() {
+//
+//        self.setResponseModel(Avatar.self, statusCode: 200)
+//
+//        let expectation = XCTestExpectation(description: "Returns Avatar")
+//        self.account.updateUserAvatar(fileUrl: URL(string: "/")!, completion: { result in
+//            switch result {
+//            case .error(let error):
+//                XCTFail()
+//            case.value(let response):
+//                XCTAssertNotNil(response)
+//                expectation.fulfill()
+//            }
+//            
+//        })
+//
+//        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+//    }
+    
+    // MARK: DeleteUserAvatar
+    
+    func testDeleteUserAvatar() {
+        
+        self.setResponseModel(Avatar.self, statusCode: 200)
+        
+        let expectation = XCTestExpectation(description: "Returns Avatar")
+        self.account.deleteUserAvatar(completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case .value(let response):
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+    }
 }
