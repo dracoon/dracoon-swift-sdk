@@ -294,10 +294,10 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: Upload file
     
-    func uploadFile(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy = CompleteUploadRequest.ResolutionStrategy.autorename) {
+    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy = CompleteUploadRequest.ResolutionStrategy.autorename) {
         
-        guard FileManager.default.fileExists(atPath: filePath.path) else {
-            callback.onError?(DracoonError.file_does_not_exist(at: filePath))
+        guard ValidatorUtils.pathExists(at: fileUrl.path) else {
+            callback.onError?(DracoonError.file_does_not_exist(at: fileUrl))
             return
         }
         
@@ -311,7 +311,7 @@ class DracoonNodesImpl: DracoonNodes {
                 if isEncrypted {
                     cryptoImpl = self.crypto
                 }
-                let upload = FileUpload(config: self.config, request: request, filePath: filePath, resolutionStrategy: resolutionStrategy,
+                let upload = FileUpload(config: self.config, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
                                         crypto: cryptoImpl, account: self.account)
                 
                 let innerCallback = UploadCallback()

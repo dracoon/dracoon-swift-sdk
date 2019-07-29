@@ -167,7 +167,7 @@ class DracoonAccountImpl: DracoonAccount {
     }
     
     func updateUserAvatar(fileUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
-        guard FileManager.default.fileExists(atPath: fileUrl.path) else {
+        guard ValidatorUtils.pathExists(at: fileUrl.path) else {
             completion(Dracoon.Result.error(DracoonError.file_does_not_exist(at: fileUrl)))
             return
         }

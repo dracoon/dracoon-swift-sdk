@@ -7,8 +7,14 @@
 
 import Foundation
 
+protocol SDKValidator {
+    func pathExists(at path: String) -> Bool
+}
+
 class ValidatorUtils {
     
+    private static var validator: SDKValidator = DracoonValidator()
+
     // --- ID validation methods ---
     
     static func validateId(name:String, id:Int64) {
@@ -38,4 +44,16 @@ class ValidatorUtils {
         precondition(query == nil || query!.isEmpty, "Server URL cannot have query.")
         
     }
+    
+    static func pathExists(at path: String) -> Bool {
+        return self.validator.pathExists(at: path)
+    }
+}
+
+class DracoonValidator: SDKValidator {
+    func pathExists(at path: String) -> Bool {
+        return FileManager.default.fileExists(atPath: path)
+    }
+    
+    
 }

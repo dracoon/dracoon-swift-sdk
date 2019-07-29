@@ -21,14 +21,14 @@ public class FileUpload {
     let account: DracoonAccount
     let request: CreateFileUploadRequest
     let resolutionStrategy: CompleteUploadRequest.ResolutionStrategy
-    let filePath: URL
+    let fileUrl: URL
     
     var callback: UploadCallback?
     let crypto: CryptoProtocol?
     fileprivate var isCanceled = false
     fileprivate var uploadId: String?
     
-    init(config: DracoonRequestConfig, request: CreateFileUploadRequest, filePath: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
+    init(config: DracoonRequestConfig, request: CreateFileUploadRequest, fileUrl: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
          account: DracoonAccount) {
         self.request = request
         self.sessionManager = config.sessionManager
@@ -39,7 +39,7 @@ public class FileUpload {
         self.encoder = config.encoder
         self.crypto = crypto
         self.account = account
-        self.filePath = filePath
+        self.fileUrl = fileUrl
         self.resolutionStrategy = resolutionStrategy
     }
     
@@ -91,7 +91,7 @@ public class FileUpload {
     
     fileprivate func uploadChunks(uploadId: String) {
         
-        let totalFileSize = self.calculateFileSize(filePath: self.filePath) ?? 0 as Int64
+        let totalFileSize = FileUtils.calculateFileSize(filePath: self.fileUrl) ?? 0 as Int64
         
         var cipher: FileEncryptionCipher?
         if let crypto = self.crypto {
@@ -134,8 +134,8 @@ public class FileUpload {
         let range = NSMakeRange(offset, DracoonConstants.UPLOAD_CHUNK_SIZE)
         let lastBlock = Int64(offset + DracoonConstants.UPLOAD_CHUNK_SIZE) >= fileSize
         do {
-            guard let data = try self.readData(self.filePath, range: range) else {
-                self.callback?.onError?(DracoonError.read_data_failure(at: self.filePath))
+            guard let data = try FileUtils.readData(self.fileUrl, range: range) else {
+                self.callback?.onError?(DracoonError.read_data_failure(at: self.fileUrl))
                 return
             }
             let uploadData: Data
@@ -196,7 +196,7 @@ public class FileUpload {
                                             if let error = dataResponse.error {
                                                 self.handleUploadError(error: error, uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
                                             } else {
-                                                if self.checkMD5(result: dataResponse.result, localFileMD5: chunk.md5) {
+                                                if self.checkMD5(result: dataResponse.result, localFileMD5: FileUtils.calculateMD5(chunk)) {
                                                     chunkCallback(nil)
                                                 } else {
                                                  // MD5 check failed
@@ -273,57 +273,5 @@ public class FileUpload {
         self.sessionManager.request(requestUrl, method: .delete, parameters: Parameters())
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
-    }
-    
-    // MARK: Helper
-    
-    fileprivate func calculateFileSize(filePath: URL) -> Int64? {
-        do {
-            let fileAttribute: [FileAttributeKey : Any] = try FileManager.default.attributesOfItem(atPath: filePath.path)
-            let fileSize = fileAttribute[FileAttributeKey.size] as? Int64
-            return fileSize
-        } catch {}
-        return nil
-    }
-    
-    func readData(_ path: URL?, range: NSRange) throws -> Data? {
-        guard let path = path, let fileHandle = try? FileHandle(forReadingFrom: path) else {
-            return nil
-        }
-        
-        let offset = UInt64(range.location)
-        let length = UInt64(range.length)
-        let size = fileHandle.seekToEndOfFile()
-        
-        let maxLength = size - offset
-        
-        guard maxLength > 0 else {
-            return nil
-        }
-        
-        let secureLength = Int(min(length, maxLength))
-        
-        fileHandle.seek(toFileOffset: offset)
-        let data = fileHandle.readData(ofLength: secureLength)
-        
-        return data
-    }
-}
-
-extension Data {
-    var md5 : String {
-        var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
-        _ =  self.withUnsafeBytes( { (rawBufferPointer: UnsafeRawBufferPointer) in
-            let bufferPointer = rawBufferPointer.bindMemory(to: UInt8.self)
-            guard let pointer = bufferPointer.baseAddress else {
-                return
-            }
-            CC_MD5(pointer, CC_LONG(self.count), &digest)
-        })
-        var digestHex = ""
-        for index in 0..<Int(CC_MD5_DIGEST_LENGTH) {
-            digestHex += String(format: "%02x", digest[index])
-        }
-        return digestHex
     }
 }

@@ -237,6 +237,18 @@ class DracoonNodesTests: DracoonSdkTestCase {
         XCTWaiter().wait(for: [expectation], timeout: 2.0)
     }
     
+    // MARK: Upload
+    
+    func testUpload() {
+        
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
+        let uploadCallback = UploadCallback()
+        uploadCallback.onComplete = { node in
+            
+        }
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: URL(string:"/")!, callback: uploadCallback)
+    }
+    
     // MARK: Search nodes
     
     func testSearchNodes() {

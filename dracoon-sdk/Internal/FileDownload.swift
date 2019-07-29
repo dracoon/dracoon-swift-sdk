@@ -197,7 +197,7 @@ public class FileDownload {
     }
     
     fileprivate func decryptFile(fileKey: PlainFileKey, fileUrl: URL) throws {
-        guard FileManager.default.fileExists(atPath: fileUrl.path) else {
+        guard ValidatorUtils.pathExists(at: fileUrl.path) else {
             throw DracoonError.file_does_not_exist(at: fileUrl)
         }
         guard let inputStream = InputStream(fileAtPath: fileUrl.path) else {
@@ -240,7 +240,7 @@ public class FileDownload {
         
         try decryptionCipher.doFinal()
         
-        try FileManager.default.removeItem(at: fileUrl)
-        try FileManager.default.moveItem(at: tempFilePath, to: fileUrl)
+        try FileUtils.removeItem(fileUrl)
+        try FileUtils.moveItem(at: tempFilePath, to: fileUrl)
     }
 }

@@ -234,6 +234,7 @@
 		E0AD911F22EA049300741634 /* DracoonAccountMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AD911E22EA049300741634 /* DracoonAccountMock.swift */; };
 		E0B091E42232868700019D27 /* DracoonSDKErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B091E32232868700019D27 /* DracoonSDKErrorModel.swift */; };
 		E0F5DF3822EEF4E000844012 /* DracoonCryptoMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5DF3722EEF4E000844012 /* DracoonCryptoMock.swift */; };
+		E0F5DF3C22EF259B00844012 /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5DF3B22EF259B00844012 /* FileUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -477,6 +478,7 @@
 		E0AD911E22EA049300741634 /* DracoonAccountMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonAccountMock.swift; sourceTree = "<group>"; };
 		E0B091E32232868700019D27 /* DracoonSDKErrorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSDKErrorModel.swift; sourceTree = "<group>"; };
 		E0F5DF3722EEF4E000844012 /* DracoonCryptoMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonCryptoMock.swift; sourceTree = "<group>"; };
+		E0F5DF3B22EF259B00844012 /* FileUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -529,6 +531,7 @@
 		8496F3B82059206E000EE909 /* util */ = {
 			isa = PBXGroup;
 			children = (
+				E0F5DF3B22EF259B00844012 /* FileUtils.swift */,
 				E00068832057DF8C009CDA70 /* ValidatorUtils.swift */,
 				8496F3B920592080000EE909 /* Alamofire+Convenience.swift */,
 			);
@@ -1073,6 +1076,7 @@
 				E00068702057D0BC009CDA70 /* UpdateGeneralSettings.swift in Sources */,
 				E000684F2057D0BC009CDA70 /* RadiusConfig.swift in Sources */,
 				E000684B2057D0BC009CDA70 /* UserGroupList.swift in Sources */,
+				E0F5DF3C22EF259B00844012 /* FileUtils.swift in Sources */,
 				E00067F62057D0BC009CDA70 /* ActiveDirectory.swift in Sources */,
 				E00068512057D0BC009CDA70 /* ModelRange.swift in Sources */,
 				E00067EA2057D0BC009CDA70 /* FileKeyContainer.swift in Sources */,
