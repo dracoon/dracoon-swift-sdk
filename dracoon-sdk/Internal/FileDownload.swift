@@ -19,7 +19,7 @@ public class FileDownload {
     let decoder: JSONDecoder
     let account: DracoonAccount
     let nodes: DracoonNodes
-    let crypto: Crypto
+    let crypto: CryptoProtocol
     let getEncryptionPassword: () -> String?
     
     let nodeId: Int64
@@ -31,7 +31,7 @@ public class FileDownload {
     var downloadRequest: DownloadRequest?
     
     init(nodeId: Int64, targetUrl: URL, config: DracoonRequestConfig, account: DracoonAccount, nodes: DracoonNodes,
-         crypto: Crypto, fileKey: EncryptedFileKey?, getEncryptionPassword: @escaping () -> String?) {
+         crypto: CryptoProtocol, fileKey: EncryptedFileKey?, getEncryptionPassword: @escaping () -> String?) {
         self.sessionManager = config.sessionManager
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath

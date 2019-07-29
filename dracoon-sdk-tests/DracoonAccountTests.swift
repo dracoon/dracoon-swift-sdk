@@ -128,12 +128,48 @@ class DracoonAccountTests: DracoonSdkTestCase {
         XCTWaiter().wait(for: [expectation], timeout: 2.0)
     }
     
+    // MARK: GenerateUserKeyPair
+    
+    func testGenerateUserKeyPair_returnsUserKeyPair() {
+       
+        let keyPair = try? self.account.generateUserKeyPair(password: "")
+        
+        XCTAssertNotNil(keyPair)
+    }
+    
+    func testGenerateUserKeyPair_fails_throwsError() {
+        
+        (self.crypto as! DracoonCryptoMock).testError = DracoonError.keypair_failure(description: "test")
+        
+        XCTAssertThrowsError(try self.account.generateUserKeyPair(password: ""))
+    }
+    
+    func testSetUserKeyPair() {
+        
+        self.setResponseModel(UserKeyPairContainer.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns UserKeyPair")
+        
+        self.account.setUserKeyPair(password: "", completion: { result in
+            switch result {
+            case.error(_):
+                XCTFail()
+            case .value(let response):
+                XCTAssertNotNil(response)
+                XCTAssertTrue((self.crypto as! DracoonCryptoMock).generateKeyPairCalled)
+                expectation.fulfill()
+            }
+        })
+        
+        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+    }
+    
     // MARK: DeleteUserKeyPair
     
     func testDeleteUserKeyPair() {
         
-        let expectation = XCTestExpectation(description: "Returns without error")
         MockURLProtocol.response(with: 204)
+        let expectation = XCTestExpectation(description: "Returns without error")
+        
         self.account.deleteUserKeyPair(completion: { response in
             if response.error != nil {
                 XCTFail()

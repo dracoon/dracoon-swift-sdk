@@ -18,14 +18,14 @@ class DracoonNodesImpl: DracoonNodes {
     let oAuthTokenManager: OAuthInterceptor
     let decoder: JSONDecoder
     let encoder: JSONEncoder
-    let crypto: Crypto
+    let crypto: CryptoProtocol
     let account: DracoonAccount
     let getEncryptionPassword: () -> String?
     
     private var uploads = [String : FileUpload]()
     private var downloads = [Int64 : FileDownload]()
     
-    init(config: DracoonRequestConfig, crypto: Crypto, account: DracoonAccount, getEncryptionPassword: @escaping () -> String?) {
+    init(config: DracoonRequestConfig, crypto: CryptoProtocol, account: DracoonAccount, getEncryptionPassword: @escaping () -> String?) {
         self.config = config
         self.sessionManager = config.sessionManager
         self.serverUrl = config.serverUrl
@@ -307,7 +307,7 @@ class DracoonNodesImpl: DracoonNodes {
             case .error(let error):
                 callback.onError?(error)
             case .value(let isEncrypted):
-                var cryptoImpl: Crypto?
+                var cryptoImpl: CryptoProtocol?
                 if isEncrypted {
                     cryptoImpl = self.crypto
                 }

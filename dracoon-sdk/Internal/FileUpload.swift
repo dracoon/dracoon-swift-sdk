@@ -24,11 +24,11 @@ public class FileUpload {
     let filePath: URL
     
     var callback: UploadCallback?
-    let crypto: Crypto?
+    let crypto: CryptoProtocol?
     fileprivate var isCanceled = false
     fileprivate var uploadId: String?
     
-    init(config: DracoonRequestConfig, request: CreateFileUploadRequest, filePath: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: Crypto?,
+    init(config: DracoonRequestConfig, request: CreateFileUploadRequest, filePath: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
          account: DracoonAccount) {
         self.request = request
         self.sessionManager = config.sessionManager
@@ -96,7 +96,7 @@ public class FileUpload {
         var cipher: FileEncryptionCipher?
         if let crypto = self.crypto {
             do {
-                let fileKey = try crypto.generateFileKey()
+                let fileKey = try crypto.generateFileKey(version: CryptoConstants.DEFAULT_VERSION)
                 cipher = try crypto.createEncryptionCipher(fileKey: fileKey)
             } catch {
                 self.callback?.onError?(DracoonError.encryption_cipher_failure)

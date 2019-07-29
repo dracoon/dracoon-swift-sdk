@@ -17,9 +17,9 @@ class DracoonAccountImpl: DracoonAccount {
     let oAuthTokenManager: OAuthInterceptor
     let decoder: JSONDecoder
     let encoder: JSONEncoder
-    let crypto: Crypto
+    let crypto: CryptoProtocol
     
-    init(config: DracoonRequestConfig, crypto: Crypto) {
+    init(config: DracoonRequestConfig, crypto: CryptoProtocol) {
         self.sessionManager = config.sessionManager
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
@@ -47,12 +47,12 @@ class DracoonAccountImpl: DracoonAccount {
     }
     
     func generateUserKeyPair(password: String) throws -> UserKeyPair {
-        return try crypto.generateUserKeyPair(password: password)
+        return try crypto.generateUserKeyPair(password: password, version: CryptoConstants.DEFAULT_VERSION)
     }
     
     func setUserKeyPair(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         do {
-            let userKeyPair = try crypto.generateUserKeyPair(password: password)
+            let userKeyPair = try crypto.generateUserKeyPair(password: password, version: CryptoConstants.DEFAULT_VERSION)
             let jsonBody = try encoder.encode(userKeyPair)
             
             let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"

@@ -14,13 +14,13 @@ import crypto_sdk
 
 class DracoonSdkTestCase: XCTestCase {
     
-    var crypto: Crypto!
+    var crypto: CryptoProtocol!
     var requestConfig: DracoonRequestConfig!
     
     override func setUp() {
         super.setUp()
 
-        self.crypto = Crypto() // TODO Mock
+        self.crypto = DracoonCryptoMock()
         
         MockURLProtocol.resetMockData()
         let config = URLSessionConfiguration.default
@@ -30,6 +30,13 @@ class DracoonSdkTestCase: XCTestCase {
         self.requestConfig = DracoonRequestConfig(sessionManager: sessionManager, serverUrl: URL(string: "https://dracoon.team")!, apiPath: "/v4", oauthTokenManager: OAuthTokenManagerMock(),
                                                  encoder: JSONEncoder(), decoder: JSONDecoder())
         
+    }
+    
+    override func tearDown() {
+        let cryptoMock = self.crypto as! DracoonCryptoMock
+        cryptoMock.testError = nil
+        cryptoMock.generateKeyPairCalled = false
+        cryptoMock.checkKeyPairCalled = false
     }
     
     func setResponseModel<E: Encodable>(_ type: E.Type, statusCode: Int) {
