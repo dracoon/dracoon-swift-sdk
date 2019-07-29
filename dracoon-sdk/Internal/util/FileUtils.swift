@@ -12,14 +12,15 @@ import CommonCrypto
 protocol FileHelper {
     func calculateFileSize(filePath: URL) -> Int64?
     func calculateMD5(_ data: Data) -> String
-    func readData(_ path: URL?, range: NSRange) throws -> Data?
+    func readData(_ fileUrl: URL) throws -> Data?
+    func readData(_ fileUrl: URL?, range: NSRange) throws -> Data?
     func moveItem(at sourceUrl: URL, to targetUrl: URL) throws
     func removeItem(_ path: URL) throws
 }
 
 class FileUtils {
     
-    private static var fileHelper: FileHelper = DracoonFileHelper()
+    static var fileHelper: FileHelper = DracoonFileHelper()
     
     static func calculateFileSize(filePath: URL) -> Int64? {
         return self.fileHelper.calculateFileSize(filePath: filePath)
@@ -29,16 +30,20 @@ class FileUtils {
         return self.fileHelper.calculateMD5(data)
     }
     
-    static func readData(_ path: URL?, range: NSRange) throws -> Data? {
-        return try self.readData(path, range: range)
+    static func readData(_ fileUrl: URL) throws -> Data? {
+        return try self.fileHelper.readData(fileUrl)
+    }
+    
+    static func readData(_ fileUrl: URL?, range: NSRange) throws -> Data? {
+        return try self.fileHelper.readData(fileUrl, range: range)
     }
     
     static func moveItem(at sourceUrl: URL, to targetUrl: URL) throws {
         try self.fileHelper.moveItem(at: sourceUrl, to: targetUrl)
     }
     
-    static func removeItem(_ path: URL) throws {
-        try self.fileHelper.removeItem(path)
+    static func removeItem(_ fileUrl: URL) throws {
+        try self.fileHelper.removeItem(fileUrl)
     }
 }
 
@@ -69,8 +74,12 @@ class DracoonFileHelper: FileHelper {
         return digestHex
     }
     
-    func readData(_ path: URL?, range: NSRange) throws -> Data? {
-        guard let path = path, let fileHandle = try? FileHandle(forReadingFrom: path) else {
+    func readData(_ fileUrl: URL) throws -> Data? {
+        return try Data(contentsOf: fileUrl)
+    }
+    
+    func readData(_ fileUrl: URL?, range: NSRange) throws -> Data? {
+        guard let fileUrl = fileUrl, let fileHandle = try? FileHandle(forReadingFrom: fileUrl) else {
             return nil
         }
         
@@ -96,7 +105,7 @@ class DracoonFileHelper: FileHelper {
         try FileManager.default.moveItem(at: sourceUrl, to: targetUrl)
     }
     
-    func removeItem(_ path: URL) throws {
-        try FileManager.default.removeItem(at: path)
+    func removeItem(_ fileUrl: URL) throws {
+        try FileManager.default.removeItem(at: fileUrl)
     }
 }

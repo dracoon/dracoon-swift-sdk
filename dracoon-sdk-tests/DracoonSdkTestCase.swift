@@ -16,11 +16,14 @@ class DracoonSdkTestCase: XCTestCase {
     
     var crypto: CryptoProtocol!
     var requestConfig: DracoonRequestConfig!
+    let testWaiter = XCTWaiter()
     
     override func setUp() {
         super.setUp()
 
         self.crypto = DracoonCryptoMock()
+        ValidatorUtils.validator = ValidatorUtilsMock()
+        FileUtils.fileHelper = FileUtilsMock()
         
         MockURLProtocol.resetMockData()
         let config = URLSessionConfiguration.default

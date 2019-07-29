@@ -42,7 +42,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testGetNode_returnsNode() {
@@ -61,7 +61,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
 //    func testGetNodeWithPath_returnsNode() {
@@ -102,7 +102,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testUpdateRoom() {
@@ -120,7 +120,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
                 expectation.fulfill()
             }
         })
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     // MARK: Folders
@@ -142,7 +142,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testUpdateFolder() {
@@ -161,7 +161,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             }
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     // MARK: Files
@@ -182,7 +182,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             }
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testDeleteNodes() {
@@ -198,7 +198,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             }
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testCopyNodes() {
@@ -216,7 +216,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             }
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testMoveNodes() {
@@ -234,20 +234,20 @@ class DracoonNodesTests: DracoonSdkTestCase {
             }
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     // MARK: Upload
     
-    func testUpload() {
-        
-        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
-        let uploadCallback = UploadCallback()
-        uploadCallback.onComplete = { node in
-            
-        }
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: URL(string:"/")!, callback: uploadCallback)
-    }
+//    func testUpload() {
+//
+//        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
+//        let uploadCallback = UploadCallback()
+//        uploadCallback.onComplete = { node in
+//
+//        }
+//        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: URL(string:"/")!, callback: uploadCallback)
+//    }
     
     // MARK: Search nodes
     
@@ -266,7 +266,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             }
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testSearchNodesWithDepth() {
@@ -284,7 +284,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             }
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     // MARK: Favourites
@@ -304,6 +304,8 @@ class DracoonNodesTests: DracoonSdkTestCase {
                 expectation.fulfill()
             }
         })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testSetFavourites() {
@@ -320,6 +322,8 @@ class DracoonNodesTests: DracoonSdkTestCase {
                 expectation.fulfill()
             }
         })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testDeleteFavourite() {
@@ -334,6 +338,8 @@ class DracoonNodesTests: DracoonSdkTestCase {
                 expectation.fulfill()
             }
         })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
 }

@@ -171,7 +171,7 @@ class DracoonAccountImpl: DracoonAccount {
             completion(Dracoon.Result.error(DracoonError.file_does_not_exist(at: fileUrl)))
             return
         }
-        guard let data = try? Data(contentsOf: fileUrl) else {
+        guard let data = try? FileUtils.readData(fileUrl) else {
             completion(Dracoon.Result.error(DracoonError.read_data_failure(at: fileUrl)))
             return
         }

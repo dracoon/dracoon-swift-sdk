@@ -42,7 +42,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
             
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testGetUserAccount_returnsUserAccountModel() {
@@ -61,7 +61,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
             
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     // MARK: GetCustomerAccount
@@ -85,7 +85,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
             
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testGetCustomerAccount_returnsCustomerAccountModel() {
@@ -104,7 +104,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
             
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     // MARK: GetUserKeyPair
@@ -125,7 +125,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
             
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     // MARK: GenerateUserKeyPair
@@ -160,7 +160,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
             }
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     // MARK: DeleteUserKeyPair
@@ -177,7 +177,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
                 expectation.fulfill()
             }
         })
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     func testDeleteUserKeyPair_offline_returnsError() {
@@ -192,7 +192,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
                 XCTFail()
             }
         })
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
     // MARK: GetUserAvatar
@@ -200,8 +200,8 @@ class DracoonAccountTests: DracoonSdkTestCase {
     func testGetUserAvatar_returnsAvatar() {
         
         self.setResponseModel(Avatar.self, statusCode: 200)
-        
         let expectation = XCTestExpectation(description: "Returns Avatar")
+        
         self.account.getUserAvatar(completion: { result in
             switch result {
             case .error(_):
@@ -213,29 +213,115 @@ class DracoonAccountTests: DracoonSdkTestCase {
             
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
-    // MARK: UpdateUserAvatar
-    
-//    func testUpdateUserAvatar() {
+//    func testDownloadUserAvatar() {
 //
 //        self.setResponseModel(Avatar.self, statusCode: 200)
-//
 //        let expectation = XCTestExpectation(description: "Returns Avatar")
-//        self.account.updateUserAvatar(fileUrl: URL(string: "/")!, completion: { result in
+//
+//        self.account.downloadUserAvatar(targetUrl: URL(string:"/")!, completion: { result in
 //            switch result {
-//            case .error(let error):
+//            case .error(_):
 //                XCTFail()
 //            case.value(let response):
 //                XCTAssertNotNil(response)
 //                expectation.fulfill()
 //            }
-//            
 //        })
 //
-//        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+//        self.testWaiter.wait(for: [expectation], timeout: 2.0)
 //    }
+    
+    func testDownloadUserAvatar_downloadFails_retunsError() {
+        
+        MockURLProtocol.responseWithError(NSError(domain: "SDKTest", code: NSURLErrorTimedOut, userInfo: nil), statusCode: 400)
+        let expectation = XCTestExpectation(description: "Returns error")
+        
+        self.account.downloadUserAvatar(targetUrl: URL(string:"/")!, completion: { result in
+            switch result {
+            case .error(_):
+                expectation.fulfill()
+            case.value(_):
+                XCTFail()
+            }
+        })
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+    }
+    
+    // MARK: UpdateUserAvatar
+    
+    func testUpdateUserAvatar() {
+
+        self.setResponseModel(Avatar.self, statusCode: 200)
+
+        let expectation = XCTestExpectation(description: "Returns Avatar")
+        self.account.updateUserAvatar(fileUrl: URL(string: "/")!, completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case.value(let response):
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+            
+        })
+
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+    }
+    
+    func testUpdateUserAvatar_withNoData_returnsError() {
+        
+        (FileUtils.fileHelper as! FileUtilsMock).returnedData = nil
+        self.setResponseModel(Avatar.self, statusCode: 200)
+        
+        let expectation = XCTestExpectation(description: "Returns Avatar")
+        self.account.updateUserAvatar(fileUrl: URL(string: "/")!, completion: { result in
+            switch result {
+            case .error(let error):
+                switch error {
+                case .read_data_failure(at: _):
+                    expectation.fulfill()
+                default:
+                    XCTFail()
+                }
+                expectation.fulfill()
+            case.value(_):
+                XCTFail()
+                
+            }
+            
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+    }
+    
+    func testUpdateUserAvatar_withInvalidPath_returnsError() {
+        
+        (ValidatorUtils.validator as! ValidatorUtilsMock).pathExists = false
+        self.setResponseModel(Avatar.self, statusCode: 200)
+        
+        let expectation = XCTestExpectation(description: "Returns Avatar")
+        self.account.updateUserAvatar(fileUrl: URL(string: "/")!, completion: { result in
+            switch result {
+            case .error(let error):
+                switch error {
+                case .file_does_not_exist(at: _):
+                    expectation.fulfill()
+                default:
+                    XCTFail()
+                }
+                expectation.fulfill()
+            case.value(_):
+                XCTFail()
+                
+            }
+            
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+    }
     
     // MARK: DeleteUserAvatar
     
@@ -254,6 +340,6 @@ class DracoonAccountTests: DracoonSdkTestCase {
             }
         })
         
-        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
 }

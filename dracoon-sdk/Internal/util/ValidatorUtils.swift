@@ -13,7 +13,7 @@ protocol SDKValidator {
 
 class ValidatorUtils {
     
-    private static var validator: SDKValidator = DracoonValidator()
+    static var validator: SDKValidator = DracoonValidator()
 
     // --- ID validation methods ---
     

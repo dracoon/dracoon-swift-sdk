@@ -23,6 +23,8 @@ struct ResponseModelFactory {
             return self.getUserKeyPairContainer() as? E
         } else if type == Avatar.self {
             return self.getUserAvatar() as? E
+        } else if type == CreateFileUploadResponse.self {
+            return self.getCreateFileUploadResponse() as? E
         }
         return nil
     }
@@ -57,5 +59,9 @@ struct ResponseModelFactory {
     
     private static func getUserAvatar() -> Avatar {
         return Avatar(avatarUri: "https://dracoon.team/avatar", avatarUuid: "testUUID", isCustomAvatar: true)
+    }
+    
+    private static func getCreateFileUploadResponse() -> CreateFileUploadResponse {
+        return CreateFileUploadResponse(uploadId: "uploadId", token: "uploadToken", uploadUrl: nil)
     }
 }

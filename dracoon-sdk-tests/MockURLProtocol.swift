@@ -49,10 +49,10 @@ extension MockURLProtocol: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let responseError = MockURLProtocol.responseError {
             client?.urlProtocol(self, didFailWithError: responseError)
-        } else if let data = MockURLProtocol.responseData {
+        } else if let data = MockURLProtocol.responseData.poll() {
             client?.urlProtocol(self, didLoad: data)
         } else {
-            let urlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: MockURLProtocol.statusCode, httpVersion: nil, headerFields: nil)!
+            let urlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: MockURLProtocol.statusCodes.poll()!, httpVersion: nil, headerFields: nil)!
             client?.urlProtocol(self, didReceive: urlResponse, cacheStoragePolicy: .notAllowed)
         }
         
@@ -63,27 +63,32 @@ extension MockURLProtocol: URLSessionDataDelegate {
 
 extension MockURLProtocol {
     
-    private static var responseData: Data?
+    private static var responseData = TestQueue<Data>()
     private static var responseError: Error?
-    private static var statusCode: Int!
+    private static var statusCodes: TestQueue<Int>!
     
     static func responseWithError(_ error: Error, statusCode: Int) {
-        MockURLProtocol.statusCode = statusCode
+        self.statusCodes.add(statusCode)
         MockURLProtocol.responseError = error
     }
     
     static func responseWithModel<E: Encodable>(_ type: E.Type,  model: Encodable, statusCode: Int) {
-        MockURLProtocol.statusCode = statusCode
-        MockURLProtocol.responseData = try? JSONEncoder().encode(model as! E)
+        self.statusCodes.add(statusCode)
+        let data = try? JSONEncoder().encode(model as! E)
+        self.responseData.add(data!)
+    }
+    
+    static func appendResponse<E: Encodable>(_ type: E.Type,  model: Encodable, statusCode: Int) {
+        
     }
     
     static func response(with statusCode: Int) {
-        MockURLProtocol.statusCode = statusCode
+        self.statusCodes.add(statusCode)
     }
     
     static func resetMockData() {
-        MockURLProtocol.statusCode = nil
+        MockURLProtocol.statusCodes = TestQueue<Int>()
         MockURLProtocol.responseError = nil
-        MockURLProtocol.responseData = nil
+        MockURLProtocol.responseData = TestQueue<Data>()
     }
 }
