@@ -239,15 +239,37 @@ class DracoonNodesTests: DracoonSdkTestCase {
     
     // MARK: Upload
     
-//    func testUpload() {
-//
-//        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
-//        let uploadCallback = UploadCallback()
-//        uploadCallback.onComplete = { node in
-//
-//        }
-//        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: URL(string:"/")!, callback: uploadCallback)
-//    }
+    func testUpload() {
+
+        self.setResponseModel(Node.self, statusCode: 200)
+        self.setResponseModel(CreateFileUploadResponse.self, statusCode: 200)
+        self.setResponseModel(Node.self, statusCode: 200) // TODO set upload response
+        self.setResponseModel(Node.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "upload")
+        
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
+        
+        let uploadCallback = UploadCallback()
+        uploadCallback.onStarted = { _ in
+            print("started")
+        }
+        uploadCallback.onError = { error in
+            print(error)
+            XCTFail()
+        }
+        uploadCallback.onCanceled = {
+            print("canceled")
+            XCTFail()
+        }
+        
+        uploadCallback.onComplete = { node in
+            print("completed")
+            expectation.fulfill()
+        }
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: URL(string:"/")!, callback: uploadCallback)
+        
+        self.testWaiter.wait(for: [expectation], timeout: 10.0)
+    }
     
     // MARK: Search nodes
     

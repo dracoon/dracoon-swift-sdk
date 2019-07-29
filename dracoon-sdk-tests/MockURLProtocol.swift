@@ -78,10 +78,6 @@ extension MockURLProtocol {
         self.responseData.add(data!)
     }
     
-    static func appendResponse<E: Encodable>(_ type: E.Type,  model: Encodable, statusCode: Int) {
-        
-    }
-    
     static func response(with statusCode: Int) {
         self.statusCodes.add(statusCode)
     }
