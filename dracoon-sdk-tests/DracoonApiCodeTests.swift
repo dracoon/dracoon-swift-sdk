@@ -75,8 +75,6 @@ class DracoonApiCodeTests: XCTestCase {
         
         XCTAssert(DracoonApiCode.PRECONDITION_MUST_CHANGE_PASSWORD.rawValue == 2103)
         XCTAssertEqual(DracoonApiCode.PRECONDITION_MUST_CHANGE_PASSWORD.description, "User must change his password.")
-        
-       
     }
     
     func testValidationApiErrorCodes() {
@@ -236,6 +234,41 @@ class DracoonApiCodeTests: XCTestCase {
         
         XCTAssert(DracoonApiCode.VALIDATION_INVALID_EMAIL_ADDRESS.rawValue == 3801)
         XCTAssertEqual(DracoonApiCode.VALIDATION_INVALID_EMAIL_ADDRESS.description, "Invalid email address.")
+    }
+    
+    func testPermissionApiErrorCodes() {
         
+        XCTAssert(DracoonApiCode.PERMISSION_UNKNOWN_ERROR.rawValue == 4000)
+        XCTAssertEqual(DracoonApiCode.PERMISSION_UNKNOWN_ERROR.description, "User has no permissions to execute the action in this room.")
+        
+        XCTAssert(DracoonApiCode.PERMISSION_MANAGE_ERROR.rawValue == 4100)
+        XCTAssertEqual(DracoonApiCode.PERMISSION_MANAGE_ERROR.description, "User has no permission to manage this room.")
+        
+        XCTAssert(DracoonApiCode.PERMISSION_READ_ERROR.rawValue == 4101)
+        XCTAssertEqual(DracoonApiCode.PERMISSION_READ_ERROR.description, "User has no permission to read nodes.")
+        
+        XCTAssert(DracoonApiCode.PERMISSION_CREATE_ERROR.rawValue == 4102)
+        XCTAssertEqual(DracoonApiCode.PERMISSION_CREATE_ERROR.description, "User has no permission to create nodes.")
+        
+        XCTAssert(DracoonApiCode.PERMISSION_UPDATE_ERROR.rawValue == 4103)
+        XCTAssertEqual(DracoonApiCode.PERMISSION_UPDATE_ERROR.description, "User has no permission to change nodes.")
+        
+        XCTAssert(DracoonApiCode.PERMISSION_DELETE_ERROR.rawValue == 4104)
+        XCTAssertEqual(DracoonApiCode.PERMISSION_DELETE_ERROR.description, "User has no permission to delete nodes.")
+        
+        XCTAssert(DracoonApiCode.PERMISSION_MANAGE_DL_SHARES_ERROR.rawValue == 4105)
+        XCTAssertEqual(DracoonApiCode.PERMISSION_MANAGE_DL_SHARES_ERROR.description, "User has no permission to manage download shares in this room.")
+        
+        XCTAssert(DracoonApiCode.PERMISSION_MANAGE_UL_SHARES_ERROR.rawValue == 4106)
+        XCTAssertEqual(DracoonApiCode.PERMISSION_MANAGE_UL_SHARES_ERROR.description, "User has no permission to manage upload shares in this room.")
+        
+        XCTAssert(DracoonApiCode.PERMISSION_READ_RECYCLE_BIN_ERROR.rawValue == 4107)
+        XCTAssertEqual(DracoonApiCode.PERMISSION_READ_RECYCLE_BIN_ERROR.description, "User has no permission to read recycle bin in this room.")
+        
+        XCTAssert(DracoonApiCode.PERMISSION_RESTORE_RECYCLE_BIN_ERROR.rawValue == 4108)
+        XCTAssertEqual(DracoonApiCode.PERMISSION_RESTORE_RECYCLE_BIN_ERROR.description, "User has no permission to restore recycle bin items in this room.")
+        
+        XCTAssert(DracoonApiCode.PERMISSION_DELETE_RECYCLE_BIN_ERROR.rawValue == 4109)
+        XCTAssertEqual(DracoonApiCode.PERMISSION_DELETE_RECYCLE_BIN_ERROR.description, "User has no permission to delete recycle bin items in this room.")
     }
 }
