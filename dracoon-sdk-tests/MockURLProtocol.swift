@@ -8,6 +8,7 @@
 
 import Foundation
 import dracoon_sdk
+import Alamofire
 
 final class MockURLProtocol: URLProtocol {
     
@@ -49,8 +50,11 @@ extension MockURLProtocol: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let responseError = MockURLProtocol.responseError {
             client?.urlProtocol(self, didFailWithError: responseError)
-        } else if let data = MockURLProtocol.responseData.poll() {
+        } else if let data = MockURLProtocol.responseData.peek() as? Data {
+            _ = MockURLProtocol.responseData.poll()
             client?.urlProtocol(self, didLoad: data)
+        } else if let downloadResponse = MockURLProtocol.responseData.peek() as? DefaultDownloadResponse {
+            client?.urlProtocol(self, didReceive: downloadResponse.response!, cacheStoragePolicy: .notAllowed)
         } else {
             let urlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: MockURLProtocol.statusCodes.poll()!, httpVersion: nil, headerFields: nil)!
             client?.urlProtocol(self, didReceive: urlResponse, cacheStoragePolicy: .notAllowed)
@@ -63,7 +67,7 @@ extension MockURLProtocol: URLSessionDataDelegate {
 
 extension MockURLProtocol {
     
-    private static var responseData = TestQueue<Data>()
+    private static var responseData = TestQueue<Any>()
     private static var responseError: Error?
     private static var statusCodes: TestQueue<Int>!
     
@@ -78,6 +82,11 @@ extension MockURLProtocol {
         self.responseData.add(data!)
     }
     
+    static func response(with element: Any, statusCode: Int) {
+        self.statusCodes.add(statusCode)
+        self.responseData.add(element)
+    }
+    
     static func response(with statusCode: Int) {
         self.statusCodes.add(statusCode)
     }
@@ -85,6 +94,6 @@ extension MockURLProtocol {
     static func resetMockData() {
         MockURLProtocol.statusCodes = TestQueue<Int>()
         MockURLProtocol.responseError = nil
-        MockURLProtocol.responseData = TestQueue<Data>()
+        MockURLProtocol.responseData = TestQueue<Any>()
     }
 }

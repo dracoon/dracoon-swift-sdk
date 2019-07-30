@@ -25,6 +25,8 @@ struct ResponseModelFactory {
             return self.getUserAvatar() as? E
         } else if type == CreateFileUploadResponse.self {
             return self.getCreateFileUploadResponse() as? E
+        } else if type == DownloadTokenGenerateResponse.self {
+            return self.getDownloadTokenGenerateResponse() as? E
         }
         return nil
     }
@@ -63,5 +65,9 @@ struct ResponseModelFactory {
     
     private static func getCreateFileUploadResponse() -> CreateFileUploadResponse {
         return CreateFileUploadResponse(uploadId: "uploadId", token: "uploadToken", uploadUrl: nil)
+    }
+    
+    private static func getDownloadTokenGenerateResponse() -> DownloadTokenGenerateResponse {
+        return DownloadTokenGenerateResponse(downloadUrl: nil, token: "downloadToken")
     }
 }

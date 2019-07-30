@@ -261,14 +261,49 @@ class DracoonNodesTests: DracoonSdkTestCase {
             print("canceled")
             XCTFail()
         }
-        
+        uploadCallback.onProgress = { progress in
+            print("upload progress \(progress)")
+        }
         uploadCallback.onComplete = { node in
             print("completed")
             expectation.fulfill()
         }
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: URL(string:"/")!, callback: uploadCallback)
         
-        self.testWaiter.wait(for: [expectation], timeout: 10.0)
+        self.testWaiter.wait(for: [expectation], timeout: 4.0)
+    }
+    
+    // MARK: Download
+    
+    func testDownload() {
+        
+        self.setResponseModel(Node.self, statusCode: 200)
+        self.setResponseModel(DownloadTokenGenerateResponse.self, statusCode: 200)
+        let urlRequest = URLRequest(url: URL(string: "https://dracoon.team")!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval())
+        let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testDownload")
+        let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
+        MockURLProtocol.response(with: downloadResponse, statusCode: 200)
+        let expectation = XCTestExpectation(description: "download")
+        
+        let callback = DownloadCallback()
+        callback.onError = { error in
+            print(error)
+            XCTFail()
+        }
+        callback.onProgress = { progress in
+            print("download progress \(progress)")
+        }
+        callback.onCanceled = {
+            XCTFail()
+        }
+        callback.onComplete = { _ in
+            expectation.fulfill()
+        }
+        
+        self.nodes.downloadFile(nodeId: 42, targetUrl: url, callback: callback)
+        
+        self.testWaiter.wait(for: [expectation], timeout: 4.0)
     }
     
     // MARK: Search nodes
