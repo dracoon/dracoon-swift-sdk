@@ -70,24 +70,27 @@ class DracoonNodesTests: DracoonSdkTestCase {
         XCTAssertTrue(calledValue)
     }
     
-//    func testGetNodeWithPath_returnsNode() {
-//
-//        self.setResponseModel(Node.self, statusCode: 200)
-//
-//        let expectation = XCTestExpectation(description: "Returns Node")
-//        self.nodes.getNode(nodePath: "/test/", completion: { result in
-//            switch result {
-//            case .error(let error):
-//                XCTFail()
-//            case.value(let response):
-//                XCTAssertNotNil(response)
-//                expectation.fulfill()
-//            }
-//
-//        })
-//
-//        XCTWaiter().wait(for: [expectation], timeout: 2.0)
-//    }
+    func testGetNodeWithPath_returnsNode() {
+
+        self.setResponseModel(NodeList.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns NodeList")
+        var calledValue = false
+        
+        self.nodes.getNode(nodePath: "/root/name", completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case.value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+
+        })
+
+        XCTWaiter().wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
     
     // MARK: Rooms
     

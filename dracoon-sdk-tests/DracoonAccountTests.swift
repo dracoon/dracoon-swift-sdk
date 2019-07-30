@@ -159,6 +159,8 @@ class DracoonAccountTests: DracoonSdkTestCase {
         XCTAssertThrowsError(try self.account.generateUserKeyPair(password: ""))
     }
     
+    // MARK: SetUserKeyPair
+    
     func testSetUserKeyPair() {
         
         self.setResponseModel(UserKeyPairContainer.self, statusCode: 200)
@@ -179,6 +181,27 @@ class DracoonAccountTests: DracoonSdkTestCase {
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
         XCTAssertTrue(calledValue)
+    }
+    
+    func testSetUserKeyPair_creatingKeyPairFails_returnsError() {
+        
+        self.setResponseModel(UserKeyPairContainer.self, statusCode: 200)
+        (self.crypto as! DracoonCryptoMock).testError = DracoonError.keypair_failure(description: "test")
+        let expectation = XCTestExpectation(description: "Returns error")
+        var calledError = false
+        
+        self.account.setUserKeyPair(password: "", completion: { result in
+            switch result {
+            case.error(_):
+                calledError = true
+                expectation.fulfill()
+            case .value(_):
+               break
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
     }
     
     // MARK: DeleteUserKeyPair
@@ -239,23 +262,25 @@ class DracoonAccountTests: DracoonSdkTestCase {
         XCTAssertTrue(calledValue)
     }
     
-//    func testDownloadUserAvatar() {
-//
-//        self.setResponseModel(Avatar.self, statusCode: 200)
-//        let expectation = XCTestExpectation(description: "Returns Avatar")
-//
-//        self.account.downloadUserAvatar(targetUrl: URL(string:"/")!, completion: { result in
-//            switch result {
-//            case .error(_):
-//                XCTFail()
-//            case.value(let response):
-//                XCTAssertNotNil(response)
-//                expectation.fulfill()
-//            }
-//        })
-//
-//        self.testWaiter.wait(for: [expectation], timeout: 2.0)
-//    }
+    func testDownloadUserAvatar() {
+
+        self.setResponseModel(Avatar.self, statusCode: 200)
+        let targetUrl = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testUpload")
+        let expectation = XCTestExpectation(description: "Returns Avatar")
+
+        
+        self.account.downloadUserAvatar(targetUrl: targetUrl, completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case.value(let response):
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+    }
     
     func testDownloadUserAvatar_downloadFails_retunsError() {
         
