@@ -25,54 +25,63 @@ class DracoonConfigTests: DracoonSdkTestCase {
         
         self.setResponseModel(SystemDefaults.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns SystemDefaults")
+        var calledValue = false
         
         self.config.getSystemDefaults(completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case .value(let response):
+                calledValue = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
     }
     
     func testGetGeneralSettings() {
         
         self.setResponseModel(GeneralSettings.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns GeneralSettings")
+        var calledValue = false
         
         self.config.getSystemDefaults(completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case .value(let response):
+                calledValue = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
     }
     
     func testGetInfrastructureProperties() {
         
         self.setResponseModel(InfrastructureProperties.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns InfrastructureProperties")
+        var calledValue = false
         
         self.config.getSystemDefaults(completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case .value(let response):
+                calledValue = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
     }
         
 }

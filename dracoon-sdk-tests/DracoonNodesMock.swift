@@ -12,13 +12,17 @@ import dracoon_sdk
 
 class DracoonNodesMock: DracoonNodes {
     
+    var nodeIsEncrypted = false
+    
     func getNodes(parentNodeId: Int64, limit: Int64?, offset: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {}
     
     func getNode(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<Node>) {}
     
     func getNode(nodePath: String, completion: @escaping DataRequest.DecodeCompletion<Node>) {}
     
-    func isNodeEncrypted(nodeId: Int64, completion: @escaping (Dracoon.Result<Bool>) -> Void) {}
+    func isNodeEncrypted(nodeId: Int64, completion: @escaping (Dracoon.Result<Bool>) -> Void) {
+        completion(Dracoon.Result.value(self.nodeIsEncrypted))
+    }
     
     func getFileKey(nodeId: Int64, completion: @escaping (Dracoon.Result<EncryptedFileKey>) -> Void) {}
     

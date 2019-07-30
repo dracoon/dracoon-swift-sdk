@@ -25,6 +25,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
     
     func testGetUserAccount_responseTimesOut_returnsError() {
         MockURLProtocol.responseWithError(NSError(domain: "SDKTest", code: NSURLErrorTimedOut, userInfo: nil), statusCode: 400)
+        var calledError = false
         
         let expectation = XCTestExpectation(description: "Returns connection timeout error")
         self.account.getUserAccount(completion: { result in
@@ -32,29 +33,33 @@ class DracoonAccountTests: DracoonSdkTestCase {
             case .error(let error):
                 switch error {
                 case .connection_timeout:
+                    calledError = true
                     expectation.fulfill()
                 default:
-                    XCTFail()
+                    break
                 }
             case.value(_):
-                XCTFail()
+                break
             }
             
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
     }
     
     func testGetUserAccount_returnsUserAccountModel() {
         
         self.setResponseModel(UserAccount.self, statusCode: 200)
+        var calledValue = false
         
         let expectation = XCTestExpectation(description: "Returns UserAccountModel")
         self.account.getUserAccount(completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case.value(let response):
+                calledValue = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
@@ -62,42 +67,48 @@ class DracoonAccountTests: DracoonSdkTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
     }
     
     // MARK: GetCustomerAccount
     
     func testGetCustomerAccount_responseTimesOut_returnsError() {
         MockURLProtocol.responseWithError(NSError(domain: "SDKTest", code: NSURLErrorTimedOut, userInfo: nil), statusCode: 400)
+        var calledError = false
         
         let expectation = XCTestExpectation(description: "Returns connection timeout error")
         self.account.getCustomerAccount(completion: { result in
             switch result {
             case .error(let error):
+                calledError = true
                 switch error {
                 case .connection_timeout:
                     expectation.fulfill()
                 default:
-                    XCTFail()
+                    break
                 }
             case.value(_):
-                XCTFail()
+                break
             }
             
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
     }
     
     func testGetCustomerAccount_returnsCustomerAccountModel() {
         
         self.setResponseModel(CustomerData.self, statusCode: 200)
+        var calledValue = false
         
         let expectation = XCTestExpectation(description: "Returns CustomerAccountModel")
         self.account.getCustomerAccount(completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case.value(let response):
+                calledValue = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
@@ -105,6 +116,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
     }
     
     // MARK: GetUserKeyPair
@@ -112,13 +124,15 @@ class DracoonAccountTests: DracoonSdkTestCase {
     func testGetUserKeyPair_returnsUserKeyPairContainer() {
         
         self.setResponseModel(UserKeyPairContainer.self, statusCode: 200)
+        var calledValue = false
         
         let expectation = XCTestExpectation(description: "Returns UserKeyPairContainer")
         self.account.getUserKeyPair(completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case.value(let response):
+                calledValue = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
@@ -126,6 +140,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
     }
     
     // MARK: GenerateUserKeyPair
@@ -148,12 +163,14 @@ class DracoonAccountTests: DracoonSdkTestCase {
         
         self.setResponseModel(UserKeyPairContainer.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns UserKeyPair")
+        var calledValue = false
         
         self.account.setUserKeyPair(password: "", completion: { result in
             switch result {
             case.error(_):
-                XCTFail()
+                break
             case .value(let response):
+                calledValue = true
                 XCTAssertNotNil(response)
                 XCTAssertTrue((self.crypto as! DracoonCryptoMock).generateKeyPairCalled)
                 expectation.fulfill()
@@ -161,6 +178,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
     }
     
     // MARK: DeleteUserKeyPair
@@ -169,30 +187,32 @@ class DracoonAccountTests: DracoonSdkTestCase {
         
         MockURLProtocol.response(with: 204)
         let expectation = XCTestExpectation(description: "Returns without error")
+        var calledError = true
         
         self.account.deleteUserKeyPair(completion: { response in
-            if response.error != nil {
-                XCTFail()
-            } else {
+            if response.error == nil {
+                calledError = false
                 expectation.fulfill()
             }
         })
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertFalse(calledError)
     }
     
     func testDeleteUserKeyPair_offline_returnsError() {
         
         let expectation = XCTestExpectation(description: "Returns error")
         MockURLProtocol.responseWithError(NSError(domain: "SDKTest", code: NSURLErrorNotConnectedToInternet, userInfo: nil), statusCode: 400)
+        var calledError = false
         
         self.account.deleteUserKeyPair(completion: { response in
             if response.error != nil {
+                calledError = true
                 expectation.fulfill()
-            } else {
-                XCTFail()
             }
         })
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
     }
     
     // MARK: GetUserAvatar
@@ -201,12 +221,14 @@ class DracoonAccountTests: DracoonSdkTestCase {
         
         self.setResponseModel(Avatar.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns Avatar")
+        var calledValue = false
         
         self.account.getUserAvatar(completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case.value(let response):
+                calledValue = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
@@ -214,6 +236,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
     }
     
 //    func testDownloadUserAvatar() {
@@ -238,16 +261,19 @@ class DracoonAccountTests: DracoonSdkTestCase {
         
         MockURLProtocol.responseWithError(NSError(domain: "SDKTest", code: NSURLErrorTimedOut, userInfo: nil), statusCode: 400)
         let expectation = XCTestExpectation(description: "Returns error")
+        var calledError = false
         
         self.account.downloadUserAvatar(targetUrl: URL(string:"/")!, completion: { result in
             switch result {
             case .error(_):
+                calledError = true
                 expectation.fulfill()
             case.value(_):
-                XCTFail()
+                break
             }
         })
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
     }
     
     // MARK: UpdateUserAvatar
@@ -255,13 +281,15 @@ class DracoonAccountTests: DracoonSdkTestCase {
     func testUpdateUserAvatar() {
 
         self.setResponseModel(Avatar.self, statusCode: 200)
+        var calledValue = false
 
         let expectation = XCTestExpectation(description: "Returns Avatar")
         self.account.updateUserAvatar(fileUrl: URL(string: "/")!, completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case.value(let response):
+                calledValue = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
@@ -269,12 +297,14 @@ class DracoonAccountTests: DracoonSdkTestCase {
         })
 
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
     }
     
     func testUpdateUserAvatar_withNoData_returnsError() {
         
         (FileUtils.fileHelper as! FileUtilsMock).returnedData = nil
         self.setResponseModel(Avatar.self, statusCode: 200)
+        var calledError = false
         
         let expectation = XCTestExpectation(description: "Returns Avatar")
         self.account.updateUserAvatar(fileUrl: URL(string: "/")!, completion: { result in
@@ -282,25 +312,28 @@ class DracoonAccountTests: DracoonSdkTestCase {
             case .error(let error):
                 switch error {
                 case .read_data_failure(at: _):
+                    calledError = true
                     expectation.fulfill()
                 default:
-                    XCTFail()
+                    break
                 }
                 expectation.fulfill()
             case.value(_):
-                XCTFail()
+                break
                 
             }
             
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
     }
     
     func testUpdateUserAvatar_withInvalidPath_returnsError() {
         
         (ValidatorUtils.validator as! ValidatorUtilsMock).pathExists = false
         self.setResponseModel(Avatar.self, statusCode: 200)
+        var calledError = false
         
         let expectation = XCTestExpectation(description: "Returns Avatar")
         self.account.updateUserAvatar(fileUrl: URL(string: "/")!, completion: { result in
@@ -308,19 +341,21 @@ class DracoonAccountTests: DracoonSdkTestCase {
             case .error(let error):
                 switch error {
                 case .file_does_not_exist(at: _):
+                    calledError = true
                     expectation.fulfill()
                 default:
-                    XCTFail()
+                    break
                 }
                 expectation.fulfill()
             case.value(_):
-                XCTFail()
+                break
                 
             }
             
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
     }
     
     // MARK: DeleteUserAvatar
@@ -328,18 +363,21 @@ class DracoonAccountTests: DracoonSdkTestCase {
     func testDeleteUserAvatar() {
         
         self.setResponseModel(Avatar.self, statusCode: 200)
+        var calledValue = false
         
         let expectation = XCTestExpectation(description: "Returns Avatar")
         self.account.deleteUserAvatar(completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case .value(let response):
+                calledValue = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
     }
 }

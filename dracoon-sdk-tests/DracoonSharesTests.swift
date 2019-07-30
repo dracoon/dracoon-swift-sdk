@@ -22,5 +22,131 @@ class DracoonSharesTests: DracoonSdkTestCase {
             return ""
         })
     }
+    
+    func testCreateDownloadShare() {
+        
+        self.setResponseModel(DownloadShare.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns DownloadShare")
+        var calledValue = false
+        
+        self.shares.createDownloadShare(nodeId: 1337, password: nil, completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case .value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
+    func testGetDownloadShares() {
+        
+        self.setResponseModel(DownloadShareList.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns DownloadShareList")
+        var calledValue = false
+        
+        self.shares.getDownloadShares(nodeId: 42, completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case .value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
+    func testGetDownloadShareQrCode() {
+        
+        self.setResponseModel(DownloadShare.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns DownloadShare")
+        var calledValue = false
+        
+        self.shares.getDownloadShareQrCode(shareId: 42, completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case .value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
+    func testCreateUploadShare() {
+        
+        self.setResponseModel(UploadShare.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns UploadShare")
+        var calledValue = false
+        
+        self.shares.createUploadShare(nodeId: 42, name: "name", password: nil, completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case .value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
+    func testGetUploadShares() {
+        
+        self.setResponseModel(UploadShareList.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns UploadShareList")
+        var calledValue = false
+        
+        self.shares.getUploadShares(nodeId: 42, completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case .value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
+    func testGetUploadShareQrCode() {
+        
+        self.setResponseModel(UploadShare.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns UploadShare")
+        var calledValue = false
+        
+        self.shares.getUploadShareQrCode(shareId: 42, completion: { result in
+            switch result {
+            case .error(_):
+                XCTFail()
+            case .value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
 
 }

@@ -808,10 +808,10 @@
 				E0AD911922EA01EA00741634 /* Mocks */,
 				E0AD90FB22E8727700741634 /* DracoonAccountTests.swift */,
 				E0945A2B22F0652D00C803F9 /* DracoonConfigTests.swift */,
-				E0AD911A22EA026B00741634 /* DracoonSdkTestCase.swift */,
 				E0AD911C22EA03B300741634 /* DracoonNodesTests.swift */,
 				E0945A2922F0558300C803F9 /* DracoonServerTests.swift */,
 				E0945A2D22F067C300C803F9 /* DracoonSharesTests.swift */,
+				E0AD911A22EA026B00741634 /* DracoonSdkTestCase.swift */,
 				E0F5DF4122EF380D00844012 /* TestQueue.swift */,
 			);
 			path = "dracoon-sdk-tests";
