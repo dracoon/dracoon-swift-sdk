@@ -222,6 +222,7 @@
 		E0945A2C22F0652D00C803F9 /* DracoonConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0945A2B22F0652D00C803F9 /* DracoonConfigTests.swift */; };
 		E0945A2E22F067C300C803F9 /* DracoonSharesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0945A2D22F067C300C803F9 /* DracoonSharesTests.swift */; };
 		E0945A3022F0682200C803F9 /* DracoonNodesMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0945A2F22F0682200C803F9 /* DracoonNodesMock.swift */; };
+		E0945A3222F07C2000C803F9 /* DracoonSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0945A3122F07C2000C803F9 /* DracoonSettingsTests.swift */; };
 		E0A9E11922EB28E4000C63DD /* DracoonErrorParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A9E11822EB28E4000C63DD /* DracoonErrorParserTest.swift */; };
 		E0AA72EB2089DD0B001BC290 /* FileUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AA72EA2089DD0B001BC290 /* FileUpload.swift */; };
 		E0AA72EF2089EE3C001BC290 /* DracoonAccountImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AA72EE2089EE3C001BC290 /* DracoonAccountImpl.swift */; };
@@ -472,6 +473,7 @@
 		E0945A2B22F0652D00C803F9 /* DracoonConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonConfigTests.swift; sourceTree = "<group>"; };
 		E0945A2D22F067C300C803F9 /* DracoonSharesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSharesTests.swift; sourceTree = "<group>"; };
 		E0945A2F22F0682200C803F9 /* DracoonNodesMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonNodesMock.swift; sourceTree = "<group>"; };
+		E0945A3122F07C2000C803F9 /* DracoonSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSettingsTests.swift; sourceTree = "<group>"; };
 		E0A9E11822EB28E4000C63DD /* DracoonErrorParserTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonErrorParserTest.swift; sourceTree = "<group>"; };
 		E0AA72EA2089DD0B001BC290 /* FileUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUpload.swift; sourceTree = "<group>"; };
 		E0AA72EE2089EE3C001BC290 /* DracoonAccountImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonAccountImpl.swift; sourceTree = "<group>"; };
@@ -810,6 +812,7 @@
 				E0945A2B22F0652D00C803F9 /* DracoonConfigTests.swift */,
 				E0AD911C22EA03B300741634 /* DracoonNodesTests.swift */,
 				E0945A2922F0558300C803F9 /* DracoonServerTests.swift */,
+				E0945A3122F07C2000C803F9 /* DracoonSettingsTests.swift */,
 				E0945A2D22F067C300C803F9 /* DracoonSharesTests.swift */,
 				E0AD911A22EA026B00741634 /* DracoonSdkTestCase.swift */,
 				E0F5DF4122EF380D00844012 /* TestQueue.swift */,
@@ -1178,6 +1181,7 @@
 				E0AD911D22EA03B300741634 /* DracoonNodesTests.swift in Sources */,
 				E0AD90FC22E8727700741634 /* DracoonAccountTests.swift in Sources */,
 				E0945A2C22F0652D00C803F9 /* DracoonConfigTests.swift in Sources */,
+				E0945A3222F07C2000C803F9 /* DracoonSettingsTests.swift in Sources */,
 				E0F5DF4222EF380D00844012 /* TestQueue.swift in Sources */,
 				E0AD90FA22E85E9800741634 /* MockURLProtocol.swift in Sources */,
 				E0AD911B22EA026B00741634 /* DracoonSdkTestCase.swift in Sources */,

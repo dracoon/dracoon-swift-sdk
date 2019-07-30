@@ -45,6 +45,8 @@ struct ResponseModelFactory {
             return self.getUploadShare() as? E
         } else if type == UploadShareList.self {
             return self.getUploadShareList() as? E
+        } else if type == CustomerSettingsResponse.self {
+            return self.getCustomerSettingsResponse() as? E
         }
         return nil
     }
@@ -127,5 +129,9 @@ struct ResponseModelFactory {
     private static func getUploadShareList() -> UploadShareList {
         let range = ModelRange(offset: 0, limit: 0, total: 1)
         return UploadShareList(range: range, items: [self.getUploadShare()])
+    }
+    
+    private static func getCustomerSettingsResponse() -> CustomerSettingsResponse {
+        return CustomerSettingsResponse(homeRoomParentName: "home", homeRoomQuota: 5000000000, homeRoomsActive: true, homeRoomParentId: 1337)
     }
 }
