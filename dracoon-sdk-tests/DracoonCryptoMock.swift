@@ -53,17 +53,19 @@ class DracoonCryptoMock: CryptoProtocol {
         return CryptoMock.getPlainFileKey()
     }
     
-    func createEncryptionCipher(fileKey: PlainFileKey) throws -> FileEncryptionCipher {
+    func createEncryptionCipher(fileKey: PlainFileKey) throws -> EncryptionCipher {
         if let error = testError {
             throw error
         }
         return CryptoMock.getEncryptionCipher()
     }
     
-    func createDecryptionCipher(fileKey: PlainFileKey) throws -> FileDecryptionCipher {
+    func createDecryptionCipher(fileKey: PlainFileKey) throws -> DecryptionCipher {
         if let error = testError {
             throw error
         }
         return CryptoMock.getDecyptionCipher()
     }
 }
+
+class TestEncryptionCipher {}

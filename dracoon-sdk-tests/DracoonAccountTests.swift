@@ -396,7 +396,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
     
     func testUpdateUserAvatar_withNoData_returnsError() {
         
-        (FileUtils.fileHelper as! FileUtilsMock).returnedData = nil
+        (FileUtils.fileHelper as! FileUtilsMock).returnsData = false
         self.setResponseModel(Avatar.self, statusCode: 200)
         var calledError = false
         

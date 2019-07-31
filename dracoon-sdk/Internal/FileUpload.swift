@@ -93,7 +93,7 @@ public class FileUpload {
         
         let totalFileSize = FileUtils.calculateFileSize(filePath: self.fileUrl) ?? 0 as Int64
         
-        var cipher: FileEncryptionCipher?
+        var cipher: EncryptionCipher?
         if let crypto = self.crypto {
             do {
                 let fileKey = try crypto.generateFileKey(version: CryptoConstants.DEFAULT_VERSION)
@@ -130,7 +130,7 @@ public class FileUpload {
         })
     }
     
-    fileprivate func createNextChunk(uploadId: String, offset: Int, fileSize: Int64, cipher: FileEncryptionCipher?, completion: @escaping () -> Void) {
+    fileprivate func createNextChunk(uploadId: String, offset: Int, fileSize: Int64, cipher: EncryptionCipher?, completion: @escaping () -> Void) {
         let range = NSMakeRange(offset, DracoonConstants.UPLOAD_CHUNK_SIZE)
         let lastBlock = Int64(offset + DracoonConstants.UPLOAD_CHUNK_SIZE) >= fileSize
         do {

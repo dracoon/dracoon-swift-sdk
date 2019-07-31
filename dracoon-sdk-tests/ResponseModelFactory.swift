@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import crypto_sdk
 @testable import dracoon_sdk
 
 struct ResponseModelFactory {
@@ -47,6 +48,8 @@ struct ResponseModelFactory {
             return self.getUploadShareList() as? E
         } else if type == CustomerSettingsResponse.self {
             return self.getCustomerSettingsResponse() as? E
+        } else if type == EncryptedFileKey.self {
+            return self.getFileKey() as? E
         }
         return nil
     }
@@ -133,5 +136,9 @@ struct ResponseModelFactory {
     
     private static func getCustomerSettingsResponse() -> CustomerSettingsResponse {
         return CustomerSettingsResponse(homeRoomParentName: "home", homeRoomQuota: 5000000000, homeRoomsActive: true, homeRoomParentId: 1337)
+    }
+    
+    private static func getFileKey() -> EncryptedFileKey {
+        return EncryptedFileKey(key: "encryptedFileKey", version: "test", iv: "iv", tag: "tag")
     }
 }

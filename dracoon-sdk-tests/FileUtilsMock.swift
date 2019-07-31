@@ -10,10 +10,11 @@
 
 class FileUtilsMock: FileHelper {
     
-    var returnedData: Data? = Data()
+    var size: Int64 = 42 * 1024
+    var returnsData = true
     
     func calculateFileSize(filePath: URL) -> Int64? {
-        return 42 * 1024
+        return size
     }
     
     func calculateMD5(_ data: Data) -> String {
@@ -21,11 +22,17 @@ class FileUtilsMock: FileHelper {
     }
     
     func readData(_ fileUrl: URL) throws -> Data? {
-        return self.returnedData
+        if returnsData {
+            return Data(count: Int(size))
+        }
+        return nil
     }
     
     func readData(_ fileUrl: URL?, range: NSRange) throws -> Data? {
-        return self.returnedData
+        if returnsData {
+            return Data(count: Int(size))
+        }
+        return nil
     }
     
     func moveItem(at sourceUrl: URL, to targetUrl: URL) throws {

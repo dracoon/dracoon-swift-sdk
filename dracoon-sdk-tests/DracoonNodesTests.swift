@@ -308,11 +308,51 @@ class DracoonNodesTests: DracoonSdkTestCase {
         let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
         
-        self.testWaiter.wait(for: [expectation], timeout: 4.0)
+        self.testWaiter.wait(for: [expectation], timeout: 60.0)
         XCTAssertTrue(calledOnComplete)
     }
     
-    func testUpload() {
+    func testEncryptedUpload_succeeds_callsOnComplete() {
+        
+        let encryptedNode = Node(_id: 1337, type: .file, name: "encryptedFile"){$0.isEncrypted = true}
+        MockURLProtocol.responseWithModel(Node.self, model: encryptedNode, statusCode: 200)
+        self.setResponseModel(CreateFileUploadResponse.self, statusCode: 200)
+        self.setResponseModel(Node.self, statusCode: 200) // TODO set upload response
+        self.setResponseModel(Node.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "upload")
+        var calledOnComplete = false
+        
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        
+        let uploadCallback = UploadCallback()
+        uploadCallback.onStarted = { _ in
+            print("started")
+        }
+        uploadCallback.onError = { error in
+            print(error)
+            XCTFail()
+        }
+        uploadCallback.onCanceled = {
+            print("canceled")
+            XCTFail()
+        }
+        uploadCallback.onProgress = { progress in
+            print("upload progress \(progress)")
+        }
+        uploadCallback.onComplete = { node in
+            print("completed")
+            calledOnComplete = true
+            expectation.fulfill()
+        }
+        
+        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testUpload")
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        
+        self.testWaiter.wait(for: [expectation], timeout: 60.0)
+        XCTAssertTrue(calledOnComplete)
+    }
+    
+    func testUpload_fails() {
         
         self.setResponseModel(Node.self, statusCode: 200)
         self.setResponseModel(CreateFileUploadResponse.self, statusCode: 200)
@@ -384,6 +424,42 @@ class DracoonNodesTests: DracoonSdkTestCase {
         self.nodes.downloadFile(nodeId: 42, targetUrl: url, callback: callback)
         
         self.testWaiter.wait(for: [expectation], timeout: 4.0)
+        XCTAssertTrue(calledOnComplete)
+    }
+    
+    func testEncryptedDownload_succeeds_callsOnComplete() {
+        
+        let encryptedNode = Node(_id: 1337, type: .file, name: "encryptedFile"){$0.isEncrypted = true}
+        MockURLProtocol.responseWithModel(Node.self, model: encryptedNode, statusCode: 200)
+        self.setResponseModel(EncryptedFileKey.self, statusCode: 200)
+        self.setResponseModel(DownloadTokenGenerateResponse.self, statusCode: 200)
+        let urlRequest = URLRequest(url: URL(string: "https://dracoon.team")!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval())
+        let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testDownload")
+        let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
+        MockURLProtocol.response(with: downloadResponse, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Calls onComplete")
+        var calledOnComplete = false
+        
+        let callback = DownloadCallback()
+        callback.onError = { error in
+            print(error)
+            XCTFail()
+        }
+        callback.onProgress = { progress in
+            print("download progress \(progress)")
+        }
+        callback.onCanceled = {
+            XCTFail()
+        }
+        callback.onComplete = { _ in
+            calledOnComplete = true
+            expectation.fulfill()
+        }
+        
+        self.nodes.downloadFile(nodeId: 42, targetUrl: url, callback: callback)
+        
+        self.testWaiter.wait(for: [expectation], timeout: 60.0)
         XCTAssertTrue(calledOnComplete)
     }
     
