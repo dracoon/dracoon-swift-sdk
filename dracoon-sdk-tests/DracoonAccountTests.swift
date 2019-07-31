@@ -204,6 +204,75 @@ class DracoonAccountTests: DracoonSdkTestCase {
         XCTAssertTrue(calledError)
     }
     
+    // MARK: CheckUserKeyPair
+    
+    func testCheckUserKeyPair_returnsKeyPair() {
+        
+        self.setResponseModel(UserKeyPairContainer.self, statusCode: 200)
+        var calledValue = false
+        
+        let expectation = XCTestExpectation(description: "Returns UserKeyPairContainer")
+        self.account.checkUserKeyPairPassword(password: "password", completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case.value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+            
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+        XCTAssertTrue((self.crypto as! DracoonCryptoMock).checkKeyPairCalled)
+    }
+    
+    func testCheckUserKeyPair_passwordWrong_returnsError() {
+        
+        (self.crypto as! DracoonCryptoMock).checkKeyPairSuccess = false
+        self.setResponseModel(UserKeyPairContainer.self, statusCode: 200)
+        var calledError = false
+        
+        let expectation = XCTestExpectation(description: "Returns UserKeyPairContainer")
+        self.account.checkUserKeyPairPassword(password: "password", completion: { result in
+            switch result {
+            case .error(_):
+                calledError = true
+                expectation.fulfill()
+            case.value(_):
+                break
+            }
+            
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
+    }
+    
+    func testCheckUserKeyPair_getKeyPairFails_returnsError() {
+        
+        let error = NSError(domain: "SDKTest", code: NSURLErrorTimedOut, userInfo: nil)
+        MockURLProtocol.responseWithError(error, statusCode: 400)
+        var calledError = false
+        
+        let expectation = XCTestExpectation(description: "Returns UserKeyPairContainer")
+        self.account.checkUserKeyPairPassword(password: "password", completion: { result in
+            switch result {
+            case .error(_):
+                calledError = true
+                expectation.fulfill()
+            case.value(_):
+                break
+            }
+            
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
+    }
+    
     // MARK: DeleteUserKeyPair
     
     func testDeleteUserKeyPair() {

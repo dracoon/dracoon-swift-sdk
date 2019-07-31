@@ -27,9 +27,13 @@ class DracoonErrorParserTest: XCTestCase {
     }
     
     func testStatusCodeUnknown() {
-        let modelToTest = ModelErrorResponse(code: nil, message: nil, debugInfo: nil, errorCode: 0)
-        let apiCode = errorParser.parseApiErrorResponse(modelToTest, requestType: .other)
+        var modelToTest = ModelErrorResponse(code: nil, message: nil, debugInfo: nil, errorCode: 0)
+        var apiCode = errorParser.parseApiErrorResponse(modelToTest, requestType: .other)
         XCTAssert(apiCode == DracoonApiCode.UNKNOWN)
+        
+        modelToTest = ModelErrorResponse(code: 0, message: nil, debugInfo: nil, errorCode: 0)
+        apiCode = errorParser.parseApiErrorResponse(modelToTest, requestType: .other)
+        XCTAssert(apiCode == DracoonApiCode.SERVER_UNKNOWN_ERROR)
     }
     
     func testBadRequestApiCodes() {
@@ -335,7 +339,7 @@ class DracoonErrorParserTest: XCTestCase {
         XCTAssert(expectedApiCode == returnedApiCode)
         
         expectedApiCode = DracoonApiCode.PERMISSION_MANAGE_UL_SHARES_ERROR
-        returnedApiCode = self.parseError(code: code, errorCode: 0, requestType: .deleteULShare)
+        returnedApiCode = self.parseError(code: code, errorCode: 0, requestType: .createULShare)
         XCTAssert(expectedApiCode == returnedApiCode)
         
         expectedApiCode = DracoonApiCode.PERMISSION_MANAGE_UL_SHARES_ERROR
@@ -425,6 +429,10 @@ class DracoonErrorParserTest: XCTestCase {
         
         expectedApiCode = DracoonApiCode.SERVER_RESTORE_VERSION_NOT_FOUND
         returnedApiCode = self.parseError(code: code, errorCode: -41100)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.SERVER_DL_SHARE_NOT_FOUND
+        returnedApiCode = self.parseError(code: code, errorCode: -60000)
         XCTAssert(expectedApiCode == returnedApiCode)
         
         expectedApiCode = DracoonApiCode.SERVER_UPLOAD_NOT_FOUND

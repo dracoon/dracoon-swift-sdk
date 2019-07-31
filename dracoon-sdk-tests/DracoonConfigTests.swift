@@ -48,7 +48,7 @@ class DracoonConfigTests: DracoonSdkTestCase {
         let expectation = XCTestExpectation(description: "Returns GeneralSettings")
         var calledValue = false
         
-        self.config.getSystemDefaults(completion: { result in
+        self.config.getGeneralSettings(completion: { result in
             switch result {
             case .error(_):
                 break
@@ -69,7 +69,7 @@ class DracoonConfigTests: DracoonSdkTestCase {
         let expectation = XCTestExpectation(description: "Returns InfrastructureProperties")
         var calledValue = false
         
-        self.config.getSystemDefaults(completion: { result in
+        self.config.getInfrastructureProperties(completion: { result in
             switch result {
             case .error(_):
                 break

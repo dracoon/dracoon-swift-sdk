@@ -24,7 +24,9 @@ class DracoonNodesMock: DracoonNodes {
         completion(Dracoon.Result.value(self.nodeIsEncrypted))
     }
     
-    func getFileKey(nodeId: Int64, completion: @escaping (Dracoon.Result<EncryptedFileKey>) -> Void) {}
+    func getFileKey(nodeId: Int64, completion: @escaping (Dracoon.Result<EncryptedFileKey>) -> Void) {
+        completion(Dracoon.Result.value(EncryptedFileKey(key: "encryptedFileKey", version: "test", iv: "iv", tag: "tag")))
+    }
     
     func createRoom(request: CreateRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {}
     

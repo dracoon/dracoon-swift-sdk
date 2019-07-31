@@ -25,9 +25,20 @@ class DracoonAccountMock: DracoonAccount {
     
     func setUserKeyPair(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {}
     
-    func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {}
+    func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        let userPublicKey = UserPublicKey(publicKey: "publicKey", version: "test")
+        let userPrivateKey = UserPrivateKey(privateKey: "privateKey", version: "test")
+        let userKeyPair = UserKeyPair(publicKey: userPublicKey, privateKey: userPrivateKey)
+        let container = UserKeyPairContainer(publicKey: userKeyPair.publicKeyContainer.publicKey,
+                                             publicVersion: userKeyPair.publicKeyContainer.version,
+                                             privateKey: userKeyPair.privateKeyContainer.privateKey,
+                                             privateVersion: userKeyPair.privateKeyContainer.version)
+        completion(Dracoon.Result.value(container))
+    }
     
-    func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {}
+    func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        self.getUserKeyPair(completion: completion)
+    }
     
     func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void) {}
     

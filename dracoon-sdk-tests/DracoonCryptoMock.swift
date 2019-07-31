@@ -15,6 +15,7 @@ class DracoonCryptoMock: CryptoProtocol {
     var testError: DracoonError?
     var generateKeyPairCalled = false
     var checkKeyPairCalled = false
+    var checkKeyPairSuccess = true
     
     func generateUserKeyPair(password: String, version: String) throws -> UserKeyPair {
         self.generateKeyPairCalled = true
@@ -28,7 +29,7 @@ class DracoonCryptoMock: CryptoProtocol {
     
     func checkUserKeyPair(keyPair: UserKeyPair, password: String) -> Bool {
         self.checkKeyPairCalled = true
-        return true
+        return self.checkKeyPairSuccess
     }
     
     func encryptFileKey(fileKey: PlainFileKey, publicKey: UserPublicKey) throws -> EncryptedFileKey {

@@ -832,10 +832,10 @@
 				E0AD90FF22E89BF600741634 /* OAuthClientMock.swift */,
 				E0AD911522E9F59900741634 /* ResponseModelFactory.swift */,
 				E0AD911E22EA049300741634 /* DracoonAccountMock.swift */,
+				E0945A2F22F0682200C803F9 /* DracoonNodesMock.swift */,
 				E0F5DF3722EEF4E000844012 /* DracoonCryptoMock.swift */,
 				E0F5DF3D22EF31A300844012 /* ValidatorUtilsMock.swift */,
 				E0F5DF3F22EF320200844012 /* FileUtilsMock.swift */,
-				E0945A2F22F0682200C803F9 /* DracoonNodesMock.swift */,
 			);
 			name = Mocks;
 			sourceTree = "<group>";

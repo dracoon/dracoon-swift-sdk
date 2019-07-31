@@ -40,6 +40,7 @@ class DracoonSdkTestCase: XCTestCase {
         cryptoMock.testError = nil
         cryptoMock.generateKeyPairCalled = false
         cryptoMock.checkKeyPairCalled = false
+        cryptoMock.checkKeyPairSuccess = true
     }
     
     func setResponseModel<E: Encodable>(_ type: E.Type, statusCode: Int) {
