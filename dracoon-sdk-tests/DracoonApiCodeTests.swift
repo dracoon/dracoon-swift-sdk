@@ -11,8 +11,11 @@ import XCTest
 
 class DracoonApiCodeTests: XCTestCase {
     
-    
     func testAuthenticationApiErrorCodes() {
+        
+        XCTAssert(DracoonApiCode.UNKNOWN.rawValue == 0)
+        XCTAssertEqual(DracoonApiCode.UNKNOWN.description, "An unknown error occurred.")
+        
         XCTAssert(DracoonApiCode.AUTH_UNKNOWN_ERROR.rawValue == 1000)
         XCTAssertEqual(DracoonApiCode.AUTH_UNKNOWN_ERROR.description, "An authentication error occurred.")
         
@@ -270,5 +273,98 @@ class DracoonApiCodeTests: XCTestCase {
         
         XCTAssert(DracoonApiCode.PERMISSION_DELETE_RECYCLE_BIN_ERROR.rawValue == 4109)
         XCTAssertEqual(DracoonApiCode.PERMISSION_DELETE_RECYCLE_BIN_ERROR.description, "User has no permission to delete recycle bin items in this room.")
+    }
+    
+    func testServerApiErrorCodes() {
+        
+        XCTAssert(DracoonApiCode.SERVER_UNKNOWN_ERROR.rawValue == 5000)
+        XCTAssertEqual(DracoonApiCode.SERVER_UNKNOWN_ERROR.description, "An unknown server error occurred.")
+        
+        XCTAssert(DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED.rawValue == 5090)
+        XCTAssertEqual(DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED.description, "The AV scanner detected that the file could be malicious.")
+        
+        // Nodes
+        
+        XCTAssert(DracoonApiCode.SERVER_NODE_NOT_FOUND.rawValue == 5100)
+        XCTAssertEqual(DracoonApiCode.SERVER_NODE_NOT_FOUND.description, "Requested room/folder/file was not found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_ROOM_NOT_FOUND.rawValue == 5101)
+        XCTAssertEqual(DracoonApiCode.SERVER_ROOM_NOT_FOUND.description, "Requested room was not found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_FOLDER_NOT_FOUND.rawValue == 5102)
+        XCTAssertEqual(DracoonApiCode.SERVER_FOLDER_NOT_FOUND.description, "Requested folder was not found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_FILE_NOT_FOUND.rawValue == 5103)
+        XCTAssertEqual(DracoonApiCode.SERVER_FILE_NOT_FOUND.description, "Requested file was not found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_SOURCE_NODE_NOT_FOUND.rawValue == 5104)
+        XCTAssertEqual(DracoonApiCode.SERVER_SOURCE_NODE_NOT_FOUND.description, "Source node not found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_TARGET_NODE_NOT_FOUND.rawValue == 5105)
+        XCTAssertEqual(DracoonApiCode.SERVER_TARGET_NODE_NOT_FOUND.description, "Target room or folder was not found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_TARGET_ROOM_NOT_FOUND.rawValue == 5106)
+        XCTAssertEqual(DracoonApiCode.SERVER_TARGET_ROOM_NOT_FOUND.description, "Target room was not found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_INSUFFICIENT_STORAGE.rawValue == 5107)
+        XCTAssertEqual(DracoonApiCode.SERVER_INSUFFICIENT_STORAGE.description, "Not enough free storage on the server.")
+        
+        XCTAssert(DracoonApiCode.SERVER_INSUFFICIENT_CUSTOMER_QUOTA.rawValue == 5108)
+        XCTAssertEqual(DracoonApiCode.SERVER_INSUFFICIENT_CUSTOMER_QUOTA.description, "Not enough quota for the customer.")
+        
+        XCTAssert(DracoonApiCode.SERVER_INSUFFICIENT_ROOM_QUOTA.rawValue == 5109)
+        XCTAssertEqual(DracoonApiCode.SERVER_INSUFFICIENT_ROOM_QUOTA.description, "Not enough quota for the room.")
+        
+        XCTAssert(DracoonApiCode.SERVER_INSUFFICIENT_UL_SHARE_QUOTA.rawValue == 5110)
+        XCTAssertEqual(DracoonApiCode.SERVER_INSUFFICIENT_UL_SHARE_QUOTA.description, "Not enough quota for the upload share.")
+        
+        XCTAssert(DracoonApiCode.SERVER_RESTORE_VERSION_NOT_FOUND.rawValue == 5111)
+        XCTAssertEqual(DracoonApiCode.SERVER_RESTORE_VERSION_NOT_FOUND.description, "The restore version id was not found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_UPLOAD_NOT_FOUND.rawValue == 5112)
+        XCTAssertEqual(DracoonApiCode.SERVER_UPLOAD_NOT_FOUND.description, "Upload was not found.")
+        
+        // Shares
+        
+        XCTAssert(DracoonApiCode.SERVER_DL_SHARE_NOT_FOUND.rawValue == 5200)
+        XCTAssertEqual(DracoonApiCode.SERVER_DL_SHARE_NOT_FOUND.description, "Download share could not be found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_UL_SHARE_NOT_FOUND.rawValue == 5201)
+        XCTAssertEqual(DracoonApiCode.SERVER_UL_SHARE_NOT_FOUND.description, "Upload share could not be found.")
+
+        // Customer
+        
+        XCTAssert(DracoonApiCode.SERVER_PLACEHOLDER_CUSTOMER.rawValue == 5400)
+        XCTAssertEqual(DracoonApiCode.SERVER_PLACEHOLDER_CUSTOMER.description, "Placeholder for customer errors")
+
+        // Users
+        
+        XCTAssert(DracoonApiCode.SERVER_USER_NOT_FOUND.rawValue == 5500)
+        XCTAssertEqual(DracoonApiCode.SERVER_USER_NOT_FOUND.description, "User could not be found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_USER_KEY_PAIR_NOT_FOUND.rawValue == 5550)
+        XCTAssertEqual(DracoonApiCode.SERVER_USER_KEY_PAIR_NOT_FOUND.description, "Encryption key pair was not found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_USER_KEY_PAIR_ALREADY_SET.rawValue == 5551)
+        XCTAssertEqual(DracoonApiCode.SERVER_USER_KEY_PAIR_ALREADY_SET.description, "Encryption key pair was already set.")
+        
+        XCTAssert(DracoonApiCode.SERVER_USER_FILE_KEY_NOT_FOUND.rawValue == 5552)
+        XCTAssertEqual(DracoonApiCode.SERVER_USER_FILE_KEY_NOT_FOUND.description, "Encryption file key could not be found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_AVATAR_NOT_FOUND.rawValue == 5553)
+        XCTAssertEqual(DracoonApiCode.SERVER_AVATAR_NOT_FOUND.description, "Avatar could not be found.")
+        
+        // Groups
+        
+        XCTAssert(DracoonApiCode.SERVER_PLACEHOLDER_GROUPS.rawValue == 5600)
+        XCTAssertEqual(DracoonApiCode.SERVER_PLACEHOLDER_GROUPS.description, "Placeholder for groups errors")
+
+        // Config
+        
+        XCTAssert(DracoonApiCode.SERVER_SMS_IS_DISABLED.rawValue == 5800)
+        XCTAssertEqual(DracoonApiCode.SERVER_SMS_IS_DISABLED.description, "Sending SMS is disabled.")
+        
+        XCTAssert(DracoonApiCode.SERVER_SMS_COULD_NOT_BE_SENT.rawValue == 5801)
+        XCTAssertEqual(DracoonApiCode.SERVER_SMS_COULD_NOT_BE_SENT.description, "SMS could not be sent.")
     }
 }
