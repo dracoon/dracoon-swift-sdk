@@ -24,6 +24,8 @@ class OAuthInterceptor: RequestAdapter, RequestRetrier {
     }
     
     func should(_ manager: SessionManager, retry request: Request, with error: Error, completion: @escaping RequestRetryCompletion) {}
+    func getAccessToken() -> String? { return nil }
+    func getRefreshToken() -> String? { return nil }
     
 }
 
@@ -112,7 +114,7 @@ class OAuthTokenManager: OAuthInterceptor {
         }
     }
     
-    public func getAccessToken() -> String? {
+    public override func getAccessToken() -> String? {
         switch mode {
         case .authorizationCode(_, _, _):
             return nil
@@ -123,7 +125,7 @@ class OAuthTokenManager: OAuthInterceptor {
         }
     }
     
-    public func getRefreshToken() -> String? {
+    public override func getRefreshToken() -> String? {
         switch mode {
         case .authorizationCode(_, _, _):
             return nil

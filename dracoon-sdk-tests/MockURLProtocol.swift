@@ -59,7 +59,6 @@ extension MockURLProtocol: URLSessionDataDelegate {
             let urlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: MockURLProtocol.statusCodes.poll()!, httpVersion: nil, headerFields: nil)!
             client?.urlProtocol(self, didReceive: urlResponse, cacheStoragePolicy: .notAllowed)
         }
-        
         client?.urlProtocolDidFinishLoading(self)
     }
     

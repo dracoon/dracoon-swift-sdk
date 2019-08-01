@@ -48,7 +48,6 @@ public class FileUpload {
             switch result {
             case .value(let response):
                 self.uploadId = response.uploadId
-                self.callback?.onStarted?(response.uploadId)
                 self.uploadChunks(uploadId: response.uploadId)
             case .error(let error):
                 self.callback?.onError?(error)

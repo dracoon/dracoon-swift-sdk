@@ -50,6 +50,8 @@ struct ResponseModelFactory {
             return self.getCustomerSettingsResponse() as? E
         } else if type == EncryptedFileKey.self {
             return self.getFileKey() as? E
+        } else if type == MissingKeysResponse.self {
+            return self.getMissingKeysResponse() as? E
         }
         return nil
     }
@@ -140,5 +142,13 @@ struct ResponseModelFactory {
     
     private static func getFileKey() -> EncryptedFileKey {
         return EncryptedFileKey(key: "encryptedFileKey", version: "test", iv: "iv", tag: "tag")
+    }
+    
+    private static func getMissingKeysResponse() -> MissingKeysResponse {
+        let range = ModelRange(offset: 0, limit: 0, total: 1)
+        let userFileMapping = UserIdFileIdItem(userId: 42, fileId: 1337)
+        let userKeyMapping = UserUserPublicKey(_id: 42, publicKeyContainer: UserPublicKey(publicKey: "publicKey", version: "test"))
+        let fileKey = FileFileKeys(_id: 1337, fileKeyContainer: EncryptedFileKey(key: "encryptedKey", version: "test", iv: "iv", tag: "tag"))
+        return MissingKeysResponse(range: range, items: [userFileMapping], users: [userKeyMapping], files: [fileKey])
     }
 }

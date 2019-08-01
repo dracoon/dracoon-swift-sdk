@@ -75,7 +75,7 @@ public class FileDownload {
     }
     
     fileprivate func download() {
-        getDownloadToken(nodeId: self.nodeId, completion: { result in
+        self.getDownloadToken(nodeId: self.nodeId, completion: { result in
             switch result {
             case .value(let tokenResponse):
                 if let downloadUrl = tokenResponse.downloadUrl {

@@ -35,14 +35,6 @@ class DracoonSdkTestCase: XCTestCase {
         
     }
     
-    override func tearDown() {
-        let cryptoMock = self.crypto as! DracoonCryptoMock
-        cryptoMock.testError = nil
-        cryptoMock.generateKeyPairCalled = false
-        cryptoMock.checkKeyPairCalled = false
-        cryptoMock.checkKeyPairSuccess = true
-    }
-    
     func setResponseModel<E: Encodable>(_ type: E.Type, statusCode: Int) {
         let responseModel = ResponseModelFactory.getTestResponseModel(type)!
         MockURLProtocol.responseWithModel(type, model: responseModel, statusCode: statusCode)

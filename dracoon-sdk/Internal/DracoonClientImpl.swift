@@ -65,7 +65,7 @@ public class DracoonClientImpl: DracoonClient {
         shares = DracoonSharesImpl(config: requestConfig, nodes: nodes, account: account, getEncryptionPassword: getEncryptionPassword)
     }
     
-    fileprivate let oAuthTokenManager: OAuthTokenManager
+    let oAuthTokenManager: OAuthInterceptor
     
     public var server: DracoonServer
     
