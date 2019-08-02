@@ -10,7 +10,9 @@ import Foundation
 public class OAuthHelper {
     
     public static func createAuthorizationUrl(serverUrl: URL, clientId: String, state: String, deviceName: String?) -> URL {
-        ValidatorUtils.validate(serverUrl: serverUrl)
+        if !ValidatorUtils.isValid(serverUrl: serverUrl) {
+            fatalError("Invalid server url")
+        }
         precondition(!clientId.isEmpty)
         precondition(!state.isEmpty)
         let base = serverUrl.absoluteString + OAuthConstants.OAUTH_PATH + OAuthConstants.OAUTH_AUTHORIZE_PATH
