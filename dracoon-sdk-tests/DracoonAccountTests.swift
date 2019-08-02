@@ -341,7 +341,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
         self.account.downloadUserAvatar(targetUrl: targetUrl, completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case.value(let response):
                 XCTAssertNotNil(response)
                 expectation.fulfill()

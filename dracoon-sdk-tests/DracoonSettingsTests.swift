@@ -42,7 +42,7 @@ class DracoonSettingsTests: DracoonSdkTestCase {
         XCTAssertTrue(calledValue)
     }
     
-    func testGetCustomerSettings_withWrongModel_returnsDecodeError() {
+    func testGetCustomerSettings_withUnexpectedReturnModel_returnsDecodeError() {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns error")

@@ -106,7 +106,7 @@ class DracoonSharesTests: DracoonSdkTestCase {
         self.shares.getDownloadShares(nodeId: 42, completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case .value(let response):
                 calledValue = true
                 XCTAssertNotNil(response)
@@ -127,7 +127,7 @@ class DracoonSharesTests: DracoonSdkTestCase {
         self.shares.getDownloadShareQrCode(shareId: 42, completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case .value(let response):
                 calledValue = true
                 XCTAssertNotNil(response)
@@ -148,7 +148,7 @@ class DracoonSharesTests: DracoonSdkTestCase {
         self.shares.createUploadShare(nodeId: 42, name: "name", password: nil, completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case .value(let response):
                 calledValue = true
                 XCTAssertNotNil(response)
@@ -169,7 +169,7 @@ class DracoonSharesTests: DracoonSdkTestCase {
         self.shares.getUploadShares(nodeId: 42, completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case .value(let response):
                 calledValue = true
                 XCTAssertNotNil(response)
@@ -190,7 +190,7 @@ class DracoonSharesTests: DracoonSdkTestCase {
         self.shares.getUploadShareQrCode(shareId: 42, completion: { result in
             switch result {
             case .error(_):
-                XCTFail()
+                break
             case .value(let response):
                 calledValue = true
                 XCTAssertNotNil(response)
