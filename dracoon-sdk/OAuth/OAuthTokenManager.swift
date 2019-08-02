@@ -8,35 +8,37 @@
 import Foundation
 import Alamofire
 
-class OAuthInterceptor: RequestAdapter, RequestRetrier {
+protocol OAuthInterceptor: RequestAdapter, RequestRetrier {
     
-    fileprivate let oAuthClient: OAuthClient
-    public fileprivate(set) var mode: DracoonAuthMode
-    weak var delegate: OAuthTokenChangedDelegate?
+    var oAuthClient: OAuthClient { get }
+    var mode: DracoonAuthMode { get }
     
-    init(authMode: DracoonAuthMode, oAuthClient: OAuthClient) {
-        self.mode = authMode
-        self.oAuthClient = oAuthClient
-    }
+    init(authMode: DracoonAuthMode, oAuthClient: OAuthClient)
     
-    func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
-        return urlRequest
-    }
-    
-    func should(_ manager: SessionManager, retry request: Request, with error: Error, completion: @escaping RequestRetryCompletion) {}
-    func getAccessToken() -> String? { return nil }
-    func getRefreshToken() -> String? { return nil }
+    func setOAuthDelegate(_ delegate: OAuthTokenChangedDelegate?)
+    func getAccessToken() -> String?
+    func getRefreshToken() -> String?
     
 }
 
 class OAuthTokenManager: OAuthInterceptor {
     
-    override init(authMode: DracoonAuthMode, oAuthClient: OAuthClient) {
-        super.init(authMode: authMode, oAuthClient: oAuthClient)
+    var oAuthClient: OAuthClient
+    var mode: DracoonAuthMode
+    
+    weak var delegate: OAuthTokenChangedDelegate?
+    
+    required init(authMode: DracoonAuthMode, oAuthClient: OAuthClient) {
+        self.mode = authMode
+        self.oAuthClient = oAuthClient
         self.getToken{_, _ in}
     }
     
-    override func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
+    func setOAuthDelegate(_ delegate: OAuthTokenChangedDelegate?) {
+        self.delegate = delegate
+    }
+    
+    func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
         if urlRequest.allHTTPHeaderFields?.contains(where: { $0.key == DracoonConstants.AUTHORIZATION_HEADER }) ?? false {
             return urlRequest
         }
@@ -72,7 +74,7 @@ class OAuthTokenManager: OAuthInterceptor {
     // indicates that a request is trying to get a new access token
     private var isRefreshing = false
     
-    override func should(_ manager: SessionManager, retry request: Request, with error: Error, completion: @escaping RequestRetryCompletion) {
+    func should(_ manager: SessionManager, retry request: Request, with error: Error, completion: @escaping RequestRetryCompletion) {
         // either we get an unauthorized response or the error code explicitly state that the token is expired or we are in code flow
         if isUnauthorized(request: request) || isExpiredOrCodeFlow(error: error) {
             lock.lock(); defer { lock.unlock() }
@@ -114,7 +116,7 @@ class OAuthTokenManager: OAuthInterceptor {
         }
     }
     
-    public override func getAccessToken() -> String? {
+    public func getAccessToken() -> String? {
         switch mode {
         case .authorizationCode(_, _, _):
             return nil
@@ -125,7 +127,7 @@ class OAuthTokenManager: OAuthInterceptor {
         }
     }
     
-    public override func getRefreshToken() -> String? {
+    public func getRefreshToken() -> String? {
         switch mode {
         case .authorizationCode(_, _, _):
             return nil

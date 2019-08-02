@@ -30,7 +30,11 @@ class DracoonSdkTestCase: XCTestCase {
         config.protocolClasses = [MockURLProtocol.self]
         let sessionManager = Alamofire.SessionManager(configuration: config)
         
-        self.requestConfig = DracoonRequestConfig(sessionManager: sessionManager, serverUrl: URL(string: "https://dracoon.team")!, apiPath: "/v4", oauthTokenManager: OAuthTokenManagerMock(),
+        let authMode = DracoonAuthMode.accessToken(accessToken: "mock")
+        let oAuthClient = OAuthClientMock(serverUrl: URL(string: "https://dracoon.team")!)
+        let oauthManager = OAuthTokenManagerMock(authMode: authMode, oAuthClient: oAuthClient)
+        
+        self.requestConfig = DracoonRequestConfig(sessionManager: sessionManager, serverUrl: URL(string: "https://dracoon.team")!, apiPath: "/tests/v4", oauthTokenManager: oauthManager,
                                                  encoder: JSONEncoder(), decoder: JSONDecoder())
         
     }

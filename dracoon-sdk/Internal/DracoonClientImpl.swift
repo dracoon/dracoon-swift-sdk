@@ -43,7 +43,7 @@ public class DracoonClientImpl: DracoonClient {
         
         oAuthTokenManager = OAuthTokenManager(authMode: authMode,
                                               oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: trimmedUrl, sessionManager: sessionManager))
-        oAuthTokenManager.delegate = oauthCallback
+        oAuthTokenManager.setOAuthDelegate(oauthCallback)
         
         sessionManager.retrier = oAuthTokenManager
         sessionManager.adapter = oAuthTokenManager

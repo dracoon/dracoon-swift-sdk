@@ -42,6 +42,32 @@ class DracoonSettingsTests: DracoonSdkTestCase {
         XCTAssertTrue(calledValue)
     }
     
+    func testGetCustomerSettings_withWrongModel_returnsDecodeError() {
+        
+        self.setResponseModel(Node.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns error")
+        var calledError = false
+        
+        self.settings.getServerSettings(completion: { result in
+            switch result {
+            case .error(let error):
+                switch error {
+                case .decode(error: _, statusCode: _):
+                    calledError = true
+                    expectation.fulfill()
+                default:
+                    break
+                }
+                break
+            case .value(_):
+                break
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
+    }
+    
     func testUpdateCustomerSettings() {
         
         self.setResponseModel(CustomerSettingsResponse.self, statusCode: 200)
