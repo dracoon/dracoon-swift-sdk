@@ -113,7 +113,7 @@ struct ResponseModelFactory {
     }
     
     private static func getInfrastructureProperties() -> InfrastructureProperties {
-        return InfrastructureProperties(smsConfigEnabled: false, mediaServerConfigEnabled: true, s3DefaultRegion: nil)
+        return InfrastructureProperties(smsConfigEnabled: false, mediaServerConfigEnabled: true, s3DefaultRegion: nil, s3EnforceDirectUpload: false)
     }
     
     private static func getDownloadShare() -> DownloadShare {

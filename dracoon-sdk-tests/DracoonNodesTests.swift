@@ -19,7 +19,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
     override func setUp() {
         super.setUp()
         
-        self.nodes = DracoonNodesImpl(config: self.requestConfig, crypto: self.crypto, account: DracoonAccountMock(), getEncryptionPassword: {
+        self.nodes = DracoonNodesImpl(requestConfig: self.requestConfig, crypto: self.crypto, account: DracoonAccountMock(), config: DracoonConfigMock(), getEncryptionPassword: {
             return self.encryptionPassword
         })
     }

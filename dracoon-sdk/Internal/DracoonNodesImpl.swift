@@ -26,7 +26,7 @@ class DracoonNodesImpl: DracoonNodes {
     private var uploads = [String : DracoonUpload]()
     private var downloads = [Int64 : FileDownload]()
     
-    init(requestConfig: DracoonRequestConfig, crypto: Crypto, account: DracoonAccount, config: DracoonConfig, getEncryptionPassword: @escaping () -> String?) {
+    init(requestConfig: DracoonRequestConfig, crypto: CryptoProtocol, account: DracoonAccount, config: DracoonConfig, getEncryptionPassword: @escaping () -> String?) {
         self.requestConfig = requestConfig
         self.sessionManager = requestConfig.sessionManager
         self.serverUrl = requestConfig.serverUrl
