@@ -8,17 +8,34 @@
 import Foundation
 import Alamofire
 
-class OAuthTokenManager: RequestAdapter, RequestRetrier {
+protocol OAuthInterceptor: RequestAdapter, RequestRetrier {
     
-    fileprivate let oAuthClient: OAuthClient
-    public fileprivate(set) var mode: DracoonAuthMode
+    var oAuthClient: OAuthClient { get }
+    var mode: DracoonAuthMode { get }
+    
+    init(authMode: DracoonAuthMode, oAuthClient: OAuthClient)
+    
+    func setOAuthDelegate(_ delegate: OAuthTokenChangedDelegate?)
+    func getAccessToken() -> String?
+    func getRefreshToken() -> String?
+    
+}
+
+class OAuthTokenManager: OAuthInterceptor {
+    
+    var oAuthClient: OAuthClient
+    var mode: DracoonAuthMode
+    
     weak var delegate: OAuthTokenChangedDelegate?
     
-    init(authMode: DracoonAuthMode, oAuthClient: OAuthClient) {
+    required init(authMode: DracoonAuthMode, oAuthClient: OAuthClient) {
         self.mode = authMode
         self.oAuthClient = oAuthClient
-        
         self.getToken{_, _ in}
+    }
+    
+    func setOAuthDelegate(_ delegate: OAuthTokenChangedDelegate?) {
+        self.delegate = delegate
     }
     
     func adapt(_ urlRequest: URLRequest) throws -> URLRequest {

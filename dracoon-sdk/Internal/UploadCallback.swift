@@ -10,7 +10,6 @@ import Foundation
 /// - Tag: UploadCallback
 public class UploadCallback {
     
-    public var onStarted:((String) -> Void)?
     public var onError:((Error) -> Void)?
     public var onCanceled:(() -> Void)?
     public var onProgress:((Float) -> Void)?

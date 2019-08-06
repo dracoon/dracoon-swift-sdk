@@ -9,10 +9,17 @@ import Foundation
 
 public class OAuthHelper {
     
-    public static func createAuthorizationUrl(serverUrl: URL, clientId: String, state: String, deviceName: String?) -> URL {
-        ValidatorUtils.validate(serverUrl: serverUrl)
-        precondition(!clientId.isEmpty)
-        precondition(!state.isEmpty)
+    public static func createAuthorizationUrl(serverUrl: URL, clientId: String, state: String, deviceName: String?) throws -> URL {
+        guard ValidatorUtils.isValid(serverUrl: serverUrl) else {
+            throw DracoonError.invalidParameter(description: "Invalid server url")
+        }
+        guard !clientId.isEmpty else {
+            throw DracoonError.invalidParameter(description: "ClientId is empty")
+        }
+        guard !state.isEmpty else {
+            throw DracoonError.invalidParameter(description: "State is empty")
+        }
+        
         let base = serverUrl.absoluteString + OAuthConstants.OAUTH_PATH + OAuthConstants.OAUTH_AUTHORIZE_PATH
         
         var query = "response_type=" + OAuthConstants.OAUTH_FLOW + "&"

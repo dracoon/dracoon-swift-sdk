@@ -21,6 +21,7 @@ public enum DracoonError: Error {
     case path_range_invalid
     case node_not_found(path: String)
     case file_does_not_exist(at: URL)
+    case invalidParameter(description: String)
     
     case no_encryption_password
     case filekey_not_found

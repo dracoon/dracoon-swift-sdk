@@ -14,12 +14,12 @@ public class FileDownload {
     let sessionManager: Alamofire.SessionManager
     let serverUrl: URL
     let apiPath: String
-    let oAuthTokenManager: OAuthTokenManager
+    let oAuthTokenManager: OAuthInterceptor
     let encoder: JSONEncoder
     let decoder: JSONDecoder
     let account: DracoonAccount
     let nodes: DracoonNodes
-    let crypto: Crypto
+    let crypto: CryptoProtocol
     let getEncryptionPassword: () -> String?
     
     let nodeId: Int64
@@ -31,7 +31,7 @@ public class FileDownload {
     var downloadRequest: DownloadRequest?
     
     init(nodeId: Int64, targetUrl: URL, config: DracoonRequestConfig, account: DracoonAccount, nodes: DracoonNodes,
-         crypto: Crypto, fileKey: EncryptedFileKey?, getEncryptionPassword: @escaping () -> String?) {
+         crypto: CryptoProtocol, fileKey: EncryptedFileKey?, getEncryptionPassword: @escaping () -> String?) {
         self.sessionManager = config.sessionManager
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
@@ -75,7 +75,7 @@ public class FileDownload {
     }
     
     fileprivate func download() {
-        getDownloadToken(nodeId: self.nodeId, completion: { result in
+        self.getDownloadToken(nodeId: self.nodeId, completion: { result in
             switch result {
             case .value(let tokenResponse):
                 if let downloadUrl = tokenResponse.downloadUrl {
@@ -197,7 +197,7 @@ public class FileDownload {
     }
     
     fileprivate func decryptFile(fileKey: PlainFileKey, fileUrl: URL) throws {
-        guard FileManager.default.fileExists(atPath: fileUrl.path) else {
+        guard ValidatorUtils.pathExists(at: fileUrl.path) else {
             throw DracoonError.file_does_not_exist(at: fileUrl)
         }
         guard let inputStream = InputStream(fileAtPath: fileUrl.path) else {
@@ -240,7 +240,7 @@ public class FileDownload {
         
         try decryptionCipher.doFinal()
         
-        try FileManager.default.removeItem(at: fileUrl)
-        try FileManager.default.moveItem(at: tempFilePath, to: fileUrl)
+        try FileUtils.removeItem(fileUrl)
+        try FileUtils.moveItem(at: tempFilePath, to: fileUrl)
     }
 }
