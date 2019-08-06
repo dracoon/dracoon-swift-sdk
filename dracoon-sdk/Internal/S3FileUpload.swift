@@ -21,14 +21,14 @@ public class S3FileUpload: FileUpload {
     var lastPartSize: Int64 = 0
     var eTags = [S3FileUploadPart]()
     
-    override init(config: DracoonRequestConfig, request: CreateFileUploadRequest, filePath: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: Crypto?,
+    override init(config: DracoonRequestConfig, request: CreateFileUploadRequest, fileUrl: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
                   account: DracoonAccount) {
-        super.init(config: config, request: request, filePath: filePath, resolutionStrategy: resolutionStrategy, crypto: crypto, account: account)
+        super.init(config: config, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy, crypto: crypto, account: account)
         var s3DirectUploadRequest = request
         s3DirectUploadRequest.directS3Upload = true
         self.request = s3DirectUploadRequest
         
-        self.fileSize = self.calculateFileSize(filePath: self.filePath) ?? 0
+        self.fileSize = self.calculateFileSize(filePath: fileUrl) ?? 0
         self.neededParts = Int32(fileSize/chunkSize)
         self.lastPartSize = fileSize%chunkSize
     }
@@ -39,7 +39,6 @@ public class S3FileUpload: FileUpload {
             switch result {
             case .value(let response):
                 self.uploadId = response.uploadId
-                self.callback?.onStarted?(response.uploadId)
                 self.obtainUrls(completion: { urlResult in
                     switch urlResult {
                     case .error(let error):
@@ -135,10 +134,10 @@ public class S3FileUpload: FileUpload {
             self.callback?.onCanceled?()
             return
         }
-        var cipher: FileEncryptionCipher?
+        var cipher: EncryptionCipher?
         if let crypto = self.crypto {
             do {
-                let fileKey = try crypto.generateFileKey()
+                let fileKey = try crypto.generateFileKey(version: CryptoConstants.DEFAULT_VERSION)
                 cipher = try crypto.createEncryptionCipher(fileKey: fileKey)
             } catch {
                 self.callback?.onError?(DracoonError.encryption_cipher_failure)
@@ -216,7 +215,7 @@ public class S3FileUpload: FileUpload {
         }
     }
     
-    fileprivate func createNextChunk(uploadId: String, presignedUrl: PresignedUrl, cipher: FileEncryptionCipher?, completion: @escaping () -> Void) {
+    fileprivate func createNextChunk(uploadId: String, presignedUrl: PresignedUrl, cipher: EncryptionCipher?, completion: @escaping () -> Void) {
         if self.isCanceled {
             return
         }
@@ -225,9 +224,9 @@ public class S3FileUpload: FileUpload {
         let lastBlock = self.isLastBlock(presignedUrl: presignedUrl)
         
         do {
-            guard let data = try self.readData(self.filePath, range: range) else {
+            guard let data = try self.readData(self.fileUrl, range: range) else {
                 print("no Data")
-                self.callback?.onError?(DracoonError.read_data_failure(at: self.filePath))
+                self.callback?.onError?(DracoonError.read_data_failure(at: self.fileUrl))
                 return
             }
             let uploadData: Data
@@ -276,7 +275,7 @@ public class S3FileUpload: FileUpload {
             })
         } catch {
             print("_ no data")
-            self.callback?.onError?(DracoonError.read_data_failure(at: self.filePath))
+            self.callback?.onError?(DracoonError.read_data_failure(at: self.fileUrl))
         }
     }
     

@@ -317,12 +317,12 @@ class DracoonNodesImpl: DracoonNodes {
                 self.isS3Upload(onComplete: { result in
                     switch result {
                     case .error(_):
-                        self.startUpload(uploadId: uploadId, request: request, filePath: filePath, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                        self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
                     case .value(let isS3Upload):
                         if isS3Upload {
-                            self.startS3Upload(uploadId: uploadId, request: request, filePath: filePath, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                            self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
                         } else {
-                            self.startUpload(uploadId: uploadId, request: request, filePath: filePath, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                            self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
                         }
                     }
                 })
@@ -331,8 +331,8 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     private func startUpload(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback,
-                             resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: Crypto?) {
-        let upload = FileUpload(config: self.requestConfig, request: request, filePath: filePath, resolutionStrategy: resolutionStrategy,
+                             resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?) {
+        let upload = FileUpload(config: self.requestConfig, request: request, fileUrl: filePath, resolutionStrategy: resolutionStrategy,
                                 crypto: cryptoImpl, account: self.account)
         
         let innerCallback = UploadCallback()
@@ -354,9 +354,9 @@ class DracoonNodesImpl: DracoonNodes {
         upload.start()
     }
     
-    private func startS3Upload(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback,
-                               resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: Crypto?) {
-        let s3upload = S3FileUpload(config: self.requestConfig, request: request, filePath: filePath, resolutionStrategy: resolutionStrategy,
+    private func startS3Upload(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback,
+                               resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?) {
+        let s3upload = S3FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
                                     crypto: cryptoImpl, account: self.account)
         // TODO add to uploads to be able to cancel
         s3upload.callback = callback

@@ -48,7 +48,7 @@ public class FileUpload: DracoonUpload {
             switch result {
             case .value(let response):
                 self.uploadId = response.uploadId
-                self.uploadChunks(uploadId: response.uploadId)
+                self.startChunkedUpload(uploadId: response.uploadId)
             case .error(let error):
                 self.callback?.onError?(error)
             }
