@@ -19,7 +19,11 @@ class DracoonNodesTests: DracoonSdkTestCase {
     override func setUp() {
         super.setUp()
         
-        self.nodes = DracoonNodesImpl(requestConfig: self.requestConfig, crypto: self.crypto, account: DracoonAccountMock(), config: DracoonConfigMock(), getEncryptionPassword: {
+        // set config to not support S3 storage
+        let configMock = DracoonConfigMock()
+        configMock.generalSettingsResponse = GeneralSettings(sharePasswordSmsEnabled: nil, cryptoEnabled: nil, emailNotificationButtonEnabled: nil, eulaEnabled: nil, mediaServerEnabled: nil, weakPasswordEnabled: nil, useS3Storage: false)
+        
+        self.nodes = DracoonNodesImpl(requestConfig: self.requestConfig, crypto: self.crypto, account: DracoonAccountMock(), config: configMock, getEncryptionPassword: {
             return self.encryptionPassword
         })
     }
@@ -350,7 +354,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
         
-        self.testWaiter.wait(for: [expectation], timeout: 60.0)
+        self.testWaiter.wait(for: [expectation], timeout: 10.0)
         XCTAssertTrue(calledOnComplete)
     }
     
@@ -380,7 +384,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
         
-        self.testWaiter.wait(for: [expectation], timeout: 4.0)
+        self.testWaiter.wait(for: [expectation], timeout: 8.0)
         XCTAssertTrue(cryptoMock.decryptFileKeyCalled)
         XCTAssertTrue(cryptoMock.encryptFileKeyCalled)
     }
