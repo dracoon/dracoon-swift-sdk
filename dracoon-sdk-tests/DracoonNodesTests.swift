@@ -296,7 +296,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             expectation.fulfill()
         }
         
-        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testUpload")
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
         
         self.testWaiter.wait(for: [expectation], timeout: 60.0)
@@ -324,7 +324,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             expectation.fulfill()
         }
         
-        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testUpload")
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
         
         self.testWaiter.wait(for: [expectation], timeout: 60.0)
@@ -351,7 +351,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             expectation.fulfill()
         }
         
-        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testUpload")
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
         
         self.testWaiter.wait(for: [expectation], timeout: 10.0)
@@ -381,7 +381,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             cryptoMock.encryptFileKeyCalled = false
         }
         
-        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testUpload")
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
         
         self.testWaiter.wait(for: [expectation], timeout: 8.0)
@@ -408,7 +408,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             expectation.fulfill()
         }
         
-        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testUpload")
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
         
         self.testWaiter.wait(for: [expectation], timeout: 4.0)
@@ -423,7 +423,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         self.setResponseModel(DownloadTokenGenerateResponse.self, statusCode: 200)
         let urlRequest = URLRequest(url: URL(string: "https://dracoon.team")!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval())
         let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testDownload")
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
         let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
         MockURLProtocol.response(with: downloadResponse, statusCode: 200)
         let expectation = XCTestExpectation(description: "Calls onComplete")
@@ -449,7 +449,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         MockURLProtocol.responseWithModel(DownloadTokenGenerateResponse.self, model: responseModel, statusCode: 200)
         let urlRequest = URLRequest(url: URL(string: "https://dracoon.team")!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval())
         let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testDownload")
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
         let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
         MockURLProtocol.response(with: downloadResponse, statusCode: 200)
         let expectation = XCTestExpectation(description: "Calls onComplete")
@@ -474,7 +474,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         self.setResponseModel(DownloadTokenGenerateResponse.self, statusCode: 200)
         let urlRequest = URLRequest(url: URL(string: "https://dracoon.team")!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval())
         let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 400, httpVersion: nil, headerFields: nil)
-        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testDownload")
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
         let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
         MockURLProtocol.response(with: downloadResponse, statusCode: 400)
         let expectation = XCTestExpectation(description: "Calls onError")
@@ -501,7 +501,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         var headerFields = HTTPHeaders()
         headerFields["X-Forbidden"] = "403"
         let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 403, httpVersion: nil, headerFields: headerFields)
-        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testDownload")
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
         let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
         MockURLProtocol.response(with: downloadResponse, statusCode: 403)
         let expectation = XCTestExpectation(description: "Calls onError")
@@ -535,7 +535,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         self.setResponseModel(DownloadTokenGenerateResponse.self, statusCode: 200)
         let urlRequest = URLRequest(url: URL(string: "https://dracoon.team")!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval())
         let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-        let url = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testDownload")
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
         let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
         MockURLProtocol.response(with: downloadResponse, statusCode: 200)
         let expectation = XCTestExpectation(description: "Calls onComplete")

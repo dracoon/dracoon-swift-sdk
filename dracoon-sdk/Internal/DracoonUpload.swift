@@ -15,15 +15,6 @@ protocol DracoonUpload {
 }
 
 extension DracoonUpload {
-    func calculateFileSize(filePath: URL) -> Int64? {
-        do {
-            let fileAttribute: [FileAttributeKey : Any] = try FileManager.default.attributesOfItem(atPath: filePath.path)
-            let fileSize = fileAttribute[FileAttributeKey.size] as? Int64
-            return fileSize
-        } catch {}
-        return nil
-    }
-    
     func readData(_ path: URL?, range: NSRange) throws -> Data? {
         guard let path = path, let fileHandle = try? FileHandle(forReadingFrom: path) else {
             return nil

@@ -358,8 +358,21 @@ class DracoonNodesImpl: DracoonNodes {
                                resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?) {
         let s3upload = S3FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
                                     crypto: cryptoImpl, account: self.account)
-        // TODO add to uploads to be able to cancel
-        s3upload.callback = callback
+        
+        let innerCallback = UploadCallback()
+        innerCallback.onCanceled = callback.onCanceled
+        innerCallback.onComplete = { node in
+            if cryptoImpl != nil {
+                self.setMissingFileKeysBatch(nodeId: node._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
+                })
+            }
+            callback.onComplete?(node)
+            self.uploads.removeValue(forKey: uploadId)
+        }
+        innerCallback.onError = callback.onError
+        innerCallback.onProgress = callback.onProgress
+        
+        s3upload.callback = innerCallback
         
         self.uploads[uploadId] = s3upload
         s3upload.start()

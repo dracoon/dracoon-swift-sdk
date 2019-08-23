@@ -28,7 +28,7 @@ public class S3FileUpload: FileUpload {
         s3DirectUploadRequest.directS3Upload = true
         self.request = s3DirectUploadRequest
         
-        self.fileSize = self.calculateFileSize(filePath: fileUrl) ?? 0
+        self.fileSize = FileUtils.calculateFileSize(filePath: fileUrl) ?? 0
         self.neededParts = Int32(fileSize/chunkSize)
         self.lastPartSize = fileSize%chunkSize
     }
@@ -224,8 +224,7 @@ public class S3FileUpload: FileUpload {
         let lastBlock = self.isLastBlock(presignedUrl: presignedUrl)
         
         do {
-            guard let data = try self.readData(self.fileUrl, range: range) else {
-                print("no Data")
+            guard let data = try FileUtils.readData(self.fileUrl, range: range) else {
                 self.callback?.onError?(DracoonError.read_data_failure(at: self.fileUrl))
                 return
             }
@@ -274,7 +273,6 @@ public class S3FileUpload: FileUpload {
                 }
             })
         } catch {
-            print("no data")
             self.callback?.onError?(DracoonError.read_data_failure(at: self.fileUrl))
         }
     }
