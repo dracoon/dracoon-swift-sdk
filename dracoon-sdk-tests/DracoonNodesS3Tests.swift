@@ -47,11 +47,11 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         // Poll for node
         self.setResponseModel(S3FileUploadStatus.self, statusCode: 200)
         
-        let expectation = XCTestExpectation(description: "upload")
+        let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
         
         
-        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
         let uploadCallback = UploadCallback()
         
         uploadCallback.onComplete = { node in
@@ -91,12 +91,12 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         // Poll for node
         self.setResponseModel(S3FileUploadStatus.self, statusCode: 200)
         
-        let expectation = XCTestExpectation(description: "upload")
+        let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
         (FileUtils.fileHelper as! FileUtilsMock).size = Int64(1024*1024*17)
         
         
-        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
         let uploadCallback = UploadCallback()
         
         uploadCallback.onComplete = { node in
@@ -136,11 +136,11 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         MockURLProtocol.responseWithModel(S3FileUploadStatus.self, model: finishingModel, statusCode: 200)
         self.setResponseModel(S3FileUploadStatus.self, statusCode: 200)
         
-        let expectation = XCTestExpectation(description: "upload")
+        let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
         
         
-        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
         let uploadCallback = UploadCallback()
         
         uploadCallback.onComplete = { node in
@@ -182,7 +182,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         var calledOnError = false
         
         
-        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
         let uploadCallback = UploadCallback()
         
         uploadCallback.onError = { error in
@@ -219,11 +219,11 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         // Poll for node
         self.setResponseModel(S3FileUploadStatus.self, statusCode: 200)
         
-        let expectation = XCTestExpectation(description: "upload")
+        let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
         
         
-        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
         let uploadCallback = UploadCallback()
         
         uploadCallback.onComplete = { node in
@@ -263,11 +263,11 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         self.setResponseModel(MissingKeysResponse.self, statusCode: 200)
         MockURLProtocol.response(with: 200)
         
-        let expectation = XCTestExpectation(description: "waits for missing file keys to be created")
+        let expectation = XCTestExpectation(description: "Waits for missing file keys to be created")
         let cryptoMock = self.crypto as! DracoonCryptoMock
         
         
-        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
         let uploadCallback = UploadCallback()
         
         uploadCallback.onComplete = { node in
@@ -283,7 +283,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         XCTAssertTrue(cryptoMock.encryptFileKeyCalled)
     }
 
-    func testUpload_fails_returnsError() {
+    func testUpload_getPresignedListFails_returnsError() {
 
         self.setResponseModel(Node.self, statusCode: 200)
         self.setResponseModel(CreateFileUploadResponse.self, statusCode: 200)
@@ -305,6 +305,40 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
 
         self.testWaiter.wait(for: [expectation], timeout: 4.0)
+        XCTAssertTrue(calledOnError)
+    }
+    
+    func testUpload_uploadFails_returnsError() {
+        
+        self.setResponseModel(Node.self, statusCode: 200)
+        self.setResponseModel(CreateFileUploadResponse.self, statusCode: 200)
+        // Set part model
+        let lastUrlModel = PresignedUrlList(urls: [PresignedUrl(url: "https://dracoon.team/1", partNumber: 1)])
+        MockURLProtocol.responseWithModel(PresignedUrlList.self, model: lastUrlModel, statusCode: 200)
+        // Upload response without eTag header
+        let httpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        let s3UploadResponse = DefaultDataResponse(request: nil, response: httpResponse, data: nil, error: nil)
+        
+        MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
+        MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
+        MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
+        
+        let expectation = XCTestExpectation(description: "Returns error")
+        var calledOnError = false
+        
+        
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
+        let uploadCallback = UploadCallback()
+        
+        uploadCallback.onError = { error in
+            calledOnError = true
+            expectation.fulfill()
+        }
+        
+        let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        
+        self.testWaiter.wait(for: [expectation], timeout: 60.0)
         XCTAssertTrue(calledOnError)
     }
 }

@@ -284,10 +284,10 @@ class DracoonNodesTests: DracoonSdkTestCase {
         let responseModel = UploadResponseMock()
         MockURLProtocol.responseWithModel(UploadResponseMock.self, model: responseModel, statusCode: 200)
         self.setResponseModel(Node.self, statusCode: 200)
-        let expectation = XCTestExpectation(description: "upload")
+        let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
         
-        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
         
         let uploadCallback = UploadCallback()
         
@@ -311,11 +311,11 @@ class DracoonNodesTests: DracoonSdkTestCase {
         MockURLProtocol.responseWithModel(UploadResponseMock.self, model: responseModel, statusCode: 200)
         MockURLProtocol.responseWithModel(UploadResponseMock.self, model: responseModel, statusCode: 200)
         self.setResponseModel(Node.self, statusCode: 200)
-        let expectation = XCTestExpectation(description: "upload")
+        let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
         (FileUtils.fileHelper as! FileUtilsMock).size = Int64(DracoonConstants.UPLOAD_CHUNK_SIZE * 2)
         
-        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
         
         let uploadCallback = UploadCallback()
         
@@ -339,10 +339,10 @@ class DracoonNodesTests: DracoonSdkTestCase {
         let responseModel = UploadResponseMock()
         MockURLProtocol.responseWithModel(UploadResponseMock.self, model: responseModel, statusCode: 200)
         self.setResponseModel(Node.self, statusCode: 200)
-        let expectation = XCTestExpectation(description: "upload")
+        let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
         
-        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
         
         let uploadCallback = UploadCallback()
         
@@ -368,10 +368,10 @@ class DracoonNodesTests: DracoonSdkTestCase {
         self.setResponseModel(Node.self, statusCode: 200)
         self.setResponseModel(MissingKeysResponse.self, statusCode: 200)
         MockURLProtocol.response(with: 200)
-        let expectation = XCTestExpectation(description: "waits for missing file keys to be created")
+        let expectation = XCTestExpectation(description: "Waits for missing file keys to be created")
         let cryptoMock = self.crypto as! DracoonCryptoMock
         
-        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
         
         let uploadCallback = UploadCallback()
        
