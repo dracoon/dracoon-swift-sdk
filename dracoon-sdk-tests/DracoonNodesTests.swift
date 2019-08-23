@@ -376,7 +376,6 @@ class DracoonNodesTests: DracoonSdkTestCase {
         let uploadCallback = UploadCallback()
        
         uploadCallback.onComplete = { node in
-            print("completed")
             cryptoMock.decryptFileKeyCalled = false
             cryptoMock.encryptFileKeyCalled = false
         }
@@ -403,7 +402,6 @@ class DracoonNodesTests: DracoonSdkTestCase {
         let uploadCallback = UploadCallback()
        
         uploadCallback.onError = { error in
-            print(error)
             calledOnError = true
             expectation.fulfill()
         }
