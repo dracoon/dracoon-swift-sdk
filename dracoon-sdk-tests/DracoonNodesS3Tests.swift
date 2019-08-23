@@ -155,6 +155,48 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         XCTAssertTrue(calledOnComplete)
     }
     
+    func testUpload_pollStatusReturnsError_callsOnError() {
+        
+        self.setResponseModel(Node.self, statusCode: 200)
+        self.setResponseModel(CreateFileUploadResponse.self, statusCode: 200)
+        // Set part model
+        let lastUrlModel = PresignedUrlList(urls: [PresignedUrl(url: "https://dracoon.team/1", partNumber: 1)])
+        MockURLProtocol.responseWithModel(PresignedUrlList.self, model: lastUrlModel, statusCode: 200)
+        // Upload response with eTag header
+        let headers = HTTPHeaders(dictionaryLiteral: ("eTag", "0123456789abc"))
+        let httpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: headers)
+        let s3UploadResponse = DefaultDataResponse(request: nil, response: httpResponse, data: nil, error: nil)
+        
+        MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
+        
+        // Complete request reponse
+        let completedHttpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        MockURLProtocol.response(with: DefaultDataResponse(request: nil, response: completedHttpResponse, data: nil, error: nil), statusCode: 200)
+        
+        // Poll for node
+        let error = ModelErrorResponse(code: 404, message: "Not Found", debugInfo: nil, errorCode: nil)
+        let errorModel = S3FileUploadStatus(status: S3FileUploadStatus.S3UploadStatus.error.rawValue, node: nil, errorDetails: error)
+        MockURLProtocol.responseWithModel(S3FileUploadStatus.self, model: errorModel, statusCode: 200)
+        
+        let expectation = XCTestExpectation(description: "Retunrs error")
+        var calledOnError = false
+        
+        
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "Calls onComplete")
+        let uploadCallback = UploadCallback()
+        
+        uploadCallback.onError = { error in
+            calledOnError = true
+            expectation.fulfill()
+        }
+        
+        let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        
+        self.testWaiter.wait(for: [expectation], timeout: 60.0)
+        XCTAssertTrue(calledOnError)
+    }
+    
     func testEncryptedUpload_succeeds_callsOnComplete() {
         
         let encryptedNode = Node(_id: 1337, type: .file, name: "encryptedFile"){$0.isEncrypted = true}
@@ -255,7 +297,6 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         let uploadCallback = UploadCallback()
 
         uploadCallback.onError = { error in
-            print(error)
             calledOnError = true
             expectation.fulfill()
         }
