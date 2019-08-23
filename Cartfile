@@ -1,2 +1,2 @@
 github "Alamofire/Alamofire" ~> 4.7.3
-git "ssh://git@git.ssp-europe.eu/~mathias.schreiner/crypto_asn1_fix.git" "feature/mocks"
+git "ssh://git@git.ssp-europe.eu/~mathias.schreiner/crypto_asn1_fix.git" "develop"
