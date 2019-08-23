@@ -190,7 +190,7 @@ public class S3FileUpload: FileUpload {
             if let error = dataResponse.error {
                 self.handleUploadError(error: error, url: presignedUrl, chunk: chunk, retryCount: retryCount, chunkCallback: chunkCallback)
             } else {
-                if dataResponse.response!.statusCode < 300, let headerFields = dataResponse.response?.allHeaderFields {
+                if dataResponse.response?.statusCode ?? 400 < 300, let headerFields = dataResponse.response?.allHeaderFields {
                     if let result = headerFields.keys.first(where: { ($0 as? String)?.caseInsensitiveCompare("eTag") == .orderedSame}) as? String {
                         if let eTag = headerFields[result] as? String {
                             let cleanEtag = eTag.replacingOccurrences(of: "\"", with: "")
@@ -274,7 +274,7 @@ public class S3FileUpload: FileUpload {
                 }
             })
         } catch {
-            print("_ no data")
+            print("no data")
             self.callback?.onError?(DracoonError.read_data_failure(at: self.fileUrl))
         }
     }
