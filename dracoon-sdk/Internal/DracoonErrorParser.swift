@@ -39,6 +39,7 @@ public class DracoonErrorParser {
         public static let CONFLICT = 409
         public static let PRECONDITION_FAILED = 412
         public static let BAD_GATEWAY = 502
+        public static let GATEWAY_TIMEOUT = 504
         public static let INSUFFICIENT_STORAGE = 507
         public static let MALWARE_FOUND = 901
     }
@@ -66,6 +67,8 @@ public class DracoonErrorParser {
             return self.parsePreconditionFailed(response, requestType: requestType)
         case Status.BAD_GATEWAY:
             return self.parseBadGateway(response, requestType: requestType)
+        case Status.GATEWAY_TIMEOUT:
+            return self.parseGatewayTimeout(response, requestType: requestType)
         case Status.INSUFFICIENT_STORAGE:
             return self.parseInsufficientStorage(response, requestType: requestType)
         case Status.MALWARE_FOUND:
@@ -375,6 +378,17 @@ public class DracoonErrorParser {
         
         if (apiErrorCode == -90090) {
             return DracoonApiCode.SERVER_SMS_COULD_NOT_BE_SENT
+        }
+        return DracoonApiCode.SERVER_UNKNOWN_ERROR
+    }
+    
+    private func parseGatewayTimeout(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
+        guard let apiErrorCode = response.errorCode else {
+            return DracoonApiCode.SERVER_UNKNOWN_ERROR
+        }
+        
+        if (apiErrorCode == -90027) {
+            return DracoonApiCode.S3_CONNECTION_FAILED
         }
         return DracoonApiCode.SERVER_UNKNOWN_ERROR
     }

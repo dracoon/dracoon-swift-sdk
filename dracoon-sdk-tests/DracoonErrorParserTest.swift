@@ -22,6 +22,7 @@ class DracoonErrorParserTest: XCTestCase {
         XCTAssert(DracoonErrorParser.HTTPStatusCode.CONFLICT == 409)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.PRECONDITION_FAILED == 412)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.BAD_GATEWAY == 502)
+        XCTAssert(DracoonErrorParser.HTTPStatusCode.GATEWAY_TIMEOUT == 504)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.INSUFFICIENT_STORAGE == 507)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.MALWARE_FOUND == 901)
     }
@@ -556,6 +557,23 @@ class DracoonErrorParserTest: XCTestCase {
         
         expectedApiCode = DracoonApiCode.SERVER_SMS_COULD_NOT_BE_SENT
         returnedApiCode = self.parseError(code: code, errorCode: -90090)
+        XCTAssert(expectedApiCode == returnedApiCode)
+    }
+    
+    func testGatewayTimeoutApiCodes() {
+        let code = 504
+        var expectedApiCode, returnedApiCode: DracoonApiCode
+        
+        expectedApiCode = DracoonApiCode.SERVER_UNKNOWN_ERROR
+        returnedApiCode = self.parseError(code: code, errorCode: nil)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.SERVER_UNKNOWN_ERROR
+        returnedApiCode = self.parseError(code: code, errorCode: 0)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.S3_CONNECTION_FAILED
+        returnedApiCode = self.parseError(code: code, errorCode: -90027)
         XCTAssert(expectedApiCode == returnedApiCode)
     }
     
