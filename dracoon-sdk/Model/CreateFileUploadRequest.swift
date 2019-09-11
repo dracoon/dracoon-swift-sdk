@@ -30,6 +30,9 @@ public struct CreateFileUploadRequest: Codable {
     public var expiration: ObjectExpiration?
     /** User notes Use empty string to remove. */
     public var notes: String?
+    /** Indicates direct upload to S3
+     [Since version 4.13.0] */
+    public var directS3Upload: Bool?
 
 
 

@@ -10,7 +10,7 @@ import Alamofire
 import crypto_sdk
 import CommonCrypto
 
-public class FileUpload {
+public class FileUpload: DracoonUpload {
     
     let sessionManager: Alamofire.SessionManager
     let serverUrl: URL
@@ -19,14 +19,14 @@ public class FileUpload {
     let encoder: JSONEncoder
     let decoder: JSONDecoder
     let account: DracoonAccount
-    let request: CreateFileUploadRequest
+    var request: CreateFileUploadRequest
     let resolutionStrategy: CompleteUploadRequest.ResolutionStrategy
     let fileUrl: URL
     
     var callback: UploadCallback?
     let crypto: CryptoProtocol?
-    fileprivate var isCanceled = false
-    fileprivate var uploadId: String?
+    var isCanceled = false
+    var uploadId: String?
     
     init(config: DracoonRequestConfig, request: CreateFileUploadRequest, fileUrl: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
          account: DracoonAccount) {
@@ -48,7 +48,7 @@ public class FileUpload {
             switch result {
             case .value(let response):
                 self.uploadId = response.uploadId
-                self.uploadChunks(uploadId: response.uploadId)
+                self.startChunkedUpload(uploadId: response.uploadId)
             case .error(let error):
                 self.callback?.onError?(error)
             }
@@ -69,7 +69,7 @@ public class FileUpload {
         }
     }
     
-    fileprivate func createFileUpload(request: CreateFileUploadRequest, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
+    func createFileUpload(request: CreateFileUploadRequest, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
         do {
             let jsonBody = try encoder.encode(request)
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads"
@@ -88,7 +88,7 @@ public class FileUpload {
         }
     }
     
-    fileprivate func uploadChunks(uploadId: String) {
+    func startChunkedUpload(uploadId: String) {
         
         let totalFileSize = FileUtils.calculateFileSize(filePath: self.fileUrl) ?? 0 as Int64
         
@@ -114,7 +114,7 @@ public class FileUpload {
                         do {
                             let publicKey = UserPublicKey(publicKey: userKeyPair.publicKeyContainer.publicKey, version: userKeyPair.publicKeyContainer.version)
                             let encryptedFileKey = try crypto.encryptFileKey(fileKey: cipher.fileKey, publicKey: publicKey)
-                            self.completeRequest(uploadId: uploadId, encryptedFileKey: encryptedFileKey)
+                            self.completeUpload(uploadId: uploadId, encryptedFileKey: encryptedFileKey)
                         } catch CryptoError.encrypt(let message){
                             self.callback?.onError?(DracoonError.filekey_encryption_failure(description: message))
                         } catch {
@@ -123,7 +123,7 @@ public class FileUpload {
                     }
                 })
             } else {
-                self.completeRequest(uploadId: uploadId, encryptedFileKey: nil)
+                self.completeUpload(uploadId: uploadId, encryptedFileKey: nil)
             }
             
         })
@@ -231,13 +231,13 @@ public class FileUpload {
         return true
     }
     
-    fileprivate func completeRequest(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
+    func completeUpload(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
         var completeRequest = CompleteUploadRequest()
         completeRequest.fileName = self.request.name
         completeRequest.resolutionStrategy = self.resolutionStrategy
         completeRequest.fileKey = encryptedFileKey
         
-        self.completeUpload(uploadId: uploadId, request: completeRequest, completion: { result in
+        self.sendCompleteRequest(uploadId: uploadId, request: completeRequest, completion: { result in
             switch result {
             case .value(let node):
                 self.callback?.onComplete?(node)
@@ -247,7 +247,7 @@ public class FileUpload {
         })
     }
     
-    fileprivate func completeUpload(uploadId: String, request: CompleteUploadRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    fileprivate func sendCompleteRequest(uploadId: String, request: CompleteUploadRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
         do {
             let jsonBody = try encoder.encode(request)
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
@@ -266,7 +266,7 @@ public class FileUpload {
         }
     }
     
-    fileprivate func deleteUpload(uploadId: String, completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteUpload(uploadId: String, completion: @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
         
         self.sessionManager.request(requestUrl, method: .delete, parameters: Parameters())

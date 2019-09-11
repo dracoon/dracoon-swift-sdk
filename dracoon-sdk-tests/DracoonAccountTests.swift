@@ -334,7 +334,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
     func testDownloadUserAvatar() {
 
         self.setResponseModel(Avatar.self, statusCode: 200)
-        let targetUrl = Bundle(for: FileDownload.self).resourceURL!.appendingPathComponent("testUpload")
+        let targetUrl = Bundle(for: DracoonAccountTests.self).resourceURL!.appendingPathComponent("testUpload")
         let expectation = XCTestExpectation(description: "Returns Avatar")
 
         

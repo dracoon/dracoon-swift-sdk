@@ -13,9 +13,26 @@ import crypto_sdk
 
 class DracoonAccountMock: DracoonAccount {
     
-    func getUserAccount(completion: @escaping DataRequest.DecodeCompletion<UserAccount>) {}
+    var error: DracoonError?
+    var userAccountResponse = ResponseModelFactory.getTestResponseModel(UserAccount.self)!
+    var customerAccountResponse = ResponseModelFactory.getTestResponseModel(CustomerData.self)!
+    var avatarResponse = ResponseModelFactory.getTestResponseModel(Avatar.self)!
     
-    func getCustomerAccount(completion: @escaping DataRequest.DecodeCompletion<CustomerData>) {}
+    func getUserAccount(completion: @escaping DataRequest.DecodeCompletion<UserAccount>) {
+        if let error = self.error {
+            completion(Dracoon.Result.error(error))
+        } else {
+            completion(Dracoon.Result.value(self.userAccountResponse))
+        }
+    }
+    
+    func getCustomerAccount(completion: @escaping DataRequest.DecodeCompletion<CustomerData>) {
+        if let error = self.error {
+            completion(Dracoon.Result.error(error))
+        } else {
+            completion(Dracoon.Result.value(self.customerAccountResponse))
+        }
+    }
     
     func generateUserKeyPair(password: String) throws -> UserKeyPair {
         let publicKey = UserPublicKey(publicKey: "public", version: "A")
@@ -23,7 +40,9 @@ class DracoonAccountMock: DracoonAccount {
         return UserKeyPair(publicKey: publicKey, privateKey: privateKey)
     }
     
-    func setUserKeyPair(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {}
+    func setUserKeyPair(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        self.getUserKeyPair(completion: completion)
+    }
     
     func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         let userPublicKey = UserPublicKey(publicKey: "publicKey", version: "test")
@@ -40,14 +59,32 @@ class DracoonAccountMock: DracoonAccount {
         self.getUserKeyPair(completion: completion)
     }
     
-    func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void) {}
+    func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void) {
+        if let error = self.error {
+            completion(Dracoon.Response(error: error))
+        } else {
+            completion(Dracoon.Response(error: nil))
+        }
+    }
     
-    func getUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {}
+    func getUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+        if let error = self.error {
+            completion(Dracoon.Result.error(error))
+        } else {
+            completion(Dracoon.Result.value(self.avatarResponse))
+        }
+    }
     
-    func downloadUserAvatar(targetUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void) {}
+    func downloadUserAvatar(targetUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+        self.getUserAvatar(completion: completion)
+    }
     
-    func updateUserAvatar(fileUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void) {}
+    func updateUserAvatar(fileUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+        self.getUserAvatar(completion: completion)
+    }
     
-    func deleteUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {}
+    func deleteUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+        self.getUserAvatar(completion: completion)
+    }
     
 }

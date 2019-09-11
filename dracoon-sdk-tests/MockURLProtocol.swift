@@ -55,6 +55,10 @@ extension MockURLProtocol: URLSessionDataDelegate {
             client?.urlProtocol(self, didLoad: data)
         } else if let downloadResponse = MockURLProtocol.responseData.peek() as? DefaultDownloadResponse {
             client?.urlProtocol(self, didReceive: downloadResponse.response!, cacheStoragePolicy: .notAllowed)
+            _ = MockURLProtocol.responseData.poll()
+        } else if let dataResponse = MockURLProtocol.responseData.peek() as? DefaultDataResponse, let httpResponse = dataResponse.response {
+            client?.urlProtocol(self, didReceive: httpResponse, cacheStoragePolicy: .notAllowed)
+            _ = MockURLProtocol.responseData.poll()
         } else {
             let urlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: MockURLProtocol.statusCodes.poll()!, httpVersion: nil, headerFields: nil)!
             client?.urlProtocol(self, didReceive: urlResponse, cacheStoragePolicy: .notAllowed)

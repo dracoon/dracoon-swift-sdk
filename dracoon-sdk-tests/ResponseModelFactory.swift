@@ -52,6 +52,10 @@ struct ResponseModelFactory {
             return self.getFileKey() as? E
         } else if type == MissingKeysResponse.self {
             return self.getMissingKeysResponse() as? E
+        } else if type == PresignedUrlList.self {
+            return self.getPresignedUrlList() as? E
+        } else if type == S3FileUploadStatus.self {
+            return self.getS3FileUploadStatus() as? E
         }
         return nil
     }
@@ -113,7 +117,7 @@ struct ResponseModelFactory {
     }
     
     private static func getInfrastructureProperties() -> InfrastructureProperties {
-        return InfrastructureProperties(smsConfigEnabled: false, mediaServerConfigEnabled: true, s3DefaultRegion: nil)
+        return InfrastructureProperties(smsConfigEnabled: false, mediaServerConfigEnabled: true, s3DefaultRegion: nil, s3EnforceDirectUpload: false)
     }
     
     private static func getDownloadShare() -> DownloadShare {
@@ -150,5 +154,16 @@ struct ResponseModelFactory {
         let userKeyMapping = UserUserPublicKey(_id: 42, publicKeyContainer: UserPublicKey(publicKey: "publicKey", version: "test"))
         let fileKey = FileFileKeys(_id: 1337, fileKeyContainer: EncryptedFileKey(key: "encryptedKey", version: "test", iv: "iv", tag: "tag"))
         return MissingKeysResponse(range: range, items: [userFileMapping], users: [userKeyMapping], files: [fileKey])
+    }
+    
+    private static func getPresignedUrlList() -> PresignedUrlList {
+        let presignedUrl1 = PresignedUrl(url: "https://dracoon.team/1", partNumber: 1)
+        let presignedUrl2 = PresignedUrl(url: "https://dracoon.team/2", partNumber: 2)
+        let presignedUrl3 = PresignedUrl(url: "https://dracoon.team/3", partNumber: 3)
+        return PresignedUrlList(urls: [presignedUrl1, presignedUrl2, presignedUrl3])
+    }
+    
+    private static func getS3FileUploadStatus() -> S3FileUploadStatus {
+        return S3FileUploadStatus(status: S3FileUploadStatus.S3UploadStatus.done.rawValue, node: self.getNode(), errorDetails: nil)
     }
 }

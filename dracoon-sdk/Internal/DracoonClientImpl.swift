@@ -61,7 +61,7 @@ public class DracoonClientImpl: DracoonClient {
         users = NotImplementedYet()
         groups = NotImplementedYet()
         settings = DracoonSettingsImpl(config: requestConfig)
-        nodes = DracoonNodesImpl(config: requestConfig, crypto: crypto, account: account, getEncryptionPassword: getEncryptionPassword)
+        nodes = DracoonNodesImpl(requestConfig: requestConfig, crypto: crypto, account: account, config: config, getEncryptionPassword: getEncryptionPassword)
         shares = DracoonSharesImpl(config: requestConfig, nodes: nodes, account: account, getEncryptionPassword: getEncryptionPassword)
     }
     
