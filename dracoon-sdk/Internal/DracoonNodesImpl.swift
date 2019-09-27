@@ -11,7 +11,7 @@ import crypto_sdk
 
 class DracoonNodesImpl: DracoonNodes {
     
-    let config: DracoonRequestConfig
+    let requestConfig: DracoonRequestConfig
     let sessionManager: Alamofire.SessionManager
     let serverUrl: URL
     let apiPath: String
@@ -20,21 +20,23 @@ class DracoonNodesImpl: DracoonNodes {
     let encoder: JSONEncoder
     let crypto: CryptoProtocol
     let account: DracoonAccount
+    let config: DracoonConfig
     let getEncryptionPassword: () -> String?
     
-    private var uploads = [String : FileUpload]()
+    private var uploads = [String : DracoonUpload]()
     private var downloads = [Int64 : FileDownload]()
     
-    init(config: DracoonRequestConfig, crypto: CryptoProtocol, account: DracoonAccount, getEncryptionPassword: @escaping () -> String?) {
-        self.config = config
-        self.sessionManager = config.sessionManager
-        self.serverUrl = config.serverUrl
-        self.apiPath = config.apiPath
-        self.oAuthTokenManager = config.oauthTokenManager
-        self.decoder = config.decoder
-        self.encoder = config.encoder
+    init(requestConfig: DracoonRequestConfig, crypto: CryptoProtocol, account: DracoonAccount, config: DracoonConfig, getEncryptionPassword: @escaping () -> String?) {
+        self.requestConfig = requestConfig
+        self.sessionManager = requestConfig.sessionManager
+        self.serverUrl = requestConfig.serverUrl
+        self.apiPath = requestConfig.apiPath
+        self.oAuthTokenManager = requestConfig.oauthTokenManager
+        self.decoder = requestConfig.decoder
+        self.encoder = requestConfig.encoder
         self.crypto = crypto
         self.account = account
+        self.config = config
         self.getEncryptionPassword = getEncryptionPassword
     }
     
@@ -311,26 +313,89 @@ class DracoonNodesImpl: DracoonNodes {
                 if isEncrypted {
                     cryptoImpl = self.crypto
                 }
-                let upload = FileUpload(config: self.config, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
-                                        crypto: cryptoImpl, account: self.account)
                 
-                let innerCallback = UploadCallback()
-                innerCallback.onCanceled = callback.onCanceled
-                innerCallback.onComplete = { node in
-                    if isEncrypted {
-                        self.setMissingFileKeysBatch(nodeId: node._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
-                        })
+                self.isS3Upload(onComplete: { result in
+                    switch result {
+                    case .error(_):
+                        self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                    case .value(let isS3Upload):
+                        if isS3Upload {
+                            self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                        } else {
+                            self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                        }
                     }
-                    callback.onComplete?(node)
-                    self.uploads.removeValue(forKey: uploadId)
+                })
+            }
+        })
+    }
+    
+    private func startUpload(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback,
+                             resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?) {
+        let upload = FileUpload(config: self.requestConfig, request: request, fileUrl: filePath, resolutionStrategy: resolutionStrategy,
+                                crypto: cryptoImpl, account: self.account)
+        
+        let innerCallback = UploadCallback()
+        innerCallback.onCanceled = callback.onCanceled
+        innerCallback.onComplete = { node in
+            if cryptoImpl != nil {
+                self.setMissingFileKeysBatch(nodeId: node._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
+                })
+            }
+            callback.onComplete?(node)
+            self.uploads.removeValue(forKey: uploadId)
+        }
+        innerCallback.onError = callback.onError
+        innerCallback.onProgress = callback.onProgress
+        
+        upload.callback = innerCallback
+        
+        self.uploads[uploadId] = upload
+        upload.start()
+    }
+    
+    private func startS3Upload(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback,
+                               resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?) {
+        let s3upload = S3FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
+                                    crypto: cryptoImpl, account: self.account)
+        
+        let innerCallback = UploadCallback()
+        innerCallback.onCanceled = callback.onCanceled
+        innerCallback.onComplete = { node in
+            if cryptoImpl != nil {
+                self.setMissingFileKeysBatch(nodeId: node._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
+                })
+            }
+            callback.onComplete?(node)
+            self.uploads.removeValue(forKey: uploadId)
+        }
+        innerCallback.onError = callback.onError
+        innerCallback.onProgress = callback.onProgress
+        
+        s3upload.callback = innerCallback
+        
+        self.uploads[uploadId] = s3upload
+        s3upload.start()
+    }
+    
+    private func isS3Upload(onComplete: @escaping (Dracoon.Result<Bool>) -> Void) {
+        self.config.getGeneralSettings(completion: { result in
+            switch result {
+            case .error(let error):
+                onComplete(Dracoon.Result.error(error))
+            case .value(let settings):
+                if settings.useS3Storage ?? false {
+                    self.config.getInfrastructureProperties(completion: { propertyResult in
+                        switch propertyResult {
+                        case .error(let error):
+                            onComplete(Dracoon.Result.error(error))
+                        case .value(let properties):
+                            onComplete(Dracoon.Result.value(properties.s3EnforceDirectUpload != nil))
+                        }
+                    })
+                } else {
+                    onComplete(Dracoon.Result.value(false))
                 }
-                innerCallback.onError = callback.onError
-                innerCallback.onProgress = callback.onProgress
-                
-                upload.callback = innerCallback
-                
-                self.uploads[uploadId] = upload
-                upload.start()
             }
         })
     }
@@ -372,7 +437,7 @@ class DracoonNodesImpl: DracoonNodes {
     
     fileprivate func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?) {
         
-        let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.config, account: self.account, nodes: self,
+        let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.requestConfig, account: self.account, nodes: self,
                                     crypto: self.crypto, fileKey: fileKey, getEncryptionPassword: self.getEncryptionPassword)
         
         let innerCallback = DownloadCallback()

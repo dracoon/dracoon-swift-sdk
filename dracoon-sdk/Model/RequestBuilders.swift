@@ -42,14 +42,8 @@ extension CreateFileUploadRequest {
                   classification: nil,
                   size: nil,
                   expiration: nil,
-                  notes: nil)
-        customize?(&self)
-    }
-}
-
-extension CreateFolderRequest {
-    public init(parentId: Int64, name: String, _ customize: ((inout CreateFolderRequest) -> Void)? = nil) {
-        self.init(parentId: parentId, name: name, notes: nil)
+                  notes: nil,
+                  directS3Upload: nil)
         customize?(&self)
     }
 }

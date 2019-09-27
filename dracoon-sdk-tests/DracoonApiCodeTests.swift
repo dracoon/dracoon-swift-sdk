@@ -324,6 +324,15 @@ class DracoonApiCodeTests: XCTestCase {
         XCTAssert(DracoonApiCode.SERVER_UPLOAD_NOT_FOUND.rawValue == 5112)
         XCTAssertEqual(DracoonApiCode.SERVER_UPLOAD_NOT_FOUND.description, "Upload was not found.")
         
+        XCTAssert(DracoonApiCode.S3_UPLOAD_ID_NOT_FOUND.rawValue == 5113)
+        XCTAssertEqual(DracoonApiCode.S3_UPLOAD_ID_NOT_FOUND.description, "Corresponding S3 upload ID not found.")
+        
+        XCTAssert(DracoonApiCode.S3_UPLOAD_COMPLETION_FAILED.rawValue == 5114)
+        XCTAssertEqual(DracoonApiCode.S3_UPLOAD_COMPLETION_FAILED.description, "Server failed to complete S3 upload.")
+        
+        XCTAssert(DracoonApiCode.S3_CONNECTION_FAILED.rawValue == 5115)
+        XCTAssertEqual(DracoonApiCode.S3_CONNECTION_FAILED.description, "Connection to S3 server failed.")
+        
         // Shares
         
         XCTAssert(DracoonApiCode.SERVER_DL_SHARE_NOT_FOUND.rawValue == 5200)

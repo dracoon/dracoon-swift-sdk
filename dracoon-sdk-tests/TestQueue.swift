@@ -31,6 +31,10 @@ struct TestQueue<T> {
         }
     }
     
+    var count: Int {
+        return list.count
+    }
+    
     var isEmpty: Bool {
         return list.isEmpty
     }
