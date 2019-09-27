@@ -43,7 +43,7 @@ public class DracoonClientImpl: DracoonClient {
         
         oAuthTokenManager = OAuthTokenManager(authMode: authMode,
                                               oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: trimmedUrl, sessionManager: sessionManager))
-        oAuthTokenManager.delegate = oauthCallback
+        oAuthTokenManager.setOAuthDelegate(oauthCallback)
         
         sessionManager.retrier = oAuthTokenManager
         sessionManager.adapter = oAuthTokenManager
@@ -65,7 +65,7 @@ public class DracoonClientImpl: DracoonClient {
         shares = DracoonSharesImpl(config: requestConfig, nodes: nodes, account: account, getEncryptionPassword: getEncryptionPassword)
     }
     
-    fileprivate let oAuthTokenManager: OAuthTokenManager
+    let oAuthTokenManager: OAuthInterceptor
     
     public var server: DracoonServer
     
@@ -95,7 +95,7 @@ public class DracoonClientImpl: DracoonClient {
     }
 }
 
-extension Formatter {
+public extension Formatter {
     static let dracoonFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .iso8601)

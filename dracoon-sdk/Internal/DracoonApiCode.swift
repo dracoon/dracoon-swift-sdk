@@ -171,7 +171,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     public var description: String {
         switch self {
         case .UNKNOWN:
-            return "No server error code"
+            return "An unknown error occurred."
         case .AUTH_UNKNOWN_ERROR:
             return "An authentication error occurred."
         case .AUTH_OAUTH_CLIENT_UNKNOWN:

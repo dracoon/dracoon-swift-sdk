@@ -14,7 +14,7 @@ Add the SDK and its dependencies to your Cartfile:
 
 `github "dracoon/dracoon-swift-sdk.git" ~> 1.0.3`
 `github "Alamofire/Alamofire" ~> 4.7.3`
-`github "dracoon/dracoon-swift-crypto-sdk.git" ~> 1.0.2`
+`github "dracoon/dracoon-swift-crypto-sdk.git" ~> 1.1.0`
 
 Then run
 

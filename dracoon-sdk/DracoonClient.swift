@@ -248,7 +248,7 @@ public protocol DracoonNodes {
     ///   - callback: [UploadCallback](x-source-tag://UploadCallback) to inform about upload status
     ///   - resolutionStrategy: [CompleteUploadRequest.ResolutionStrategy](x-source-tag://CompleteUploadRequest.ResolutionStrategy) determines behavior if a file with the same name
     ///                         already exists in the target node.
-    func uploadFile(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy)
+    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy)
     
     /// Cancels a file upload.
     ///

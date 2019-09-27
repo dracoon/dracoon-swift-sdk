@@ -305,9 +305,7 @@ public class DracoonErrorParser {
     }
     
     private func parseConflict(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
-        guard let apiErrorCode = response.errorCode else {
-            return DracoonApiCode.SERVER_UNKNOWN_ERROR
-        }
+        let apiErrorCode = response.errorCode
         
         switch apiErrorCode {
         case -40010:

@@ -15,17 +15,17 @@ class DracoonNodesImpl: DracoonNodes {
     let sessionManager: Alamofire.SessionManager
     let serverUrl: URL
     let apiPath: String
-    let oAuthTokenManager: OAuthTokenManager
+    let oAuthTokenManager: OAuthInterceptor
     let decoder: JSONDecoder
     let encoder: JSONEncoder
-    let crypto: Crypto
+    let crypto: CryptoProtocol
     let account: DracoonAccount
     let getEncryptionPassword: () -> String?
     
     private var uploads = [String : FileUpload]()
     private var downloads = [Int64 : FileDownload]()
     
-    init(config: DracoonRequestConfig, crypto: Crypto, account: DracoonAccount, getEncryptionPassword: @escaping () -> String?) {
+    init(config: DracoonRequestConfig, crypto: CryptoProtocol, account: DracoonAccount, getEncryptionPassword: @escaping () -> String?) {
         self.config = config
         self.sessionManager = config.sessionManager
         self.serverUrl = config.serverUrl
@@ -294,10 +294,10 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: Upload file
     
-    func uploadFile(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy = CompleteUploadRequest.ResolutionStrategy.autorename) {
+    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy = CompleteUploadRequest.ResolutionStrategy.autorename) {
         
-        guard FileManager.default.fileExists(atPath: filePath.path) else {
-            callback.onError?(DracoonError.file_does_not_exist(at: filePath))
+        guard ValidatorUtils.pathExists(at: fileUrl.path) else {
+            callback.onError?(DracoonError.file_does_not_exist(at: fileUrl))
             return
         }
         
@@ -307,11 +307,11 @@ class DracoonNodesImpl: DracoonNodes {
             case .error(let error):
                 callback.onError?(error)
             case .value(let isEncrypted):
-                var cryptoImpl: Crypto?
+                var cryptoImpl: CryptoProtocol?
                 if isEncrypted {
                     cryptoImpl = self.crypto
                 }
-                let upload = FileUpload(config: self.config, request: request, filePath: filePath, resolutionStrategy: resolutionStrategy,
+                let upload = FileUpload(config: self.config, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
                                         crypto: cryptoImpl, account: self.account)
                 
                 let innerCallback = UploadCallback()
@@ -371,6 +371,7 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     fileprivate func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?) {
+        
         let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.config, account: self.account, nodes: self,
                                     crypto: self.crypto, fileKey: fileKey, getEncryptionPassword: self.getEncryptionPassword)
         
@@ -412,9 +413,12 @@ class DracoonNodesImpl: DracoonNodes {
             parameters["offset"] = offset
         }
         
+        parameters["search_string"] = searchString
+        
         self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(NodeList.self, decoder: self.decoder, requestType: .searchNodes, completion: completion)
+        
     }
     
     func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
