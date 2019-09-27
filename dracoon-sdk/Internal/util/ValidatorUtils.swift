@@ -7,35 +7,68 @@
 
 import Foundation
 
+protocol SDKValidator {
+    
+    func isValid(serverUrl: URL) -> Bool
+    func isValid(nodeId: Int64) -> Bool
+    func isValid(nodeIds: [Int64]) -> Bool
+    func pathExists(at path: String) -> Bool
+}
+
 class ValidatorUtils {
     
-    // --- ID validation methods ---
+    static var validator: SDKValidator = DracoonValidator()
     
-    static func validateId(name:String, id:Int64) {
-        precondition(id <= 0, "\(name) ID cannot be negative or 0.")
+    static func isValid(serverUrl: URL) -> Bool {
+        return self.validator.isValid(serverUrl: serverUrl)
     }
     
-    static func validateIds(name:String, ids:[Int64]) {
-        precondition(!ids.isEmpty, "\(name) IDs cannot be empty.")
-        ids.forEach { validateId(name: name, id: $0) }
+    static func isValid(nodeId: Int64) -> Bool {
+        return self.validator.isValid(nodeId: nodeId)
     }
     
-    // --- Other validation methods ---
+    static func isValid(nodeIds: [Int64]) -> Bool {
+        return self.validator.isValid(nodeIds: nodeIds)
+    }
     
-    static func validate(serverUrl: URL) {
-        
+    static func pathExists(at path: String) -> Bool {
+        return self.validator.pathExists(at: path)
+    }
+}
+
+class DracoonValidator: SDKValidator {
+    
+    func isValid(serverUrl: URL) -> Bool {
         let scheme = serverUrl.scheme
-        precondition(scheme != nil && (scheme == "http" || scheme == "https"), "Server URL can only have protocol http or https.")
-        
+        guard scheme != nil && (scheme == "http" || scheme == "https") else {
+            return false
+        }
         let user = serverUrl.user
-        precondition(user == nil, "Server URL cannot have user.")
-        
-        
         let path = serverUrl.path
-        precondition(path.isEmpty, "Server URL cannot have path.")
-        
         let query = serverUrl.query
-        precondition(query == nil || query!.isEmpty, "Server URL cannot have query.")
-        
+        return (user == nil && path.isEmpty && query == nil)
     }
+    
+    func isValid(nodeId: Int64) -> Bool {
+        return nodeId > 0
+    }
+    
+    func isValid(nodeIds: [Int64]) -> Bool {
+        guard !nodeIds.isEmpty else {
+            return false
+        }
+        
+        for id in nodeIds {
+            if !self.isValid(nodeId: id) {
+                return false
+            }
+        }
+        return true
+    }
+    
+    func pathExists(at path: String) -> Bool {
+        return FileManager.default.fileExists(atPath: path)
+    }
+    
+    
 }

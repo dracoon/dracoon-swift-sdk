@@ -39,8 +39,9 @@ public class DracoonErrorParser {
         public static let CONFLICT = 409
         public static let PRECONDITION_FAILED = 412
         public static let BAD_GATEWAY = 502
+        public static let GATEWAY_TIMEOUT = 504
         public static let INSUFFICIENT_STORAGE = 507
-        public static let MALEWARE_FOUND = 901
+        public static let MALWARE_FOUND = 901
     }
     
     typealias Status = HTTPStatusCode
@@ -66,10 +67,12 @@ public class DracoonErrorParser {
             return self.parsePreconditionFailed(response, requestType: requestType)
         case Status.BAD_GATEWAY:
             return self.parseBadGateway(response, requestType: requestType)
+        case Status.GATEWAY_TIMEOUT:
+            return self.parseGatewayTimeout(response, requestType: requestType)
         case Status.INSUFFICIENT_STORAGE:
             return self.parseInsufficientStorage(response, requestType: requestType)
-        case Status.MALEWARE_FOUND:
-            return self.parseMalewareFound(response, requestType: requestType)
+        case Status.MALWARE_FOUND:
+            return self.parseMalwareFound(response, requestType: requestType)
         default:
             return DracoonApiCode.SERVER_UNKNOWN_ERROR
         }
@@ -181,6 +184,10 @@ public class DracoonErrorParser {
             return DracoonApiCode.VALIDATION_KEEPSHARELINKS_ONLY_WITH_OVERWRITE
         case -80035:
             return DracoonApiCode.VALIDATION_FIELD_NOT_BETWEEN_0_10
+        case -80045:
+            return DracoonApiCode.VALIDATION_INVALID_ETAGS
+        case -90033:
+            return DracoonApiCode.S3_DIRECT_UPLOAD_ENFORCED
         default:
             return DracoonApiCode.VALIDATION_UNKNOWN_ERROR
         }
@@ -299,15 +306,15 @@ public class DracoonErrorParser {
             return DracoonApiCode.SERVER_AVATAR_NOT_FOUND
         case -70501:
             return DracoonApiCode.SERVER_USER_NOT_FOUND
+        case -90034:
+            return DracoonApiCode.S3_UPLOAD_ID_NOT_FOUND
         default:
             return DracoonApiCode.SERVER_UNKNOWN_ERROR
         }
     }
     
     private func parseConflict(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
-        guard let apiErrorCode = response.errorCode else {
-            return DracoonApiCode.SERVER_UNKNOWN_ERROR
-        }
+        let apiErrorCode = response.errorCode
         
         switch apiErrorCode {
         case -40010:
@@ -357,6 +364,8 @@ public class DracoonErrorParser {
             return DracoonApiCode.PRECONDITION_MUST_CHANGE_PASSWORD
         case -10106:
             return DracoonApiCode.PRECONDITION_MUST_CHANGE_USER_NAME
+        case -90030:
+            return DracoonApiCode.PRECONDITION_S3_STORAGE_DISABLED
         default:
             return DracoonApiCode.PRECONDITION_UNKNOWN_ERROR
         }
@@ -369,6 +378,17 @@ public class DracoonErrorParser {
         
         if (apiErrorCode == -90090) {
             return DracoonApiCode.SERVER_SMS_COULD_NOT_BE_SENT
+        }
+        return DracoonApiCode.SERVER_UNKNOWN_ERROR
+    }
+    
+    private func parseGatewayTimeout(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
+        guard let apiErrorCode = response.errorCode else {
+            return DracoonApiCode.SERVER_UNKNOWN_ERROR
+        }
+        
+        if (apiErrorCode == -90027) {
+            return DracoonApiCode.S3_CONNECTION_FAILED
         }
         return DracoonApiCode.SERVER_UNKNOWN_ERROR
     }
@@ -390,7 +410,7 @@ public class DracoonErrorParser {
         }
     }
     
-    private func parseMalewareFound(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
+    private func parseMalwareFound(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
         return DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED
     }
 }

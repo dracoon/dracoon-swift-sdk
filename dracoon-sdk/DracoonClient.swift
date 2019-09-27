@@ -79,6 +79,30 @@ public protocol DracoonAccount {
     ///
     /// - Parameter completion: Returns an empty response on success or an error.
     func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Retrieves the user's avatar.
+    ///
+    /// - Parameter completion: Returns user avatar on success or an error.
+    func getUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void)
+    
+    /// Retrieves and downloads the user's avatar.
+    ///
+    /// - Parameters:
+    ///   - targetUrl: URL to which the avatar image will be downloaded.
+    ///   - completion: Returns user avatar on success or an error.
+    func downloadUserAvatar(targetUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void)
+    
+    /// Updates the user's avatar.
+    ///
+    /// - Parameters:
+    ///   - fileUrl: A file url pointing to an image
+    ///   - completion: Returns the user's avatar on success or an error.
+    func updateUserAvatar(fileUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void)
+    
+    /// Deletes the user's avatar.
+    ///
+    /// - Parameter completion: Returns default avatar on success or an error.
+    func deleteUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void)
 }
 
 public protocol DracoonConfig {
@@ -224,7 +248,7 @@ public protocol DracoonNodes {
     ///   - callback: [UploadCallback](x-source-tag://UploadCallback) to inform about upload status
     ///   - resolutionStrategy: [CompleteUploadRequest.ResolutionStrategy](x-source-tag://CompleteUploadRequest.ResolutionStrategy) determines behavior if a file with the same name
     ///                         already exists in the target node.
-    func uploadFile(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy)
+    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy)
     
     /// Cancels a file upload.
     ///
@@ -253,6 +277,28 @@ public protocol DracoonNodes {
     ///   - limit: Limits the number of returned nodes. Must be positive.
     ///   - completion: Returns a [list of nodes](x-source-tag://NodeList) on success or an error.
     func searchNodes(parentNodeId: Int64, searchString: String, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>)
+    
+    /// Searches child nodes by their name. Parameters _offset_ and _limit_ restrict the result to a specific range,
+    /// _depthLevel_ determines how many node levels are searched (0 for top level nodes, -1 for full tree).
+    /// _filter_ parameter can be used as follows:
+    /// Filter string syntax: FIELD_NAME:OPERATOR:VALUE[:VALUE...]
+    /// Examples:
+    ///
+    /// type:eq:room
+    /// Get nodes where type equals room
+    ///
+    /// type:eq:file|createdAt:ge:2019-01-01
+    /// Get nodes where type equals file AND file creation date is >= 2019-01-01
+    ///
+    /// - Parameters:
+    ///   - parentNodeId: The ID of the parent node.
+    ///   - searchString: Must not be empty.
+    ///   - depthLevel: Depth level of search.
+    ///   - filter: Filters for specific nodes.
+    ///   - offset: Puts an offset on the returned nodes. Must be 0 or positive.
+    ///   - limit: Limits the number of returned nodes. Must be positive.
+    ///   - completion: Returns a [list of nodes](x-source-tag://NodeList) on success or an error.
+    func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>)
     
     /// Rerieves favorite nodes.
     ///

@@ -9,15 +9,32 @@ import Foundation
 
 public class OAuthHelper {
     
-    public static func createAuthorizationUrl(serverUrl: URL, clientId: String, state: String) -> URL {
-        ValidatorUtils.validate(serverUrl: serverUrl)
-        precondition(!clientId.isEmpty)
-        precondition(!state.isEmpty)
+    public static func createAuthorizationUrl(serverUrl: URL, clientId: String, state: String, deviceName: String?) throws -> URL {
+        guard ValidatorUtils.isValid(serverUrl: serverUrl) else {
+            throw DracoonError.invalidParameter(description: "Invalid server url")
+        }
+        guard !clientId.isEmpty else {
+            throw DracoonError.invalidParameter(description: "ClientId is empty")
+        }
+        guard !state.isEmpty else {
+            throw DracoonError.invalidParameter(description: "State is empty")
+        }
+        
         let base = serverUrl.absoluteString + OAuthConstants.OAUTH_PATH + OAuthConstants.OAUTH_AUTHORIZE_PATH
         
-        let query = "response_type=" + OAuthConstants.OAUTH_FLOW + "&"
+        var query = "response_type=" + OAuthConstants.OAUTH_FLOW + "&"
             + "client_id=" + clientId + "&"
             + "state=" + state
+        
+        if let name = deviceName {
+            let base64String = Data(name.utf8).base64EncodedString()
+            if let userAgentInfo = base64String.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)?
+                                                .replacingOccurrences(of: "+", with: "%2B")
+                                                .replacingOccurrences(of: "/", with: "%2F")
+                                                .replacingOccurrences(of: "=", with: "%3D") {
+                query = query + "&" + "user_agent_info=" + userAgentInfo
+            }
+        }
         
         let url = URL(string: base + "?" + query)!
         return url

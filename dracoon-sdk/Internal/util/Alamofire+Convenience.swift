@@ -32,11 +32,12 @@ public extension DataRequest {
                     let success = try decoder.decode(type, from: dataResponse.result.value!)
                     completion(Result.value(success))
                 } else {
-                    let error = try self.handleError(error: dataResponse.error, responseData: dataResponse.data, decoder: decoder, requestType: requestType)
+                    let error = try self.handleError(error: dataResponse.error, urlResponse: dataResponse.response,
+                                                     responseData: dataResponse.data, decoder: decoder, requestType: requestType)
                     completion(Result.error(error))
                 }
             } catch {
-                completion(Result.error(DracoonError.decode(error: error)))
+                completion(Result.error(DracoonError.decode(error: error, statusCode: self.response?.statusCode)))
             }
         })
     }
@@ -45,10 +46,10 @@ public extension DataRequest {
         self.response(completionHandler: { response in
             if let error = response.error {
                 do {
-                    let dracoonError = try self.handleError(error: error, responseData: response.data, decoder: decoder, requestType: requestType)
+                    let dracoonError = try self.handleError(error: error, urlResponse: response.response, responseData: response.data, decoder: decoder, requestType: requestType)
                     completion(Dracoon.Response(error: dracoonError))
                 } catch {
-                    completion(Dracoon.Response(error: DracoonError.decode(error: error)))
+                    completion(Dracoon.Response(error: DracoonError.decode(error: error, statusCode: self.response?.statusCode)))
                 }
             } else {
                 completion(Dracoon.Response(error: nil))
@@ -56,11 +57,16 @@ public extension DataRequest {
         })
     }
     
-    private func handleError(error: Error?, responseData: Data?, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType) throws -> DracoonError {
+    private func handleError(error: Error?, urlResponse: HTTPURLResponse?, responseData: Data?, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType) throws -> DracoonError {
         if error?._code == NSURLErrorTimedOut {
             return DracoonError.connection_timeout
         } else if error?._code == NSURLErrorNotConnectedToInternet {
             return DracoonError.offline
+        }
+        if let response = urlResponse, response.statusCode == DracoonErrorParser.HTTPStatusCode.FORBIDDEN {
+            if response.allHeaderFields["X-Forbidden"] as? String == "403" {
+                return DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: response.statusCode))
+            }
         }
         guard let data = responseData else {
             return DracoonError.generic(error: error)
@@ -78,6 +84,12 @@ public extension DataRequest {
 
 public extension OutputStream {
     func write(data: Data) -> Int {
-        return data.withUnsafeBytes { write($0, maxLength: data.count) }
+        return data.withUnsafeBytes({ (rawBufferPointer: UnsafeRawBufferPointer) -> Int in
+            let bufferPointer = rawBufferPointer.bindMemory(to: UInt8.self)
+            guard let pointer = bufferPointer.baseAddress else {
+                return 0
+            }
+            return self.write(pointer, maxLength: data.count)
+        })
     }
 }

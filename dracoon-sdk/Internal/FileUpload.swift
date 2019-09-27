@@ -8,26 +8,27 @@
 import Foundation
 import Alamofire
 import crypto_sdk
+import CommonCrypto
 
-public class FileUpload {
+public class FileUpload: DracoonUpload {
     
     let sessionManager: Alamofire.SessionManager
     let serverUrl: URL
     let apiPath: String
-    let oAuthTokenManager: OAuthTokenManager
+    let oAuthTokenManager: OAuthInterceptor
     let encoder: JSONEncoder
     let decoder: JSONDecoder
     let account: DracoonAccount
-    let request: CreateFileUploadRequest
+    var request: CreateFileUploadRequest
     let resolutionStrategy: CompleteUploadRequest.ResolutionStrategy
-    let filePath: URL
+    let fileUrl: URL
     
     var callback: UploadCallback?
-    let crypto: Crypto?
-    fileprivate var isCanceled = false
-    fileprivate var uploadId: String?
+    let crypto: CryptoProtocol?
+    var isCanceled = false
+    var uploadId: String?
     
-    init(config: DracoonRequestConfig, request: CreateFileUploadRequest, filePath: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: Crypto?,
+    init(config: DracoonRequestConfig, request: CreateFileUploadRequest, fileUrl: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
          account: DracoonAccount) {
         self.request = request
         self.sessionManager = config.sessionManager
@@ -38,7 +39,7 @@ public class FileUpload {
         self.encoder = config.encoder
         self.crypto = crypto
         self.account = account
-        self.filePath = filePath
+        self.fileUrl = fileUrl
         self.resolutionStrategy = resolutionStrategy
     }
     
@@ -47,8 +48,7 @@ public class FileUpload {
             switch result {
             case .value(let response):
                 self.uploadId = response.uploadId
-                self.callback?.onStarted?(response.uploadId)
-                self.uploadChunks(uploadId: response.uploadId)
+                self.startChunkedUpload(uploadId: response.uploadId)
             case .error(let error):
                 self.callback?.onError?(error)
             }
@@ -69,7 +69,7 @@ public class FileUpload {
         }
     }
     
-    fileprivate func createFileUpload(request: CreateFileUploadRequest, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
+    func createFileUpload(request: CreateFileUploadRequest, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
         do {
             let jsonBody = try encoder.encode(request)
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads"
@@ -88,14 +88,14 @@ public class FileUpload {
         }
     }
     
-    fileprivate func uploadChunks(uploadId: String) {
+    func startChunkedUpload(uploadId: String) {
         
-        let totalFileSize = self.calculateFileSize(filePath: self.filePath) ?? 0 as Int64
+        let totalFileSize = FileUtils.calculateFileSize(filePath: self.fileUrl) ?? 0 as Int64
         
-        var cipher: FileEncryptionCipher?
+        var cipher: EncryptionCipher?
         if let crypto = self.crypto {
             do {
-                let fileKey = try crypto.generateFileKey()
+                let fileKey = try crypto.generateFileKey(version: CryptoConstants.DEFAULT_VERSION)
                 cipher = try crypto.createEncryptionCipher(fileKey: fileKey)
             } catch {
                 self.callback?.onError?(DracoonError.encryption_cipher_failure)
@@ -114,7 +114,7 @@ public class FileUpload {
                         do {
                             let publicKey = UserPublicKey(publicKey: userKeyPair.publicKeyContainer.publicKey, version: userKeyPair.publicKeyContainer.version)
                             let encryptedFileKey = try crypto.encryptFileKey(fileKey: cipher.fileKey, publicKey: publicKey)
-                            self.completeRequest(uploadId: uploadId, encryptedFileKey: encryptedFileKey)
+                            self.completeUpload(uploadId: uploadId, encryptedFileKey: encryptedFileKey)
                         } catch CryptoError.encrypt(let message){
                             self.callback?.onError?(DracoonError.filekey_encryption_failure(description: message))
                         } catch {
@@ -123,18 +123,18 @@ public class FileUpload {
                     }
                 })
             } else {
-                self.completeRequest(uploadId: uploadId, encryptedFileKey: nil)
+                self.completeUpload(uploadId: uploadId, encryptedFileKey: nil)
             }
             
         })
     }
     
-    fileprivate func createNextChunk(uploadId: String, offset: Int, fileSize: Int64, cipher: FileEncryptionCipher?, completion: @escaping () -> Void) {
+    fileprivate func createNextChunk(uploadId: String, offset: Int, fileSize: Int64, cipher: EncryptionCipher?, completion: @escaping () -> Void) {
         let range = NSMakeRange(offset, DracoonConstants.UPLOAD_CHUNK_SIZE)
         let lastBlock = Int64(offset + DracoonConstants.UPLOAD_CHUNK_SIZE) >= fileSize
         do {
-            guard let data = try self.readData(self.filePath, range: range) else {
-                self.callback?.onError?(DracoonError.read_data_failure(at: self.filePath))
+            guard let data = try FileUtils.readData(self.fileUrl, range: range) else {
+                self.callback?.onError?(DracoonError.read_data_failure(at: self.fileUrl))
                 return
             }
             let uploadData: Data
@@ -193,13 +193,14 @@ public class FileUpload {
                                         upload.validate()
                                         upload.responseData { dataResponse in
                                             if let error = dataResponse.error {
-                                                if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
-                                                    self.uploadNextChunk(uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
-                                                } else {
-                                                    chunkCallback(error)
-                                                }
+                                                self.handleUploadError(error: error, uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
                                             } else {
-                                                chunkCallback(nil)
+                                                if self.checkMD5(result: dataResponse.result, localFileMD5: FileUtils.calculateMD5(chunk)) {
+                                                    chunkCallback(nil)
+                                                } else {
+                                                 // MD5 check failed
+                                                    self.handleUploadError(error: DracoonError.hash_check_failed, uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
+                                                }
                                             }
                                         }
                                         upload.uploadProgress(closure: { progress in
@@ -207,22 +208,36 @@ public class FileUpload {
                                         })
                                         
                                     case .failure(let error):
-                                        if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
-                                            self.uploadNextChunk(uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
-                                        } else {
-                                            chunkCallback(error)
-                                        }
+                                       self.handleUploadError(error: error, uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
                                     }
         })
     }
     
-    fileprivate func completeRequest(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
+    fileprivate func handleUploadError(error: Error, uploadId: String, chunk: Data, offset: Int, totalFileSize: Int64, retryCount: Int,
+                           chunkCallback: @escaping (Error?) -> Void, callback: UploadCallback?) {
+        if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
+            self.uploadNextChunk(uploadId: uploadId, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
+        } else {
+            chunkCallback(error)
+        }
+    }
+    
+    func checkMD5(result: Result<Data>, localFileMD5: String) -> Bool {
+        if let response = result.value {
+            if let responseModel = try? self.decoder.decode(ChunkUploadResponse.self, from: response) {
+                return responseModel.hash == localFileMD5
+            }
+        }
+        return true
+    }
+    
+    func completeUpload(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
         var completeRequest = CompleteUploadRequest()
         completeRequest.fileName = self.request.name
         completeRequest.resolutionStrategy = self.resolutionStrategy
         completeRequest.fileKey = encryptedFileKey
         
-        self.completeUpload(uploadId: uploadId, request: completeRequest, completion: { result in
+        self.sendCompleteRequest(uploadId: uploadId, request: completeRequest, completion: { result in
             switch result {
             case .value(let node):
                 self.callback?.onComplete?(node)
@@ -232,7 +247,7 @@ public class FileUpload {
         })
     }
     
-    fileprivate func completeUpload(uploadId: String, request: CompleteUploadRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    fileprivate func sendCompleteRequest(uploadId: String, request: CompleteUploadRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
         do {
             let jsonBody = try encoder.encode(request)
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
@@ -251,45 +266,11 @@ public class FileUpload {
         }
     }
     
-    fileprivate func deleteUpload(uploadId: String, completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteUpload(uploadId: String, completion: @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
         
         self.sessionManager.request(requestUrl, method: .delete, parameters: Parameters())
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
-    }
-    
-    // MARK: Helper
-    
-    fileprivate func calculateFileSize(filePath: URL) -> Int64? {
-        do {
-            let fileAttribute: [FileAttributeKey : Any] = try FileManager.default.attributesOfItem(atPath: filePath.path)
-            let fileSize = fileAttribute[FileAttributeKey.size] as? Int64
-            return fileSize
-        } catch {}
-        return nil
-    }
-    
-    func readData(_ path: URL?, range: NSRange) throws -> Data? {
-        guard let path = path, let fileHandle = try? FileHandle(forReadingFrom: path) else {
-            return nil
-        }
-        
-        let offset = UInt64(range.location)
-        let length = UInt64(range.length)
-        let size = fileHandle.seekToEndOfFile()
-        
-        let maxLength = size - offset
-        
-        guard maxLength >= 0 else {
-            return nil
-        }
-        
-        let secureLength = Int(min(length, maxLength))
-        
-        fileHandle.seek(toFileOffset: offset)
-        let data = fileHandle.readData(ofLength: secureLength)
-        
-        return data
     }
 }
