@@ -631,7 +631,6 @@
 				E00067552057D0AD009CDA70 /* AuthConfig.swift */,
 				E00067732057D0B0009CDA70 /* AuthInitResources.swift */,
 				E000672C2057D0AA009CDA70 /* AuthMethod.swift */,
-				E07C89E422A528C900C7139E /* Avatar.swift */,
 				E000677F2057D0B1009CDA70 /* BrandingConfig.swift */,
 				E00067822057D0B1009CDA70 /* BrandingServerInfo.swift */,
 				E00067852057D0B1009CDA70 /* ChangeGroupMembersRequest.swift */,
@@ -946,6 +945,9 @@
 					E00067042057C6CD009CDA70 = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1020;
+						ProvisioningStyle = Automatic;
+					};
+					E0AD90ED22E85B3000741634 = {
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -1394,6 +1396,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1423,6 +1426,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 1.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
