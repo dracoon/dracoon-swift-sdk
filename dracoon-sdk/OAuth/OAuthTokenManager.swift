@@ -150,8 +150,7 @@ class OAuthTokenManager: OAuthInterceptor {
                     self.mode = .accessRefreshToken(clientId: clientId, clientSecret: clientSecret, tokens: DracoonTokens(oAuthTokens: tokens))
                     self.delegate?.tokenChanged(accessToken: tokens.access_token, refreshToken: tokens.refresh_token)
                     completion(true, 0)
-                case .error(let error):
-                    self.delegate?.error(error)
+                case .error:
                     completion(false, 0)
                 }
                 self.isRefreshing = false
@@ -163,8 +162,7 @@ class OAuthTokenManager: OAuthInterceptor {
                     self.mode = .accessRefreshToken(clientId: clientId, clientSecret: clientSecret,tokens: DracoonTokens(oAuthTokens: tokens))
                     self.delegate?.tokenChanged(accessToken: tokens.access_token, refreshToken: tokens.refresh_token)
                     completion(true, 0)
-                case .error(let error):
-                    self.delegate?.error(error)
+                case .error:
                     completion(false, 0)
                 }
                 self.isRefreshing = false
