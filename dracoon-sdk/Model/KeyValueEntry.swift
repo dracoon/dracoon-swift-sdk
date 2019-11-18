@@ -8,7 +8,7 @@
 import Foundation
 
 
-
+/// - Tag: KeyValueEntry
 public struct KeyValueEntry: Codable {
 
     /** Entry key */
