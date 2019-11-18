@@ -10,6 +10,6 @@ import Foundation
 
 public struct AttributesResponse: Codable {
     
-    public var range: [ModelRange]
+    public var range: ModelRange
     public var items: [KeyValueEntry]
 }
