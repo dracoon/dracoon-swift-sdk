@@ -48,13 +48,6 @@ extension CreateFileUploadRequest {
     }
 }
 
-extension CreateFolderRequest {
-    public init(parentId: Int64, name: String, _ customize: ((inout CreateFolderRequest) -> Void)? = nil) {
-        self.init(parentId: parentId, name: name, notes: nil)
-        customize?(&self)
-    }
-}
-
 extension CreateDownloadShareRequest {
     public init(nodeId:Int64, _ customize: ((inout CreateDownloadShareRequest) -> Void)? = nil) {
         self.init(nodeId: nodeId,
