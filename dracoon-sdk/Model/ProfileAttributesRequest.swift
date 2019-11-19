@@ -11,5 +11,9 @@ import Foundation
 /// - Tag: ProfileAttributesRequest
 public struct ProfileAttributesRequest: Codable {
     
+    public init(items: [KeyValueEntry]) {
+        self.items = items
+    }
+    
     public var items: [KeyValueEntry]
 }

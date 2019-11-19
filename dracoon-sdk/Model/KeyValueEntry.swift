@@ -10,6 +10,11 @@ import Foundation
 
 /// - Tag: KeyValueEntry
 public struct KeyValueEntry: Codable {
+    
+    public init(key: String, value: String) {
+        self.key = key
+        self.value = value
+    }
 
     /** Entry key */
     public var key: String
