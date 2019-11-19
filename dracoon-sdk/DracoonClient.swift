@@ -103,6 +103,26 @@ public protocol DracoonAccount {
     ///
     /// - Parameter completion: Returns default avatar on success or an error.
     func deleteUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void)
+    
+    /// Retrieve a list of user profile attributes.
+    ///
+    /// - Parameters:
+    ///   - completion: Returns user profile attributes on success or an error.
+    func getProfileAttributes(completion: @escaping (Dracoon.Result<AttributesResponse>) -> Void)
+    
+    /// Set custom user profile attributes.
+    ///
+    /// - Parameters:
+    ///   - request: The [ProfileAttributesRequest](x-source-tag://ProfileAttributesRequest) model
+    ///   - completion: Returns user profile attributes on success or an error.
+    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<ProfileAttributes>) -> Void)
+    
+    /// Delete custom user profile attribute.
+    ///
+    /// - Parameters:
+    ///   - key: The key of the stored [KeyValueEntry](x-source-tag://KeyValueEntry) to delete
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteProfileAttributes(key: String, completion: @escaping (Dracoon.Response) -> Void)
 }
 
 public protocol DracoonConfig {

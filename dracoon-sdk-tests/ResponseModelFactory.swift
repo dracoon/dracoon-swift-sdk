@@ -56,6 +56,10 @@ struct ResponseModelFactory {
             return self.getPresignedUrlList() as? E
         } else if type == S3FileUploadStatus.self {
             return self.getS3FileUploadStatus() as? E
+        } else if type == AttributesResponse.self {
+            return self.getAttributesResponse() as? E
+        } else if type == ProfileAttributes.self {
+            return self.getProfileAttributes() as? E
         }
         return nil
     }
@@ -165,5 +169,17 @@ struct ResponseModelFactory {
     
     private static func getS3FileUploadStatus() -> S3FileUploadStatus {
         return S3FileUploadStatus(status: S3FileUploadStatus.S3UploadStatus.done.rawValue, node: self.getNode(), errorDetails: nil)
+    }
+    
+    private static func getAttributesResponse() -> AttributesResponse {
+        let keyValueEntry1 = KeyValueEntry(key: "testKey1", value: "testValue1")
+        let keyValueEntry2 = KeyValueEntry(key: "testKey2", value: "testValue2")
+        return AttributesResponse(range: ModelRange(offset: 0, limit: 0, total: 1), items: [keyValueEntry1, keyValueEntry2])
+    }
+    
+    private static func getProfileAttributes() -> ProfileAttributes {
+        let keyValueEntry1 = KeyValueEntry(key: "testKey1", value: "testValue1")
+        let keyValueEntry2 = KeyValueEntry(key: "testKey2", value: "testValue2")
+        return ProfileAttributes(items: [keyValueEntry1, keyValueEntry2])
     }
 }

@@ -9,6 +9,11 @@ import Foundation
 
 /// - Tag: CreateFolderRequest
 public struct CreateFolderRequest: Codable {
+    
+    public init(parentId: Int64, name: String) {
+        self.parentId = parentId
+        self.name = name
+    }
 
     /** Parent node ID (room or folder) */
     public var parentId: Int64
