@@ -213,7 +213,7 @@ class DracoonAccountImpl: DracoonAccount {
             .decode(AttributesResponse.self, decoder: self.decoder, completion: completion)
     }
     
-    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<AttributesResponse>) -> Void) {
+    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<ProfileAttributes>) -> Void) {
         do {
             let jsonBody = try encoder.encode(request)
             
@@ -226,7 +226,7 @@ class DracoonAccountImpl: DracoonAccount {
             
             self.sessionManager.request(urlRequest)
                 .validate()
-                .decode(AttributesResponse.self, decoder: self.decoder, completion: completion)
+                .decode(ProfileAttributes.self, decoder: self.decoder, completion: completion)
             
         } catch {
             completion(Dracoon.Result.error(DracoonError.encode(error: error)))

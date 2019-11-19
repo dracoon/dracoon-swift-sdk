@@ -501,7 +501,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
     
     func testUpdateProfileAttributes_returnsAttributesResponseModel() {
         
-        self.setResponseModel(AttributesResponse.self, statusCode: 200)
+        self.setResponseModel(ProfileAttributes.self, statusCode: 200)
         var calledValue = false
         
         let expectation = XCTestExpectation(description: "Returns AttributesResponse model")

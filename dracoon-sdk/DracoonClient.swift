@@ -115,7 +115,7 @@ public protocol DracoonAccount {
     /// - Parameters:
     ///   - request: The [ProfileAttributesRequest](x-source-tag://ProfileAttributesRequest) model
     ///   - completion: Returns user profile attributes on success or an error.
-    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<AttributesResponse>) -> Void)
+    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<ProfileAttributes>) -> Void)
     
     /// Delete custom user profile attribute.
     ///

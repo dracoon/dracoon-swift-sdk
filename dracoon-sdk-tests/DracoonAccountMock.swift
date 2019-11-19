@@ -18,6 +18,7 @@ class DracoonAccountMock: DracoonAccount {
     var customerAccountResponse = ResponseModelFactory.getTestResponseModel(CustomerData.self)!
     var avatarResponse = ResponseModelFactory.getTestResponseModel(Avatar.self)!
     var userAttributesResponse = ResponseModelFactory.getTestResponseModel(AttributesResponse.self)!
+    var userProfileAttributes = ResponseModelFactory.getTestResponseModel(ProfileAttributes.self)!
     
     func getUserAccount(completion: @escaping DataRequest.DecodeCompletion<UserAccount>) {
         if let error = self.error {
@@ -96,11 +97,11 @@ class DracoonAccountMock: DracoonAccount {
         }
     }
     
-    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<AttributesResponse>) -> Void) {
+    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<ProfileAttributes>) -> Void) {
         if let error = error {
             completion(Dracoon.Result.error(error))
         } else {
-            completion(Dracoon.Result.value(self.userAttributesResponse))
+            completion(Dracoon.Result.value(self.userProfileAttributes))
         }
     }
     

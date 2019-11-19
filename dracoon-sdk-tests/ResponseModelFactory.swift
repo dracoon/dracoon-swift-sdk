@@ -58,6 +58,8 @@ struct ResponseModelFactory {
             return self.getS3FileUploadStatus() as? E
         } else if type == AttributesResponse.self {
             return self.getAttributesResponse() as? E
+        } else if type == ProfileAttributes.self {
+            return self.getProfileAttributes() as? E
         }
         return nil
     }
@@ -173,5 +175,11 @@ struct ResponseModelFactory {
         let keyValueEntry1 = KeyValueEntry(key: "testKey1", value: "testValue1")
         let keyValueEntry2 = KeyValueEntry(key: "testKey2", value: "testValue2")
         return AttributesResponse(range: ModelRange(offset: 0, limit: 0, total: 1), items: [keyValueEntry1, keyValueEntry2])
+    }
+    
+    private static func getProfileAttributes() -> ProfileAttributes {
+        let keyValueEntry1 = KeyValueEntry(key: "testKey1", value: "testValue1")
+        let keyValueEntry2 = KeyValueEntry(key: "testKey2", value: "testValue2")
+        return ProfileAttributes(items: [keyValueEntry1, keyValueEntry2])
     }
 }
