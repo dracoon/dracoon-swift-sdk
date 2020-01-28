@@ -21,7 +21,7 @@ public struct CreateUploadShareRequest: Codable {
     public var expiration: ObjectExpiration?
     /** Number of days after which uploaded files expire */
     public var filesExpiryPeriod: Int?
-    /** User notes Use empty string to remove. */
+    /** User notes. Use empty string to remove. Limited to 255 characters. */
     public var notes: String?
     /** Notify creator on every upload. (default: false) */
     public var notifyCreator: Bool?
@@ -43,6 +43,24 @@ public struct CreateUploadShareRequest: Codable {
     public var maxSlots: Int?
     /** Maximal total size of uploaded files (in bytes) */
     public var maxSize: Int64?
+    /** Language tag for messages to creator.
+           Example: de-DE [Since version 4.11.0] */
+    public var creatorLanguage: String?
+    /** Language tag for messages to receiver.
+           Example: de-DE [Since version 4.11.0] */
+    public var receiverLanguage: String?
+    /** List of recipient FQTNs
+    E.123 / E.164 Format [Since version 4.11.0] */
+    public var textMessageRecipients: [String]?
+    /** Show creator first and last name.
+     [Since version 4.11.0] */
+    public var showCreatorName: Bool?
+    /** Show creator email address.
+        [Since version 4.11.0] */
+    public var showCreatorUsername: Bool?
+    /** Internal notes. Limited to 255 characters.
+        [Since version 4.11.0] */
+    public var internalNotes: String?
 
 
 
