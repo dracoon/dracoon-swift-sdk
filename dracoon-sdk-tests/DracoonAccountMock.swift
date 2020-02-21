@@ -17,6 +17,8 @@ class DracoonAccountMock: DracoonAccount {
     var userAccountResponse = ResponseModelFactory.getTestResponseModel(UserAccount.self)!
     var customerAccountResponse = ResponseModelFactory.getTestResponseModel(CustomerData.self)!
     var avatarResponse = ResponseModelFactory.getTestResponseModel(Avatar.self)!
+    var userAttributesResponse = ResponseModelFactory.getTestResponseModel(AttributesResponse.self)!
+    var userProfileAttributes = ResponseModelFactory.getTestResponseModel(ProfileAttributes.self)!
     
     func getUserAccount(completion: @escaping DataRequest.DecodeCompletion<UserAccount>) {
         if let error = self.error {
@@ -85,6 +87,26 @@ class DracoonAccountMock: DracoonAccount {
     
     func deleteUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
         self.getUserAvatar(completion: completion)
+    }
+    
+    func getProfileAttributes(completion: @escaping (Dracoon.Result<AttributesResponse>) -> Void) {
+        if let error = error {
+            completion(Dracoon.Result.error(error))
+        } else {
+            completion(Dracoon.Result.value(self.userAttributesResponse))
+        }
+    }
+    
+    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<ProfileAttributes>) -> Void) {
+        if let error = error {
+            completion(Dracoon.Result.error(error))
+        } else {
+            completion(Dracoon.Result.value(self.userProfileAttributes))
+        }
+    }
+    
+    func deleteProfileAttributes(key: String, completion: @escaping (Dracoon.Response) -> Void) {
+        completion(Dracoon.Response(error: self.error))
     }
     
 }
