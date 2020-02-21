@@ -45,6 +45,18 @@ public struct CreateDownloadShareRequest: Codable {
     public var sendSms: Bool?
     /** CSV string of recipient MSISDNs */
     public var smsRecipients: String?
+    /** Language tag for messages to creator.
+           Example: de-DE [Since version 4.11.0] */
+    public var creatorLanguage: String?
+    /** Language tag for messages to receiver.
+           Example: de-DE [Since version 4.11.0] */
+    public var receiverLanguage: String?
+    /** List of recipient FQTNs
+    E.123 / E.164 Format [Since version 4.11.0] */
+    public var textMessageRecipients: [String]?
+    /** Internal notes. Limited to 255 characters.
+     [Since version 4.11.0] */
+    public var internalNotes: String?
 
 
 

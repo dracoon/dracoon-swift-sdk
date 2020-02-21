@@ -48,6 +48,9 @@ public struct DownloadShare: Codable {
     public var dataUrl: String?
     /** Encrypted share (this only applies to shared files, not folders) */
     public var isEncrypted: Bool?
+    /** Internal notes. Limited to 255 characters.
+     [Since version 4.11.0] */
+    public var internalNotes: String?
 
 
     public enum CodingKeys: String, CodingKey { 
@@ -70,6 +73,7 @@ public struct DownloadShare: Codable {
         case nodePath
         case dataUrl
         case isEncrypted
+        case internalNotes
     }
 
 

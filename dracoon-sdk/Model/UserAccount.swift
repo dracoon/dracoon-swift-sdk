@@ -17,7 +17,11 @@ public struct UserAccount: Codable {
     }
     /** Unique identifier for the user */
     public var _id: Int64
-    /** User login name */
+    /** Username
+     [Since version 4.13.0] */
+    public var userName: String?
+    /** User login name
+     [DEPRECATED since 4.13.0]*/
     public var login: String
     /** User has changed the password */
     public var needsToChangePassword: Bool

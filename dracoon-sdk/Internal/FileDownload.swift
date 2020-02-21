@@ -28,7 +28,7 @@ public class FileDownload {
     var callback: DownloadCallback?
     var fileKey: EncryptedFileKey?
     var fileSize: Int64?
-    var downloadRequest: DownloadRequest?
+    weak var downloadRequest: DownloadRequest?
     
     init(nodeId: Int64, targetUrl: URL, config: DracoonRequestConfig, account: DracoonAccount, nodes: DracoonNodes,
          crypto: CryptoProtocol, fileKey: EncryptedFileKey?, getEncryptionPassword: @escaping () -> String?) {
@@ -47,6 +47,9 @@ public class FileDownload {
         self.targetUrl = targetUrl
         
         self.fileKey = fileKey
+    }
+    deinit {
+        self.callback = nil
     }
     
     public func start() {
