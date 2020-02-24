@@ -42,6 +42,9 @@ public class FileUpload: DracoonUpload {
         self.fileUrl = fileUrl
         self.resolutionStrategy = resolutionStrategy
     }
+    deinit {
+        self.callback = nil
+    }
     
     public func start() {
         self.createFileUpload(request: request, completion: { result in

@@ -204,4 +204,47 @@ class DracoonAccountImpl: DracoonAccount {
             .validate()
             .decode(Avatar.self, decoder: self.decoder, completion: completion)
     }
+    
+    func getProfileAttributes(completion: @escaping (Dracoon.Result<AttributesResponse>) -> Void) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/user/profileAttributes"
+        
+        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+            .validate()
+            .decode(AttributesResponse.self, decoder: self.decoder, completion: completion)
+    }
+    
+    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<ProfileAttributes>) -> Void) {
+        do {
+            let jsonBody = try encoder.encode(request)
+            
+            let requestUrl = serverUrl.absoluteString + apiPath + "/user/profileAttributes"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.sessionManager.request(urlRequest)
+                .validate()
+                .decode(ProfileAttributes.self, decoder: self.decoder, completion: completion)
+            
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
+    func deleteProfileAttributes(key: String, completion: @escaping (Dracoon.Response) -> Void) {
+        guard let pathKey = key.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
+            completion(Dracoon.Response(error: DracoonError.invalidParameter(description: key)))
+            return
+        }
+        let requestUrl = serverUrl.absoluteString + apiPath + "/user/profileAttributes/\(pathKey)"
+        
+        var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+        urlRequest.httpMethod = HTTPMethod.delete.rawValue
+        
+        self.sessionManager.request(urlRequest)
+            .validate()
+            .handleResponse(decoder: self.decoder, completion: completion)
+    }
 }

@@ -66,7 +66,9 @@ extension CreateDownloadShareRequest {
                   keyPair: nil,
                   fileKey: nil,
                   sendSms: nil,
-                  smsRecipients: nil)
+                  smsRecipients: nil,
+                  creatorLanguage: nil, receiverLanguage: nil,
+                  textMessageRecipients: nil, internalNotes: nil)
         customize?(&self)
     }
     
@@ -89,7 +91,9 @@ extension CreateUploadShareRequest {
                   smsRecipients: nil,
                   showUploadedFiles: nil,
                   maxSlots: nil,
-                  maxSize: nil)
+                  maxSize: nil,
+                  creatorLanguage: nil, receiverLanguage: nil, textMessageRecipients: nil,
+                  showCreatorName: nil, showCreatorUsername: nil, internalNotes: nil)
         customize?(&self)
     }
 }

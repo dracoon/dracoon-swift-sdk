@@ -146,7 +146,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
     // MARK: GenerateUserKeyPair
     
     func testGenerateUserKeyPair_returnsUserKeyPair() {
-       
+        
         let keyPair = try? self.account.generateUserKeyPair(password: "")
         
         XCTAssertNotNil(keyPair)
@@ -196,7 +196,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
                 calledError = true
                 expectation.fulfill()
             case .value(_):
-               break
+                break
             }
         })
         
@@ -332,11 +332,11 @@ class DracoonAccountTests: DracoonSdkTestCase {
     }
     
     func testDownloadUserAvatar() {
-
+        
         self.setResponseModel(Avatar.self, statusCode: 200)
         let targetUrl = Bundle(for: DracoonAccountTests.self).resourceURL!.appendingPathComponent("testUpload")
         let expectation = XCTestExpectation(description: "Returns Avatar")
-
+        
         
         self.account.downloadUserAvatar(targetUrl: targetUrl, completion: { result in
             switch result {
@@ -347,7 +347,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
                 expectation.fulfill()
             }
         })
-
+        
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
@@ -373,10 +373,10 @@ class DracoonAccountTests: DracoonSdkTestCase {
     // MARK: UpdateUserAvatar
     
     func testUpdateUserAvatar() {
-
+        
         self.setResponseModel(Avatar.self, statusCode: 200)
         var calledValue = false
-
+        
         let expectation = XCTestExpectation(description: "Returns Avatar")
         self.account.updateUserAvatar(fileUrl: URL(string: "/")!, completion: { result in
             switch result {
@@ -389,7 +389,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
             }
             
         })
-
+        
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
         XCTAssertTrue(calledValue)
     }
@@ -473,5 +473,90 @@ class DracoonAccountTests: DracoonSdkTestCase {
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
         XCTAssertTrue(calledValue)
+    }
+    
+    // MARK: GetProfileAttributes
+    
+    func testGetProfileAttributes_returnsAttributesResponseModel() {
+        
+        self.setResponseModel(AttributesResponse.self, statusCode: 200)
+        var calledValue = false
+        
+        let expectation = XCTestExpectation(description: "Returns AttributesResponse model")
+        self.account.getProfileAttributes(completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case.value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+            
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
+    func testUpdateProfileAttributes_returnsAttributesResponseModel() {
+        
+        self.setResponseModel(ProfileAttributes.self, statusCode: 200)
+        var calledValue = false
+        
+        let expectation = XCTestExpectation(description: "Returns AttributesResponse model")
+        let request = ProfileAttributesRequest(items: [KeyValueEntry(key: "key", value: "value")])
+        self.account.updateProfileAttributes(request: request, completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case.value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
+    func testDeleteProfileAttribute_withInvalidKey_returnsError() {
+        
+        MockURLProtocol.response(with: 204)
+        var calledError = false
+        let expectation = XCTestExpectation(description: "Returns without error")
+        let invalidString = String(
+        bytes: [0xD8, 0x00] as [UInt8],
+        encoding: String.Encoding.utf16BigEndian)!
+        
+        self.account.deleteProfileAttributes(key: invalidString, completion: { response in
+            if let error = response.error {
+                switch error {
+                case .invalidParameter(description: let errorString):
+                    calledError = errorString == invalidString
+                default:
+                    break
+                }
+            }
+        })
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
+    }
+    
+    func testDeleteProfileAttribute_returnsDracoonResponse() {
+        
+        MockURLProtocol.response(with: 204)
+        let expectation = XCTestExpectation(description: "Returns without error")
+        var calledError = true
+        
+        self.account.deleteProfileAttributes(key: "key", completion: { response in
+            if response.error == nil {
+                calledError = false
+                expectation.fulfill()
+            }
+        })
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertFalse(calledError)
     }
 }

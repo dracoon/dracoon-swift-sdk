@@ -9,7 +9,7 @@ import Foundation
 
 /// - Tag: UploadShare
 public struct UploadShare: Codable {
-
+    
     /** Share ID */
     public var _id: Int64
     /** Target room or folder ID */
@@ -52,8 +52,17 @@ public struct UploadShare: Codable {
     public var maxSlots: Int?
     /** Maximal total size of uploaded files (in bytes) */
     public var maxSize: Int64?
-
-
+    /** Show creator first and last name.
+     [Since version 4.11.0] */
+    public var showCreatorName: Bool?
+    /** Show creator email address.
+     [Since version 4.11.0] */
+    public var showCreatorUsername: Bool?
+    /** Internal notes. Limited to 255 characters.
+     [Since version 4.11.0] */
+    public var internalNotes: String?
+    
+    
     public enum CodingKeys: String, CodingKey { 
         case _id = "id"
         case targetId
@@ -76,8 +85,11 @@ public struct UploadShare: Codable {
         case dataUrl
         case maxSlots
         case maxSize
+        case showCreatorName
+        case showCreatorUsername
+        case internalNotes
     }
-
-
+    
+    
 }
 
