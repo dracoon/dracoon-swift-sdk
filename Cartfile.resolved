@@ -1,2 +1,2 @@
-git "ssh://git@git.ssp-europe.eu/~mathias.schreiner/crypto_asn1_fix.git" "691b6c41b2a452867973cd191a1f7e7c51c544cd"
+git "ssh://git@git.ssp-europe.eu/~mathias.schreiner/crypto_asn1_fix.git" "v1.2.0"
 github "Alamofire/Alamofire" "4.9.1"

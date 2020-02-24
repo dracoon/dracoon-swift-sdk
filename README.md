@@ -6,15 +6,15 @@ A library to access DRACOON REST API
 
 #### Minimum Requirements
 
-Xcode 7.3.1 or newer
+Xcode 10.2 or newer
 
 #### Carthage
 
 Add the SDK and its dependencies to your Cartfile:
 
-`github "dracoon/dracoon-swift-sdk.git" ~> 1.0.2`
-`github "Alamofire/Alamofire" ~> 4.7.3`
-`github "dracoon/dracoon-swift-crypto-sdk.git" ~> 1.0.2`
+`github "dracoon/dracoon-swift-sdk.git" ~> 1.2.0`
+`github "Alamofire/Alamofire" ~> 4.9.1`
+`github "dracoon/dracoon-swift-crypto-sdk.git" ~> 1.2.0`
 
 Then run
 
@@ -31,7 +31,7 @@ platform :ios, '9.3'
 use_frameworks!
 
 target '<Your Target Name>' do
-pod 'DRACOON-SDK', '~> 1.0.2'
+pod 'DRACOON-SDK', '~> 1.2.0'
 end
 ```
 Then run
