@@ -1,2 +1,2 @@
 github "Alamofire/Alamofire" "4.9.1"
-github "dracoon/dracoon-swift-crypto-sdk" "d393a1f55d131ffcb8941e1d1a285b854962aa56"
+github "dracoon/dracoon-swift-crypto-sdk" "v1.2.0"
