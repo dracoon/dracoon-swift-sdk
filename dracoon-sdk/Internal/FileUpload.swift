@@ -131,7 +131,7 @@ public class FileUpload: DracoonUpload {
             
         })
     }
-    
+
     fileprivate func createNextChunk(uploadId: String, offset: Int, fileSize: Int64, cipher: EncryptionCipher?, completion: @escaping () -> Void) {
         let range = NSMakeRange(offset, DracoonConstants.UPLOAD_CHUNK_SIZE)
         let lastBlock = Int64(offset + DracoonConstants.UPLOAD_CHUNK_SIZE) >= fileSize

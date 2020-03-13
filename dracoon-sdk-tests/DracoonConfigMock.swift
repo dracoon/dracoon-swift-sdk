@@ -12,9 +12,16 @@ import dracoon_sdk
 class DracoonConfigMock: DracoonConfig {
     
     var error: DracoonError?
-    var systemDefaultsResponse = ResponseModelFactory.getTestResponseModel(SystemDefaults.self)!
-    var generalSettingsResponse = ResponseModelFactory.getTestResponseModel(GeneralSettings.self)!
-    var infrastructurePropertiesResponse = ResponseModelFactory.getTestResponseModel(InfrastructureProperties.self)!
+    var systemDefaultsResponse: SystemDefaults
+    var generalSettingsResponse: GeneralSettings
+    var infrastructurePropertiesResponse: InfrastructureProperties
+    
+    init() {
+        let modelFactory = ResponseModelFactory()
+        self.systemDefaultsResponse = modelFactory.getTestResponseModel(SystemDefaults.self)!
+        self.generalSettingsResponse = modelFactory.getTestResponseModel(GeneralSettings.self)!
+        self.infrastructurePropertiesResponse = modelFactory.getTestResponseModel(InfrastructureProperties.self)!
+    }
     
     func getSystemDefaults(completion: @escaping DataRequest.DecodeCompletion<SystemDefaults>) {
         if let error = self.error {

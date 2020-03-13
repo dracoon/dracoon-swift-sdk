@@ -14,11 +14,20 @@ import crypto_sdk
 class DracoonAccountMock: DracoonAccount {
     
     var error: DracoonError?
-    var userAccountResponse = ResponseModelFactory.getTestResponseModel(UserAccount.self)!
-    var customerAccountResponse = ResponseModelFactory.getTestResponseModel(CustomerData.self)!
-    var avatarResponse = ResponseModelFactory.getTestResponseModel(Avatar.self)!
-    var userAttributesResponse = ResponseModelFactory.getTestResponseModel(AttributesResponse.self)!
-    var userProfileAttributes = ResponseModelFactory.getTestResponseModel(ProfileAttributes.self)!
+    var userAccountResponse: UserAccount
+    var customerAccountResponse: CustomerData
+    var avatarResponse: Avatar
+    var userAttributesResponse: AttributesResponse
+    var userProfileAttributes: ProfileAttributes
+    
+    init() {
+        let modelFactory = ResponseModelFactory()
+        self.userAccountResponse = modelFactory.getTestResponseModel(UserAccount.self)!
+        self.customerAccountResponse = modelFactory.getTestResponseModel(CustomerData.self)!
+        self.avatarResponse = modelFactory.getTestResponseModel(Avatar.self)!
+        self.userAttributesResponse = modelFactory.getTestResponseModel(AttributesResponse.self)!
+        self.userProfileAttributes = modelFactory.getTestResponseModel(ProfileAttributes.self)!
+    }
     
     func getUserAccount(completion: @escaping DataRequest.DecodeCompletion<UserAccount>) {
         if let error = self.error {
