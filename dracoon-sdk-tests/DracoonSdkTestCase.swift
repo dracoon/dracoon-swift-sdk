@@ -17,6 +17,7 @@ class DracoonSdkTestCase: XCTestCase {
     var crypto: CryptoProtocol!
     var requestConfig: DracoonRequestConfig!
     let testWaiter = XCTWaiter()
+    let modelFactory = ResponseModelFactory()
     
     override func setUp() {
         super.setUp()
@@ -40,7 +41,7 @@ class DracoonSdkTestCase: XCTestCase {
     }
     
     func setResponseModel<E: Encodable>(_ type: E.Type, statusCode: Int) {
-        let responseModel = ResponseModelFactory.getTestResponseModel(type)!
+        let responseModel = self.modelFactory.getTestResponseModel(type)!
         MockURLProtocol.responseWithModel(type, model: responseModel, statusCode: statusCode)
     }
 }
