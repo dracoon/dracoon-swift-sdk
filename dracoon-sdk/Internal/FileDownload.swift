@@ -11,7 +11,7 @@ import crypto_sdk
 
 public class FileDownload {
     
-    let sessionManager: Alamofire.SessionManager
+    var sessionManager: Alamofire.SessionManager
     let serverUrl: URL
     let apiPath: String
     let oAuthTokenManager: OAuthInterceptor
@@ -53,6 +53,9 @@ public class FileDownload {
     }
     
     public func start() {
+        if self.fileKey == nil {
+            self.sessionManager = self.createBackgroundSession()
+        }
         self.download()
     }
     
@@ -245,5 +248,16 @@ public class FileDownload {
         
         try FileUtils.removeItem(fileUrl)
         try FileUtils.moveItem(at: tempFilePath, to: fileUrl)
+    }
+    
+    private func createBackgroundSession() -> SessionManager {
+        let config = URLSessionConfiguration.background(withIdentifier: "com.dracoon.downloads.\(self.nodeId)")
+        config.httpAdditionalHeaders = self.sessionManager.session.configuration.httpAdditionalHeaders
+        config.sessionSendsLaunchEvents = self.sessionManager.session.configuration.sessionSendsLaunchEvents
+        config.sharedContainerIdentifier = self.sessionManager.session.configuration.sharedContainerIdentifier
+        let backgroundSession = SessionManager(configuration: config)
+        backgroundSession.retrier = self.sessionManager.retrier
+        backgroundSession.adapter = self.sessionManager.adapter
+        return backgroundSession
     }
 }
