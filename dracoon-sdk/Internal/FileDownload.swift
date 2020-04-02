@@ -31,8 +31,16 @@ public class FileDownload {
     weak var downloadRequest: DownloadRequest?
     
     init(nodeId: Int64, targetUrl: URL, config: DracoonRequestConfig, account: DracoonAccount, nodes: DracoonNodes,
-         crypto: CryptoProtocol, fileKey: EncryptedFileKey?, session: SessionManager?, getEncryptionPassword: @escaping () -> String?) {
-        self.sessionManager = session ?? config.sessionManager
+         crypto: CryptoProtocol, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?, getEncryptionPassword: @escaping () -> String?) {
+        if let downloadSessionConfig = sessionConfig {
+            let downloadSessionManager = SessionManager(configuration: downloadSessionConfig)
+            downloadSessionManager.retrier = config.sessionManager.retrier
+            downloadSessionManager.adapter = config.sessionManager.adapter
+            self.sessionManager = downloadSessionManager
+        } else {
+            self.sessionManager = config.sessionManager
+        }
+        
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
         self.oAuthTokenManager = config.oauthTokenManager
