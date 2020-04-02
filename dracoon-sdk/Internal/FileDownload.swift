@@ -31,8 +31,8 @@ public class FileDownload {
     weak var downloadRequest: DownloadRequest?
     
     init(nodeId: Int64, targetUrl: URL, config: DracoonRequestConfig, account: DracoonAccount, nodes: DracoonNodes,
-         crypto: CryptoProtocol, fileKey: EncryptedFileKey?, getEncryptionPassword: @escaping () -> String?) {
-        self.sessionManager = config.sessionManager
+         crypto: CryptoProtocol, fileKey: EncryptedFileKey?, session: SessionManager?, getEncryptionPassword: @escaping () -> String?) {
+        self.sessionManager = session ?? config.sessionManager
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
         self.oAuthTokenManager = config.oauthTokenManager
@@ -53,9 +53,6 @@ public class FileDownload {
     }
     
     public func start() {
-        if self.fileKey == nil {
-            self.sessionManager = self.createBackgroundSession()
-        }
         self.download()
     }
     
@@ -248,16 +245,5 @@ public class FileDownload {
         
         try FileUtils.removeItem(fileUrl)
         try FileUtils.moveItem(at: tempFilePath, to: fileUrl)
-    }
-    
-    private func createBackgroundSession() -> SessionManager {
-        let config = URLSessionConfiguration.background(withIdentifier: "com.dracoon.downloads.\(self.nodeId)")
-        config.httpAdditionalHeaders = self.sessionManager.session.configuration.httpAdditionalHeaders
-        config.sessionSendsLaunchEvents = self.sessionManager.session.configuration.sessionSendsLaunchEvents
-        config.sharedContainerIdentifier = self.sessionManager.session.configuration.sharedContainerIdentifier
-        let backgroundSession = SessionManager(configuration: config)
-        backgroundSession.retrier = self.sessionManager.retrier
-        backgroundSession.adapter = self.sessionManager.adapter
-        return backgroundSession
     }
 }

@@ -281,7 +281,8 @@ public protocol DracoonNodes {
     ///   - nodeId: The ID of the node to be downloaded
     ///   - targetUrl: The target download path
     ///   - callback: [DownloadCallback](x-source-tag://DownloadCallback) to inform about upload status
-    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback)
+    ///   - session: Optional SessionManager used for the download
+    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, session: SessionManager?)
     
     /// Cancels a file download.
     ///
@@ -364,6 +365,12 @@ public protocol DracoonNodes {
     /// - Returns: The encrypted key
     /// - Throws: CryptoError if an error occured during encryption
     func encryptFileKey(fileKey: PlainFileKey, publicKey: UserPublicKey) throws -> EncryptedFileKey
+}
+
+extension DracoonNodes {
+    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback) {
+        self.downloadFile(nodeId: nodeId, targetUrl: targetUrl, callback: callback, session: nil)
+    }
 }
 
 public protocol DracoonShares {
