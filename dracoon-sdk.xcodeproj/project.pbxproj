@@ -218,6 +218,8 @@
 		E030CDFB20FCBEC0001DEB31 /* DracoonRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E030CDFA20FCBEC0001DEB31 /* DracoonRequestConfig.swift */; };
 		E030CDFD20FCF03F001DEB31 /* FileDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E030CDFC20FCF03F001DEB31 /* FileDownload.swift */; };
 		E033136022F43EB100A09E7F /* DracoonValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E033135F22F43EB100A09E7F /* DracoonValidatorTests.swift */; };
+		E04862F3243C9C7300EE0617 /* UpdateDownloadShareRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04862F2243C9C7300EE0617 /* UpdateDownloadShareRequest.swift */; };
+		E04862F5243C9EA400EE0617 /* UpdateUploadShareRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04862F4243C9EA400EE0617 /* UpdateUploadShareRequest.swift */; };
 		E050B18822F9BC94001AE3D7 /* DracoonConfigMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E050B18722F9BC94001AE3D7 /* DracoonConfigMock.swift */; };
 		E05A609F22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05A609E22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift */; };
 		E05A60A122CCCE1200DF7418 /* S3FileUploadPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05A60A022CCCE1200DF7418 /* S3FileUploadPart.swift */; };
@@ -486,6 +488,8 @@
 		E030CDFA20FCBEC0001DEB31 /* DracoonRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonRequestConfig.swift; sourceTree = "<group>"; };
 		E030CDFC20FCF03F001DEB31 /* FileDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDownload.swift; sourceTree = "<group>"; };
 		E033135F22F43EB100A09E7F /* DracoonValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonValidatorTests.swift; sourceTree = "<group>"; };
+		E04862F2243C9C7300EE0617 /* UpdateDownloadShareRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateDownloadShareRequest.swift; sourceTree = "<group>"; };
+		E04862F4243C9EA400EE0617 /* UpdateUploadShareRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateUploadShareRequest.swift; sourceTree = "<group>"; };
 		E050B18722F9BC94001AE3D7 /* DracoonConfigMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonConfigMock.swift; sourceTree = "<group>"; };
 		E05A609E22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteS3FileUploadRequest.swift; sourceTree = "<group>"; };
 		E05A60A022CCCE1200DF7418 /* S3FileUploadPart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUploadPart.swift; sourceTree = "<group>"; };
@@ -782,6 +786,7 @@
 				E000676F2057D0B0009CDA70 /* UpdateBrandingConfig.swift */,
 				E00067782057D0B0009CDA70 /* UpdateCustomerRequest.swift */,
 				E00067972057D0B3009CDA70 /* UpdateCustomerResponse.swift */,
+				E04862F2243C9C7300EE0617 /* UpdateDownloadShareRequest.swift */,
 				E00067942057D0B3009CDA70 /* UpdateEventlogConfig.swift */,
 				E00067C12057D0BA009CDA70 /* UpdateFileRequest.swift */,
 				E00067252057D0A9009CDA70 /* UpdateFolderRequest.swift */,
@@ -793,6 +798,7 @@
 				E00067482057D0AC009CDA70 /* UpdateRoomRequest.swift */,
 				E00067392057D0AB009CDA70 /* UpdateSyslogConfig.swift */,
 				E00067652057D0AF009CDA70 /* UpdateSystemDefaults.swift */,
+				E04862F4243C9EA400EE0617 /* UpdateUploadShareRequest.swift */,
 				E000679C2057D0B3009CDA70 /* UpdateUserAccountRequest.swift */,
 				E00067452057D0AC009CDA70 /* UpdateUserRequest.swift */,
 				E00067492057D0AC009CDA70 /* UploadShare.swift */,
@@ -1021,12 +1027,14 @@
 				E01C7A1920F5065900BBC518 /* DownloadCallback.swift in Sources */,
 				E00068142057D0BC009CDA70 /* GroupUserList.swift in Sources */,
 				E000686E2057D0BC009CDA70 /* ZipDownloadRequest.swift in Sources */,
+				E04862F3243C9C7300EE0617 /* UpdateDownloadShareRequest.swift in Sources */,
 				E00067D72057D0BC009CDA70 /* PendingUserData.swift in Sources */,
 				E00068092057D0BC009CDA70 /* PendingAssignmentsRequest.swift in Sources */,
 				E00068452057D0BC009CDA70 /* Node.swift in Sources */,
 				E00068712057D0BC009CDA70 /* CreateOpenIdIdpConfigRequest.swift in Sources */,
 				E00067E02057D0BC009CDA70 /* DownloadShareList.swift in Sources */,
 				E00067DB2057D0BC009CDA70 /* UpdateFolderRequest.swift in Sources */,
+				E04862F5243C9EA400EE0617 /* UpdateUploadShareRequest.swift in Sources */,
 				E00067F02057D0BC009CDA70 /* ActiveDirectoryConfig.swift in Sources */,
 				E00067FF2057D0BC009CDA70 /* UploadShare.swift in Sources */,
 				E00067FB2057D0BC009CDA70 /* UpdateUserRequest.swift in Sources */,
