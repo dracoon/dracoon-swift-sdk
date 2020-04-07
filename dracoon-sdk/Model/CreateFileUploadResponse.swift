@@ -16,7 +16,7 @@ public struct CreateFileUploadResponse: Codable {
     /** &#x60;DEPRECATED&#x60;: Upload token */
     public var token: String
     /** (public) Upload URL */
-    public var uploadUrl: String?
+    public var uploadUrl: String
 
 
 
