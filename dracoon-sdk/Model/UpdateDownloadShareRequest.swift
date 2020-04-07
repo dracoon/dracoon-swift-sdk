@@ -8,11 +8,12 @@
 
 import Foundation
 
+/// - Tag: UpdateDownloadShareRequest
 public struct UpdateDownloadShareRequest: Codable {
     
     /** Alias name */
     public var name: String?
-    /** Access password */
+    /** Access password, not allowed for encrypted shares */
     public var password: String?
     /** Expiration date / time */
     public var expiration: ObjectExpiration?

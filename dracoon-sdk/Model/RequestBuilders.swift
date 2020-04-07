@@ -74,6 +74,13 @@ extension CreateDownloadShareRequest {
     
 }
 
+extension UpdateDownloadShareRequest {
+    public init(_ customize: ((inout UpdateDownloadShareRequest) -> Void)? = nil) {
+        self.init()
+        customize?(&self)
+    }
+}
+
 extension CreateUploadShareRequest {
     public init(targetId:Int64, _ customize: ((inout CreateUploadShareRequest) -> Void)? = nil) {
         self.init(targetId: targetId,
@@ -94,6 +101,13 @@ extension CreateUploadShareRequest {
                   maxSize: nil,
                   creatorLanguage: nil, receiverLanguage: nil, textMessageRecipients: nil,
                   showCreatorName: nil, showCreatorUsername: nil, internalNotes: nil)
+        customize?(&self)
+    }
+}
+
+extension UpdateUploadShareRequest {
+    public init(_ customize: ((inout UpdateUploadShareRequest) -> Void)? = nil) {
+        self.init()
         customize?(&self)
     }
 }

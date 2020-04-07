@@ -409,6 +409,21 @@ public protocol DracoonShares {
     ///   - completion: Returns the [download share](x-source-tag://DownloadShare) on success or an error.
     func getDownloadShareQrCode(shareId: Int64, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void)
     
+    /// Updates a download share.
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share
+    ///   - request: The request containing the changes
+    ///   - completion: Returns the [download share](x-source-tag://DownloadShare) on success or an error.
+    func updateDownloadShare(shareId: Int64, request: UpdateDownloadShareRequest, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void)
+    
+    /// Deletes a download share.
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteDownloadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void)
+    
     /// Creates an upload share.
     ///
     /// - Parameters:
@@ -438,4 +453,19 @@ public protocol DracoonShares {
     ///   - shareId: The ID of the upload share
     ///   - completion: Returns the [upload share](x-source-tag://UploadShare) on success or an error.
     func getUploadShareQrCode(shareId: Int64, completion: @escaping (Dracoon.Result<UploadShare>) -> Void)
+    
+    /// Updates an upload share.
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share
+    ///   - request: The request containing the changes
+    ///   - completion: Returns the [upload share](x-source-tag://UploadShare) on success or an error.
+    func updateUploadShare(shareId: Int64, request: UpdateUploadShareRequest, completion: @escaping (Dracoon.Result<UploadShare>) -> Void)
+    
+    /// Deletes an upload share.
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteUploadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void)
 }

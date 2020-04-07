@@ -130,6 +130,36 @@ class DracoonSharesImpl: DracoonShares {
             .decode(DownloadShare.self, decoder: self.decoder, completion: completion)
     }
     
+    func updateDownloadShare(shareId: Int64, request: UpdateDownloadShareRequest, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+        do {
+            let jsonBody = try encoder.encode(request)
+            
+            let requestUrl = serverUrl.absoluteString + apiPath + "/shares/downloads/\(shareId)"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.sessionManager.request(urlRequest)
+                .validate()
+                .decode(DownloadShare.self, decoder: self.decoder, requestType: .createDLShare, completion: completion)
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
+    func deleteDownloadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/shares/downloads/\(shareId)"
+        
+        var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+        urlRequest.httpMethod = HTTPMethod.delete.rawValue
+        
+        self.sessionManager.request(urlRequest)
+            .validate()
+            .handleResponse(decoder: self.decoder, completion: completion)
+    }
+    
     func createUploadShare(nodeId: Int64, name: String?, password: String?, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
         let request = CreateUploadShareRequest(targetId: nodeId){$0.name = name; $0.password = password}
         self.requestCreateUploadShare(request: request, completion: completion)
@@ -173,5 +203,35 @@ class DracoonSharesImpl: DracoonShares {
         self.sessionManager.request(requestUrl, method: .get)
             .validate()
             .decode(UploadShare.self, decoder: self.decoder, completion: completion)
+    }
+    
+    func updateUploadShare(shareId: Int64, request: UpdateUploadShareRequest, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
+        do {
+            let jsonBody = try encoder.encode(request)
+            
+            let requestUrl = serverUrl.absoluteString + apiPath + "/shares/uploads/\(shareId)"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.sessionManager.request(urlRequest)
+                .validate()
+                .decode(UploadShare.self, decoder: self.decoder, requestType: .createULShare, completion: completion)
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
+    func deleteUploadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/shares/uploads/\(shareId)"
+        
+        var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+        urlRequest.httpMethod = HTTPMethod.delete.rawValue
+        
+        self.sessionManager.request(urlRequest)
+            .validate()
+            .handleResponse(decoder: self.decoder, completion: completion)
     }
 }
