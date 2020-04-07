@@ -48,7 +48,7 @@ class DracoonNodesMock: DracoonNodes {
     
     func cancelUpload(uploadId: String) {}
     
-    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback) {}
+    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, sessionConfig: URLSessionConfiguration?) {}
     
     func cancelDownload(nodeId: Int64) {}
     
