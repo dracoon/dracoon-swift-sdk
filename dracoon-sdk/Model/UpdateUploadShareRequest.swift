@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// - Tag: UpdateUploadShareRequest
 public struct UpdateUploadShareRequest: Codable {
     
     /** Alias name */

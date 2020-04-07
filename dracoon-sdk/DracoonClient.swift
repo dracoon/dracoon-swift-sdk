@@ -413,7 +413,7 @@ public protocol DracoonShares {
     ///
     /// - Parameters:
     ///   - shareId: The ID of the share
-    ///   - request: The request containing the changes
+    ///   - request: The [request](x-source-tag://UpdateDownloadShareRequest) containing the changes
     ///   - completion: Returns the [download share](x-source-tag://DownloadShare) on success or an error.
     func updateDownloadShare(shareId: Int64, request: UpdateDownloadShareRequest, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void)
     
@@ -458,7 +458,7 @@ public protocol DracoonShares {
     ///
     /// - Parameters:
     ///   - shareId: The ID of the share
-    ///   - request: The request containing the changes
+    ///   - request: The [request](x-source-tag://UpdateUploadShareRequest) containing the changes
     ///   - completion: Returns the [upload share](x-source-tag://UploadShare) on success or an error.
     func updateUploadShare(shareId: Int64, request: UpdateUploadShareRequest, completion: @escaping (Dracoon.Result<UploadShare>) -> Void)
     
