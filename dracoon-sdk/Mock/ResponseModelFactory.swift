@@ -99,7 +99,7 @@ public class ResponseModelFactory {
     }
     
     private func getCreateFileUploadResponse() -> CreateFileUploadResponse {
-        return CreateFileUploadResponse(uploadId: "uploadId", token: "uploadToken", uploadUrl: nil)
+        return CreateFileUploadResponse(uploadId: "uploadId", token: "uploadToken", uploadUrl: "https://dracoon.team/api/v4/uploads/uploadToken")
     }
     
     private func getDownloadTokenGenerateResponse() -> DownloadTokenGenerateResponse {
