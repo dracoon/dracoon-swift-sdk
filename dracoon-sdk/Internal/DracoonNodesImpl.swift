@@ -296,7 +296,7 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: Upload file
     
-    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy = CompleteUploadRequest.ResolutionStrategy.autorename) {
+    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy = CompleteUploadRequest.ResolutionStrategy.autorename, sessionConfig: URLSessionConfiguration?) {
         
         guard ValidatorUtils.pathExists(at: fileUrl.path) else {
             callback.onError?(DracoonError.file_does_not_exist(at: fileUrl))
@@ -317,12 +317,12 @@ class DracoonNodesImpl: DracoonNodes {
                 self.isS3Upload(onComplete: { result in
                     switch result {
                     case .error(_):
-                        self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                        self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
                     case .value(let isS3Upload):
                         if isS3Upload {
                             self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
                         } else {
-                            self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                            self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
                         }
                     }
                 })
@@ -331,9 +331,9 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     private func startUpload(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback,
-                             resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?) {
+                             resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
         let upload = FileUpload(config: self.requestConfig, request: request, fileUrl: filePath, resolutionStrategy: resolutionStrategy,
-                                crypto: cryptoImpl, account: self.account)
+                                crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account)
         
         let innerCallback = UploadCallback()
         innerCallback.onCanceled = callback.onCanceled
@@ -357,7 +357,7 @@ class DracoonNodesImpl: DracoonNodes {
     private func startS3Upload(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback,
                                resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?) {
         let s3upload = S3FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
-                                    crypto: cryptoImpl, account: self.account)
+                                    crypto: cryptoImpl, sessionConfig: nil, account: self.account)
         
         let innerCallback = UploadCallback()
         innerCallback.onCanceled = callback.onCanceled
@@ -401,12 +401,26 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     func cancelUpload(uploadId: String) {
-        
         guard let upload = self.uploads[uploadId] else {
             return
         }
         upload.cancel()
         self.uploads.removeValue(forKey: uploadId)
+    }
+    
+    func completeBackgroundUpload(uploadId: String, completion: @escaping (DracoonError?) -> Void) {
+        guard let upload = self.uploads[uploadId], let fileUpload = upload as? FileUpload else {
+            completion(DracoonError.upload_not_found)
+            return
+        }
+        fileUpload.completeBackgroundUpload(sessionManager: self.sessionManager, completionHandler: { error in
+            if let error = error {
+                completion(error)
+            } else {
+                self.uploads.removeValue(forKey: uploadId)
+                completion(nil)
+            }
+        })
     }
     
     // MARK: Download file
