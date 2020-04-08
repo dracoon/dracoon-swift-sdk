@@ -413,7 +413,7 @@ class DracoonNodesImpl: DracoonNodes {
             completion(DracoonError.upload_not_found)
             return
         }
-        fileUpload.completeBackgroundUpload(completionHandler: { error in
+        fileUpload.completeBackgroundUpload(sessionManager: self.sessionManager, completionHandler: { error in
             if let error = error {
                 completion(error)
             } else {

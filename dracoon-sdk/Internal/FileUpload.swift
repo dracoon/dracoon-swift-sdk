@@ -277,7 +277,7 @@ public class FileUpload: DracoonUpload {
         completeRequest.resolutionStrategy = self.resolutionStrategy
         completeRequest.fileKey = encryptedFileKey
         
-        self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, completion: { result in
+        self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, sessionManager: self.sessionManager, completion: { result in
             switch result {
             case .value(let node):
                 self.callback?.onComplete?(node)
@@ -287,7 +287,7 @@ public class FileUpload: DracoonUpload {
         })
     }
     
-    func completeBackgroundUpload(completionHandler: @escaping (DracoonError?) -> Void) {
+    func completeBackgroundUpload(sessionManager: SessionManager, completionHandler: @escaping (DracoonError?) -> Void) {
         guard let uploadUrl = self.uploadUrl else {
             completionHandler(DracoonError.upload_not_found)
             return
@@ -296,7 +296,7 @@ public class FileUpload: DracoonUpload {
         completeRequest.fileName = self.request.name
         completeRequest.resolutionStrategy = self.resolutionStrategy
         
-        self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, completion: { result in
+        self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, sessionManager: sessionManager, completion: { result in
             switch result {
             case .value(_):
                 completionHandler(nil)
@@ -306,7 +306,7 @@ public class FileUpload: DracoonUpload {
         })
     }
     
-    fileprivate func sendCompleteRequest(uploadUrl: String, request: CompleteUploadRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    fileprivate func sendCompleteRequest(uploadUrl: String, request: CompleteUploadRequest, sessionManager: SessionManager, completion: @escaping DataRequest.DecodeCompletion<Node>) {
         do {
             let jsonBody = try encoder.encode(request)
             var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
@@ -314,7 +314,7 @@ public class FileUpload: DracoonUpload {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            sessionManager.request(urlRequest)
                 .validate()
                 .decode(Node.self, decoder: self.decoder, completion: completion)
             
