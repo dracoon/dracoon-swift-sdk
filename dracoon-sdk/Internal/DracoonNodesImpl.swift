@@ -475,6 +475,26 @@ class DracoonNodesImpl: DracoonNodes {
         self.downloads.removeValue(forKey: nodeId)
     }
     
+    func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void) {
+        guard let download = self.downloads[nodeId] else {
+            completion(DracoonError.download_not_found)
+            return
+        }
+        guard download.fileKey != nil else {
+            self.downloads.removeValue(forKey: nodeId)
+            completion(nil)
+            return
+        }
+        download.completeEncryptedBackgroundDownload(completion: { error in
+            if let error = error {
+                completion(error)
+            } else {
+                self.downloads.removeValue(forKey: nodeId)
+                completion(nil)
+            }
+        })
+    }
+    
     // MARK: Search
     
     func searchNodes(parentNodeId: Int64, searchString: String, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
