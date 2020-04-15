@@ -276,10 +276,10 @@ public protocol DracoonNodes {
     /// - Parameter uploadId: The ID of the upload to be canceled
     func cancelUpload(uploadId: String)
     
-    /// Cancels a file upload.
+    /// Completes a file upload that was finished in background.
     ///
     /// - Parameters:
-    ///   - uploadId: The ID of the upload to be canceled
+    ///   - uploadId: The ID of the upload to be completed
     ///   - completion: Returns an empty response on success or an error.
     func completeBackgroundUpload(uploadId: String, completion: @escaping (DracoonError?) -> Void)
     
@@ -296,6 +296,13 @@ public protocol DracoonNodes {
     ///
     /// - Parameter nodeId: The ID of the downloaded node
     func cancelDownload(nodeId: Int64)
+    
+    /// Completes a file download that was finished in background.
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the downloaded node
+    ///   - completion: Returns an empty response on success or an error.
+    func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void)
     
     /// Searches child nodes by their name. Parameters _offset_ and _limit_ restrict the result to a specific range.
     ///
