@@ -304,6 +304,11 @@ public protocol DracoonNodes {
     ///   - completion: Returns an empty response on success or an error.
     func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void)
     
+    /// Resumes background tasks after application becomes active again
+    /// If you started uploads or downloads with a background sessionConfiguration, this needs to be called in [UIApplicationDelegate.applicationDidBecomeActive](https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1622956-applicationdidbecomeactive).
+    /// Otherwise the task will be completed, but your progress handler will not be called anymore.
+    func resumeBackgroundTasks()
+    
     /// Searches child nodes by their name. Parameters _offset_ and _limit_ restrict the result to a specific range.
     ///
     /// - Parameters:

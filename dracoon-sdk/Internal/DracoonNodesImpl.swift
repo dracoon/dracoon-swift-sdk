@@ -468,7 +468,7 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     func cancelDownload(nodeId: Int64) {
-        guard let download = downloads[nodeId] else {
+        guard let download = self.downloads[nodeId] else {
             return
         }
         download.cancel()
@@ -493,6 +493,17 @@ class DracoonNodesImpl: DracoonNodes {
                 completion(nil)
             }
         })
+    }
+    
+    func resumeBackgroundTasks() {
+        for download in self.downloads.values {
+            download.resumeFromBackground()
+        }
+        for upload in self.uploads.values {
+            if let fileUpload = upload as? FileUpload {
+                fileUpload.resumeBackgroundUpload()
+            }
+        }
     }
     
     // MARK: Search
