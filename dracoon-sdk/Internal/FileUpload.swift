@@ -24,6 +24,7 @@ public class FileUpload: DracoonUpload {
     let fileUrl: URL
     
     var urlSessionTask: URLSessionTask?
+    var encryptedFileKey: EncryptedFileKey?
     var callback: UploadCallback?
     let crypto: CryptoProtocol?
     var isCanceled = false
@@ -104,13 +105,13 @@ public class FileUpload: DracoonUpload {
         }
     }
     
-    func startChunkedUpload(uploadUrl: String) {
+    func startChunkedUpload(uploadUrl: String, fileUrl: URL? = nil, encryptedFileKey: EncryptedFileKey? = nil) {
         var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
         urlRequest.httpMethod = HTTPMethod.post.rawValue
         urlRequest.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
         
         self.sessionManager.upload(multipartFormData: { (multipartData) in
-            multipartData.append(self.fileUrl, withName: "file")
+            multipartData.append(fileUrl ?? self.fileUrl, withName: "file")
         }, usingThreshold: UInt64(DracoonConstants.UPLOAD_CHUNK_SIZE), with: urlRequest, encodingCompletion: { encodingResult in
             switch (encodingResult) {
             case .success(let request, _, _):
@@ -121,7 +122,7 @@ public class FileUpload: DracoonUpload {
                 request.responseJSON(completionHandler: { response in
                     switch response.result {
                     case .success(_):
-                        self.completeUpload(uploadUrl: uploadUrl, encryptedFileKey: nil)
+                        self.completeUpload(uploadUrl: uploadUrl, encryptedFileKey: encryptedFileKey)
                     case .failure(let error):
                         self.callback?.onError?(DracoonError.generic(error: error))
                     }
@@ -133,144 +134,92 @@ public class FileUpload: DracoonUpload {
     }
     
     func startEncryptedChunkedUpload(uploadUrl: String) {
-        
-        let totalFileSize = FileUtils.calculateFileSize(filePath: self.fileUrl) ?? 0 as Int64
-        
-        var cipher: EncryptionCipher?
+        do {
+            let result = try self.encryptFile()
+            self.encryptFileKey(cipher: result.cipher, completion: { response in
+                switch response {
+                case .error(let error):
+                    self.callback?.onError?(error)
+                case .value(let fileKey):
+                    self.encryptedFileKey = fileKey
+                    self.startChunkedUpload(uploadUrl: uploadUrl, fileUrl: result.url, encryptedFileKey: fileKey)
+                }
+            })
+        } catch {
+            self.callback?.onError?(error)
+        }
+    }
+    
+    private func encryptFile() throws -> (url: URL, cipher: EncryptionCipher) {
+        var cipher: EncryptionCipher
         if let crypto = self.crypto {
             do {
                 let fileKey = try crypto.generateFileKey(version: CryptoConstants.DEFAULT_VERSION)
                 cipher = try crypto.createEncryptionCipher(fileKey: fileKey)
             } catch {
-                self.callback?.onError?(DracoonError.encryption_cipher_failure)
-                return
+                throw DracoonError.encryption_cipher_failure
             }
+            let inputStream = InputStream(url: self.fileUrl)!
+            let bufferSize = DracoonConstants.UPLOAD_CHUNK_SIZE
+            let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
             
-        }
-        self.createNextChunk(uploadUrl: uploadUrl, offset: 0, fileSize: totalFileSize, cipher: cipher, completion: {
-            if let crypto = self.crypto, let cipher = cipher {
-                self.account.getUserKeyPair(completion: { result in
-                    switch result {
-                    case .error(let error):
-                        self.callback?.onError?(error)
-                        return
-                    case .value(let userKeyPair):
-                        do {
-                            let publicKey = UserPublicKey(publicKey: userKeyPair.publicKeyContainer.publicKey, version: userKeyPair.publicKeyContainer.version)
-                            let encryptedFileKey = try crypto.encryptFileKey(fileKey: cipher.fileKey, publicKey: publicKey)
-                            self.completeUpload(uploadUrl: uploadUrl, encryptedFileKey: encryptedFileKey)
-                        } catch CryptoError.encrypt(let message){
-                            self.callback?.onError?(DracoonError.filekey_encryption_failure(description: message))
-                        } catch {
-                            self.callback?.onError?(DracoonError.generic(error: error))
-                        }
-                    }
-                })
-            } else {
-                self.completeUpload(uploadUrl: uploadUrl, encryptedFileKey: nil)
+            var outputUrl = self.fileUrl.deletingLastPathComponent().appendingPathComponent(self.fileUrl.lastPathComponent + ".encrypted", isDirectory: false)
+            if FileManager.default.createFile(atPath: outputUrl.path, contents: nil, attributes: nil) == false {
+                let path = NSTemporaryDirectory() + self.fileUrl.lastPathComponent + ".encrypted"
+                if let tempUrl = URL(string: path), FileManager.default.createFile(atPath: path, contents: nil, attributes: nil) {
+                    outputUrl = tempUrl
+                } else {
+                    throw DracoonError.file_does_not_exist(at: outputUrl)
+                }
             }
+            let outputStream = OutputStream(toFileAtPath: outputUrl.path, append: true)!
+            inputStream.open()
+            outputStream.open()
+            defer {
+                inputStream.close()
+                outputStream.close()
+                buffer.deallocate()
+            }
+            while inputStream.hasBytesAvailable {
+                let read = inputStream.read(buffer, maxLength: bufferSize)
+                if read > 0 {
+                    let plainData = Data(bytes: buffer, count: read)
+                    let encryptedData = try cipher.processBlock(fileData: plainData)
+                    _ = outputStream.write(data: encryptedData)
+                } else if let error = inputStream.streamError {
+                    throw error
+                }
+                
+            }
+            try cipher.doFinal()
             
-        })
-    }
-    
-    fileprivate func createNextChunk(uploadUrl: String, offset: Int, fileSize: Int64, cipher: EncryptionCipher?, completion: @escaping () -> Void) {
-        let range = NSMakeRange(offset, DracoonConstants.UPLOAD_CHUNK_SIZE)
-        let lastBlock = Int64(offset + DracoonConstants.UPLOAD_CHUNK_SIZE) >= fileSize
-        do {
-            guard let data = try FileUtils.readData(self.fileUrl, range: range) else {
-                self.callback?.onError?(DracoonError.read_data_failure(at: self.fileUrl))
-                return
-            }
-            let uploadData: Data
-            if let cipher = cipher {
-                do {
-                    if data.count > 0 {
-                        uploadData = try cipher.processBlock(fileData: data)
-                    } else {
-                        uploadData = data
-                    }
-                    if lastBlock {
-                        try cipher.doFinal()
-                    }
-                } catch {
-                    self.callback?.onError?(error)
-                    return
-                }
-            } else {
-                uploadData = data
-            }
-            self.uploadNextChunk(uploadUrl: uploadUrl, chunk: uploadData, offset: offset, totalFileSize: fileSize, retryCount: 0, chunkCallback: { error in
-                if let error = error {
-                    self.callback?.onError?(error)
-                    return
-                }
-                if lastBlock {
-                    completion()
-                }
-                else {
-                    let newOffset = offset + data.count
-                    self.createNextChunk(uploadUrl: uploadUrl, offset: newOffset, fileSize: fileSize, cipher: cipher, completion: completion)
-                }
-            }, callback: callback)
-        } catch {
-            
+            return (outputUrl, cipher)
+        } else {
+            throw DracoonError.encryption_cipher_failure
         }
     }
     
-    fileprivate func uploadNextChunk(uploadUrl: String, chunk: Data, offset: Int, totalFileSize: Int64, retryCount: Int, chunkCallback: @escaping (Error?) -> Void, callback: UploadCallback?) {
-        if self.isCanceled {
+    private func encryptFileKey(cipher: EncryptionCipher, completion: @escaping (Dracoon.Result<EncryptedFileKey>) -> Void) {
+        guard let crypto = self.crypto else {
             return
         }
-        var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
-        urlRequest.httpMethod = HTTPMethod.post.rawValue
-        urlRequest.addValue("bytes " + String(offset) + "-" + String(offset + chunk.count) + "/*", forHTTPHeaderField: "Content-Range")
-        
-        self.sessionManager.upload(multipartFormData: { (formData) in
-            formData.append(chunk, withName: "file", fileName: "file.name", mimeType: "application/octet-stream")
-        },
-                                   with: urlRequest,
-                                   encodingCompletion: { (encodingResult) in
-                                    switch encodingResult {
-                                    case .success(let upload, _, _):
-                                        upload.validate()
-                                        upload.responseData { dataResponse in
-                                            if let error = dataResponse.error {
-                                                self.handleUploadError(error: error, uploadUrl: uploadUrl, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
-                                            } else {
-                                                if self.checkMD5(result: dataResponse.result, localFileMD5: FileUtils.calculateMD5(chunk)) {
-                                                    chunkCallback(nil)
-                                                } else {
-                                                    // MD5 check failed
-                                                    self.handleUploadError(error: DracoonError.hash_check_failed, uploadUrl: uploadUrl, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
-                                                }
-                                            }
-                                        }
-                                        upload.uploadProgress(closure: { progress in
-                                            self.callback?.onProgress?((Float(progress.fractionCompleted)*Float(chunk.count) + Float(offset))/Float(totalFileSize))
-                                        })
-                                        
-                                    case .failure(let error):
-                                        self.handleUploadError(error: error, uploadUrl: uploadUrl, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
-                                    }
-        })
-    }
-    
-    fileprivate func handleUploadError(error: Error, uploadUrl: String, chunk: Data, offset: Int, totalFileSize: Int64, retryCount: Int,
-                                       chunkCallback: @escaping (Error?) -> Void, callback: UploadCallback?) {
-        if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
-            self.uploadNextChunk(uploadUrl: uploadUrl, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
-        } else {
-            chunkCallback(error)
-        }
-    }
-    
-    func checkMD5(result: Result<Data>, localFileMD5: String) -> Bool {
-        if let response = result.value {
-            if let responseModel = try? self.decoder.decode(ChunkUploadResponse.self, from: response) {
-                return responseModel.hash == localFileMD5
+        self.account.getUserKeyPair(completion: { result in
+            switch result {
+            case .error(let error):
+                completion(Dracoon.Result.error(error))
+                return
+            case .value(let userKeyPair):
+                do {
+                    let publicKey = UserPublicKey(publicKey: userKeyPair.publicKeyContainer.publicKey, version: userKeyPair.publicKeyContainer.version)
+                    let encryptedFileKey = try crypto.encryptFileKey(fileKey: cipher.fileKey, publicKey: publicKey)
+                    completion(Dracoon.Result.value(encryptedFileKey))
+                } catch CryptoError.encrypt(let message){
+                    completion(Dracoon.Result.error(DracoonError.filekey_encryption_failure(description: message)))
+                } catch {
+                    completion(Dracoon.Result.error(DracoonError.generic(error: error)))
+                }
             }
-        }
-        return true
+        })
     }
     
     func completeUpload(uploadUrl: String, encryptedFileKey: EncryptedFileKey?) {
@@ -297,6 +246,7 @@ public class FileUpload: DracoonUpload {
         var completeRequest = CompleteUploadRequest()
         completeRequest.fileName = self.request.name
         completeRequest.resolutionStrategy = self.resolutionStrategy
+        completeRequest.fileKey = self.encryptedFileKey
         
         self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, sessionManager: sessionManager, completion: { result in
             switch result {
