@@ -23,7 +23,7 @@ public class FileUpload: DracoonUpload {
     let resolutionStrategy: CompleteUploadRequest.ResolutionStrategy
     let fileUrl: URL
     
-    var urlSessionTask: URLSessionTask?
+    var uploadRequest: UploadRequest?
     var encryptedFileKey: EncryptedFileKey?
     var callback: UploadCallback?
     let crypto: CryptoProtocol?
@@ -53,6 +53,7 @@ public class FileUpload: DracoonUpload {
     }
     deinit {
         self.callback = nil
+        self.uploadRequest = nil
     }
     
     public func start() {
@@ -77,6 +78,7 @@ public class FileUpload: DracoonUpload {
             return
         }
         self.isCanceled = true
+        self.uploadRequest?.cancel()
         if let uploadUrl = self.uploadUrl {
             self.deleteUpload(uploadUrl: uploadUrl, completion: { _ in
                 self.callback?.onCanceled?()
@@ -115,7 +117,7 @@ public class FileUpload: DracoonUpload {
         }, usingThreshold: UInt64(DracoonConstants.UPLOAD_CHUNK_SIZE), with: urlRequest, encodingCompletion: { encodingResult in
             switch (encodingResult) {
             case .success(let request, _, _):
-                self.urlSessionTask = request.task
+                self.uploadRequest = request
                 request.uploadProgress(closure: { (progress) in
                     self.callback?.onProgress?(Float(progress.fractionCompleted))
                 })
@@ -259,7 +261,7 @@ public class FileUpload: DracoonUpload {
     }
     
     func resumeBackgroundUpload() {
-        self.urlSessionTask?.resume()
+        self.uploadRequest?.task?.resume()
     }
     
     fileprivate func sendCompleteRequest(uploadUrl: String, request: CompleteUploadRequest, sessionManager: SessionManager, completion: @escaping DataRequest.DecodeCompletion<Node>) {
