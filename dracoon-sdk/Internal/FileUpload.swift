@@ -160,13 +160,17 @@ public class FileUpload: DracoonUpload {
             } catch {
                 throw DracoonError.encryption_cipher_failure
             }
-            let inputStream = InputStream(url: self.fileUrl)!
-            let bufferSize = DracoonConstants.UPLOAD_CHUNK_SIZE
+            guard let inputStream = InputStream(url: self.fileUrl) else {
+                throw DracoonError.read_data_failure(at: self.fileUrl)
+            }
+            let bufferSize = DracoonConstants.ENCRYPTION_BUFFER_SIZE
             let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
             
             let outputUrl = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent(self.fileUrl.lastPathComponent)
             FileManager.default.createFile(atPath: outputUrl.path, contents: nil, attributes: nil)
-            let outputStream = OutputStream(toFileAtPath: outputUrl.path, append: true)!
+            guard let outputStream = OutputStream(toFileAtPath: outputUrl.path, append: true) else {
+                throw DracoonError.write_data_failure(at: outputUrl)
+            }
             inputStream.open()
             outputStream.open()
             defer {
