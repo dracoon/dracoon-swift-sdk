@@ -280,8 +280,8 @@ public protocol DracoonNodes {
     ///
     /// - Parameters:
     ///   - uploadId: The ID of the upload to be completed
-    ///   - completion: Returns an empty response on success or an error.
-    func completeBackgroundUpload(uploadId: String, completion: @escaping (DracoonError?) -> Void)
+    ///   - completion: Returns the new node on success or an error.
+    func completeBackgroundUpload(uploadId: String, completion: @escaping (Dracoon.Result<Node>) -> Void)
     
     /// Downloads a file.
     ///

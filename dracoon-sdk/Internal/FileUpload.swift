@@ -23,7 +23,7 @@ public class FileUpload: DracoonUpload {
     let resolutionStrategy: CompleteUploadRequest.ResolutionStrategy
     let fileUrl: URL
     
-    var uploadRequest: UploadRequest?
+    weak var uploadRequest: UploadRequest?
     var encryptedFileKey: EncryptedFileKey?
     var callback: UploadCallback?
     let crypto: CryptoProtocol?
@@ -53,7 +53,6 @@ public class FileUpload: DracoonUpload {
     }
     deinit {
         self.callback = nil
-        self.uploadRequest = nil
     }
     
     public func start() {
@@ -240,9 +239,9 @@ public class FileUpload: DracoonUpload {
         })
     }
     
-    func completeBackgroundUpload(sessionManager: SessionManager, completionHandler: @escaping (DracoonError?) -> Void) {
+    func completeBackgroundUpload(sessionManager: SessionManager, completionHandler: @escaping (Dracoon.Result<Node>) -> Void) {
         guard let uploadUrl = self.uploadUrl else {
-            completionHandler(DracoonError.upload_not_found)
+            completionHandler(Dracoon.Result.error(DracoonError.upload_not_found))
             return
         }
         var completeRequest = CompleteUploadRequest()
@@ -252,10 +251,10 @@ public class FileUpload: DracoonUpload {
         
         self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, sessionManager: sessionManager, completion: { result in
             switch result {
-            case .value(_):
-                completionHandler(nil)
+            case .value(let node):
+                completionHandler(Dracoon.Result.value(node))
             case .error(let error):
-                completionHandler(error)
+                completionHandler(Dracoon.Result.error(error))
             }
         })
     }
