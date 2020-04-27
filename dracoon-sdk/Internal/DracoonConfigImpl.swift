@@ -45,4 +45,12 @@ class DracoonConfigImpl: DracoonConfig {
             .validate()
             .decode(InfrastructureProperties.self, decoder: self.decoder, completion: completion)
     }
+    
+    func getPasswordPolicies(completion: @escaping DataRequest.DecodeCompletion<PasswordPoliciesConfig>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/policies/passwords"
+        
+        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        .validate()
+        .decode(PasswordPoliciesConfig.self, decoder: self.decoder, completion: completion)
+    }
 }
