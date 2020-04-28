@@ -18,6 +18,7 @@ public struct DracoonConstants {
     
     public static let MISSING_FILEKEYS_MAX_COUNT = 5 as Int64
     
+    public static let ENCRYPTION_BUFFER_SIZE = 200 * 1024
     public static let DECRYPTION_BUFFER_SIZE = 200 * 1024
     public static let UPLOAD_CHUNK_SIZE = 200 * 1024
 }

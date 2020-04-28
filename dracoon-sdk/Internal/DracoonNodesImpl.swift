@@ -408,17 +408,18 @@ class DracoonNodesImpl: DracoonNodes {
         self.uploads.removeValue(forKey: uploadId)
     }
     
-    func completeBackgroundUpload(uploadId: String, completion: @escaping (DracoonError?) -> Void) {
+    func completeBackgroundUpload(uploadId: String, completion: @escaping (Dracoon.Result<Node>) -> Void) {
         guard let upload = self.uploads[uploadId], let fileUpload = upload as? FileUpload else {
-            completion(DracoonError.upload_not_found)
+            completion(Dracoon.Result.error(DracoonError.upload_not_found))
             return
         }
-        fileUpload.completeBackgroundUpload(sessionManager: self.sessionManager, completionHandler: { error in
-            if let error = error {
-                completion(error)
-            } else {
+        fileUpload.completeBackgroundUpload(sessionManager: self.sessionManager, completionHandler: { result in
+            switch result {
+            case .error(let error):
+                completion(Dracoon.Result.error(error))
+            case .value(let node):
                 self.uploads.removeValue(forKey: uploadId)
-                completion(nil)
+                completion(Dracoon.Result.value(node))
             }
         })
     }

@@ -17,6 +17,7 @@ public enum DracoonError: Error {
     case hash_check_failed
     
     case read_data_failure(at: URL)
+    case write_data_failure(at: URL)
     case node_path_invalid(path: String)
     case path_range_invalid
     case node_not_found(path: String)
