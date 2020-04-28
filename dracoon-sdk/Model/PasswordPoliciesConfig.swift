@@ -25,28 +25,28 @@ public struct CharacterRules: Codable {
     numeric - at least one numeric character
     special - at least one special character (letters and digits excluded)
     all - combination of uppercase, lowercase, numeric and special */
-    var mustContainCharacters: [PasswordCharacterRules]
+    public var mustContainCharacters: [PasswordCharacterRules]
     /** Number of characteristics to enforce
     e.g. from ["uppercase", "lowercase", "numeric", "special"]
     all 4 character sets can be enforced; but also only 2 of them
     (must be between 0 and 4) */
-    var numberOfCharacteristicsToEnforce: Int?
+    public var numberOfCharacteristicsToEnforce: Int?
 }
 
 public struct PasswordExpiration: Codable {
     /** Determines whether password expiration is enabled */
-    var enabled: Bool
+    public var enabled: Bool
     /** Maximum allowed password age (in days) */
-    var maxPasswordAge: Int?
+    public var maxPasswordAge: Int?
 }
 
 public struct UserLockout: Codable {
     /** Determines whether user lockout is enabled */
-    var enabled: Bool
+    public var enabled: Bool
     /** Maximum allowed number of failed login attempts */
-    var maxNumberOfLoginFailures: Int?
+    public var maxNumberOfLoginFailures: Int?
     /** Amount of minutes a user has to wait to make another login attempt after maxNumberOfLoginFailures has been exceeded */
-    var lockoutPeriod: Int?
+    public var lockoutPeriod: Int?
 }
 
 /// - Tag: PasswordPoliciesConfig

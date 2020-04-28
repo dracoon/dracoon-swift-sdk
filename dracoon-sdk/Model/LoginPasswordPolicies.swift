@@ -10,20 +10,20 @@ import Foundation
 
 public struct LoginPasswordPolicies: Codable {
     
-    var characterRules: CharacterRules?
+    public var characterRules: CharacterRules?
     /** Minimum number of characters a password must contain (must be between 1 and 1024) */
-    var minLength: Int?
+    public var minLength: Int?
     /** Determines whether a password must NOT contain word(s) from a dictionary */
-    var rejectDictionaryWords: Bool?
+    public var rejectDictionaryWords: Bool?
     /** Determines whether a password must NOT contain user info (first name, last name, email, user name) */
-    var rejectUserInfo: Bool?
+    public var rejectUserInfo: Bool?
     /** Determines whether a password must NOT contain keyboard patterns (e.g. qwertz, asdf; min. 4 character pattern) */
-    var rejectKeyboardPatterns: Bool?
+    public var rejectKeyboardPatterns: Bool?
     /** Number of passwords to archive (must be between 0 and 10; 0 means that password history is disabled) */
-    var numberOfArchivedPasswords: Int?
-    var passwordExpiration: PasswordExpiration?
-    var userLockout: UserLockout?
+    public var numberOfArchivedPasswords: Int?
+    public var passwordExpiration: PasswordExpiration?
+    public var userLockout: UserLockout?
     /** Modification date (example: 2018-01-01T00:00:00) */
-    var updatedAt: String?
-    var updatedBy: UserInfo?
+    public var updatedAt: String?
+    public var updatedBy: UserInfo?
 }
