@@ -136,10 +136,15 @@ public protocol DracoonConfig {
     /// - Parameter completion: Returns [general settings](x-source-tag://GeneralSettings) on success or an error.
     func getGeneralSettings(completion: @escaping DataRequest.DecodeCompletion<GeneralSettings>)
     
-    /// Returns the server's infrastructure properties
+    /// Returns the server's infrastructure properties.
     ///
     /// - Parameter completion: Returns [infrastructure properties](x-source-tag://InfrastructureProperties) on success or an error.
     func getInfrastructureProperties(completion: @escaping DataRequest.DecodeCompletion<InfrastructureProperties>)
+    
+    /// Returns the server's password policies. [Requires API Version >= 4.14.0]
+    ///
+    /// - Parameter completion: Returns [password policies](x-source-tag://PasswordPoliciesConfig) on success or an error.
+    func getPasswordPolicies(completion: @escaping DataRequest.DecodeCompletion<PasswordPoliciesConfig>)
 }
 
 public protocol DracoonUsers {}
