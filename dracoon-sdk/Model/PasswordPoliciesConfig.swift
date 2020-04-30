@@ -15,6 +15,7 @@ public enum PasswordCharacterRules: String, Codable {
     case numeric = "numeric"
     case special = "special"
     case all = "all"
+    case none = "none"
 }
 
 public struct CharacterRules: Codable {
