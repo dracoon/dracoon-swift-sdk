@@ -44,13 +44,19 @@ class DracoonNodesMock: DracoonNodes {
     
     func moveNodes(nodeId: Int64, request: MoveNodesRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {}
     
-    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy) {}
+    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, sessionConfig: URLSessionConfiguration?) {}
     
     func cancelUpload(uploadId: String) {}
+    
+    func completeBackgroundUpload(uploadId: String, completion: @escaping (Dracoon.Result<Node>) -> Void) {}
     
     func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, sessionConfig: URLSessionConfiguration?) {}
     
     func cancelDownload(nodeId: Int64) {}
+    
+    func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void) {}
+    
+    func resumeBackgroundTasks() {}
     
     func searchNodes(parentNodeId: Int64, searchString: String, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {}
     

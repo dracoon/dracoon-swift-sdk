@@ -7,7 +7,12 @@
 //
 
 import Foundation
+import Alamofire
 
 class UploadResponseMock: Codable {
+    
+}
+
+class TestFormData: MultipartFormData, Codable {
     
 }
