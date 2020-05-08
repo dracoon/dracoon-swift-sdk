@@ -268,12 +268,20 @@ public protocol DracoonNodes {
     ///   - callback: [UploadCallback](x-source-tag://UploadCallback) to inform about upload status
     ///   - resolutionStrategy: [CompleteUploadRequest.ResolutionStrategy](x-source-tag://CompleteUploadRequest.ResolutionStrategy) determines behavior if a file with the same name
     ///                         already exists in the target node.
-    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy)
+    ///   - session: Optional sessionConfiguration used for the upload
+    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, sessionConfig: URLSessionConfiguration?)
     
     /// Cancels a file upload.
     ///
     /// - Parameter uploadId: The ID of the upload to be canceled
     func cancelUpload(uploadId: String)
+    
+    /// Cancels a file upload.
+    ///
+    /// - Parameters:
+    ///   - uploadId: The ID of the upload to be canceled
+    ///   - completion: Returns an empty response on success or an error.
+    func completeBackgroundUpload(uploadId: String, completion: @escaping (DracoonError?) -> Void)
     
     /// Downloads a file.
     ///
@@ -376,6 +384,18 @@ public extension DracoonNodes {
     ///   - callback: [DownloadCallback](x-source-tag://DownloadCallback) to inform about upload status
     func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback) {
         self.downloadFile(nodeId: nodeId, targetUrl: targetUrl, callback: callback, sessionConfig: nil)
+    }
+    /// Uploads a file.
+    ///
+    /// - Parameters:
+    ///   - uploadId: An ID for the upload. Can be used to keep a reference.
+    ///   - request: The [CreateFileUploadRequest](x-source-tag://CreateFileUploadRequest) model
+    ///   - filePath: The path of the file to be uploaded
+    ///   - callback: [UploadCallback](x-source-tag://UploadCallback) to inform about upload status
+    ///   - resolutionStrategy: [CompleteUploadRequest.ResolutionStrategy](x-source-tag://CompleteUploadRequest.ResolutionStrategy) determines behavior if a file with the same name
+    ///                         already exists in the target node.
+    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy) {
+        self.uploadFile(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, sessionConfig: nil)
     }
 }
 

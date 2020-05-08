@@ -29,9 +29,16 @@ public class FileUpload: DracoonUpload {
     var uploadUrl: String?
     
     init(config: DracoonRequestConfig, request: CreateFileUploadRequest, fileUrl: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
-         account: DracoonAccount) {
+         sessionConfig: URLSessionConfiguration?, account: DracoonAccount) {
         self.request = request
-        self.sessionManager = config.sessionManager
+        if let uploadSessionConfig = sessionConfig {
+            let uploadSessionManager = SessionManager(configuration: uploadSessionConfig)
+            uploadSessionManager.retrier = config.sessionManager.retrier
+            uploadSessionManager.adapter = config.sessionManager.adapter
+            self.sessionManager = uploadSessionManager
+        } else {
+            self.sessionManager = config.sessionManager
+        }
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
         self.oAuthTokenManager = config.oauthTokenManager
@@ -51,7 +58,12 @@ public class FileUpload: DracoonUpload {
             switch result {
             case .value(let response):
                 self.uploadUrl = response.uploadUrl
-                self.startChunkedUpload(uploadUrl: response.uploadUrl)
+                if self.crypto == nil {
+                    self.startChunkedUpload(uploadUrl: response.uploadUrl)
+                } else {
+                    self.startEncryptedChunkedUpload(uploadUrl: response.uploadUrl)
+                }
+                
             case .error(let error):
                 self.callback?.onError?(error)
             }
@@ -92,6 +104,33 @@ public class FileUpload: DracoonUpload {
     }
     
     func startChunkedUpload(uploadUrl: String) {
+        var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
+        urlRequest.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+        
+        self.sessionManager.upload(multipartFormData: { (multipartData) in
+            multipartData.append(self.fileUrl, withName: "file")
+        }, usingThreshold: UInt64(DracoonConstants.UPLOAD_CHUNK_SIZE), with: urlRequest, encodingCompletion: { encodingResult in
+            switch (encodingResult) {
+            case .success(let request, _, _):
+                request.uploadProgress(closure: { (progress) in
+                    self.callback?.onProgress?(Float(progress.fractionCompleted))
+                })
+                request.responseJSON(completionHandler: { response in
+                    switch response.result {
+                    case .success(_):
+                        self.completeUpload(uploadUrl: uploadUrl, encryptedFileKey: nil)
+                    case .failure(let error):
+                        self.callback?.onError?(DracoonError.generic(error: error))
+                    }
+                })
+            case .failure(let error):
+                self.callback?.onError?(DracoonError.generic(error: error))
+            }
+        })
+    }
+    
+    func startEncryptedChunkedUpload(uploadUrl: String) {
         
         let totalFileSize = FileUtils.calculateFileSize(filePath: self.fileUrl) ?? 0 as Int64
         
@@ -131,7 +170,7 @@ public class FileUpload: DracoonUpload {
             
         })
     }
-
+    
     fileprivate func createNextChunk(uploadUrl: String, offset: Int, fileSize: Int64, cipher: EncryptionCipher?, completion: @escaping () -> Void) {
         let range = NSMakeRange(offset, DracoonConstants.UPLOAD_CHUNK_SIZE)
         let lastBlock = Int64(offset + DracoonConstants.UPLOAD_CHUNK_SIZE) >= fileSize
@@ -199,7 +238,7 @@ public class FileUpload: DracoonUpload {
                                                 if self.checkMD5(result: dataResponse.result, localFileMD5: FileUtils.calculateMD5(chunk)) {
                                                     chunkCallback(nil)
                                                 } else {
-                                                 // MD5 check failed
+                                                    // MD5 check failed
                                                     self.handleUploadError(error: DracoonError.hash_check_failed, uploadUrl: uploadUrl, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount, chunkCallback: chunkCallback, callback: callback)
                                                 }
                                             }
@@ -215,7 +254,7 @@ public class FileUpload: DracoonUpload {
     }
     
     fileprivate func handleUploadError(error: Error, uploadUrl: String, chunk: Data, offset: Int, totalFileSize: Int64, retryCount: Int,
-                           chunkCallback: @escaping (Error?) -> Void, callback: UploadCallback?) {
+                                       chunkCallback: @escaping (Error?) -> Void, callback: UploadCallback?) {
         if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
             self.uploadNextChunk(uploadUrl: uploadUrl, chunk: chunk, offset: offset, totalFileSize: totalFileSize, retryCount: retryCount + 1, chunkCallback: chunkCallback, callback: callback)
         } else {
@@ -238,7 +277,7 @@ public class FileUpload: DracoonUpload {
         completeRequest.resolutionStrategy = self.resolutionStrategy
         completeRequest.fileKey = encryptedFileKey
         
-        self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, completion: { result in
+        self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, sessionManager: self.sessionManager, completion: { result in
             switch result {
             case .value(let node):
                 self.callback?.onComplete?(node)
@@ -248,7 +287,26 @@ public class FileUpload: DracoonUpload {
         })
     }
     
-    fileprivate func sendCompleteRequest(uploadUrl: String, request: CompleteUploadRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func completeBackgroundUpload(sessionManager: SessionManager, completionHandler: @escaping (DracoonError?) -> Void) {
+        guard let uploadUrl = self.uploadUrl else {
+            completionHandler(DracoonError.upload_not_found)
+            return
+        }
+        var completeRequest = CompleteUploadRequest()
+        completeRequest.fileName = self.request.name
+        completeRequest.resolutionStrategy = self.resolutionStrategy
+        
+        self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, sessionManager: sessionManager, completion: { result in
+            switch result {
+            case .value(_):
+                completionHandler(nil)
+            case .error(let error):
+                completionHandler(error)
+            }
+        })
+    }
+    
+    fileprivate func sendCompleteRequest(uploadUrl: String, request: CompleteUploadRequest, sessionManager: SessionManager, completion: @escaping DataRequest.DecodeCompletion<Node>) {
         do {
             let jsonBody = try encoder.encode(request)
             var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
@@ -256,7 +314,7 @@ public class FileUpload: DracoonUpload {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            sessionManager.request(urlRequest)
                 .validate()
                 .decode(Node.self, decoder: self.decoder, completion: completion)
             

@@ -23,8 +23,8 @@ public class S3FileUpload: FileUpload {
     var uploadId: String?
     
     override init(config: DracoonRequestConfig, request: CreateFileUploadRequest, fileUrl: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
-                  account: DracoonAccount) {
-        super.init(config: config, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy, crypto: crypto, account: account)
+                  sessionConfig: URLSessionConfiguration?, account: DracoonAccount) {
+        super.init(config: config, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy, crypto: crypto, sessionConfig: sessionConfig, account: account)
         var s3DirectUploadRequest = request
         s3DirectUploadRequest.directS3Upload = true
         self.request = s3DirectUploadRequest

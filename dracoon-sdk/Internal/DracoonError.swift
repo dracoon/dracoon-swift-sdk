@@ -32,6 +32,7 @@ public enum DracoonError: Error {
     case keypair_failure(description: String)
     case keypair_decryption_failure
     case keypair_does_not_exist
+    case upload_not_found
     
     case authorization_code_flow_in_progress(clientId: String, clientSecret: String, authorizationCode: String)
     case authorization_token_expired
