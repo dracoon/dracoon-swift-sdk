@@ -224,7 +224,11 @@
 		E05A609F22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05A609E22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift */; };
 		E05A60A122CCCE1200DF7418 /* S3FileUploadPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05A60A022CCCE1200DF7418 /* S3FileUploadPart.swift */; };
 		E05A60A322CCDDB400DF7418 /* S3FileUploadStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05A60A222CCDDB400DF7418 /* S3FileUploadStatus.swift */; };
-		E07C89E722A56B7200C7139E /* Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07C89E622A56B7200C7139E /* Avatar.swift */; };
+		E07C89E522A528C900C7139E /* Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07C89E422A528C900C7139E /* Avatar.swift */; };
+		E07D1D202456CBE600AAF8CE /* PasswordPoliciesConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07D1D1F2456CBE600AAF8CE /* PasswordPoliciesConfig.swift */; };
+		E07D1D222456CCAA00AAF8CE /* LoginPasswordPolicies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07D1D212456CCAA00AAF8CE /* LoginPasswordPolicies.swift */; };
+		E07D1D242456D5A300AAF8CE /* SharesPasswordPolicies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07D1D232456D5A300AAF8CE /* SharesPasswordPolicies.swift */; };
+		E07D1D262456D60E00AAF8CE /* EncryptionPasswordPolicies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07D1D252456D60E00AAF8CE /* EncryptionPasswordPolicies.swift */; };
 		E08A2959230EDF2100C38A37 /* DracoonNodesS3Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08A2958230EDF2100C38A37 /* DracoonNodesS3Tests.swift */; };
 		E08C5A3123844E8700948EF5 /* ProfileAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08C5A3023844E8700948EF5 /* ProfileAttributes.swift */; };
 		E0904A5022F2ED8B00528439 /* UploadRequestMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0904A4F22F2ED8B00528439 /* UploadRequestMock.swift */; };
@@ -494,7 +498,11 @@
 		E05A609E22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteS3FileUploadRequest.swift; sourceTree = "<group>"; };
 		E05A60A022CCCE1200DF7418 /* S3FileUploadPart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUploadPart.swift; sourceTree = "<group>"; };
 		E05A60A222CCDDB400DF7418 /* S3FileUploadStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUploadStatus.swift; sourceTree = "<group>"; };
-		E07C89E622A56B7200C7139E /* Avatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Avatar.swift; sourceTree = "<group>"; };
+		E07C89E422A528C900C7139E /* Avatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Avatar.swift; sourceTree = "<group>"; };
+		E07D1D1F2456CBE600AAF8CE /* PasswordPoliciesConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordPoliciesConfig.swift; sourceTree = "<group>"; };
+		E07D1D212456CCAA00AAF8CE /* LoginPasswordPolicies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPasswordPolicies.swift; sourceTree = "<group>"; };
+		E07D1D232456D5A300AAF8CE /* SharesPasswordPolicies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharesPasswordPolicies.swift; sourceTree = "<group>"; };
+		E07D1D252456D60E00AAF8CE /* EncryptionPasswordPolicies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionPasswordPolicies.swift; sourceTree = "<group>"; };
 		E089B0D721B02A0F00442207 /* Supporting Files */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Supporting Files"; sourceTree = "<group>"; };
 		E08A2958230EDF2100C38A37 /* DracoonNodesS3Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonNodesS3Tests.swift; sourceTree = "<group>"; };
 		E08C5A3023844E8700948EF5 /* ProfileAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileAttributes.swift; sourceTree = "<group>"; };
@@ -682,6 +690,7 @@
 				E00067112057D0A8009CDA70 /* DownloadTokenGenerateResponse.swift */,
 				E00067C52057D0BB009CDA70 /* EnableCustomerEncryptionRequest.swift */,
 				E00067292057D0AA009CDA70 /* EncryptionInfo.swift */,
+				E07D1D252456D60E00AAF8CE /* EncryptionPasswordPolicies.swift */,
 				E000671E2057D0A9009CDA70 /* EncryptRoomRequest.swift */,
 				E00067312057D0AB009CDA70 /* EventlogConfig.swift */,
 				E00067922057D0B3009CDA70 /* FailoverServer.swift */,
@@ -701,6 +710,7 @@
 				E00067362057D0AB009CDA70 /* Language.swift */,
 				E00067572057D0AE009CDA70 /* LogEvent.swift */,
 				E00067672057D0AF009CDA70 /* LogEventList.swift */,
+				E07D1D212456CCAA00AAF8CE /* LoginPasswordPolicies.swift */,
 				E00067A22057D0B4009CDA70 /* LoginRequest.swift */,
 				E00067BD2057D0B7009CDA70 /* LoginResponse.swift */,
 				E000675D2057D0AE009CDA70 /* LogOperation.swift */,
@@ -725,6 +735,7 @@
 				E00067152057D0A8009CDA70 /* OpenIdAuthResources.swift */,
 				E00067902057D0B2009CDA70 /* OpenIdIdpConfig.swift */,
 				E00067422057D0AC009CDA70 /* OpenIdProvider.swift */,
+				E07D1D1F2456CBE600AAF8CE /* PasswordPoliciesConfig.swift */,
 				E00067AB2057D0B5009CDA70 /* PendingAssignment.swift */,
 				E000675F2057D0AE009CDA70 /* PendingAssignmentData.swift */,
 				E00067C62057D0BB009CDA70 /* PendingAssignmentList.swift */,
@@ -773,6 +784,7 @@
 				E00067802057D0B1009CDA70 /* S3ConfigCreateRequest.swift */,
 				E00067772057D0B0009CDA70 /* S3ConfigUpdateRequest.swift */,
 				E000672E2057D0AA009CDA70 /* SdsServerTime.swift */,
+				E07D1D232456D5A300AAF8CE /* SharesPasswordPolicies.swift */,
 				E00067B32057D0B5009CDA70 /* SoftwareVersionData.swift */,
 				E00067B02057D0B5009CDA70 /* SyslogConfig.swift */,
 				E00067382057D0AB009CDA70 /* SyslogEvent.swift */,
@@ -1078,6 +1090,7 @@
 				E00067CC2057D0BC009CDA70 /* GeneralSettings.swift in Sources */,
 				DE52662C21AFD09600050482 /* CustomerSettingsRequest.swift in Sources */,
 				E00067F12057D0BC009CDA70 /* ChunkUploadResponse.swift in Sources */,
+				E07D1D242456D5A300AAF8CE /* SharesPasswordPolicies.swift in Sources */,
 				E00068462057D0BC009CDA70 /* OpenIdIdpConfig.swift in Sources */,
 				E00068402057D0BC009CDA70 /* ConfigOptionList.swift in Sources */,
 				E00067CF2057D0BC009CDA70 /* RoleList.swift in Sources */,
@@ -1089,6 +1102,7 @@
 				E000681C2057D0BC009CDA70 /* UserIdFileIdItem.swift in Sources */,
 				E00068212057D0BC009CDA70 /* CopyNodesRequest.swift in Sources */,
 				E00068802057D5A7009CDA70 /* OAuthConstants.swift in Sources */,
+				E07D1D262456D60E00AAF8CE /* EncryptionPasswordPolicies.swift in Sources */,
 				E05A60A122CCCE1200DF7418 /* S3FileUploadPart.swift in Sources */,
 				E000681F2057D0BC009CDA70 /* CreateFileUploadRequest.swift in Sources */,
 				E00068002057D0BC009CDA70 /* UserData.swift in Sources */,
@@ -1106,6 +1120,7 @@
 				E00067C72057D0BC009CDA70 /* DownloadTokenGenerateResponse.swift in Sources */,
 				E00068192057D0BC009CDA70 /* NodePermissions.swift in Sources */,
 				E00068322057D0BC009CDA70 /* CustomerAttributes.swift in Sources */,
+				E07D1D222456CCAA00AAF8CE /* LoginPasswordPolicies.swift in Sources */,
 				E000681E2057D0BC009CDA70 /* CustomerData.swift in Sources */,
 				E000683C2057D0BC009CDA70 /* CreateShareUploadChannelRequest.swift in Sources */,
 				E0C7A14522CBBE11003D2141 /* PresignedUrl.swift in Sources */,
@@ -1202,6 +1217,7 @@
 				E000680D2057D0BC009CDA70 /* LogEvent.swift in Sources */,
 				E000682F2057D0BC009CDA70 /* DeleteNodesRequest.swift in Sources */,
 				E00067D02057D0BC009CDA70 /* NodeBatchOperationErrorInfos.swift in Sources */,
+				E07D1D202456CBE600AAF8CE /* PasswordPoliciesConfig.swift in Sources */,
 				E00068162057D0BC009CDA70 /* ActiveDirectoryConfigList.swift in Sources */,
 				E00068082057D0BC009CDA70 /* Customer.swift in Sources */,
 				E00068052057D0BC009CDA70 /* TestActiveDirectoryConfigRequest.swift in Sources */,
