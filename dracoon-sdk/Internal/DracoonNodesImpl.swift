@@ -411,7 +411,7 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: Download file
     
-    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback) {
+    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, sessionConfig: URLSessionConfiguration?) {
         self.isNodeEncrypted(nodeId: nodeId, completion: { result in
             switch result {
             case .error(let error):
@@ -424,21 +424,20 @@ class DracoonNodesImpl: DracoonNodes {
                             callback.onError?(error)
                             return
                         case .value(let encryptedFileKey):
-                            self.startFileDownload(nodeId: nodeId, targetUrl: targetUrl, callback: callback, fileKey: encryptedFileKey)
+                            self.startFileDownload(nodeId: nodeId, targetUrl: targetUrl, callback: callback, fileKey: encryptedFileKey, sessionConfig: sessionConfig)
                         }
-                        
                     })
                 } else {
-                    self.startFileDownload(nodeId: nodeId, targetUrl: targetUrl, callback: callback, fileKey: nil)
+                    self.startFileDownload(nodeId: nodeId, targetUrl: targetUrl, callback: callback, fileKey: nil, sessionConfig: sessionConfig)
                 }
             }
         })
     }
     
-    fileprivate func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?) {
+    fileprivate func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?) {
         
         let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.requestConfig, account: self.account, nodes: self,
-                                    crypto: self.crypto, fileKey: fileKey, getEncryptionPassword: self.getEncryptionPassword)
+                                    crypto: self.crypto, fileKey: fileKey, sessionConfig: sessionConfig, getEncryptionPassword: self.getEncryptionPassword)
         
         let innerCallback = DownloadCallback()
         innerCallback.onCanceled = callback.onCanceled
