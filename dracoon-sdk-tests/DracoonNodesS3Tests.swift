@@ -60,7 +60,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         }
         
         let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
         self.testWaiter.wait(for: [expectation], timeout: 60.0)
         XCTAssertTrue(calledOnComplete)
@@ -105,7 +105,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         }
         
         let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
         self.testWaiter.wait(for: [expectation], timeout: 60.0)
         XCTAssertTrue(calledOnComplete)
@@ -149,7 +149,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         }
         
         let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
         self.testWaiter.wait(for: [expectation], timeout: 60.0)
         XCTAssertTrue(calledOnComplete)
@@ -191,7 +191,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         }
         
         let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
         self.testWaiter.wait(for: [expectation], timeout: 60.0)
         XCTAssertTrue(calledOnError)
@@ -232,7 +232,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         }
         
         let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
         self.testWaiter.wait(for: [expectation], timeout: 60.0)
         XCTAssertTrue(calledOnComplete)
@@ -276,7 +276,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         }
         
         let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
         self.testWaiter.wait(for: [expectation], timeout: 8.0)
         XCTAssertTrue(cryptoMock.decryptFileKeyCalled)
@@ -302,7 +302,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         }
 
         let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
 
         self.testWaiter.wait(for: [expectation], timeout: 4.0)
         XCTAssertTrue(calledOnError)
@@ -336,7 +336,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         }
         
         let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
         self.testWaiter.wait(for: [expectation], timeout: 60.0)
         XCTAssertTrue(calledOnError)

@@ -62,6 +62,8 @@ public class ResponseModelFactory {
             return self.getAttributesResponse() as? E
         } else if type == ProfileAttributes.self {
             return self.getProfileAttributes() as? E
+        } else if type == PasswordPoliciesConfig.self {
+            return self.getPasswordPoliciesConfig() as? E
         }
         return nil
     }
@@ -183,5 +185,13 @@ public class ResponseModelFactory {
         let keyValueEntry1 = KeyValueEntry(key: "testKey1", value: "testValue1")
         let keyValueEntry2 = KeyValueEntry(key: "testKey2", value: "testValue2")
         return ProfileAttributes(items: [keyValueEntry1, keyValueEntry2])
+    }
+    
+    private func getPasswordPoliciesConfig() -> PasswordPoliciesConfig {
+        let characterRules = CharacterRules(mustContainCharacters: [.lowercase, .uppercase, .numeric, .special], numberOfCharacteristicsToEnforce: 2)
+        let loginPasswordPolicies = LoginPasswordPolicies(characterRules: characterRules, minLength: 8, rejectDictionaryWords: false, rejectUserInfo: true, rejectKeyboardPatterns: false, numberOfArchivedPasswords: nil, passwordExpiration: nil, userLockout: nil, updatedAt: nil, updatedBy: nil)
+        let sharePasswordPolicies = SharesPasswordPolicies(characterRules: characterRules, minLength: 8, rejectDictionaryWords: false, rejectUserInfo: true, rejectKeyboardPatterns: false, updatedAt: nil, updatedBy: nil)
+        let encryptionPasswordPolicies = EncryptionPasswordPolicies(characterRules: characterRules, minLength: 8, rejectUserInfo: true, rejectKeyboardPatterns: false, updatedAt: nil, updatedBy: nil)
+        return PasswordPoliciesConfig(loginPasswordPolicies: loginPasswordPolicies, sharesPasswordPolicies: sharePasswordPolicies, encryptionPasswordPolicies: encryptionPasswordPolicies)
     }
 }

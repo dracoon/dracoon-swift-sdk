@@ -296,11 +296,13 @@ class DracoonNodesTests: DracoonSdkTestCase {
             expectation.fulfill()
         }
         
-        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload.file")
+        FileManager.default.createFile(atPath: url.path, contents: nil, attributes: nil)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
-        self.testWaiter.wait(for: [expectation], timeout: 60.0)
+        self.testWaiter.wait(for: [expectation], timeout: 30.0)
         XCTAssertTrue(calledOnComplete)
+        try? FileManager.default.removeItem(at: url)
     }
     
     func testUpload_withMoreChunks_succeeds() {
@@ -308,7 +310,6 @@ class DracoonNodesTests: DracoonSdkTestCase {
         self.setResponseModel(Node.self, statusCode: 200)
         self.setResponseModel(CreateFileUploadResponse.self, statusCode: 200)
         let responseModel = UploadResponseMock()
-        MockURLProtocol.responseWithModel(UploadResponseMock.self, model: responseModel, statusCode: 200)
         MockURLProtocol.responseWithModel(UploadResponseMock.self, model: responseModel, statusCode: 200)
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Calls onComplete")
@@ -324,11 +325,13 @@ class DracoonNodesTests: DracoonSdkTestCase {
             expectation.fulfill()
         }
         
-        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload.file")
+        FileManager.default.createFile(atPath: url.path, contents: Data(count: DracoonConstants.UPLOAD_CHUNK_SIZE * 2), attributes: nil)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
-        self.testWaiter.wait(for: [expectation], timeout: 60.0)
+        self.testWaiter.wait(for: [expectation], timeout: 30.0)
         XCTAssertTrue(calledOnComplete)
+        try? FileManager.default.removeItem(at: url)
     }
     
     func testEncryptedUpload_succeeds_callsOnComplete() {
@@ -351,11 +354,13 @@ class DracoonNodesTests: DracoonSdkTestCase {
             expectation.fulfill()
         }
         
-        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload.file")
+        FileManager.default.createFile(atPath: url.path, contents: nil, attributes: nil)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
         self.testWaiter.wait(for: [expectation], timeout: 10.0)
         XCTAssertTrue(calledOnComplete)
+        try? FileManager.default.removeItem(at: url)
     }
     
     func testEncryptedUpload_succeeds_createsMissingFileKeys() {
@@ -380,12 +385,14 @@ class DracoonNodesTests: DracoonSdkTestCase {
             cryptoMock.encryptFileKeyCalled = false
         }
         
-        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload.file")
+        FileManager.default.createFile(atPath: url.path, contents: nil, attributes: nil)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
         self.testWaiter.wait(for: [expectation], timeout: 8.0)
         XCTAssertTrue(cryptoMock.decryptFileKeyCalled)
         XCTAssertTrue(cryptoMock.encryptFileKeyCalled)
+        try? FileManager.default.removeItem(at: url)
     }
     
     func testUpload_fails_returnsError() {
@@ -407,7 +414,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         }
         
         let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload")
-        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback)
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
         self.testWaiter.wait(for: [expectation], timeout: 4.0)
         XCTAssertTrue(calledOnError)
@@ -548,7 +555,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.nodes.downloadFile(nodeId: 42, targetUrl: url, callback: callback)
         
-        self.testWaiter.wait(for: [expectation], timeout: 60.0)
+        self.testWaiter.wait(for: [expectation], timeout: 30.0)
         XCTAssertTrue(calledOnComplete)
     }
     
