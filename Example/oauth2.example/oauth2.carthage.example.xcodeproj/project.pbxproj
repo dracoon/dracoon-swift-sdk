@@ -20,7 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		FR_06C201380C19AF60E9C58CAB574AC685 /* oauth2.example.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = oauth2.example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FR_06C201380C19AF60E9C58CAB574AC685 /* oauth2.example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = oauth2.example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FR_20C76411D82A5CDCA320F81A4DA71F3C /* OAuthConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthConfig.swift; sourceTree = "<group>"; };
 		FR_2B5F3BC8AF7DA4AAD6F6BB3B78ED1701 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FR_34A6B04E153A5CA24D7A589EA7F646F8 /* crypto_sdk.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = crypto_sdk.framework; sourceTree = "<group>"; };
@@ -135,12 +135,18 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1000;
+				TargetAttributes = {
+					NT_95D3D526D36BD51779CA74FBDFBC207B = {
+						LastSwiftMigration = 1140;
+					};
+				};
 			};
 			buildConfigurationList = CL_C2D90134982820689E36960E45044B5C /* Build configuration list for PBXProject "oauth2.carthage.example" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				en,
 				Base,
 			);
 			mainGroup = G_674AF6757734889A3DCF34478D536BED;
@@ -339,6 +345,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.oauth2-example.oauth2.example";
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -358,6 +365,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.oauth2-example.oauth2.example";
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
