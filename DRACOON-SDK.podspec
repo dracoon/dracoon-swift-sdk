@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DRACOON-SDK'
-  s.version          = '1.2.0'
+  s.version          = '1.3.0'
   s.summary          = 'Official DRACOON SDK'
 
   s.description      = <<-DESC
@@ -23,6 +23,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '9.3'
   s.swift_version = '5'
+  s.pod_target_xcconfig = { 'VALID_ARCHS' => 'x86_64 armv7 arm64' }
 
   s.source_files = 'dracoon-sdk/**/*'
 

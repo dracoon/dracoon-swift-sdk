@@ -12,7 +12,7 @@ Xcode 10.2 or newer
 
 Add the SDK and its dependencies to your Cartfile:
 
-`github "dracoon/dracoon-swift-sdk.git" ~> 1.2.0`
+`github "dracoon/dracoon-swift-sdk.git" ~> 1.3.0`
 `github "Alamofire/Alamofire" ~> 4.9.1`
 `github "dracoon/dracoon-swift-crypto-sdk.git" ~> 1.2.0`
 
@@ -31,7 +31,7 @@ platform :ios, '9.3'
 use_frameworks!
 
 target '<Your Target Name>' do
-pod 'DRACOON-SDK', '~> 1.2.0'
+pod 'DRACOON-SDK', '~> 1.3.0'
 end
 ```
 Then run
