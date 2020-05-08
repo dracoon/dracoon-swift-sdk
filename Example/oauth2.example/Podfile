@@ -6,6 +6,6 @@ target 'oauth2.example' do
   use_frameworks!
 
   pod 'DRACOON-SDK', :path => '../..'
-  pod 'Alamofire', '~> 4.7.3'
+  pod 'Alamofire', '~> 4.9.1'
 
 end

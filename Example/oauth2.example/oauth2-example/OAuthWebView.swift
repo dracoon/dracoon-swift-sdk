@@ -44,16 +44,20 @@ class OAuthWebView: UIViewController, WKNavigationDelegate {
         
         let state = UUID().uuidString
         
-        let authorizationURL = OAuthHelper.createAuthorizationUrl(serverUrl: serverUrl, clientId: OAuthConfig.clientId, state: state)
-        
-        var authorizationRequest = URLRequest(url: authorizationURL)
-        authorizationRequest.addValue("application/json", forHTTPHeaderField: "Accept")
-        authorizationRequest.addValue("application/x-www-form-urlencoded; charset=utf-8", forHTTPHeaderField: "Content-Type")
-        authorizationRequest.addValue(OAuthHelper.createBasicAuthorizationString(clientId: OAuthConfig.clientId, clientSecret: OAuthConfig.clientSecret), forHTTPHeaderField: "Authorization")
-        
-        self.state = state
-        
-        webView.load(authorizationRequest)
+        do {
+            let authorizationURL = try OAuthHelper.createAuthorizationUrl(serverUrl: serverUrl, clientId: OAuthConfig.clientId, state: state, userAgentInfo: UIDevice.current.name)
+            
+            var authorizationRequest = URLRequest(url: authorizationURL)
+            authorizationRequest.addValue("application/json", forHTTPHeaderField: "Accept")
+            authorizationRequest.addValue("application/x-www-form-urlencoded; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            authorizationRequest.addValue(OAuthHelper.createBasicAuthorizationString(clientId: OAuthConfig.clientId, clientSecret: OAuthConfig.clientSecret), forHTTPHeaderField: "Authorization")
+            
+            self.state = state
+            
+            webView.load(authorizationRequest)
+        } catch {
+            print("Error creating authorization url: \(error)")
+        }
     }
     
     
