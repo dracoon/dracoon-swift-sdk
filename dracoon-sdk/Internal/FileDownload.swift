@@ -184,7 +184,7 @@ public class FileDownload {
         }
     }
     
-    fileprivate func decryptDownloadedFile(fileKey: EncryptedFileKey) {
+    fileprivate func decryptDownloadedFile(fileKey: EncryptedFileKey, completion: ((DracoonError?) -> Void)? = nil) {
         guard let encryptionPassword = self.getEncryptionPassword() else {
             self.callback?.onError?(DracoonError.no_encryption_password)
             return
@@ -194,14 +194,17 @@ public class FileDownload {
             switch result {
             case .error(let error):
                 self.callback?.onError?(error)
+                completion?(error)
             case .value(let userKeyPair):
                 do {
                     let privateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
                     let plainFileKey = try self.crypto.decryptFileKey(fileKey: fileKey, privateKey: privateKey, password: encryptionPassword)
                     try self.decryptFile(fileKey: plainFileKey, fileUrl: self.targetUrl)
                     self.callback?.onComplete?(self.targetUrl)
+                    completion?(nil)
                 } catch {
                     self.callback?.onError?(error)
+                    completion?(DracoonError.generic(error: error))
                 }
             }
         })
@@ -253,5 +256,13 @@ public class FileDownload {
         
         try FileUtils.removeItem(fileUrl)
         try FileUtils.moveItem(at: tempFilePath, to: fileUrl)
+    }
+    
+    func completeEncryptedBackgroundDownload(completion: @escaping (DracoonError?) -> Void) {
+        guard let fileKey = self.fileKey else {
+            completion(DracoonError.filekey_not_found)
+            return
+        }
+        self.decryptDownloadedFile(fileKey: fileKey, completion: completion)
     }
 }
