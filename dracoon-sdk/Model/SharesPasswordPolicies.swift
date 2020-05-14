@@ -10,6 +10,20 @@ import Foundation
 
 public struct SharesPasswordPolicies: Codable {
     
+    public init(characterRules: CharacterRules?, minLength: Int?,
+                rejectDictionaryWords: Bool?, rejectUserInfo: Bool?,
+                rejectKeyboardPatterns: Bool?, updatedAt: String?, updatedBy: UserInfo?) {
+        self.characterRules = characterRules
+        self.minLength = minLength
+        self.rejectDictionaryWords = rejectDictionaryWords
+        self.rejectUserInfo = rejectUserInfo
+        self.rejectKeyboardPatterns = rejectKeyboardPatterns
+        self.updatedAt = updatedAt
+        self.updatedBy = updatedBy
+    }
+    
+    public init() {}
+    
     public var characterRules: CharacterRules?
     /** Minimum number of characters a password must contain (must be between 1 and 1024) */
     public var minLength: Int?

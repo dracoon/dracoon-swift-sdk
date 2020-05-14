@@ -9,13 +9,13 @@
 import Foundation
 
 public enum PasswordCharacterRules: String, Codable {
-    case alpha = "alpha"
-    case uppercase = "uppercase"
-    case lowercase = "lowercase"
-    case numeric = "numeric"
-    case special = "special"
-    case all = "all"
-    case none = "none"
+    case alpha
+    case uppercase
+    case lowercase
+    case numeric
+    case special
+    case all
+    case none
 }
 
 public struct CharacterRules: Codable {
@@ -32,6 +32,12 @@ public struct CharacterRules: Codable {
     all 4 character sets can be enforced; but also only 2 of them
     (must be between 0 and 4) */
     public var numberOfCharacteristicsToEnforce: Int?
+    
+    public init(mustContainCharacters: [PasswordCharacterRules],
+                numberOfCharacteristicsToEnforce: Int?) {
+        self.mustContainCharacters = mustContainCharacters
+        self.numberOfCharacteristicsToEnforce = numberOfCharacteristicsToEnforce
+    }
 }
 
 public struct PasswordExpiration: Codable {
@@ -39,6 +45,11 @@ public struct PasswordExpiration: Codable {
     public var enabled: Bool
     /** Maximum allowed password age (in days) */
     public var maxPasswordAge: Int?
+    
+    public init(enabled: Bool, maxPasswordAge: Int?) {
+        self.enabled = enabled
+        self.maxPasswordAge = maxPasswordAge
+    }
 }
 
 public struct UserLockout: Codable {
@@ -48,6 +59,12 @@ public struct UserLockout: Codable {
     public var maxNumberOfLoginFailures: Int?
     /** Amount of minutes a user has to wait to make another login attempt after maxNumberOfLoginFailures has been exceeded */
     public var lockoutPeriod: Int?
+    
+    public init(enabled: Bool, maxNumberOfLoginFailures: Int?, lockoutPeriod: Int?) {
+        self.enabled = enabled
+        self.maxNumberOfLoginFailures = maxNumberOfLoginFailures
+        self.lockoutPeriod = lockoutPeriod
+    }
 }
 
 /// - Tag: PasswordPoliciesConfig
