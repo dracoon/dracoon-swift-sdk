@@ -10,6 +10,19 @@ import Foundation
 
 public struct EncryptionPasswordPolicies: Codable {
     
+    public init(characterRules: CharacterRules?, minLength: Int?,
+                rejectUserInfo: Bool?, rejectKeyboardPatterns: Bool?,
+                updatedAt: String?, updatedBy: UserInfo?) {
+        self.characterRules = characterRules
+        self.minLength = minLength
+        self.rejectUserInfo = rejectUserInfo
+        self.rejectKeyboardPatterns = rejectKeyboardPatterns
+        self.updatedAt = updatedAt
+        self.updatedBy = updatedBy
+    }
+    
+    public init() {}
+    
     public var characterRules: CharacterRules?
     /** Minimum number of characters a password must contain (must be between 1 and 1024) */
     public var minLength: Int?
