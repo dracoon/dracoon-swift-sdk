@@ -28,6 +28,10 @@ public class DracoonClientImpl: DracoonClient {
                 oauthClient: OAuthClient? = nil,
                 oauthCallback: OAuthTokenChangedDelegate? = nil) {
         
+        if sessionConfiguration.identifier != nil {
+            fatalError("Initalization with background config is not supported.")
+        }
+        
         let trimmedUrl: URL
         if serverUrl.absoluteString.hasSuffix("/") {
             let stringRepresentation = String(serverUrl.absoluteString.dropLast())

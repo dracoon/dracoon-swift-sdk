@@ -11,7 +11,7 @@ import crypto_sdk
 
 public class FileDownload {
     
-    let sessionManager: Alamofire.SessionManager
+    var sessionManager: Alamofire.SessionManager
     let serverUrl: URL
     let apiPath: String
     let oAuthTokenManager: OAuthInterceptor
@@ -25,14 +25,23 @@ public class FileDownload {
     let nodeId: Int64
     let targetUrl: URL
     
+    var urlSessionTask: URLSessionTask?
     var callback: DownloadCallback?
     var fileKey: EncryptedFileKey?
     var fileSize: Int64?
     weak var downloadRequest: DownloadRequest?
     
     init(nodeId: Int64, targetUrl: URL, config: DracoonRequestConfig, account: DracoonAccount, nodes: DracoonNodes,
-         crypto: CryptoProtocol, fileKey: EncryptedFileKey?, getEncryptionPassword: @escaping () -> String?) {
-        self.sessionManager = config.sessionManager
+         crypto: CryptoProtocol, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?, getEncryptionPassword: @escaping () -> String?) {
+        if let downloadSessionConfig = sessionConfig {
+            let downloadSessionManager = SessionManager(configuration: downloadSessionConfig)
+            downloadSessionManager.retrier = config.sessionManager.retrier
+            downloadSessionManager.adapter = config.sessionManager.adapter
+            self.sessionManager = downloadSessionManager
+        } else {
+            self.sessionManager = config.sessionManager
+        }
+        
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
         self.oAuthTokenManager = config.oauthTokenManager
@@ -53,7 +62,7 @@ public class FileDownload {
     }
     
     public func start() {
-        self.download()
+        self.requestDownload()
     }
     
     public func cancel() {
@@ -77,22 +86,15 @@ public class FileDownload {
         
     }
     
-    fileprivate func download() {
+    fileprivate func requestDownload() {
         self.getDownloadToken(nodeId: self.nodeId, completion: { result in
             switch result {
             case .value(let tokenResponse):
                 if let downloadUrl = tokenResponse.downloadUrl {
-                    self.downloadRequest = self.sessionManager.download(downloadUrl, to: { _, _ in
-                        return (self.targetUrl, [.removePreviousFile, .createIntermediateDirectories])
-                    })
-                        .downloadProgress(closure: { (progress) in
-                            self.handleProgress(progress)
-                        })
-                        .response(completionHandler: { downloadResponse in
-                            self.handleDownloadResponse(downloadResponse)
-                        })
+                    self.download(url: downloadUrl)
                 } else {
-                    self.downloadToken(token: tokenResponse.token)
+                    let url = self.serverUrl.absoluteString + self.apiPath + "/downloads/" + tokenResponse.token
+                    self.download(url: url)
                 }
                 break
             case .error(let error):
@@ -101,15 +103,8 @@ public class FileDownload {
         })
     }
     
-    fileprivate func downloadToken(token: String) {
-        
-        let requestUrl = serverUrl.absoluteString + apiPath + "/downloads/" + token
-        
-        
-        var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-        urlRequest.httpMethod = HTTPMethod.get.rawValue
-        
-        self.downloadRequest = self.sessionManager.download(urlRequest, to: { _, _ in
+    fileprivate func download(url: String) {
+        let request = self.sessionManager.download(url, to: { _, _ in
             return (self.targetUrl, [.removePreviousFile, .createIntermediateDirectories])
         })
             .downloadProgress(closure: { (progress) in
@@ -118,7 +113,8 @@ public class FileDownload {
             .response(completionHandler: { downloadResponse in
                 self.handleDownloadResponse(downloadResponse)
             })
-        
+        self.downloadRequest = request
+        self.urlSessionTask = request.task
     }
     
     fileprivate func handleProgress(_ progress: Progress) {
@@ -176,7 +172,7 @@ public class FileDownload {
         }
     }
     
-    fileprivate func decryptDownloadedFile(fileKey: EncryptedFileKey) {
+    fileprivate func decryptDownloadedFile(fileKey: EncryptedFileKey, completion: ((DracoonError?) -> Void)? = nil) {
         guard let encryptionPassword = self.getEncryptionPassword() else {
             self.callback?.onError?(DracoonError.no_encryption_password)
             return
@@ -186,14 +182,17 @@ public class FileDownload {
             switch result {
             case .error(let error):
                 self.callback?.onError?(error)
+                completion?(error)
             case .value(let userKeyPair):
                 do {
                     let privateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
                     let plainFileKey = try self.crypto.decryptFileKey(fileKey: fileKey, privateKey: privateKey, password: encryptionPassword)
                     try self.decryptFile(fileKey: plainFileKey, fileUrl: self.targetUrl)
                     self.callback?.onComplete?(self.targetUrl)
+                    completion?(nil)
                 } catch {
                     self.callback?.onError?(error)
+                    completion?(DracoonError.generic(error: error))
                 }
             }
         })
@@ -210,8 +209,6 @@ public class FileDownload {
         let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: DracoonConstants.DECRYPTION_BUFFER_SIZE)
         inputStream.open()
         
-        var offset = 0
-        var range = NSMakeRange(offset, DracoonConstants.DECRYPTION_BUFFER_SIZE)
         let tempPath = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         let tempFilePath = tempPath.appendingPathComponent(UUID().uuidString)
         guard let outputStream = OutputStream(toFileAtPath: tempFilePath.path, append: false) else {
@@ -245,5 +242,17 @@ public class FileDownload {
         
         try FileUtils.removeItem(fileUrl)
         try FileUtils.moveItem(at: tempFilePath, to: fileUrl)
+    }
+    
+    func completeEncryptedBackgroundDownload(completion: @escaping (DracoonError?) -> Void) {
+        guard let fileKey = self.fileKey else {
+            completion(DracoonError.filekey_not_found)
+            return
+        }
+        self.decryptDownloadedFile(fileKey: fileKey, completion: completion)
+    }
+    
+    func resumeFromBackground() {
+        self.urlSessionTask?.resume()
     }
 }

@@ -20,10 +20,11 @@ public class S3FileUpload: FileUpload {
     var neededParts: Int32 = 0
     var lastPartSize: Int64 = 0
     var eTags = [S3FileUploadPart]()
+    var uploadId: String?
     
     override init(config: DracoonRequestConfig, request: CreateFileUploadRequest, fileUrl: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
-                  account: DracoonAccount) {
-        super.init(config: config, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy, crypto: crypto, account: account)
+                  sessionConfig: URLSessionConfiguration?, account: DracoonAccount) {
+        super.init(config: config, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy, crypto: crypto, sessionConfig: sessionConfig, account: account)
         var s3DirectUploadRequest = request
         s3DirectUploadRequest.directS3Upload = true
         self.request = s3DirectUploadRequest
@@ -284,7 +285,7 @@ public class S3FileUpload: FileUpload {
         return presignedUrl.partNumber == self.neededParts
     }
     
-    override func completeUpload(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
+    func completeUpload(uploadId: String, encryptedFileKey: EncryptedFileKey?) {
         let completeRequest = CompleteS3FileUploadRequest(parts: self.eTags, resolutionStrategy: self.resolutionStrategy, keepShareLinks: false, fileName: self.request.name, fileKey: encryptedFileKey)
         self.sendCompleteRequest(uploadId: uploadId, request: completeRequest, completion: { response in
             if let error = response.error {
@@ -353,4 +354,12 @@ public class S3FileUpload: FileUpload {
             .validate()
             .decode(S3FileUploadStatus.self, decoder: self.decoder, requestType: .other, completion: completion)
     }
+    
+    fileprivate func deleteUpload(uploadId: String, completion: @escaping (Dracoon.Response) -> Void) {
+           let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
+           
+           self.sessionManager.request(requestUrl, method: .delete, parameters: Parameters())
+               .validate()
+               .handleResponse(decoder: self.decoder, completion: completion)
+       }
 }

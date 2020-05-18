@@ -83,5 +83,26 @@ class DracoonConfigTests: DracoonSdkTestCase {
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
         XCTAssertTrue(calledValue)
     }
+    
+    func testGetPasswordPolicies() {
+        
+        self.setResponseModel(PasswordPoliciesConfig.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns PasswordPoliciesConfig")
+        var calledValue = false
+        
+        self.config.getPasswordPolicies(completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case .value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
         
 }

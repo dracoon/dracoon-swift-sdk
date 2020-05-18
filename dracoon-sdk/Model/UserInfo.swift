@@ -16,12 +16,14 @@ public struct UserInfo: Codable {
     /** Display name */
     public var displayName: String
 
-
     public enum CodingKeys: String, CodingKey { 
         case _id = "id"
         case displayName
     }
 
-
+    public init(_id: Int64, displayName: String) {
+        self._id = _id
+        self.displayName = displayName
+    }
 }
 

@@ -12,9 +12,18 @@ import dracoon_sdk
 class DracoonConfigMock: DracoonConfig {
     
     var error: DracoonError?
-    var systemDefaultsResponse = ResponseModelFactory.getTestResponseModel(SystemDefaults.self)!
-    var generalSettingsResponse = ResponseModelFactory.getTestResponseModel(GeneralSettings.self)!
-    var infrastructurePropertiesResponse = ResponseModelFactory.getTestResponseModel(InfrastructureProperties.self)!
+    var systemDefaultsResponse: SystemDefaults
+    var generalSettingsResponse: GeneralSettings
+    var infrastructurePropertiesResponse: InfrastructureProperties
+    var passwordPoliciesResponse: PasswordPoliciesConfig
+    
+    init() {
+        let modelFactory = ResponseModelFactory()
+        self.systemDefaultsResponse = modelFactory.getTestResponseModel(SystemDefaults.self)!
+        self.generalSettingsResponse = modelFactory.getTestResponseModel(GeneralSettings.self)!
+        self.infrastructurePropertiesResponse = modelFactory.getTestResponseModel(InfrastructureProperties.self)!
+        self.passwordPoliciesResponse = modelFactory.getTestResponseModel(PasswordPoliciesConfig.self)!
+    }
     
     func getSystemDefaults(completion: @escaping DataRequest.DecodeCompletion<SystemDefaults>) {
         if let error = self.error {
@@ -37,6 +46,14 @@ class DracoonConfigMock: DracoonConfig {
             completion(Dracoon.Result.error(error))
         } else {
             completion(Dracoon.Result.value((self.infrastructurePropertiesResponse)))
+        }
+    }
+    
+    func getPasswordPolicies(completion: @escaping DataRequest.DecodeCompletion<PasswordPoliciesConfig>) {
+        if let error = self.error {
+            completion(Dracoon.Result.error(error))
+        } else {
+            completion(Dracoon.Result.value((self.passwordPoliciesResponse)))
         }
     }
 }

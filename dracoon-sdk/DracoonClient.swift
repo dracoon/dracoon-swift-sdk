@@ -136,10 +136,15 @@ public protocol DracoonConfig {
     /// - Parameter completion: Returns [general settings](x-source-tag://GeneralSettings) on success or an error.
     func getGeneralSettings(completion: @escaping DataRequest.DecodeCompletion<GeneralSettings>)
     
-    /// Returns the server's infrastructure properties
+    /// Returns the server's infrastructure properties.
     ///
     /// - Parameter completion: Returns [infrastructure properties](x-source-tag://InfrastructureProperties) on success or an error.
     func getInfrastructureProperties(completion: @escaping DataRequest.DecodeCompletion<InfrastructureProperties>)
+    
+    /// Returns the server's password policies. [Requires API Version >= 4.14.0]
+    ///
+    /// - Parameter completion: Returns [password policies](x-source-tag://PasswordPoliciesConfig) on success or an error.
+    func getPasswordPolicies(completion: @escaping DataRequest.DecodeCompletion<PasswordPoliciesConfig>)
 }
 
 public protocol DracoonUsers {}
@@ -268,12 +273,20 @@ public protocol DracoonNodes {
     ///   - callback: [UploadCallback](x-source-tag://UploadCallback) to inform about upload status
     ///   - resolutionStrategy: [CompleteUploadRequest.ResolutionStrategy](x-source-tag://CompleteUploadRequest.ResolutionStrategy) determines behavior if a file with the same name
     ///                         already exists in the target node.
-    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy)
+    ///   - session: Optional sessionConfiguration used for the upload
+    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, sessionConfig: URLSessionConfiguration?)
     
     /// Cancels a file upload.
     ///
     /// - Parameter uploadId: The ID of the upload to be canceled
     func cancelUpload(uploadId: String)
+    
+    /// Completes a file upload that was finished in background.
+    ///
+    /// - Parameters:
+    ///   - uploadId: The ID of the upload to be completed
+    ///   - completion: Returns the new node on success or an error.
+    func completeBackgroundUpload(uploadId: String, completion: @escaping (Dracoon.Result<Node>) -> Void)
     
     /// Downloads a file.
     ///
@@ -281,12 +294,25 @@ public protocol DracoonNodes {
     ///   - nodeId: The ID of the node to be downloaded
     ///   - targetUrl: The target download path
     ///   - callback: [DownloadCallback](x-source-tag://DownloadCallback) to inform about upload status
-    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback)
+    ///   - session: Optional sessionConfiguration used for the download
+    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, sessionConfig: URLSessionConfiguration?)
     
     /// Cancels a file download.
     ///
     /// - Parameter nodeId: The ID of the downloaded node
     func cancelDownload(nodeId: Int64)
+    
+    /// Completes a file download that was finished in background.
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the downloaded node
+    ///   - completion: Returns an empty response on success or an error.
+    func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void)
+    
+    /// Resumes background tasks after application becomes active again
+    /// If you started uploads or downloads with a background sessionConfiguration, this needs to be called in [UIApplicationDelegate.applicationDidBecomeActive](https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1622956-applicationdidbecomeactive).
+    /// Otherwise the task will be completed, but your progress handler will not be called anymore.
+    func resumeBackgroundTasks()
     
     /// Searches child nodes by their name. Parameters _offset_ and _limit_ restrict the result to a specific range.
     ///
@@ -366,6 +392,30 @@ public protocol DracoonNodes {
     func encryptFileKey(fileKey: PlainFileKey, publicKey: UserPublicKey) throws -> EncryptedFileKey
 }
 
+public extension DracoonNodes {
+    /// Downloads a file.
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the node to be downloaded
+    ///   - targetUrl: The target download path
+    ///   - callback: [DownloadCallback](x-source-tag://DownloadCallback) to inform about upload status
+    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback) {
+        self.downloadFile(nodeId: nodeId, targetUrl: targetUrl, callback: callback, sessionConfig: nil)
+    }
+    /// Uploads a file.
+    ///
+    /// - Parameters:
+    ///   - uploadId: An ID for the upload. Can be used to keep a reference.
+    ///   - request: The [CreateFileUploadRequest](x-source-tag://CreateFileUploadRequest) model
+    ///   - filePath: The path of the file to be uploaded
+    ///   - callback: [UploadCallback](x-source-tag://UploadCallback) to inform about upload status
+    ///   - resolutionStrategy: [CompleteUploadRequest.ResolutionStrategy](x-source-tag://CompleteUploadRequest.ResolutionStrategy) determines behavior if a file with the same name
+    ///                         already exists in the target node.
+    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy) {
+        self.uploadFile(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, sessionConfig: nil)
+    }
+}
+
 public protocol DracoonShares {
     /// Creates a download share.
     ///
@@ -396,6 +446,21 @@ public protocol DracoonShares {
     ///   - completion: Returns the [download share](x-source-tag://DownloadShare) on success or an error.
     func getDownloadShareQrCode(shareId: Int64, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void)
     
+    /// Updates a download share.
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share
+    ///   - request: The [request](x-source-tag://UpdateDownloadShareRequest) containing the changes
+    ///   - completion: Returns the [download share](x-source-tag://DownloadShare) on success or an error.
+    func updateDownloadShare(shareId: Int64, request: UpdateDownloadShareRequest, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void)
+    
+    /// Deletes a download share.
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteDownloadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void)
+    
     /// Creates an upload share.
     ///
     /// - Parameters:
@@ -425,4 +490,19 @@ public protocol DracoonShares {
     ///   - shareId: The ID of the upload share
     ///   - completion: Returns the [upload share](x-source-tag://UploadShare) on success or an error.
     func getUploadShareQrCode(shareId: Int64, completion: @escaping (Dracoon.Result<UploadShare>) -> Void)
+    
+    /// Updates an upload share.
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share
+    ///   - request: The [request](x-source-tag://UpdateUploadShareRequest) containing the changes
+    ///   - completion: Returns the [upload share](x-source-tag://UploadShare) on success or an error.
+    func updateUploadShare(shareId: Int64, request: UpdateUploadShareRequest, completion: @escaping (Dracoon.Result<UploadShare>) -> Void)
+    
+    /// Deletes an upload share.
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteUploadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void)
 }

@@ -17,6 +17,7 @@ public enum DracoonError: Error {
     case hash_check_failed
     
     case read_data_failure(at: URL)
+    case write_data_failure(at: URL)
     case node_path_invalid(path: String)
     case path_range_invalid
     case node_not_found(path: String)
@@ -32,6 +33,8 @@ public enum DracoonError: Error {
     case keypair_failure(description: String)
     case keypair_decryption_failure
     case keypair_does_not_exist
+    case download_not_found
+    case upload_not_found
     
     case authorization_code_flow_in_progress(clientId: String, clientSecret: String, authorizationCode: String)
     case authorization_token_expired

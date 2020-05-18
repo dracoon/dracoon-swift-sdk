@@ -296,7 +296,7 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: Upload file
     
-    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy = CompleteUploadRequest.ResolutionStrategy.autorename) {
+    func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy = CompleteUploadRequest.ResolutionStrategy.autorename, sessionConfig: URLSessionConfiguration?) {
         
         guard ValidatorUtils.pathExists(at: fileUrl.path) else {
             callback.onError?(DracoonError.file_does_not_exist(at: fileUrl))
@@ -317,12 +317,12 @@ class DracoonNodesImpl: DracoonNodes {
                 self.isS3Upload(onComplete: { result in
                     switch result {
                     case .error(_):
-                        self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                        self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
                     case .value(let isS3Upload):
                         if isS3Upload {
                             self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
                         } else {
-                            self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                            self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
                         }
                     }
                 })
@@ -331,9 +331,9 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     private func startUpload(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback,
-                             resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?) {
+                             resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
         let upload = FileUpload(config: self.requestConfig, request: request, fileUrl: filePath, resolutionStrategy: resolutionStrategy,
-                                crypto: cryptoImpl, account: self.account)
+                                crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account)
         
         let innerCallback = UploadCallback()
         innerCallback.onCanceled = callback.onCanceled
@@ -357,7 +357,7 @@ class DracoonNodesImpl: DracoonNodes {
     private func startS3Upload(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback,
                                resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?) {
         let s3upload = S3FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
-                                    crypto: cryptoImpl, account: self.account)
+                                    crypto: cryptoImpl, sessionConfig: nil, account: self.account)
         
         let innerCallback = UploadCallback()
         innerCallback.onCanceled = callback.onCanceled
@@ -401,7 +401,6 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     func cancelUpload(uploadId: String) {
-        
         guard let upload = self.uploads[uploadId] else {
             return
         }
@@ -409,9 +408,25 @@ class DracoonNodesImpl: DracoonNodes {
         self.uploads.removeValue(forKey: uploadId)
     }
     
+    func completeBackgroundUpload(uploadId: String, completion: @escaping (Dracoon.Result<Node>) -> Void) {
+        guard let upload = self.uploads[uploadId], let fileUpload = upload as? FileUpload else {
+            completion(Dracoon.Result.error(DracoonError.upload_not_found))
+            return
+        }
+        fileUpload.completeBackgroundUpload(sessionManager: self.sessionManager, completionHandler: { result in
+            switch result {
+            case .error(let error):
+                completion(Dracoon.Result.error(error))
+            case .value(let node):
+                self.uploads.removeValue(forKey: uploadId)
+                completion(Dracoon.Result.value(node))
+            }
+        })
+    }
+    
     // MARK: Download file
     
-    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback) {
+    func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, sessionConfig: URLSessionConfiguration?) {
         self.isNodeEncrypted(nodeId: nodeId, completion: { result in
             switch result {
             case .error(let error):
@@ -424,21 +439,20 @@ class DracoonNodesImpl: DracoonNodes {
                             callback.onError?(error)
                             return
                         case .value(let encryptedFileKey):
-                            self.startFileDownload(nodeId: nodeId, targetUrl: targetUrl, callback: callback, fileKey: encryptedFileKey)
+                            self.startFileDownload(nodeId: nodeId, targetUrl: targetUrl, callback: callback, fileKey: encryptedFileKey, sessionConfig: sessionConfig)
                         }
-                        
                     })
                 } else {
-                    self.startFileDownload(nodeId: nodeId, targetUrl: targetUrl, callback: callback, fileKey: nil)
+                    self.startFileDownload(nodeId: nodeId, targetUrl: targetUrl, callback: callback, fileKey: nil, sessionConfig: sessionConfig)
                 }
             }
         })
     }
     
-    fileprivate func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?) {
+    fileprivate func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?) {
         
         let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.requestConfig, account: self.account, nodes: self,
-                                    crypto: self.crypto, fileKey: fileKey, getEncryptionPassword: self.getEncryptionPassword)
+                                    crypto: self.crypto, fileKey: fileKey, sessionConfig: sessionConfig, getEncryptionPassword: self.getEncryptionPassword)
         
         let innerCallback = DownloadCallback()
         innerCallback.onCanceled = callback.onCanceled
@@ -455,11 +469,42 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     func cancelDownload(nodeId: Int64) {
-        guard let download = downloads[nodeId] else {
+        guard let download = self.downloads[nodeId] else {
             return
         }
         download.cancel()
         self.downloads.removeValue(forKey: nodeId)
+    }
+    
+    func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void) {
+        guard let download = self.downloads[nodeId] else {
+            completion(DracoonError.download_not_found)
+            return
+        }
+        guard download.fileKey != nil else {
+            self.downloads.removeValue(forKey: nodeId)
+            completion(nil)
+            return
+        }
+        download.completeEncryptedBackgroundDownload(completion: { error in
+            if let error = error {
+                completion(error)
+            } else {
+                self.downloads.removeValue(forKey: nodeId)
+                completion(nil)
+            }
+        })
+    }
+    
+    func resumeBackgroundTasks() {
+        for download in self.downloads.values {
+            download.resumeFromBackground()
+        }
+        for upload in self.uploads.values {
+            if let fileUpload = upload as? FileUpload {
+                fileUpload.resumeBackgroundUpload()
+            }
+        }
     }
     
     // MARK: Search
