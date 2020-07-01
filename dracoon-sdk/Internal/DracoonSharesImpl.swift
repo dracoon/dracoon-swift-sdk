@@ -48,7 +48,8 @@ class DracoonSharesImpl: DracoonShares {
                         completion(Dracoon.Result.error(DracoonError.no_encryption_password))
                         return
                     }
-                    self.account.checkUserKeyPairPassword(password: encryptionPassword, completion: { result in
+                    // TODO set highest preference key pair version
+                    self.account.checkUserKeyPairPassword(version: UserKeyPairVersion.RSA2048, password: encryptionPassword, completion: { result in
                         switch result {
                         case .error(let error):
                             completion(Dracoon.Result.error(error))
@@ -64,7 +65,8 @@ class DracoonSharesImpl: DracoonShares {
                                     do {
                                         let privateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
                                         let plainFileKey = try self.nodes.decryptFileKey(fileKey: encryptedFileKey, privateKey: privateKey, password: encryptionPassword)
-                                        let shareKeyPair = try self.account.generateUserKeyPair(password: shareEncryptionPassword)
+                                        // TODO set highest preference key pair version
+                                        let shareKeyPair = try self.account.generateUserKeyPair(version: UserKeyPairVersion.RSA2048, password: shareEncryptionPassword)
                                         let shareFileKey = try self.nodes.encryptFileKey(fileKey: plainFileKey, publicKey: shareKeyPair.publicKeyContainer)
                                         let request = CreateDownloadShareRequest(nodeId: nodeId){$0.keyPair = shareKeyPair; $0.fileKey = shareFileKey}
                                         self.requestCreateDownloadShare(request: request, completion: completion)

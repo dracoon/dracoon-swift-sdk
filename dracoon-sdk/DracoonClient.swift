@@ -51,22 +51,32 @@ public protocol DracoonAccount {
     
     /// Generates a RSA keypair. See [Crypto SDK](https://github.com/dracoon/dracoon-swift-crypto-sdk) for more information.
     ///
-    /// - Parameter password: The password used to encrypt the private key
+    /// - Parameters:
+    ///     - version: The version of the user key pair
+    ///     - password: The password used to encrypt the private key
     /// - Returns: The generated keypair
     /// - Throws: CryptoError if an error occured during key pair generation
-    func generateUserKeyPair(password: String) throws -> UserKeyPair
+    func generateUserKeyPair(version: UserKeyPairVersion, password: String) throws -> UserKeyPair
     
     /// Generates and sets the user's encryption key pair. See [Crypto SDK](https://github.com/dracoon/dracoon-swift-crypto-sdk) for more information.
     ///
     /// - Parameters:
+    ///   - version: The version of the user key pair
     ///   - password: The password used to encrypt the private key
     ///   - completion: Returns the [user's key pair](x-source-tag://UserKeyPairContainer) on success or an error.
-    func setUserKeyPair(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
+    func setUserKeyPair(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
+    
+    /// Retrieves the user's highest preference key pair.
+    ///
+    /// - Parameter completion: Returns the user's highest preference key pair on success or an error
+    func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
     
     /// Retrieves the user's key pair.
     ///
-    /// - Parameter completion: Returns the user's key pair on success or an error
-    func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
+    /// - Parameters:
+    ///   - version: The version of the user key pair
+    ///   - completion: Returns the user's key pair on success or an error
+    func getUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
     
     /// Checks if the user's private key can be decrypted with the provided password.
     ///
@@ -75,10 +85,20 @@ public protocol DracoonAccount {
     ///   - completion: Returns [user's key pair](x-source-tag://UserKeyPairContainer) on success or an error.
     func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
     
+    /// Checks if the user's private key can be decrypted with the provided password.
+    ///
+    /// - Parameters:
+    ///   - version: The version of the user key pair
+    ///   - password: The password used to encrypt the private key
+    ///   - completion: Returns [user's key pair](x-source-tag://UserKeyPairContainer) on success or an error.
+    func checkUserKeyPairPassword(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
+    
     /// Deletes the user's keypair.
     ///
-    /// - Parameter completion: Returns an empty response on success or an error.
-    func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void)
+    /// - Parameters:
+    ///   - version: The version of the user key pair
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Response) -> Void)
     
     /// Retrieves the user's avatar.
     ///
@@ -370,7 +390,7 @@ public protocol DracoonNodes {
     /// - Parameter version: The crypto version to be used
     /// - Returns: The plain key
     /// - Throws: CryptoError if an error occured during key generation
-    func createFileKey(version: String) throws -> PlainFileKey
+    func createFileKey(version: PlainFileKeyVersion) throws -> PlainFileKey
     
     /// Decrypts a FileKey. See [Crypto SDK](https://github.com/dracoon/dracoon-swift-crypto-sdk) for more information.
     ///

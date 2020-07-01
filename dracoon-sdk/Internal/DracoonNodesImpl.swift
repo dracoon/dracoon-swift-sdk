@@ -709,8 +709,8 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func createFileKey(version: String = CryptoConstants.DEFAULT_VERSION) throws -> PlainFileKey {
-        return try crypto.generateFileKey(version: version)
+    func createFileKey(version: PlainFileKeyVersion) throws -> PlainFileKey {
+        return try crypto.generateFileKey(version: version.rawValue)
     }
     
     

@@ -155,7 +155,7 @@ public class FileUpload: DracoonUpload {
         var cipher: EncryptionCipher
         if let crypto = self.crypto {
             do {
-                let fileKey = try crypto.generateFileKey(version: CryptoConstants.DEFAULT_VERSION)
+                let fileKey = try crypto.generateFileKey(version: PlainFileKeyVersion.AES256GCM.rawValue)
                 cipher = try crypto.createEncryptionCipher(fileKey: fileKey)
             } catch {
                 throw DracoonError.encryption_cipher_failure
