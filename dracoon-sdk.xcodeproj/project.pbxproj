@@ -241,6 +241,9 @@
 		E0945A3022F0682200C803F9 /* DracoonNodesMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0945A2F22F0682200C803F9 /* DracoonNodesMock.swift */; };
 		E0945A3222F07C2000C803F9 /* DracoonSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0945A3122F07C2000C803F9 /* DracoonSettingsTests.swift */; };
 		E0945A3422F08B8C00C803F9 /* DracoonApiCodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0945A3322F08B8C00C803F9 /* DracoonApiCodeTests.swift */; };
+		E09A584A24AE0EEA00641838 /* FilekeyAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09A584924AE0EEA00641838 /* FilekeyAlgorithm.swift */; };
+		E09A584C24AE0F8D00641838 /* KeyPairAlgorithm.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09A584B24AE0F8D00641838 /* KeyPairAlgorithm.swift */; };
+		E09A584E24AE0FD100641838 /* AlgorithmVersionInfoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09A584D24AE0FD100641838 /* AlgorithmVersionInfoList.swift */; };
 		E0A9E11922EB28E4000C63DD /* DracoonErrorParserTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A9E11822EB28E4000C63DD /* DracoonErrorParserTest.swift */; };
 		E0AA72EB2089DD0B001BC290 /* FileUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AA72EA2089DD0B001BC290 /* FileUpload.swift */; };
 		E0AA72EF2089EE3C001BC290 /* DracoonAccountImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AA72EE2089EE3C001BC290 /* DracoonAccountImpl.swift */; };
@@ -516,6 +519,9 @@
 		E0945A2F22F0682200C803F9 /* DracoonNodesMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonNodesMock.swift; sourceTree = "<group>"; };
 		E0945A3122F07C2000C803F9 /* DracoonSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSettingsTests.swift; sourceTree = "<group>"; };
 		E0945A3322F08B8C00C803F9 /* DracoonApiCodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonApiCodeTests.swift; sourceTree = "<group>"; };
+		E09A584924AE0EEA00641838 /* FilekeyAlgorithm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilekeyAlgorithm.swift; sourceTree = "<group>"; };
+		E09A584B24AE0F8D00641838 /* KeyPairAlgorithm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyPairAlgorithm.swift; sourceTree = "<group>"; };
+		E09A584D24AE0FD100641838 /* AlgorithmVersionInfoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlgorithmVersionInfoList.swift; sourceTree = "<group>"; };
 		E0A9E11822EB28E4000C63DD /* DracoonErrorParserTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonErrorParserTest.swift; sourceTree = "<group>"; };
 		E0AA72EA2089DD0B001BC290 /* FileUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUpload.swift; sourceTree = "<group>"; };
 		E0AA72EE2089EE3C001BC290 /* DracoonAccountImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonAccountImpl.swift; sourceTree = "<group>"; };
@@ -841,6 +847,9 @@
 				E05A609E22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift */,
 				E05A60A022CCCE1200DF7418 /* S3FileUploadPart.swift */,
 				E05A60A222CCDDB400DF7418 /* S3FileUploadStatus.swift */,
+				E09A584924AE0EEA00641838 /* FilekeyAlgorithm.swift */,
+				E09A584B24AE0F8D00641838 /* KeyPairAlgorithm.swift */,
+				E09A584D24AE0FD100641838 /* AlgorithmVersionInfoList.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1157,6 +1166,7 @@
 				E00068132057D0BC009CDA70 /* LogOperation.swift in Sources */,
 				E000685F2057D0BC009CDA70 /* RestoreDeletedNodesRequest.swift in Sources */,
 				E07C89E522A528C900C7139E /* Avatar.swift in Sources */,
+				E09A584E24AE0FD100641838 /* AlgorithmVersionInfoList.swift in Sources */,
 				E0AA72EF2089EE3C001BC290 /* DracoonAccountImpl.swift in Sources */,
 				E000686F2057D0BC009CDA70 /* MoveNodesRequest.swift in Sources */,
 				E00068022057D0BC009CDA70 /* UserItem.swift in Sources */,
@@ -1200,6 +1210,7 @@
 				E00068182057D0BC009CDA70 /* CreateShareUploadChannelResponse.swift in Sources */,
 				E00068592057D0BC009CDA70 /* UserList.swift in Sources */,
 				E05A609F22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift in Sources */,
+				E09A584A24AE0EEA00641838 /* FilekeyAlgorithm.swift in Sources */,
 				E00068222057D0BC009CDA70 /* NotRestoredNodeList.swift in Sources */,
 				E00068172057D0BC009CDA70 /* PrivateKeyContainer.swift in Sources */,
 				E00067DF2057D0BC009CDA70 /* EncryptionInfo.swift in Sources */,
@@ -1217,6 +1228,7 @@
 				E000681A2057D0BC009CDA70 /* KeyValueEntry.swift in Sources */,
 				E000680D2057D0BC009CDA70 /* LogEvent.swift in Sources */,
 				E000682F2057D0BC009CDA70 /* DeleteNodesRequest.swift in Sources */,
+				E09A584C24AE0F8D00641838 /* KeyPairAlgorithm.swift in Sources */,
 				E00067D02057D0BC009CDA70 /* NodeBatchOperationErrorInfos.swift in Sources */,
 				E07D1D202456CBE600AAF8CE /* PasswordPoliciesConfig.swift in Sources */,
 				E00068162057D0BC009CDA70 /* ActiveDirectoryConfigList.swift in Sources */,

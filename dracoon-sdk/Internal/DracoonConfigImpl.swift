@@ -53,4 +53,12 @@ class DracoonConfigImpl: DracoonConfig {
         .validate()
         .decode(PasswordPoliciesConfig.self, decoder: self.decoder, completion: completion)
     }
+    
+    func getCryptoAlgorithms(completion: @escaping DataRequest.DecodeCompletion<AlgorithmVersionInfoList>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/policies/algorithms"
+        
+        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        .validate()
+        .decode(AlgorithmVersionInfoList.self, decoder: self.decoder, completion: completion)
+    }
 }
