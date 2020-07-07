@@ -82,9 +82,20 @@ class DracoonAccountImpl: DracoonAccount {
     }
     
     func getUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        let parameters: Parameters = [
+            "version" : "\(version.rawValue)"
+        ]
+        self.sendGetUserKeyPairRequest(parameters: parameters, completion: completion)
+    }
+    
+    func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        self.sendGetUserKeyPairRequest(parameters: Parameters(), completion: completion)
+    }
+    
+    private func sendGetUserKeyPairRequest(parameters: [String : Any], completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(UserKeyPair.self, decoder: self.decoder, completion: { result in
                 switch result {
@@ -101,45 +112,48 @@ class DracoonAccountImpl: DracoonAccount {
             })
     }
     
-    func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
-        // TODO set highest preference key pair version
-        self.getUserKeyPair(version: UserKeyPairVersion.RSA2048, completion: completion)
-    }
-    
     func checkUserKeyPairPassword(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         self.getUserKeyPair(version: version, completion: { result in
-            
-            switch result {
-            case .error(let error):
-                completion(Dracoon.Result.error(error))
-            case .value(let userKeyPair):
-                let userPublicKey = UserPublicKey(publicKey: userKeyPair.publicKeyContainer.publicKey, version: userKeyPair.publicKeyContainer.version)
-                let userPrivateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
-                let keyPair = UserKeyPair(publicKey: userPublicKey, privateKey: userPrivateKey)
-                if self.crypto.checkUserKeyPair(keyPair: keyPair, password: password) {
-                    completion(Dracoon.Result.value(userKeyPair))
-                } else {
-                    completion(Dracoon.Result.error(DracoonError.keypair_decryption_failure))
-                }
-                
-            }
-            
+            self.handleCheckUserKeyPairResponse(result: result, password: password, completion: completion)
         })
     }
     
     func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
-        // TODO set highest preference key pair version
-        self.checkUserKeyPairPassword(version: UserKeyPairVersion.RSA2048, password: password, completion: completion)
+        self.getUserKeyPair(completion: { result in
+            self.handleCheckUserKeyPairResponse(result: result, password: password, completion: completion)
+        })
+    }
+    
+    private func handleCheckUserKeyPairResponse(result: Dracoon.Result<UserKeyPairContainer>, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        switch result {
+        case .error(let error):
+            completion(Dracoon.Result.error(error))
+        case .value(let userKeyPair):
+            let userPublicKey = UserPublicKey(publicKey: userKeyPair.publicKeyContainer.publicKey, version: userKeyPair.publicKeyContainer.version)
+            let userPrivateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
+            let keyPair = UserKeyPair(publicKey: userPublicKey, privateKey: userPrivateKey)
+            if self.crypto.checkUserKeyPair(keyPair: keyPair, password: password) {
+                completion(Dracoon.Result.value(userKeyPair))
+            } else {
+                completion(Dracoon.Result.error(DracoonError.keypair_decryption_failure))
+            }
+        }
     }
     
     func deleteUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Response) -> Void) {
-        // TODO respect version
+        let parameters: Parameters = [
+            "version" : "\(version.rawValue)"
+        ]
+        self.sendDeleteUserKeyPairRequest(parameters: parameters, completion: completion)
+    }
+    
+    func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void) {
+        self.sendDeleteUserKeyPairRequest(parameters: Parameters(), completion: completion)
+    }
+    
+    private func sendDeleteUserKeyPairRequest(parameters: [String : Any], completion: @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
-        
-        var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-        urlRequest.httpMethod = HTTPMethod.delete.rawValue
-        
-        self.sessionManager.request(urlRequest)
+        self.sessionManager.request(requestUrl, method: .delete, parameters: parameters)
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
     }

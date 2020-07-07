@@ -225,6 +225,7 @@
 		E05A60A122CCCE1200DF7418 /* S3FileUploadPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05A60A022CCCE1200DF7418 /* S3FileUploadPart.swift */; };
 		E05A60A322CCDDB400DF7418 /* S3FileUploadStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05A60A222CCDDB400DF7418 /* S3FileUploadStatus.swift */; };
 		E07C89E522A528C900C7139E /* Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07C89E422A528C900C7139E /* Avatar.swift */; };
+		E07CF14224B463090046A3E0 /* ApiVersionCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07CF14124B463080046A3E0 /* ApiVersionCheck.swift */; };
 		E07D1D202456CBE600AAF8CE /* PasswordPoliciesConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07D1D1F2456CBE600AAF8CE /* PasswordPoliciesConfig.swift */; };
 		E07D1D222456CCAA00AAF8CE /* LoginPasswordPolicies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07D1D212456CCAA00AAF8CE /* LoginPasswordPolicies.swift */; };
 		E07D1D242456D5A300AAF8CE /* SharesPasswordPolicies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07D1D232456D5A300AAF8CE /* SharesPasswordPolicies.swift */; };
@@ -502,6 +503,7 @@
 		E05A60A022CCCE1200DF7418 /* S3FileUploadPart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUploadPart.swift; sourceTree = "<group>"; };
 		E05A60A222CCDDB400DF7418 /* S3FileUploadStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUploadStatus.swift; sourceTree = "<group>"; };
 		E07C89E422A528C900C7139E /* Avatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Avatar.swift; sourceTree = "<group>"; };
+		E07CF14124B463080046A3E0 /* ApiVersionCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiVersionCheck.swift; sourceTree = "<group>"; };
 		E07D1D1F2456CBE600AAF8CE /* PasswordPoliciesConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordPoliciesConfig.swift; sourceTree = "<group>"; };
 		E07D1D212456CCAA00AAF8CE /* LoginPasswordPolicies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPasswordPolicies.swift; sourceTree = "<group>"; };
 		E07D1D232456D5A300AAF8CE /* SharesPasswordPolicies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharesPasswordPolicies.swift; sourceTree = "<group>"; };
@@ -606,6 +608,7 @@
 				E0F5DF3B22EF259B00844012 /* FileUtils.swift */,
 				E00068832057DF8C009CDA70 /* ValidatorUtils.swift */,
 				8496F3B920592080000EE909 /* Alamofire+Convenience.swift */,
+				E07CF14124B463080046A3E0 /* ApiVersionCheck.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -1172,6 +1175,7 @@
 				E00068022057D0BC009CDA70 /* UserItem.swift in Sources */,
 				E000680B2057D0BC009CDA70 /* AuthConfig.swift in Sources */,
 				E000684C2057D0BC009CDA70 /* SyslogEventList.swift in Sources */,
+				E07CF14224B463090046A3E0 /* ApiVersionCheck.swift in Sources */,
 				E000680C2057D0BC009CDA70 /* CreateUploadShareRequest.swift in Sources */,
 				E0146C1A2231263100781246 /* DracoonApiCode.swift in Sources */,
 				E00068152057D0BC009CDA70 /* PendingAssignmentData.swift in Sources */,

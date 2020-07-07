@@ -19,17 +19,19 @@ class DracoonSharesImpl: DracoonShares {
     let encoder: JSONEncoder
     let nodes: DracoonNodes
     let account: DracoonAccount
+    let server: DracoonServer
     let getEncryptionPassword: () -> String?
     
-    init(config: DracoonRequestConfig, nodes: DracoonNodes, account: DracoonAccount, getEncryptionPassword: @escaping () -> String?) {
-        self.sessionManager = config.sessionManager
-        self.serverUrl = config.serverUrl
-        self.apiPath = config.apiPath
-        self.oAuthTokenManager = config.oauthTokenManager
-        self.decoder = config.decoder
-        self.encoder = config.encoder
+    init(requestConfig: DracoonRequestConfig, nodes: DracoonNodes, account: DracoonAccount, server: DracoonServer, getEncryptionPassword: @escaping () -> String?) {
+        self.sessionManager = requestConfig.sessionManager
+        self.serverUrl = requestConfig.serverUrl
+        self.apiPath = requestConfig.apiPath
+        self.oAuthTokenManager = requestConfig.oauthTokenManager
+        self.decoder = requestConfig.decoder
+        self.encoder = requestConfig.encoder
         self.nodes = nodes
         self.account = account
+        self.server = server
         self.getEncryptionPassword = getEncryptionPassword
     }
     
@@ -48,36 +50,29 @@ class DracoonSharesImpl: DracoonShares {
                         completion(Dracoon.Result.error(DracoonError.no_encryption_password))
                         return
                     }
-                    // TODO set highest preference key pair version
-                    self.account.checkUserKeyPairPassword(version: UserKeyPairVersion.RSA2048, password: encryptionPassword, completion: { result in
+                    self.server.getServerVersion(completion: { result in
                         switch result {
                         case .error(let error):
                             completion(Dracoon.Result.error(error))
-                            
-                        case .value(let userKeyPair):
-                            
+                        case .value(let versionInfo):
+                            let apiVersion = versionInfo.restApiVersion
                             self.nodes.getFileKey(nodeId: nodeId, completion: { result in
-                                
                                 switch result {
                                 case .error(let error):
                                     completion(Dracoon.Result.error(error))
                                 case .value(let encryptedFileKey):
-                                    do {
-                                        let privateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
-                                        let plainFileKey = try self.nodes.decryptFileKey(fileKey: encryptedFileKey, privateKey: privateKey, password: encryptionPassword)
-                                        // TODO set highest preference key pair version
-                                        let shareKeyPair = try self.account.generateUserKeyPair(version: UserKeyPairVersion.RSA2048, password: shareEncryptionPassword)
-                                        let shareFileKey = try self.nodes.encryptFileKey(fileKey: plainFileKey, publicKey: shareKeyPair.publicKeyContainer)
-                                        let request = CreateDownloadShareRequest(nodeId: nodeId){$0.keyPair = shareKeyPair; $0.fileKey = shareFileKey}
-                                        self.requestCreateDownloadShare(request: request, completion: completion)
-                                    } catch CryptoError.decrypt(let message){
-                                        completion(Dracoon.Result.error(DracoonError.filekey_decryption_failure(description: message)))
-                                    } catch CryptoError.generate(let message){
-                                        completion(Dracoon.Result.error(DracoonError.keypair_failure(description: message)))
-                                    } catch CryptoError.encrypt(let message) {
-                                        completion(Dracoon.Result.error(DracoonError.filekey_encryption_failure(description: message)))
-                                    } catch {
-                                        completion(Dracoon.Result.error(DracoonError.generic(error: error)))
+                                    guard let userKeyPairVersion = encryptedFileKey.getUserKeyPairVersion() else {
+                                        completion(Dracoon.Result.error(DracoonError.keypair_version_unknown))
+                                        return
+                                    }
+                                    if ApiVersionCheck.isRequiredServerVersion(requiredVersion: ApiVersionCheck.CryptoUpdateVersion, currentApiVersion: apiVersion) {
+                                        self.account.checkUserKeyPairPassword(version: userKeyPairVersion, password: encryptionPassword, completion: { result in
+                                            self.handleUserKeyPairResponse(result: result, keyPairVersion: userKeyPairVersion, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
+                                        })
+                                    } else {
+                                        self.account.checkUserKeyPairPassword(password: encryptionPassword, completion: { result in
+                                            self.handleUserKeyPairResponse(result: result, keyPairVersion: userKeyPairVersion, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
+                                        })
                                     }
                                 }
                             })
@@ -89,6 +84,30 @@ class DracoonSharesImpl: DracoonShares {
                 }
             }
         })
+    }
+    
+    private func handleUserKeyPairResponse(result: Dracoon.Result<UserKeyPairContainer>, keyPairVersion: UserKeyPairVersion, nodeId: Int64, fileKey: EncryptedFileKey, encryptionPassword: String, shareEncryptionPassword: String, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+        switch result {
+        case .error(let error):
+            completion(Dracoon.Result.error(error))
+        case .value(let userKeyPair):
+            do {
+                let privateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
+                let plainFileKey = try self.nodes.decryptFileKey(fileKey: fileKey, privateKey: privateKey, password: encryptionPassword)
+                let shareKeyPair = try self.account.generateUserKeyPair(version: keyPairVersion, password: shareEncryptionPassword)
+                let shareFileKey = try self.nodes.encryptFileKey(fileKey: plainFileKey, publicKey: shareKeyPair.publicKeyContainer)
+                let request = CreateDownloadShareRequest(nodeId: nodeId){$0.keyPair = shareKeyPair; $0.fileKey = shareFileKey}
+                self.requestCreateDownloadShare(request: request, completion: completion)
+            } catch CryptoError.decrypt(let message){
+                completion(Dracoon.Result.error(DracoonError.filekey_decryption_failure(description: message)))
+            } catch CryptoError.generate(let message){
+                completion(Dracoon.Result.error(DracoonError.keypair_failure(description: message)))
+            } catch CryptoError.encrypt(let message) {
+                completion(Dracoon.Result.error(DracoonError.filekey_encryption_failure(description: message)))
+            } catch {
+                completion(Dracoon.Result.error(DracoonError.generic(error: error)))
+            }
+        }
     }
     
     func requestCreateDownloadShare(request: CreateDownloadShareRequest, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {

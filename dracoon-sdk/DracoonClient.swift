@@ -95,6 +95,11 @@ public protocol DracoonAccount {
     
     /// Deletes the user's keypair.
     ///
+    /// - Parameter completion: Returns an empty response on success or an error.
+    func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Deletes the user's keypair.
+    ///
     /// - Parameters:
     ///   - version: The version of the user key pair
     ///   - completion: Returns an empty response on success or an error.

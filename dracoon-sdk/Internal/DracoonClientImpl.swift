@@ -66,7 +66,7 @@ public class DracoonClientImpl: DracoonClient {
         groups = NotImplementedYet()
         settings = DracoonSettingsImpl(config: requestConfig)
         nodes = DracoonNodesImpl(requestConfig: requestConfig, crypto: crypto, account: account, config: config, getEncryptionPassword: getEncryptionPassword)
-        shares = DracoonSharesImpl(config: requestConfig, nodes: nodes, account: account, getEncryptionPassword: getEncryptionPassword)
+        shares = DracoonSharesImpl(requestConfig: requestConfig, nodes: nodes, account: account, server: server, getEncryptionPassword: getEncryptionPassword)
     }
     
     let oAuthTokenManager: OAuthInterceptor
