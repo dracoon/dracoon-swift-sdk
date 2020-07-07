@@ -64,6 +64,8 @@ public class ResponseModelFactory {
             return self.getProfileAttributes() as? E
         } else if type == PasswordPoliciesConfig.self {
             return self.getPasswordPoliciesConfig() as? E
+        } else if type == AlgorithmVersionInfoList.self {
+            return self.getAlgorithmVersionInfoList() as? E
         }
         return nil
     }
@@ -93,7 +95,7 @@ public class ResponseModelFactory {
     }
     
     private func getUserKeyPairContainer() -> UserKeyPairContainer {
-        return UserKeyPairContainer(publicKey: "public", publicVersion: "test", privateKey: "private", privateVersion: "test")
+        return UserKeyPairContainer(publicKey: "public", publicVersion: .RSA2048, privateKey: "private", privateVersion: .RSA2048)
     }
     
     private func getUserAvatar() -> Avatar {
@@ -153,14 +155,14 @@ public class ResponseModelFactory {
     }
     
     private func getFileKey() -> EncryptedFileKey {
-        return EncryptedFileKey(key: "encryptedFileKey", version: "test", iv: "iv", tag: "tag")
+        return EncryptedFileKey(key: "encryptedFileKey", version: .RSA2048_AES256GCM, iv: "iv", tag: "tag")
     }
     
     private func getMissingKeysResponse() -> MissingKeysResponse {
         let range = ModelRange(offset: 0, limit: 0, total: 1)
         let userFileMapping = UserIdFileIdItem(userId: 42, fileId: 1337)
-        let userKeyMapping = UserUserPublicKey(_id: 42, publicKeyContainer: UserPublicKey(publicKey: "publicKey", version: "test"))
-        let fileKey = FileFileKeys(_id: 1337, fileKeyContainer: EncryptedFileKey(key: "encryptedKey", version: "test", iv: "iv", tag: "tag"))
+        let userKeyMapping = UserUserPublicKey(_id: 42, publicKeyContainer: UserPublicKey(publicKey: "publicKey", version: .RSA2048))
+        let fileKey = FileFileKeys(_id: 1337, fileKeyContainer: EncryptedFileKey(key: "encryptedKey", version: .RSA2048_AES256GCM, iv: "iv", tag: "tag"))
         return MissingKeysResponse(range: range, items: [userFileMapping], users: [userKeyMapping], files: [fileKey])
     }
     
@@ -193,5 +195,11 @@ public class ResponseModelFactory {
         let sharePasswordPolicies = SharesPasswordPolicies(characterRules: characterRules, minLength: 8, rejectDictionaryWords: false, rejectUserInfo: true, rejectKeyboardPatterns: false, updatedAt: nil, updatedBy: nil)
         let encryptionPasswordPolicies = EncryptionPasswordPolicies(characterRules: characterRules, minLength: 8, rejectUserInfo: true, rejectKeyboardPatterns: false, updatedAt: nil, updatedBy: nil)
         return PasswordPoliciesConfig(loginPasswordPolicies: loginPasswordPolicies, sharesPasswordPolicies: sharePasswordPolicies, encryptionPasswordPolicies: encryptionPasswordPolicies)
+    }
+    
+    private func getAlgorithmVersionInfoList() -> AlgorithmVersionInfoList {
+        let fileKeyAlgos = [FileKeyAlgorithm(version: .RSA2048_AES256GCM, description: "", status: "REQUIRED")]
+        let keyPairAlgos = [KeyPairAlgorithm(version: .RSA2048, description: "", status: "REQUIRED")]
+        return AlgorithmVersionInfoList(FilekeyAlgorithms: fileKeyAlgos, KeyPairAlgorithms: keyPairAlgos)
     }
 }

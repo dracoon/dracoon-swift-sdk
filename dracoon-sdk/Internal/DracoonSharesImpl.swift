@@ -61,17 +61,14 @@ class DracoonSharesImpl: DracoonShares {
                                 case .error(let error):
                                     completion(Dracoon.Result.error(error))
                                 case .value(let encryptedFileKey):
-                                    guard let userKeyPairVersion = encryptedFileKey.getUserKeyPairVersion() else {
-                                        completion(Dracoon.Result.error(DracoonError.keypair_version_unknown))
-                                        return
-                                    }
+                                    let userKeyPairVersion = encryptedFileKey.getUserKeyPairVersion()
                                     if ApiVersionCheck.isRequiredServerVersion(requiredVersion: ApiVersionCheck.CryptoUpdateVersion, currentApiVersion: apiVersion) {
                                         self.account.checkUserKeyPairPassword(version: userKeyPairVersion, password: encryptionPassword, completion: { result in
-                                            self.handleUserKeyPairResponse(result: result, keyPairVersion: userKeyPairVersion, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
+                                            self.handleUserKeyPairResponse(result: result, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
                                         })
                                     } else {
                                         self.account.checkUserKeyPairPassword(password: encryptionPassword, completion: { result in
-                                            self.handleUserKeyPairResponse(result: result, keyPairVersion: userKeyPairVersion, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
+                                            self.handleUserKeyPairResponse(result: result, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
                                         })
                                     }
                                 }
@@ -86,7 +83,7 @@ class DracoonSharesImpl: DracoonShares {
         })
     }
     
-    private func handleUserKeyPairResponse(result: Dracoon.Result<UserKeyPairContainer>, keyPairVersion: UserKeyPairVersion, nodeId: Int64, fileKey: EncryptedFileKey, encryptionPassword: String, shareEncryptionPassword: String, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+    private func handleUserKeyPairResponse(result: Dracoon.Result<UserKeyPairContainer>, nodeId: Int64, fileKey: EncryptedFileKey, encryptionPassword: String, shareEncryptionPassword: String, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
         switch result {
         case .error(let error):
             completion(Dracoon.Result.error(error))
@@ -94,7 +91,7 @@ class DracoonSharesImpl: DracoonShares {
             do {
                 let privateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
                 let plainFileKey = try self.nodes.decryptFileKey(fileKey: fileKey, privateKey: privateKey, password: encryptionPassword)
-                let shareKeyPair = try self.account.generateUserKeyPair(version: keyPairVersion, password: shareEncryptionPassword)
+                let shareKeyPair = try self.account.generateUserKeyPair(version: userKeyPair.publicKeyContainer.version, password: shareEncryptionPassword)
                 let shareFileKey = try self.nodes.encryptFileKey(fileKey: plainFileKey, publicKey: shareKeyPair.publicKeyContainer)
                 let request = CreateDownloadShareRequest(nodeId: nodeId){$0.keyPair = shareKeyPair; $0.fileKey = shareFileKey}
                 self.requestCreateDownloadShare(request: request, completion: completion)

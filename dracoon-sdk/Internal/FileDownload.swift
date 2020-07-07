@@ -177,8 +177,7 @@ public class FileDownload {
             self.callback?.onError?(DracoonError.no_encryption_password)
             return
         }
-        self.account.checkUserKeyPairPassword(password: encryptionPassword, completion: { result in
-            
+        self.account.checkUserKeyPairPassword(version: fileKey.getUserKeyPairVersion() , password: encryptionPassword, completion: { result in
             switch result {
             case .error(let error):
                 self.callback?.onError?(error)

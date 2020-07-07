@@ -654,7 +654,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
         var keyItems = results
         
-        self.account.checkUserKeyPairPassword(password: encryptionPassword, completion: { result in
+        self.account.checkUserKeyPairPassword(version: fileKey.getUserKeyPairVersion(), password: encryptionPassword, completion: { result in
             
             switch result {
             case .error(_):
@@ -710,7 +710,7 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     func createFileKey(version: PlainFileKeyVersion) throws -> PlainFileKey {
-        return try crypto.generateFileKey(version: version.rawValue)
+        return try crypto.generateFileKey(version: version)
     }
     
     

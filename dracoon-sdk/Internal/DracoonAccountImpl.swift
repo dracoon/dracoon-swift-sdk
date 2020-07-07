@@ -47,12 +47,12 @@ class DracoonAccountImpl: DracoonAccount {
     }
     
     func generateUserKeyPair(version: UserKeyPairVersion, password: String) throws -> UserKeyPair {
-        return try crypto.generateUserKeyPair(password: password, version: version.rawValue)
+        return try crypto.generateUserKeyPair(password: password, version: version)
     }
     
     func setUserKeyPair(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         do {
-            let userKeyPair = try crypto.generateUserKeyPair(password: password, version: version.rawValue)
+            let userKeyPair = try crypto.generateUserKeyPair(password: password, version: version)
             let jsonBody = try encoder.encode(userKeyPair)
             
             let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
