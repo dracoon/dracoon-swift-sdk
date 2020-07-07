@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// - Tag: AlgorithmVersionInfoList
 public struct AlgorithmVersionInfoList: Codable {
     
     public var FilekeyAlgorithms: [FileKeyAlgorithm]
