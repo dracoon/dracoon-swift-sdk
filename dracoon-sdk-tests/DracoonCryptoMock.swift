@@ -19,13 +19,13 @@ class DracoonCryptoMock: CryptoProtocol {
     var decryptFileKeyCalled = false
     var encryptFileKeyCalled = false
     
-    func generateUserKeyPair(password: String, version: String) throws -> UserKeyPair {
+    func generateUserKeyPair(password: String, version: UserKeyPairVersion) throws -> UserKeyPair {
         self.generateKeyPairCalled = true
         if let error = testError {
             throw error
         }
-        let publicKey = UserPublicKey(publicKey: "public", version: "test")
-        let privateKey = UserPrivateKey(privateKey: "private", version: "test")
+        let publicKey = UserPublicKey(publicKey: "public", version: .RSA2048)
+        let privateKey = UserPrivateKey(privateKey: "private", version: .RSA2048)
         return UserKeyPair(publicKey: publicKey, privateKey: privateKey)
     }
     
@@ -39,7 +39,7 @@ class DracoonCryptoMock: CryptoProtocol {
         if let error = testError {
             throw error
         }
-        return EncryptedFileKey(key: "encryptedFileKey", version: "test", iv: "iv", tag: "tag")
+        return EncryptedFileKey(key: "encryptedFileKey", version: .RSA2048_AES256GCM, iv: "iv", tag: "tag")
     }
     
     func decryptFileKey(fileKey: EncryptedFileKey, privateKey: UserPrivateKey, password: String) throws -> PlainFileKey {
@@ -50,7 +50,7 @@ class DracoonCryptoMock: CryptoProtocol {
         return CryptoMock.getPlainFileKey()
     }
     
-    func generateFileKey(version: String) throws -> PlainFileKey {
+    func generateFileKey(version: PlainFileKeyVersion) throws -> PlainFileKey {
         if let error = testError {
             throw error
         }

@@ -16,6 +16,7 @@ class DracoonConfigMock: DracoonConfig {
     var generalSettingsResponse: GeneralSettings
     var infrastructurePropertiesResponse: InfrastructureProperties
     var passwordPoliciesResponse: PasswordPoliciesConfig
+    var algoVersionInfoList: AlgorithmVersionInfoList
     
     init() {
         let modelFactory = ResponseModelFactory()
@@ -23,6 +24,7 @@ class DracoonConfigMock: DracoonConfig {
         self.generalSettingsResponse = modelFactory.getTestResponseModel(GeneralSettings.self)!
         self.infrastructurePropertiesResponse = modelFactory.getTestResponseModel(InfrastructureProperties.self)!
         self.passwordPoliciesResponse = modelFactory.getTestResponseModel(PasswordPoliciesConfig.self)!
+        self.algoVersionInfoList = modelFactory.getTestResponseModel(AlgorithmVersionInfoList.self)!
     }
     
     func getSystemDefaults(completion: @escaping DataRequest.DecodeCompletion<SystemDefaults>) {
@@ -54,6 +56,14 @@ class DracoonConfigMock: DracoonConfig {
             completion(Dracoon.Result.error(error))
         } else {
             completion(Dracoon.Result.value((self.passwordPoliciesResponse)))
+        }
+    }
+    
+    func getCryptoAlgorithms(completion: @escaping DataRequest.DecodeCompletion<AlgorithmVersionInfoList>) {
+        if let error = self.error {
+            completion(Dracoon.Result.error(error))
+        } else {
+            completion(Dracoon.Result.value((self.algoVersionInfoList)))
         }
     }
 }
