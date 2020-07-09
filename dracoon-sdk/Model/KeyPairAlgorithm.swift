@@ -13,5 +13,5 @@ public struct KeyPairAlgorithm: Codable {
     
     public var version: UserKeyPairVersion
     public var description: String
-    public var status: String
+    public var status: AlgorithmStatus
 }

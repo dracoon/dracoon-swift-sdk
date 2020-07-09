@@ -11,6 +11,6 @@ import Foundation
 /// - Tag: AlgorithmVersionInfoList
 public struct AlgorithmVersionInfoList: Codable {
     
-    public var FilekeyAlgorithms: [FileKeyAlgorithm]
-    public var KeyPairAlgorithms: [KeyPairAlgorithm]
+    public var filekeyAlgorithms: [FileKeyAlgorithm]
+    public var keyPairAlgorithms: [KeyPairAlgorithm]
 }
