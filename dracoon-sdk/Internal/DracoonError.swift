@@ -33,7 +33,6 @@ public enum DracoonError: Error {
     case keypair_failure(description: String)
     case keypair_decryption_failure
     case keypair_does_not_exist
-    case keypair_version_unknown
     
     case download_not_found
     case upload_not_found
