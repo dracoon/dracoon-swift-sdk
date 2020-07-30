@@ -11,7 +11,7 @@ import crypto_sdk
 
 public class FileDownload {
     
-    var sessionManager: Alamofire.SessionManager
+    var session: Alamofire.Session
     let serverUrl: URL
     let apiPath: String
     let oAuthTokenManager: OAuthInterceptor
@@ -34,12 +34,10 @@ public class FileDownload {
     init(nodeId: Int64, targetUrl: URL, config: DracoonRequestConfig, account: DracoonAccount, nodes: DracoonNodes,
          crypto: CryptoProtocol, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?, getEncryptionPassword: @escaping () -> String?) {
         if let downloadSessionConfig = sessionConfig {
-            let downloadSessionManager = SessionManager(configuration: downloadSessionConfig)
-            downloadSessionManager.retrier = config.sessionManager.retrier
-            downloadSessionManager.adapter = config.sessionManager.adapter
-            self.sessionManager = downloadSessionManager
+            let downloadSession = Session(configuration: downloadSessionConfig, interceptor: config.session.interceptor)
+            self.session = downloadSession
         } else {
-            self.sessionManager = config.sessionManager
+            self.session = config.session
         }
         
         self.serverUrl = config.serverUrl
@@ -80,7 +78,7 @@ public class FileDownload {
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
         urlRequest.httpMethod = HTTPMethod.post.rawValue
         
-        self.sessionManager.request(urlRequest)
+        self.session.request(urlRequest)
             .validate()
             .decode(DownloadTokenGenerateResponse.self, decoder: self.decoder, completion: completion)
         
@@ -104,15 +102,15 @@ public class FileDownload {
     }
     
     fileprivate func download(url: String) {
-        let request = self.sessionManager.download(url, to: { _, _ in
+        let request = self.session.download(url, to: { _, _ in
             return (self.targetUrl, [.removePreviousFile, .createIntermediateDirectories])
-        })
-            .downloadProgress(closure: { (progress) in
+            })
+            request.downloadProgress(closure: { (progress) in
                 self.handleProgress(progress)
             })
-            .response(completionHandler: { downloadResponse in
-                self.handleDownloadResponse(downloadResponse)
-            })
+        request.responseData(completionHandler: { downloadResponse in
+            self.handleDownloadResponse(downloadResponse)
+        })
         self.downloadRequest = request
         self.urlSessionTask = request.task
     }
@@ -145,29 +143,30 @@ public class FileDownload {
         callback?.onProgress?(progress)
     }
     
-    fileprivate func handleDownloadResponse(_ downloadResponse: DefaultDownloadResponse) {
-        if let statusCode = downloadResponse.response?.statusCode, statusCode >= 400 {
-            switch statusCode {
-            case DracoonErrorParser.HTTPStatusCode.FORBIDDEN:
-                if downloadResponse.response?.allHeaderFields["X-Forbidden"] as? String == "403" {
-                    self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: statusCode)))
-                    return
+    fileprivate func handleDownloadResponse(_ downloadResponse: AFDownloadResponse<Data>) {
+        switch downloadResponse.result {
+        case .failure(let error):
+            if let statusCode = downloadResponse.response?.statusCode {
+                switch statusCode {
+                case DracoonErrorParser.HTTPStatusCode.FORBIDDEN:
+                    if downloadResponse.response?.allHeaderFields["X-Forbidden"] as? String == "403" {
+                        self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: statusCode)))
+                        return
+                    }
+                    fallthrough
+                default:
+                    let errorResponse = ModelErrorResponse(code: statusCode, message: nil, debugInfo: nil, errorCode: nil)
+                    let errorCode = DracoonErrorParser.shared.parseApiErrorResponse(errorResponse, requestType: .other)
+                    self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: errorCode, httpStatusCode: statusCode)))
                 }
-                fallthrough
-            default:
-                let errorResponse = ModelErrorResponse(code: statusCode, message: nil, debugInfo: nil, errorCode: nil)
-                let errorCode = DracoonErrorParser.shared.parseApiErrorResponse(errorResponse, requestType: .other)
-                self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: errorCode, httpStatusCode: statusCode)))
+            } else {
+                self.callback?.onError?(error)
             }
-            return
-        }
-        if let error = downloadResponse.error {
-            self.callback?.onError?(error)
-        } else {
+        case .success(_):
             if let fileKey = self.fileKey {
                 self.decryptDownloadedFile(fileKey: fileKey)
             } else {
-                self.callback?.onComplete?(downloadResponse.destinationURL!)
+                self.callback?.onComplete?(downloadResponse.fileURL!)
             }
         }
     }

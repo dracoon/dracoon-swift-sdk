@@ -122,7 +122,7 @@ public class S3FileUpload: FileUpload {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(PresignedUrlList.self, decoder: self.decoder, requestType: .other, completion: completion)
         } catch {
@@ -179,7 +179,7 @@ public class S3FileUpload: FileUpload {
         var headers = HTTPHeaders()
         headers["Content-Type"] = "application/octet-stream"
         
-        let request = self.sessionManager.upload(chunk, to: requestUrl, method: .put, headers: headers)
+        let request = self.session.upload(chunk, to: requestUrl, method: .put, headers: headers)
         
         request.uploadProgress(closure: { progress in
             let recentChunkProgress = Float(progress.fractionCompleted)*Float(chunk.count)
@@ -306,7 +306,7 @@ public class S3FileUpload: FileUpload {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .handleResponse(decoder: self.decoder, completion: completion)
             
@@ -350,7 +350,7 @@ public class S3FileUpload: FileUpload {
     fileprivate func getS3UploadStatus(uploadId: String, completion: @escaping DataRequest.DecodeCompletion<S3FileUploadStatus>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: nil)
+        self.session.request(requestUrl, method: .get, parameters: nil)
             .validate()
             .decode(S3FileUploadStatus.self, decoder: self.decoder, requestType: .other, completion: completion)
     }
@@ -358,7 +358,7 @@ public class S3FileUpload: FileUpload {
     fileprivate func deleteUpload(uploadId: String, completion: @escaping (Dracoon.Response) -> Void) {
            let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
            
-           self.sessionManager.request(requestUrl, method: .delete, parameters: Parameters())
+           self.session.request(requestUrl, method: .delete, parameters: Parameters())
                .validate()
                .handleResponse(decoder: self.decoder, completion: completion)
        }
