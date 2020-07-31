@@ -18,7 +18,7 @@ protocol OAuthInterceptor: RequestInterceptor {
     func setOAuthDelegate(_ delegate: OAuthTokenChangedDelegate?)
     func getAccessToken() -> String?
     func getRefreshToken() -> String?
-    
+    func startOAuthSession(_ session: Session)
 }
 
 class OAuthTokenManager: OAuthInterceptor {
@@ -131,6 +131,10 @@ class OAuthTokenManager: OAuthInterceptor {
         case .accessRefreshToken(_, _, let tokens):
             return tokens.refreshToken
         }
+    }
+    
+    public func startOAuthSession(_ session: Session) {
+        self.getToken(session: session, completion: {_ in})
     }
     
     private func getToken(session: Session, completion: @escaping (RetryResult) -> Void) {

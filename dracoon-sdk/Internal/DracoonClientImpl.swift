@@ -47,6 +47,7 @@ public class DracoonClientImpl: DracoonClient {
                                               oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: trimmedUrl))
         oAuthTokenManager.setOAuthDelegate(oauthCallback)
         let session = Alamofire.Session(configuration: sessionConfiguration, interceptor: oAuthTokenManager)
+        oAuthTokenManager.startOAuthSession(session)
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(Formatter.dracoonFormatter)
