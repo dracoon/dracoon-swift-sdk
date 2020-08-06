@@ -38,8 +38,9 @@ class OAuthTokenManager: OAuthInterceptor {
     }
     
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
-        if urlRequest.allHTTPHeaderFields?.contains(where: { $0.key == DracoonConstants.AUTHORIZATION_HEADER }) ?? false {
+        guard !(urlRequest.allHTTPHeaderFields?.contains(where: { $0.key == DracoonConstants.AUTHORIZATION_HEADER }) ?? false) else {
             completion(.success(urlRequest))
+            return
         }
         
         var accessToken:String?
