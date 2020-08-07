@@ -200,6 +200,6 @@ public class ResponseModelFactory {
     private func getAlgorithmVersionInfoList() -> AlgorithmVersionInfoList {
         let fileKeyAlgos = [FileKeyAlgorithm(version: .RSA2048_AES256GCM, description: "", status: .REQUIRED)]
         let keyPairAlgos = [KeyPairAlgorithm(version: .RSA2048, description: "", status: .REQUIRED)]
-        return AlgorithmVersionInfoList(filekeyAlgorithms: fileKeyAlgos, keyPairAlgorithms: keyPairAlgos)
+        return AlgorithmVersionInfoList(fileKeyAlgorithms: fileKeyAlgos, keyPairAlgorithms: keyPairAlgos)
     }
 }
