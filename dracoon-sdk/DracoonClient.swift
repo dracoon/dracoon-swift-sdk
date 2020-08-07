@@ -66,22 +66,22 @@ public protocol DracoonAccount {
     ///   - completion: Returns the [user's key pair](x-source-tag://UserKeyPairContainer) on success or an error.
     func setUserKeyPair(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
     
-    /// API version up to 4.25.0: Retrieves the user's key pair.
-    /// API version from 4.25.0: Retrieves the user's highest preference key pair.
+    /// API version up to 4.24.0: Retrieves the user's key pair.
+    /// API version from 4.24.0: Retrieves the user's highest preference key pair.
     ///
     /// - Parameter completion: Returns the user's highest preference key pair on success or an error
     func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
     
     /// Retrieves the user's key pair.
-    /// - Requires:  API version from 4.25.0.
+    /// - Requires:  API version from 4.24.0.
     ///
     /// - Parameters:
     ///   - version: The version of the user key pair
     ///   - completion: Returns the user's key pair on success or an error
     func getUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
     
-    /// API version up to 4.25.0: Checks if the user's private key can be decrypted with the provided password.
-    /// API version from 4.25.0: Checks if the private key of the user's highest preference keypair can be decrypted with the provided password.
+    /// API version up to 4.24.0: Checks if the user's private key can be decrypted with the provided password.
+    /// API version from 4.24.0: Checks if the private key of the user's highest preference keypair can be decrypted with the provided password.
     ///
     /// - Parameters:
     ///   - password: The password used to encrypt the private key
@@ -89,7 +89,7 @@ public protocol DracoonAccount {
     func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
     
     /// Checks if the user's private key can be decrypted with the provided password.
-    /// - Requires:  API version from 4.25.0.
+    /// - Requires:  API version from 4.24.0.
     ///
     /// - Parameters:
     ///   - version: The version of the user key pair
@@ -97,14 +97,14 @@ public protocol DracoonAccount {
     ///   - completion: Returns [user's key pair](x-source-tag://UserKeyPairContainer) on success or an error.
     func checkUserKeyPairPassword(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
     
-    /// API version up to 4.25.0: Deletes the user's keypair.
-    /// API version from 4.25.0: Deletes the user's lowest preference keypair.
+    /// API version up to 4.24.0: Deletes the user's keypair.
+    /// API version from 4.24.0: Deletes the user's lowest preference keypair.
     ///
     /// - Parameter completion: Returns an empty response on success or an error.
     func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void)
     
     /// Deletes the user's keypair.
-    /// - Requires:  API version from 4.25.0.
+    /// - Requires:  API version from 4.24.0.
     ///
     /// - Parameters:
     ///   - version: The version of the user key pair
@@ -179,7 +179,7 @@ public protocol DracoonConfig {
     func getPasswordPolicies(completion: @escaping DataRequest.DecodeCompletion<PasswordPoliciesConfig>)
     
     /// Returns a list of available algorithms.
-    /// - Requires: API version from 4.25.0.
+    /// - Requires: API version from 4.24.0.
     ///
     /// - Parameter completion: Returns an [algorithm version list](x-source-tag://AlgorithmVersionInfoList) on success or an error.
     func getCryptoAlgorithms(completion: @escaping DataRequest.DecodeCompletion<AlgorithmVersionInfoList>)

@@ -10,7 +10,7 @@ import Foundation
 
 class ApiVersionCheck {
     
-    public static let CryptoUpdateVersion = "4.25.0"
+    public static let CryptoUpdateVersion = "4.24.0"
     
     public static func isRequiredServerVersion(requiredVersion: String, currentApiVersion: String) -> Bool {
         let serverComponents = currentApiVersion.components(separatedBy: ".")
