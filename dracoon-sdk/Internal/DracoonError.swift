@@ -19,6 +19,7 @@ public enum DracoonError: Error {
     case read_data_failure(at: URL)
     case write_data_failure(at: URL)
     case node_path_invalid(path: String)
+    case url_invalid(url: URL)
     case path_range_invalid
     case node_not_found(path: String)
     case file_does_not_exist(at: URL)

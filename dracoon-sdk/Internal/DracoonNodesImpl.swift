@@ -427,6 +427,10 @@ class DracoonNodesImpl: DracoonNodes {
     // MARK: Download file
     
     func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, sessionConfig: URLSessionConfiguration?) {
+        guard targetUrl.isFileURL else {
+            callback.onError?(DracoonError.url_invalid(url: targetUrl))
+            return
+        }
         self.isNodeEncrypted(nodeId: nodeId, completion: { result in
             switch result {
             case .error(let error):
@@ -477,23 +481,12 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void) {
-        guard let download = self.downloads[nodeId] else {
+        guard self.downloads[nodeId] != nil else {
             completion(DracoonError.download_not_found)
             return
         }
-        guard download.fileKey != nil else {
-            self.downloads.removeValue(forKey: nodeId)
-            completion(nil)
-            return
-        }
-        download.completeEncryptedBackgroundDownload(completion: { error in
-            if let error = error {
-                completion(error)
-            } else {
-                self.downloads.removeValue(forKey: nodeId)
-                completion(nil)
-            }
-        })
+        self.downloads.removeValue(forKey: nodeId)
+        completion(nil)
     }
     
     func resumeBackgroundTasks() {
