@@ -11,12 +11,11 @@ import crypto_sdk
 
 public class S3FileUpload: FileUpload {
     
-    let MAXIMAL_URL_FETCH_COUNT: Int32 = 10
+    let MAX_URL_FETCH_COUNT: Int32 = 10
     
     var s3Urls: [PresignedUrl]?
-    // chunkSize from Constants or 5 MB; 5MB is least S3 chunk size
-    let chunkSize: Int64 = DracoonConstants.UPLOAD_CHUNK_SIZE < 1024*1024*5 ? 1024*1024*5 : Int64(DracoonConstants.UPLOAD_CHUNK_SIZE)
-    var fileSize: Int64 = 0
+    // chunk size from Constants or 5 MB; 5MB is least S3 chunk size
+    let chunkSize: Int64 = DracoonConstants.S3_CHUNK_SIZE < 1024*1024*5 ? 1024*1024*5 : Int64(DracoonConstants.S3_CHUNK_SIZE)
     var neededParts: Int32 = 0
     var lastPartSize: Int64 = 0
     var eTags = [S3FileUploadPart]()
@@ -30,8 +29,8 @@ public class S3FileUpload: FileUpload {
         self.request = s3DirectUploadRequest
         
         self.fileSize = FileUtils.calculateFileSize(filePath: fileUrl) ?? 0
-        self.neededParts = Int32(fileSize/chunkSize)
-        self.lastPartSize = fileSize%chunkSize
+        self.neededParts = Int32(self.fileSize/self.chunkSize)
+        self.lastPartSize = self.fileSize%self.chunkSize
     }
     
     
@@ -77,7 +76,7 @@ public class S3FileUpload: FileUpload {
         let completedParts = Int32(self.eTags.count)
         let remainingParts = self.neededParts - completedParts
         if remainingParts > 0 {
-            let partsToFetch = remainingParts <= MAXIMAL_URL_FETCH_COUNT ? remainingParts : MAXIMAL_URL_FETCH_COUNT
+            let partsToFetch = remainingParts <= MAX_URL_FETCH_COUNT ? remainingParts : MAX_URL_FETCH_COUNT
             let lastPartNumber = completedParts + partsToFetch
             self.requestPresignedUrls(firstPartNumber: completedParts + 1, lastPartNumber: lastPartNumber, size: self.chunkSize, completion: { urlResult in
                 switch urlResult {
@@ -209,7 +208,7 @@ public class S3FileUpload: FileUpload {
     }
     
     fileprivate func handleUploadError(error: Error, url: PresignedUrl, chunk: Data, retryCount: Int, chunkCallback: @escaping (Error?) -> Void) {
-        if retryCount < DracoonConstants.CHUNK_UPLOAD_MAX_RETRIES {
+        if retryCount < DracoonConstants.S3_UPLOAD_MAX_RETRIES {
             self.uploadToPresignedUrl(url, chunk: chunk, retryCount: retryCount + 1, chunkCallback: chunkCallback)
         } else {
             self.callback?.onError?(DracoonError.generic(error: error))

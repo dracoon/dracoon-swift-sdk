@@ -10,7 +10,7 @@ import Alamofire
 import crypto_sdk
 import CommonCrypto
 
-public class FileUpload: DracoonUpload {
+public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
     
     let session: Alamofire.Session
     let serverUrl: URL
@@ -21,24 +21,24 @@ public class FileUpload: DracoonUpload {
     let account: DracoonAccount
     var request: CreateFileUploadRequest
     let resolutionStrategy: CompleteUploadRequest.ResolutionStrategy
-    let fileUrl: URL
+    var fileUrl: URL
     
-    weak var uploadRequest: UploadRequest?
+    var uploadSessionConfig: URLSessionConfiguration?
+    var urlSessionTask: URLSessionTask?
     var encryptedFileKey: EncryptedFileKey?
     var callback: UploadCallback?
     let crypto: CryptoProtocol?
     var isCanceled = false
     var uploadUrl: String?
     
+    var fileSize: Int64 = 0
+    var readData: Int = 0
+    
     init(config: DracoonRequestConfig, request: CreateFileUploadRequest, fileUrl: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
          sessionConfig: URLSessionConfiguration?, account: DracoonAccount) {
         self.request = request
-        if let uploadSessionConfig = sessionConfig {
-            let uploadSession = Session(configuration: uploadSessionConfig, interceptor: config.session.interceptor)
-            self.session = uploadSession
-        } else {
-            self.session = config.session
-        }
+        self.session = config.session
+        self.uploadSessionConfig = sessionConfig
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
         self.oAuthTokenManager = config.oauthTokenManager
@@ -74,7 +74,7 @@ public class FileUpload: DracoonUpload {
             return
         }
         self.isCanceled = true
-        self.uploadRequest?.cancel()
+        self.urlSessionTask?.cancel()
         if let uploadUrl = self.uploadUrl {
             self.deleteUpload(uploadUrl: uploadUrl, completion: { _ in
                 self.callback?.onCanceled?()
@@ -103,26 +103,28 @@ public class FileUpload: DracoonUpload {
         }
     }
     
-    func startChunkedUpload(uploadUrl: String, fileUrl: URL? = nil, encryptedFileKey: EncryptedFileKey? = nil) {
+    func startChunkedUpload(uploadUrl: String, encryptedFileKey: EncryptedFileKey? = nil) {
+        let sessionConfiguration: URLSessionConfiguration
+        if let sessionConfig = self.uploadSessionConfig {
+            sessionConfiguration = sessionConfig
+        } else {
+            sessionConfiguration = self.session.sessionConfiguration
+        }
+        
+        let urlSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
         var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
         urlRequest.httpMethod = HTTPMethod.post.rawValue
         urlRequest.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
-        
-        let uploadRequest = self.session.upload(multipartFormData: { (multipartData) in
-            multipartData.append(fileUrl ?? self.fileUrl, withName: "file")
-            }, with: urlRequest, usingThreshold: UInt64(DracoonConstants.UPLOAD_CHUNK_SIZE))
-        self.uploadRequest = uploadRequest
-        uploadRequest.uploadProgress(closure: { progress in
-            self.callback?.onProgress?(Float(progress.fractionCompleted))
-        })
-        uploadRequest.responseJSON(completionHandler: { response in
-            switch response.result {
-            case .success(_):
-                self.completeUpload(uploadUrl: uploadUrl, encryptedFileKey: encryptedFileKey)
-            case .failure(let error):
-                self.callback?.onError?(DracoonError.generic(error: error))
+        let task = urlSession.uploadTask(with: urlRequest, fromFile: self.fileUrl)
+        if #available(iOS 11.0, *) {
+            let filePath = self.fileUrl.path
+            if let fileSize = try? FileManager.default.attributesOfItem(atPath: filePath)[.size] as? Int64 {
+                task.countOfBytesClientExpectsToSend = fileSize
+                self.fileSize = fileSize
             }
-        })
+        }
+        self.urlSessionTask = task
+        task.resume()
     }
     
     func startEncryptedChunkedUpload(uploadUrl: String) {
@@ -134,7 +136,8 @@ public class FileUpload: DracoonUpload {
                     self.callback?.onError?(error)
                 case .value(let fileKey):
                     self.encryptedFileKey = fileKey
-                    self.startChunkedUpload(uploadUrl: uploadUrl, fileUrl: result.url, encryptedFileKey: fileKey)
+                    self.fileUrl = result.url
+                    self.startChunkedUpload(uploadUrl: uploadUrl, encryptedFileKey: fileKey)
                 }
             })
         } catch {
@@ -248,7 +251,7 @@ public class FileUpload: DracoonUpload {
     }
     
     func resumeBackgroundUpload() {
-        self.uploadRequest?.task?.resume()
+        self.urlSessionTask?.resume()
     }
     
     fileprivate func sendCompleteRequest(uploadUrl: String, request: CompleteUploadRequest, session: Session, completion: @escaping DataRequest.DecodeCompletion<Node>) {
@@ -272,5 +275,20 @@ public class FileUpload: DracoonUpload {
         self.session.request(uploadUrl, method: .delete, parameters: Parameters())
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
+    }
+    
+    // MARK: URLSessionDataDelegate
+    
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if let error = error {
+            self.callback?.onError?(DracoonError.generic(error: error))
+        } else {
+            self.completeUpload(uploadUrl: self.uploadUrl!, encryptedFileKey: self.encryptedFileKey)
+        }
+    }
+    
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        let fractionCompleted = Float(totalBytesSent)/Float(self.fileSize)
+        self.callback?.onProgress?(fractionCompleted)
     }
 }
