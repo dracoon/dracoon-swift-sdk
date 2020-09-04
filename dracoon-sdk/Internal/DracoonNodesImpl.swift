@@ -408,22 +408,6 @@ class DracoonNodesImpl: DracoonNodes {
         self.uploads.removeValue(forKey: uploadId)
     }
     
-    func completeBackgroundUpload(uploadId: String, completion: @escaping (Dracoon.Result<Node>) -> Void) {
-        guard let upload = self.uploads[uploadId], let fileUpload = upload as? FileUpload else {
-            completion(Dracoon.Result.error(DracoonError.upload_not_found))
-            return
-        }
-        fileUpload.completeBackgroundUpload(session: self.session, completionHandler: { result in
-            switch result {
-            case .error(let error):
-                completion(Dracoon.Result.error(error))
-            case .value(let node):
-                self.uploads.removeValue(forKey: uploadId)
-                completion(Dracoon.Result.value(node))
-            }
-        })
-    }
-    
     // MARK: Download file
     
     func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, sessionConfig: URLSessionConfiguration?) {
@@ -478,15 +462,6 @@ class DracoonNodesImpl: DracoonNodes {
         }
         download.cancel()
         self.downloads.removeValue(forKey: nodeId)
-    }
-    
-    func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void) {
-        guard self.downloads[nodeId] != nil else {
-            completion(DracoonError.download_not_found)
-            return
-        }
-        self.downloads.removeValue(forKey: nodeId)
-        completion(nil)
     }
     
     func resumeBackgroundTasks() {

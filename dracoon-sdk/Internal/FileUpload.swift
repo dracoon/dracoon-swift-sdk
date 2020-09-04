@@ -230,26 +230,6 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
         })
     }
     
-    func completeBackgroundUpload(session: Session, completionHandler: @escaping (Dracoon.Result<Node>) -> Void) {
-        guard let uploadUrl = self.uploadUrl else {
-            completionHandler(Dracoon.Result.error(DracoonError.upload_not_found))
-            return
-        }
-        var completeRequest = CompleteUploadRequest()
-        completeRequest.fileName = self.request.name
-        completeRequest.resolutionStrategy = self.resolutionStrategy
-        completeRequest.fileKey = self.encryptedFileKey
-        
-        self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, session: session, completion: { result in
-            switch result {
-            case .value(let node):
-                completionHandler(Dracoon.Result.value(node))
-            case .error(let error):
-                completionHandler(Dracoon.Result.error(error))
-            }
-        })
-    }
-    
     func resumeBackgroundUpload() {
         self.urlSessionTask?.resume()
     }
@@ -284,6 +264,9 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
             self.callback?.onError?(DracoonError.generic(error: error))
         } else {
             self.completeUpload(uploadUrl: self.uploadUrl!, encryptedFileKey: self.encryptedFileKey)
+        }
+        if session.configuration.identifier != nil {
+            session.finishTasksAndInvalidate()
         }
     }
     

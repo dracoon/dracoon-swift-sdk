@@ -319,13 +319,6 @@ public protocol DracoonNodes {
     /// - Parameter uploadId: The ID of the upload to be canceled
     func cancelUpload(uploadId: String)
     
-    /// Completes a file upload that was finished in background.
-    ///
-    /// - Parameters:
-    ///   - uploadId: The ID of the upload to be completed
-    ///   - completion: Returns the new node on success or an error.
-    func completeBackgroundUpload(uploadId: String, completion: @escaping (Dracoon.Result<Node>) -> Void)
-    
     /// Downloads a file.
     ///
     /// - Parameters:
@@ -339,13 +332,6 @@ public protocol DracoonNodes {
     ///
     /// - Parameter nodeId: The ID of the downloaded node
     func cancelDownload(nodeId: Int64)
-    
-    /// Completes a file download that was finished in background.
-    ///
-    /// - Parameters:
-    ///   - nodeId: The ID of the downloaded node
-    ///   - completion: Returns an empty response on success or an error.
-    func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void)
     
     /// Resumes background tasks after application becomes active again
     /// If you started uploads or downloads with a background sessionConfiguration, this needs to be called in [UIApplicationDelegate.applicationDidBecomeActive](https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1622956-applicationdidbecomeactive).

@@ -232,6 +232,9 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
                            task: URLSessionTask,
                            didCompleteWithError error: Error?) {
         self.handleDownloadError(task: task, error: error)
+        if session.configuration.identifier != nil {
+            session.finishTasksAndInvalidate()
+        }
     }
     
     private func handleDownloadError(task: URLSessionTask, error: Error?) {
@@ -263,10 +266,17 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         self.handleDownloadFinished(downloadTask: downloadTask, location: location)
+        if session.configuration.identifier != nil {
+            session.finishTasksAndInvalidate()
+        }
     }
     
     private func handleDownloadFinished(downloadTask: URLSessionDownloadTask, location: URL) {
         self.copyDownloadedFile(from: location, to: self.targetUrl)
+        self.handleDownloadFinished()
+    }
+    
+    public func handleDownloadFinished() {
         if let fileKey = self.fileKey {
             self.decryptDownloadedFile(fileKey: fileKey)
         } else {
