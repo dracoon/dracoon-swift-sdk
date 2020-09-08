@@ -58,10 +58,11 @@ public extension DataRequest {
         })
     }
     
-    private func handleError(error: Error?, urlResponse: HTTPURLResponse?, responseData: Data?, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType) throws -> DracoonError {
-        if error?._code == NSURLErrorTimedOut {
+    private func handleError(error: AFError?, urlResponse: HTTPURLResponse?, responseData: Data?, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType) throws -> DracoonError {
+        let underlyingError = error?.underlyingError
+        if underlyingError?._code == NSURLErrorTimedOut {
             return DracoonError.connection_timeout
-        } else if error?._code == NSURLErrorNotConnectedToInternet {
+        } else if underlyingError?._code == NSURLErrorNotConnectedToInternet {
             return DracoonError.offline
         }
         if let response = urlResponse, response.statusCode == DracoonErrorParser.HTTPStatusCode.FORBIDDEN {
