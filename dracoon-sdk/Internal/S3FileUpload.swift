@@ -355,10 +355,10 @@ public class S3FileUpload: FileUpload {
     }
     
     fileprivate func deleteUpload(uploadId: String, completion: @escaping (Dracoon.Response) -> Void) {
-           let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
-           
-           self.session.request(requestUrl, method: .delete, parameters: Parameters())
-               .validate()
-               .handleResponse(decoder: self.decoder, completion: completion)
-       }
+        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads/\(uploadId)"
+        
+        self.session.request(requestUrl, method: .delete, parameters: Parameters())
+            .validate()
+            .handleResponse(decoder: self.decoder, completion: completion)
+    }
 }

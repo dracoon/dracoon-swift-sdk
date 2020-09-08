@@ -34,15 +34,14 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         let lastUrlModel = PresignedUrlList(urls: [PresignedUrl(url: "https://dracoon.team/1", partNumber: 1)])
         MockURLProtocol.responseWithModel(PresignedUrlList.self, model: lastUrlModel, statusCode: 200)
         // Upload response with eTag header
-        let headers = HTTPHeaders(dictionaryLiteral: ("eTag", "0123456789abc"))
-        let httpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: headers)
-        let s3UploadResponse = DefaultDataResponse(request: nil, response: httpResponse, data: nil, error: nil)
-        
+        let headers = ["eTag" : "0123456789abc"]
+        let httpResponse = HTTPURLResponse(url: URL(string:"https://dracoon2.team")!, statusCode: 200, httpVersion: nil, headerFields: headers)
+        let s3UploadResponse = DataResponse<Any?, AFError>(request: nil, response: httpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil))
         MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
         
         // Complete request reponse
         let completedHttpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-        MockURLProtocol.response(with: DefaultDataResponse(request: nil, response: completedHttpResponse, data: nil, error: nil), statusCode: 200)
+        MockURLProtocol.response(with: DataResponse<Any?, AFError>(request: nil, response: completedHttpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil)), statusCode: 200)
         
         // Poll for node
         self.setResponseModel(S3FileUploadStatus.self, statusCode: 200)
@@ -75,9 +74,9 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         let lastUrlModel = PresignedUrlList(urls: [PresignedUrl(url: "https://dracoon.team/4", partNumber: 4)])
         MockURLProtocol.responseWithModel(PresignedUrlList.self, model: lastUrlModel, statusCode: 200)
         // Upload response with eTag header
-        let headers = HTTPHeaders(dictionaryLiteral: ("eTag", "0123456789abc"))
+        let headers = ["eTag" : "0123456789abc"]
         let httpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: headers)
-        let s3UploadResponse = DefaultDataResponse(request: nil, response: httpResponse, data: nil, error: nil)
+        let s3UploadResponse = DataResponse<Any?, AFError>(request: nil, response: httpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil))
         
         MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
         MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
@@ -86,7 +85,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         
         // Complete request reponse
         let completedHttpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-        MockURLProtocol.response(with: DefaultDataResponse(request: nil, response: completedHttpResponse, data: nil, error: nil), statusCode: 200)
+        MockURLProtocol.response(with: DataResponse<Any?, AFError>(request: nil, response: completedHttpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil)), statusCode: 200)
         
         // Poll for node
         self.setResponseModel(S3FileUploadStatus.self, statusCode: 200)
@@ -119,15 +118,15 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         let lastUrlModel = PresignedUrlList(urls: [PresignedUrl(url: "https://dracoon.team/1", partNumber: 1)])
         MockURLProtocol.responseWithModel(PresignedUrlList.self, model: lastUrlModel, statusCode: 200)
         // Upload response with eTag header
-        let headers = HTTPHeaders(dictionaryLiteral: ("eTag", "0123456789abc"))
+        let headers: [String:String] = ["eTag" : "0123456789abc"]
         let httpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: headers)
-        let s3UploadResponse = DefaultDataResponse(request: nil, response: httpResponse, data: nil, error: nil)
+        let s3UploadResponse = DataResponse<Any?, AFError>(request: nil, response: httpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil))
         
         MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
         
         // Complete request reponse
         let completedHttpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-        MockURLProtocol.response(with: DefaultDataResponse(request: nil, response: completedHttpResponse, data: nil, error: nil), statusCode: 200)
+        MockURLProtocol.response(with: DataResponse<Any?, AFError>(request: nil, response: completedHttpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil)), statusCode: 200)
         
         // Poll for node
         let finishingModel = S3FileUploadStatus(status: S3FileUploadStatus.S3UploadStatus.finishing.rawValue, node: nil, errorDetails: nil)
@@ -163,15 +162,15 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         let lastUrlModel = PresignedUrlList(urls: [PresignedUrl(url: "https://dracoon.team/1", partNumber: 1)])
         MockURLProtocol.responseWithModel(PresignedUrlList.self, model: lastUrlModel, statusCode: 200)
         // Upload response with eTag header
-        let headers = HTTPHeaders(dictionaryLiteral: ("eTag", "0123456789abc"))
+        let headers: [String:String] = ["eTag" : "0123456789abc"]
         let httpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: headers)
-        let s3UploadResponse = DefaultDataResponse(request: nil, response: httpResponse, data: nil, error: nil)
+        let s3UploadResponse = DataResponse<Any?, AFError>(request: nil, response: httpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil))
         
         MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
         
         // Complete request reponse
         let completedHttpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-        MockURLProtocol.response(with: DefaultDataResponse(request: nil, response: completedHttpResponse, data: nil, error: nil), statusCode: 200)
+        MockURLProtocol.response(with: DataResponse<Any?, AFError>(request: nil, response: completedHttpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil)), statusCode: 200)
         
         // Poll for node
         let error = ModelErrorResponse(code: 404, message: "Not Found", debugInfo: nil, errorCode: nil)
@@ -206,15 +205,15 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         let lastUrlModel = PresignedUrlList(urls: [PresignedUrl(url: "https://dracoon.team/1", partNumber: 1)])
         MockURLProtocol.responseWithModel(PresignedUrlList.self, model: lastUrlModel, statusCode: 200)
         // Upload response with eTag header
-        let headers = HTTPHeaders(dictionaryLiteral: ("eTag", "0123456789abc"))
+        let headers: [String:String] = ["eTag" : "0123456789abc"]
         let httpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: headers)
-        let s3UploadResponse = DefaultDataResponse(request: nil, response: httpResponse, data: nil, error: nil)
+        let s3UploadResponse = DataResponse<Any?, AFError>(request: nil, response: httpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil))
         
         MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
         
         // Complete request reponse
         let completedHttpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-        MockURLProtocol.response(with: DefaultDataResponse(request: nil, response: completedHttpResponse, data: nil, error: nil), statusCode: 200)
+        MockURLProtocol.response(with: DataResponse<Any?, AFError>(request: nil, response: completedHttpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil)), statusCode: 200)
         
         // Poll for node
         self.setResponseModel(S3FileUploadStatus.self, statusCode: 200)
@@ -247,14 +246,14 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         let lastUrlModel = PresignedUrlList(urls: [PresignedUrl(url: "https://dracoon.team/1", partNumber: 1)])
         MockURLProtocol.responseWithModel(PresignedUrlList.self, model: lastUrlModel, statusCode: 200)
         // Upload response with eTag header
-        let headers = HTTPHeaders(dictionaryLiteral: ("eTag", "0123456789abc"))
+        let headers: [String:String] = ["eTag" : "0123456789abc"]
         let httpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: headers)
-        let s3UploadResponse = DefaultDataResponse(request: nil, response: httpResponse, data: nil, error: nil)
+        let s3UploadResponse = DataResponse<Any?, AFError>(request: nil, response: httpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil))
         MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
         
         // Complete request reponse
         let completedHttpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-        MockURLProtocol.response(with: DefaultDataResponse(request: nil, response: completedHttpResponse, data: nil, error: nil), statusCode: 200)
+        MockURLProtocol.response(with: DataResponse<Any?, AFError>(request: nil, response: completedHttpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil)), statusCode: 200)
         
         // Poll for node
         self.setResponseModel(S3FileUploadStatus.self, statusCode: 200)
@@ -278,7 +277,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
-        self.testWaiter.wait(for: [expectation], timeout: 8.0)
+        self.testWaiter.wait(for: [expectation], timeout: 15.0)
         XCTAssertTrue(cryptoMock.decryptFileKeyCalled)
         XCTAssertTrue(cryptoMock.encryptFileKeyCalled)
     }
@@ -317,7 +316,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         MockURLProtocol.responseWithModel(PresignedUrlList.self, model: lastUrlModel, statusCode: 200)
         // Upload response without eTag header
         let httpResponse = HTTPURLResponse(url: URL(string:"https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-        let s3UploadResponse = DefaultDataResponse(request: nil, response: httpResponse, data: nil, error: nil)
+        let s3UploadResponse = DataResponse<Any?, AFError>(request: nil, response: httpResponse, data: nil, metrics: nil, serializationDuration: TimeInterval(), result: .success(nil))
         
         MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
         MockURLProtocol.response(with: s3UploadResponse, statusCode: 200)
