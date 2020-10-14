@@ -38,6 +38,12 @@ public enum DracoonError: Error {
     case download_not_found
     case upload_not_found
     
+    /* reason is one of
+     NSURLErrorCancelledReasonUserForceQuitApplication
+     NSURLErrorCancelledReasonBackgroundUpdatesDisabled
+     NSURLErrorCancelledReasonInsufficientSystemResources */
+    case background_download_cancelled(reason: Int, userInfo: [String: Any])
+    
     case authorization_code_flow_in_progress(clientId: String, clientSecret: String, authorizationCode: String)
     case authorization_token_expired
     
