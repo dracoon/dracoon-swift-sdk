@@ -86,7 +86,12 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
     
     func createFileUpload(request: CreateFileUploadRequest, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
         do {
-            let jsonBody = try encoder.encode(request)
+            var createRequest = request
+            if let fileSize = FileUtils.calculateFileSize(filePath: self.fileUrl), fileSize > 0 {
+                self.fileSize = fileSize
+                createRequest.size = fileSize
+            }
+            let jsonBody = try encoder.encode(createRequest)
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads"
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
@@ -110,17 +115,14 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
         } else {
             sessionConfiguration = self.session.sessionConfiguration
         }
-        
         let urlSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
         var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
         urlRequest.httpMethod = HTTPMethod.post.rawValue
         urlRequest.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
         let task = urlSession.uploadTask(with: urlRequest, fromFile: self.fileUrl)
         if #available(iOS 11.0, *) {
-            let filePath = self.fileUrl.path
-            if let fileSize = try? FileManager.default.attributesOfItem(atPath: filePath)[.size] as? Int64 {
+            if self.fileSize > 0 {
                 task.countOfBytesClientExpectsToSend = fileSize
-                self.fileSize = fileSize
             }
         }
         self.urlSessionTask = task
