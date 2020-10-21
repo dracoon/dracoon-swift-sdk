@@ -314,7 +314,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
-        (FileUtils.fileHelper as! FileUtilsMock).size = Int64(DracoonConstants.UPLOAD_CHUNK_SIZE * 2)
+        (FileUtils.fileHelper as! FileUtilsMock).size = Int64(DracoonConstants.ENCRYPTION_BUFFER_SIZE * 2)
         
         let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
         
@@ -326,7 +326,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         }
         
         let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload.file")
-        FileManager.default.createFile(atPath: url.path, contents: Data(count: DracoonConstants.UPLOAD_CHUNK_SIZE * 2), attributes: nil)
+        FileManager.default.createFile(atPath: url.path, contents: Data(count: DracoonConstants.ENCRYPTION_BUFFER_SIZE * 2), attributes: nil)
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
         self.testWaiter.wait(for: [expectation], timeout: 30.0)
@@ -389,7 +389,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         FileManager.default.createFile(atPath: url.path, contents: nil, attributes: nil)
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
-        self.testWaiter.wait(for: [expectation], timeout: 8.0)
+        self.testWaiter.wait(for: [expectation], timeout: 10.0)
         XCTAssertTrue(cryptoMock.decryptFileKeyCalled)
         XCTAssertTrue(cryptoMock.encryptFileKeyCalled)
         try? FileManager.default.removeItem(at: url)
@@ -416,21 +416,19 @@ class DracoonNodesTests: DracoonSdkTestCase {
         let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
-        self.testWaiter.wait(for: [expectation], timeout: 4.0)
+        self.testWaiter.wait(for: [expectation], timeout: 5.0)
         XCTAssertTrue(calledOnError)
     }
     
     // MARK: Download
     
     func testDownload_succeeds_callsOnComplete() {
-        
         self.setResponseModel(Node.self, statusCode: 200)
         self.setResponseModel(DownloadTokenGenerateResponse.self, statusCode: 200)
-        let urlRequest = URLRequest(url: URL(string: "https://dracoon.team")!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval())
-        let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        if #available(iOS 11.0, *) {
+            self.setResponseModel(Node.self, statusCode: 200)
+        }
         let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
-        let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
-        MockURLProtocol.response(with: downloadResponse, statusCode: 200)
         let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
         
@@ -443,7 +441,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.nodes.downloadFile(nodeId: 42, targetUrl: url, callback: callback)
         
-        self.testWaiter.wait(for: [expectation], timeout: 4.0)
+        self.testWaiter.wait(for: [expectation], timeout: 5.0)
         XCTAssertTrue(calledOnComplete)
     }
     
@@ -452,11 +450,10 @@ class DracoonNodesTests: DracoonSdkTestCase {
         self.setResponseModel(Node.self, statusCode: 200)
         let responseModel = DownloadTokenGenerateResponse(downloadUrl: "https://dracoon.team", token: "token")
         MockURLProtocol.responseWithModel(DownloadTokenGenerateResponse.self, model: responseModel, statusCode: 200)
-        let urlRequest = URLRequest(url: URL(string: "https://dracoon.team")!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval())
-        let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        if #available(iOS 11.0, *) {
+            self.setResponseModel(Node.self, statusCode: 200)
+        }
         let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
-        let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
-        MockURLProtocol.response(with: downloadResponse, statusCode: 200)
         let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
         
@@ -469,19 +466,15 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.nodes.downloadFile(nodeId: 42, targetUrl: url, callback: callback)
         
-        self.testWaiter.wait(for: [expectation], timeout: 4.0)
+        self.testWaiter.wait(for: [expectation], timeout: 5.0)
         XCTAssertTrue(calledOnComplete)
     }
     
-    func testDownload_fails_callsOnError() {
-        
-        self.setResponseModel(Node.self, statusCode: 200)
-        self.setResponseModel(DownloadTokenGenerateResponse.self, statusCode: 200)
-        let urlRequest = URLRequest(url: URL(string: "https://dracoon.team")!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval())
-        let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 400, httpVersion: nil, headerFields: nil)
+    func testDownload_tokenGenerationFails_callsOnError() {
         let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
-        let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
-        MockURLProtocol.response(with: downloadResponse, statusCode: 400)
+        self.setResponseModel(Node.self, statusCode: 200)
+        let error = NSError(domain: "SDKTest", code: -10006, userInfo: nil)
+        MockURLProtocol.responseWithError(error, statusCode: 401)
         let expectation = XCTestExpectation(description: "Calls onError")
         var calledOnError = false
         
@@ -494,41 +487,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.nodes.downloadFile(nodeId: 42, targetUrl: url, callback: callback)
         
-        self.testWaiter.wait(for: [expectation], timeout: 4.0)
-        XCTAssertTrue(calledOnError)
-    }
-    
-    func testDownload_maliciousFile_callsOnError() {
-        
-        self.setResponseModel(Node.self, statusCode: 200)
-        self.setResponseModel(DownloadTokenGenerateResponse.self, statusCode: 200)
-        let urlRequest = URLRequest(url: URL(string: "https://dracoon.team")!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval())
-        var headerFields = HTTPHeaders()
-        headerFields["X-Forbidden"] = "403"
-        let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 403, httpVersion: nil, headerFields: headerFields)
-        let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
-        let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
-        MockURLProtocol.response(with: downloadResponse, statusCode: 403)
-        let expectation = XCTestExpectation(description: "Calls onError")
-        var calledOnError = false
-        
-        let callback = DownloadCallback()
-        
-        callback.onError = { error in
-            switch (error as! DracoonError) {
-            case .api(error: let model):
-                if model.errorCode == DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED {
-                    calledOnError = true
-                    expectation.fulfill()
-                }
-            default:
-                break
-            }
-        }
-        
-        self.nodes.downloadFile(nodeId: 42, targetUrl: url, callback: callback)
-        
-        self.testWaiter.wait(for: [expectation], timeout: 4.0)
+        self.testWaiter.wait(for: [expectation], timeout: 5.0)
         XCTAssertTrue(calledOnError)
     }
     
@@ -538,11 +497,10 @@ class DracoonNodesTests: DracoonSdkTestCase {
         MockURLProtocol.responseWithModel(Node.self, model: encryptedNode, statusCode: 200)
         self.setResponseModel(EncryptedFileKey.self, statusCode: 200)
         self.setResponseModel(DownloadTokenGenerateResponse.self, statusCode: 200)
-        let urlRequest = URLRequest(url: URL(string: "https://dracoon.team")!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval())
-        let httpUrlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: 200, httpVersion: nil, headerFields: nil)
+        if #available(iOS 11.0, *) {
+            self.setResponseModel(Node.self, statusCode: 200)
+        }
         let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
-        let downloadResponse = DefaultDownloadResponse(request: urlRequest, response: httpUrlResponse, temporaryURL: url, destinationURL: url, resumeData: nil, error: nil)
-        MockURLProtocol.response(with: downloadResponse, statusCode: 200)
         let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
         

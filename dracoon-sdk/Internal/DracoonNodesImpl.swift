@@ -12,7 +12,7 @@ import crypto_sdk
 class DracoonNodesImpl: DracoonNodes {
     
     let requestConfig: DracoonRequestConfig
-    let sessionManager: Alamofire.SessionManager
+    let session: Alamofire.Session
     let serverUrl: URL
     let apiPath: String
     let oAuthTokenManager: OAuthInterceptor
@@ -28,7 +28,7 @@ class DracoonNodesImpl: DracoonNodes {
     
     init(requestConfig: DracoonRequestConfig, crypto: CryptoProtocol, account: DracoonAccount, config: DracoonConfig, getEncryptionPassword: @escaping () -> String?) {
         self.requestConfig = requestConfig
-        self.sessionManager = requestConfig.sessionManager
+        self.session = requestConfig.session
         self.serverUrl = requestConfig.serverUrl
         self.apiPath = requestConfig.apiPath
         self.oAuthTokenManager = requestConfig.oauthTokenManager
@@ -56,7 +56,7 @@ class DracoonNodesImpl: DracoonNodes {
             parameters["offset"] = offset
         }
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
+        self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(NodeList.self, decoder: self.decoder, requestType: .getNodes, completion: completion)
         
@@ -65,7 +65,7 @@ class DracoonNodesImpl: DracoonNodes {
     func getNode(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<Node>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(String(nodeId))"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
             .decode(Node.self, decoder: self.decoder, requestType: .getNodes, completion: completion)
     }
@@ -91,7 +91,7 @@ class DracoonNodesImpl: DracoonNodes {
             "depth_level": nodeComponents.count
         ]
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
+        self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(NodeList.self, decoder: self.decoder, requestType: .getNodes, completion: { result in
                 switch result {
@@ -140,7 +140,7 @@ class DracoonNodesImpl: DracoonNodes {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(Node.self, decoder: self.decoder, requestType: .createRoom, completion: completion)
             
@@ -161,7 +161,7 @@ class DracoonNodesImpl: DracoonNodes {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(Node.self, decoder: self.decoder, requestType: .updateRoom, completion: completion)
             
@@ -182,7 +182,7 @@ class DracoonNodesImpl: DracoonNodes {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(Node.self, decoder: self.decoder, requestType: .createFolder, completion: completion)
             
@@ -203,7 +203,7 @@ class DracoonNodesImpl: DracoonNodes {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(Node.self, decoder: self.decoder, requestType: .updateFolder, completion: completion)
             
@@ -225,7 +225,7 @@ class DracoonNodesImpl: DracoonNodes {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(Node.self, decoder: self.decoder, requestType: .updateFile, completion: completion)
             
@@ -245,7 +245,7 @@ class DracoonNodesImpl: DracoonNodes {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .handleResponse(decoder: self.decoder, completion: completion)
             
@@ -265,7 +265,7 @@ class DracoonNodesImpl: DracoonNodes {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(Node.self, decoder: self.decoder, requestType: .copyNodes, completion: completion)
             
@@ -285,7 +285,7 @@ class DracoonNodesImpl: DracoonNodes {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(Node.self, decoder: self.decoder, requestType: .moveNodes, completion: completion)
             
@@ -408,25 +408,13 @@ class DracoonNodesImpl: DracoonNodes {
         self.uploads.removeValue(forKey: uploadId)
     }
     
-    func completeBackgroundUpload(uploadId: String, completion: @escaping (Dracoon.Result<Node>) -> Void) {
-        guard let upload = self.uploads[uploadId], let fileUpload = upload as? FileUpload else {
-            completion(Dracoon.Result.error(DracoonError.upload_not_found))
-            return
-        }
-        fileUpload.completeBackgroundUpload(sessionManager: self.sessionManager, completionHandler: { result in
-            switch result {
-            case .error(let error):
-                completion(Dracoon.Result.error(error))
-            case .value(let node):
-                self.uploads.removeValue(forKey: uploadId)
-                completion(Dracoon.Result.value(node))
-            }
-        })
-    }
-    
     // MARK: Download file
     
     func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, sessionConfig: URLSessionConfiguration?) {
+        guard targetUrl.isFileURL else {
+            callback.onError?(DracoonError.url_invalid(url: targetUrl))
+            return
+        }
         self.isNodeEncrypted(nodeId: nodeId, completion: { result in
             switch result {
             case .error(let error):
@@ -476,26 +464,6 @@ class DracoonNodesImpl: DracoonNodes {
         self.downloads.removeValue(forKey: nodeId)
     }
     
-    func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void) {
-        guard let download = self.downloads[nodeId] else {
-            completion(DracoonError.download_not_found)
-            return
-        }
-        guard download.fileKey != nil else {
-            self.downloads.removeValue(forKey: nodeId)
-            completion(nil)
-            return
-        }
-        download.completeEncryptedBackgroundDownload(completion: { error in
-            if let error = error {
-                completion(error)
-            } else {
-                self.downloads.removeValue(forKey: nodeId)
-                completion(nil)
-            }
-        })
-    }
-    
     func resumeBackgroundTasks() {
         for download in self.downloads.values {
             download.resumeFromBackground()
@@ -525,7 +493,7 @@ class DracoonNodesImpl: DracoonNodes {
         
         parameters["search_string"] = searchString
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
+        self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(NodeList.self, decoder: self.decoder, requestType: .searchNodes, completion: completion)
         
@@ -551,7 +519,7 @@ class DracoonNodesImpl: DracoonNodes {
             parameters["filter"] = filter
         }
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
+        self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(NodeList.self, decoder: self.decoder, requestType: .searchNodes, completion: completion)
     }
@@ -564,7 +532,7 @@ class DracoonNodesImpl: DracoonNodes {
         parameters["depth_level"] = "-1"
         parameters["filter"] = "isFavorite:eq:true"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
+        self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(NodeList.self, decoder: self.decoder, completion: completion)
     }
@@ -572,7 +540,7 @@ class DracoonNodesImpl: DracoonNodes {
     func setFavorite(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<Node>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(nodeId)/favorite"
         
-        self.sessionManager.request(requestUrl, method: .post)
+        self.session.request(requestUrl, method: .post)
             .validate()
             .decode(Node.self, decoder: self.decoder, completion: completion)
     }
@@ -580,7 +548,7 @@ class DracoonNodesImpl: DracoonNodes {
     func removeFavorite(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(nodeId)/favorite"
         
-        self.sessionManager.request(requestUrl, method: .delete)
+        self.session.request(requestUrl, method: .delete)
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
     }
@@ -604,7 +572,7 @@ class DracoonNodesImpl: DracoonNodes {
             parameters["offset"] = offset
         }
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
+        self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(MissingKeysResponse.self, decoder: self.decoder, requestType: .getMissingFileKeys, completion: completion)
         
@@ -701,7 +669,7 @@ class DracoonNodesImpl: DracoonNodes {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .handleResponse(decoder: self.decoder, completion: completion)
         } catch {
@@ -717,7 +685,7 @@ class DracoonNodesImpl: DracoonNodes {
     func getFileKey(nodeId: Int64, completion: @escaping (Dracoon.Result<EncryptedFileKey>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/\(String(nodeId))/user_file_key"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
             .decode(EncryptedFileKey.self, decoder: self.decoder, completion: completion)
     }

@@ -48,13 +48,9 @@ class DracoonNodesMock: DracoonNodes {
     
     func cancelUpload(uploadId: String) {}
     
-    func completeBackgroundUpload(uploadId: String, completion: @escaping (Dracoon.Result<Node>) -> Void) {}
-    
     func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, sessionConfig: URLSessionConfiguration?) {}
     
     func cancelDownload(nodeId: Int64) {}
-    
-    func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void) {}
     
     func resumeBackgroundTasks() {}
     

@@ -10,9 +10,9 @@ import Alamofire
 import crypto_sdk
 import CommonCrypto
 
-public class FileUpload: DracoonUpload {
+public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
     
-    let sessionManager: Alamofire.SessionManager
+    let session: Alamofire.Session
     let serverUrl: URL
     let apiPath: String
     let oAuthTokenManager: OAuthInterceptor
@@ -21,26 +21,24 @@ public class FileUpload: DracoonUpload {
     let account: DracoonAccount
     var request: CreateFileUploadRequest
     let resolutionStrategy: CompleteUploadRequest.ResolutionStrategy
-    let fileUrl: URL
+    var fileUrl: URL
     
-    weak var uploadRequest: UploadRequest?
+    var uploadSessionConfig: URLSessionConfiguration?
+    var urlSessionTask: URLSessionTask?
     var encryptedFileKey: EncryptedFileKey?
     var callback: UploadCallback?
     let crypto: CryptoProtocol?
     var isCanceled = false
     var uploadUrl: String?
     
+    var fileSize: Int64 = 0
+    var readData: Int = 0
+    
     init(config: DracoonRequestConfig, request: CreateFileUploadRequest, fileUrl: URL, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, crypto: CryptoProtocol?,
          sessionConfig: URLSessionConfiguration?, account: DracoonAccount) {
         self.request = request
-        if let uploadSessionConfig = sessionConfig {
-            let uploadSessionManager = SessionManager(configuration: uploadSessionConfig)
-            uploadSessionManager.retrier = config.sessionManager.retrier
-            uploadSessionManager.adapter = config.sessionManager.adapter
-            self.sessionManager = uploadSessionManager
-        } else {
-            self.sessionManager = config.sessionManager
-        }
+        self.session = config.session
+        self.uploadSessionConfig = sessionConfig
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
         self.oAuthTokenManager = config.oauthTokenManager
@@ -76,7 +74,7 @@ public class FileUpload: DracoonUpload {
             return
         }
         self.isCanceled = true
-        self.uploadRequest?.cancel()
+        self.urlSessionTask?.cancel()
         if let uploadUrl = self.uploadUrl {
             self.deleteUpload(uploadUrl: uploadUrl, completion: { _ in
                 self.callback?.onCanceled?()
@@ -96,7 +94,7 @@ public class FileUpload: DracoonUpload {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(CreateFileUploadResponse.self, decoder: self.decoder, requestType: .createUpload, completion: completion)
             
@@ -105,32 +103,28 @@ public class FileUpload: DracoonUpload {
         }
     }
     
-    func startChunkedUpload(uploadUrl: String, fileUrl: URL? = nil, encryptedFileKey: EncryptedFileKey? = nil) {
+    func startChunkedUpload(uploadUrl: String, encryptedFileKey: EncryptedFileKey? = nil) {
+        let sessionConfiguration: URLSessionConfiguration
+        if let sessionConfig = self.uploadSessionConfig {
+            sessionConfiguration = sessionConfig
+        } else {
+            sessionConfiguration = self.session.sessionConfiguration
+        }
+        
+        let urlSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
         var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
         urlRequest.httpMethod = HTTPMethod.post.rawValue
         urlRequest.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
-        
-        self.sessionManager.upload(multipartFormData: { (multipartData) in
-            multipartData.append(fileUrl ?? self.fileUrl, withName: "file")
-        }, usingThreshold: UInt64(DracoonConstants.UPLOAD_CHUNK_SIZE), with: urlRequest, encodingCompletion: { encodingResult in
-            switch (encodingResult) {
-            case .success(let request, _, _):
-                self.uploadRequest = request
-                request.uploadProgress(closure: { (progress) in
-                    self.callback?.onProgress?(Float(progress.fractionCompleted))
-                })
-                request.responseJSON(completionHandler: { response in
-                    switch response.result {
-                    case .success(_):
-                        self.completeUpload(uploadUrl: uploadUrl, encryptedFileKey: encryptedFileKey)
-                    case .failure(let error):
-                        self.callback?.onError?(DracoonError.generic(error: error))
-                    }
-                })
-            case .failure(let error):
-                self.callback?.onError?(DracoonError.generic(error: error))
+        let task = urlSession.uploadTask(with: urlRequest, fromFile: self.fileUrl)
+        if #available(iOS 11.0, *) {
+            let filePath = self.fileUrl.path
+            if let fileSize = try? FileManager.default.attributesOfItem(atPath: filePath)[.size] as? Int64 {
+                task.countOfBytesClientExpectsToSend = fileSize
+                self.fileSize = fileSize
             }
-        })
+        }
+        self.urlSessionTask = task
+        task.resume()
     }
     
     func startEncryptedChunkedUpload(uploadUrl: String) {
@@ -142,7 +136,8 @@ public class FileUpload: DracoonUpload {
                     self.callback?.onError?(error)
                 case .value(let fileKey):
                     self.encryptedFileKey = fileKey
-                    self.startChunkedUpload(uploadUrl: uploadUrl, fileUrl: result.url, encryptedFileKey: fileKey)
+                    self.fileUrl = result.url
+                    self.startChunkedUpload(uploadUrl: uploadUrl, encryptedFileKey: fileKey)
                 }
             })
         } catch {
@@ -225,7 +220,7 @@ public class FileUpload: DracoonUpload {
         completeRequest.resolutionStrategy = self.resolutionStrategy
         completeRequest.fileKey = encryptedFileKey
         
-        self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, sessionManager: self.sessionManager, completion: { result in
+        self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, session: self.session, completion: { result in
             switch result {
             case .value(let node):
                 self.callback?.onComplete?(node)
@@ -235,31 +230,11 @@ public class FileUpload: DracoonUpload {
         })
     }
     
-    func completeBackgroundUpload(sessionManager: SessionManager, completionHandler: @escaping (Dracoon.Result<Node>) -> Void) {
-        guard let uploadUrl = self.uploadUrl else {
-            completionHandler(Dracoon.Result.error(DracoonError.upload_not_found))
-            return
-        }
-        var completeRequest = CompleteUploadRequest()
-        completeRequest.fileName = self.request.name
-        completeRequest.resolutionStrategy = self.resolutionStrategy
-        completeRequest.fileKey = self.encryptedFileKey
-        
-        self.sendCompleteRequest(uploadUrl: uploadUrl, request: completeRequest, sessionManager: sessionManager, completion: { result in
-            switch result {
-            case .value(let node):
-                completionHandler(Dracoon.Result.value(node))
-            case .error(let error):
-                completionHandler(Dracoon.Result.error(error))
-            }
-        })
-    }
-    
     func resumeBackgroundUpload() {
-        self.uploadRequest?.task?.resume()
+        self.urlSessionTask?.resume()
     }
     
-    fileprivate func sendCompleteRequest(uploadUrl: String, request: CompleteUploadRequest, sessionManager: SessionManager, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    fileprivate func sendCompleteRequest(uploadUrl: String, request: CompleteUploadRequest, session: Session, completion: @escaping DataRequest.DecodeCompletion<Node>) {
         do {
             let jsonBody = try encoder.encode(request)
             var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
@@ -267,7 +242,7 @@ public class FileUpload: DracoonUpload {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            sessionManager.request(urlRequest)
+            session.request(urlRequest)
                 .validate()
                 .decode(Node.self, decoder: self.decoder, completion: completion)
             
@@ -277,8 +252,26 @@ public class FileUpload: DracoonUpload {
     }
     
     func deleteUpload(uploadUrl: String, completion: @escaping (Dracoon.Response) -> Void) {
-        self.sessionManager.request(uploadUrl, method: .delete, parameters: Parameters())
+        self.session.request(uploadUrl, method: .delete, parameters: Parameters())
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
+    }
+    
+    // MARK: URLSessionDataDelegate
+    
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if let error = error {
+            self.callback?.onError?(DracoonError.generic(error: error))
+        } else {
+            self.completeUpload(uploadUrl: self.uploadUrl!, encryptedFileKey: self.encryptedFileKey)
+        }
+        if session.configuration.identifier != nil {
+            session.finishTasksAndInvalidate()
+        }
+    }
+    
+    public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        let fractionCompleted = Float(totalBytesSent)/Float(self.fileSize)
+        self.callback?.onProgress?(fractionCompleted)
     }
 }

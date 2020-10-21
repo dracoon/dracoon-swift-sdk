@@ -20,15 +20,15 @@ final class MockURLProtocol: URLProtocol {
     }()
     
     override class func canInit(with request: URLRequest) -> Bool {
-    return true
+        return true
     }
     
     override class func canonicalRequest(for request: URLRequest) -> URLRequest {
-    return request
+        return request
     }
     
     override class func requestIsCacheEquivalent(_ a: URLRequest, to b: URLRequest) -> Bool {
-    return false
+        return false
     }
     
     override func startLoading() {
@@ -53,11 +53,21 @@ extension MockURLProtocol: URLSessionDataDelegate {
         } else if let data = MockURLProtocol.responseData.peek() as? Data {
             _ = MockURLProtocol.responseData.poll()
             client?.urlProtocol(self, didLoad: data)
-        } else if let downloadResponse = MockURLProtocol.responseData.peek() as? DefaultDownloadResponse {
-            client?.urlProtocol(self, didReceive: downloadResponse.response!, cacheStoragePolicy: .notAllowed)
+        } else if let downloadResponse = MockURLProtocol.responseData.peek() as? DownloadResponse<Any?, AFError> {
+            switch downloadResponse.result {
+            case .success(_):
+                client?.urlProtocol(self, didReceive: downloadResponse.response!, cacheStoragePolicy: .notAllowed)
+            case .failure(let error):
+                client?.urlProtocol(self, didFailWithError: error)
+            }
             _ = MockURLProtocol.responseData.poll()
-        } else if let dataResponse = MockURLProtocol.responseData.peek() as? DefaultDataResponse, let httpResponse = dataResponse.response {
-            client?.urlProtocol(self, didReceive: httpResponse, cacheStoragePolicy: .notAllowed)
+        } else if let dataResponse = MockURLProtocol.responseData.peek() as? DataResponse<Any?, AFError>, let httpResponse = dataResponse.response {
+            switch dataResponse.result {
+            case .success(_):
+                client?.urlProtocol(self, didReceive: httpResponse, cacheStoragePolicy: .notAllowed)
+            case .failure(let error):
+                client?.urlProtocol(self, didFailWithError: error)
+            }
             _ = MockURLProtocol.responseData.poll()
         } else {
             let urlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: MockURLProtocol.statusCodes.poll()!, httpVersion: nil, headerFields: nil)!
@@ -65,7 +75,6 @@ extension MockURLProtocol: URLSessionDataDelegate {
         }
         client?.urlProtocolDidFinishLoading(self)
     }
-    
 }
 
 extension MockURLProtocol {

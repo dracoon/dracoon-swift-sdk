@@ -25,13 +25,15 @@ class OAuthTokenManagerMock: OAuthInterceptor {
         self.delegate = delegate
     }
     
-    func adapt(_ urlRequest: URLRequest) throws -> URLRequest {
-        return urlRequest
+    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+        completion(Result.success(urlRequest))
     }
     
-    func should(_ manager: SessionManager, retry request: Request, with error: Error, completion: @escaping RequestRetryCompletion) {
-        completion(false, TimeInterval())
+    func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        completion(.doNotRetry)
     }
+    
+    func startOAuthSession(_ session: Session) {}
     
     func getAccessToken() -> String? {
         return "accessToken"

@@ -17,11 +17,11 @@ class OAuthClientMock: OAuthClient {
         self.serverUrl = serverUrl
     }
     
-    func getAccessToken(clientId: String, clientSecret: String, code: String, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>) {
+    func getAccessToken(session: Session, clientId: String, clientSecret: String, code: String, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>) {
         completion(Dracoon.Result.value(OAuthTokens(access_token: "accessToken", token_type: "test", refresh_token: "refreshToken", expires_in: TimeInterval(), scope: "scope")))
     }
     
-    func refreshAccessToken(clientId: String, clientSecret: String, refreshToken: String, delegate: OAuthTokenChangedDelegate?, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>) {
+    func refreshAccessToken(session: Session, clientId: String, clientSecret: String, refreshToken: String, delegate: OAuthTokenChangedDelegate?, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>) {
         completion(Dracoon.Result.value(OAuthTokens(access_token: "accessToken", token_type: "test", refresh_token: "refreshToken", expires_in: TimeInterval(), scope: "scope")))
     }
     

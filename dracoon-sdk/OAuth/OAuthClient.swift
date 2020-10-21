@@ -13,9 +13,9 @@ public protocol OAuthClient {
     
     var serverUrl: URL { get }
     
-    func getAccessToken(clientId: String, clientSecret: String, code: String, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>)
+    func getAccessToken(session: Session, clientId: String, clientSecret: String, code: String, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>)
     
-    func refreshAccessToken(clientId: String, clientSecret: String, refreshToken: String, delegate: OAuthTokenChangedDelegate?, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>)
+    func refreshAccessToken(session: Session, clientId: String, clientSecret: String, refreshToken: String, delegate: OAuthTokenChangedDelegate?, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>)
 }
 
 class OAuthClientImpl: OAuthClient {
@@ -23,15 +23,12 @@ class OAuthClientImpl: OAuthClient {
     let serverUrl: URL
     
     private let decoder = JSONDecoder()
-    private let sessionManager: Alamofire.SessionManager
     
-    
-    init(serverUrl: URL, sessionManager: Alamofire.SessionManager) {
+    init(serverUrl: URL) {
         self.serverUrl = serverUrl
-        self.sessionManager = sessionManager
     }
     
-    func getAccessToken(clientId: String, clientSecret: String, code: String, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>) {
+    func getAccessToken(session: Session, clientId: String, clientSecret: String, code: String, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>) {
         let requestUrl = serverUrl.absoluteString + OAuthConstants.OAUTH_PATH + OAuthConstants.OAUTH_TOKEN_PATH
         
         let parameters: Parameters = [
@@ -43,12 +40,12 @@ class OAuthClientImpl: OAuthClient {
             DracoonConstants.AUTHORIZATION_HEADER: OAuthHelper.createBasicAuthorizationString(clientId: clientId, clientSecret: clientSecret)
         ]
         
-        sessionManager.request(requestUrl, method: .post, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
+        session.request(requestUrl, method: .post, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
             .validate()
             .decode(OAuthTokens.self, decoder: decoder, completion: completion)
     }
     
-    func refreshAccessToken(clientId: String, clientSecret: String, refreshToken: String, delegate: OAuthTokenChangedDelegate?, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>) {
+    func refreshAccessToken(session: Session, clientId: String, clientSecret: String, refreshToken: String, delegate: OAuthTokenChangedDelegate?, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>) {
         
         let requestUrl = serverUrl.absoluteString + OAuthConstants.OAUTH_PATH + OAuthConstants.OAUTH_TOKEN_PATH
         
@@ -61,7 +58,7 @@ class OAuthClientImpl: OAuthClient {
             DracoonConstants.AUTHORIZATION_HEADER: OAuthHelper.createBasicAuthorizationString(clientId: clientId, clientSecret: clientSecret)
         ]
         
-        sessionManager.request(requestUrl, method: .post, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
+        session.request(requestUrl, method: .post, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
             .validate()
             .decode(OAuthTokens.self, decoder: decoder, completion: completion)
     }

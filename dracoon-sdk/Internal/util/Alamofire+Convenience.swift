@@ -28,11 +28,12 @@ public extension DataRequest {
     func decode<D: Decodable>(_ type: D.Type, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType = .other, completion: @escaping DecodeCompletion<D>) {
         self.responseData(completionHandler: { dataResponse in
             do {
-                if dataResponse.result.isSuccess {
-                    let success = try decoder.decode(type, from: dataResponse.result.value!)
+                switch dataResponse.result {
+                case .success(let data):
+                    let success = try decoder.decode(type, from: data)
                     completion(Result.value(success))
-                } else {
-                    let error = try self.handleError(error: dataResponse.error, urlResponse: dataResponse.response,
+                case .failure(let error):
+                    let error = try self.handleError(error: error, urlResponse: dataResponse.response,
                                                      responseData: dataResponse.data, decoder: decoder, requestType: requestType)
                     completion(Result.error(error))
                 }
@@ -57,10 +58,11 @@ public extension DataRequest {
         })
     }
     
-    private func handleError(error: Error?, urlResponse: HTTPURLResponse?, responseData: Data?, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType) throws -> DracoonError {
-        if error?._code == NSURLErrorTimedOut {
+    private func handleError(error: AFError?, urlResponse: HTTPURLResponse?, responseData: Data?, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType) throws -> DracoonError {
+        let underlyingError = error?.underlyingError
+        if underlyingError?._code == NSURLErrorTimedOut {
             return DracoonError.connection_timeout
-        } else if error?._code == NSURLErrorNotConnectedToInternet {
+        } else if underlyingError?._code == NSURLErrorNotConnectedToInternet {
             return DracoonError.offline
         }
         if let response = urlResponse, response.statusCode == DracoonErrorParser.HTTPStatusCode.FORBIDDEN {

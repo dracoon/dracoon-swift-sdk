@@ -11,7 +11,7 @@ import crypto_sdk
 
 class DracoonSharesImpl: DracoonShares {
     
-    let sessionManager: Alamofire.SessionManager
+    let session: Alamofire.Session
     let serverUrl: URL
     let apiPath: String
     let oAuthTokenManager: OAuthInterceptor
@@ -23,7 +23,7 @@ class DracoonSharesImpl: DracoonShares {
     let getEncryptionPassword: () -> String?
     
     init(requestConfig: DracoonRequestConfig, nodes: DracoonNodes, account: DracoonAccount, server: DracoonServer, getEncryptionPassword: @escaping () -> String?) {
-        self.sessionManager = requestConfig.sessionManager
+        self.session = requestConfig.session
         self.serverUrl = requestConfig.serverUrl
         self.apiPath = requestConfig.apiPath
         self.oAuthTokenManager = requestConfig.oauthTokenManager
@@ -118,7 +118,7 @@ class DracoonSharesImpl: DracoonShares {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(DownloadShare.self, decoder: self.decoder, requestType: .createDLShare, completion: completion)
             
@@ -134,7 +134,7 @@ class DracoonSharesImpl: DracoonShares {
             "filter" : "nodeId:eq:\(nodeId)"
         ]
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
+        self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(DownloadShareList.self, decoder: self.decoder, completion: completion)
         
@@ -143,7 +143,7 @@ class DracoonSharesImpl: DracoonShares {
     func getDownloadShareQrCode(shareId: Int64, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/downloads/\(shareId)/qr"
         
-        self.sessionManager.request(requestUrl, method: .get)
+        self.session.request(requestUrl, method: .get)
             .validate()
             .decode(DownloadShare.self, decoder: self.decoder, completion: completion)
     }
@@ -159,7 +159,7 @@ class DracoonSharesImpl: DracoonShares {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(DownloadShare.self, decoder: self.decoder, requestType: .createDLShare, completion: completion)
         } catch {
@@ -173,7 +173,7 @@ class DracoonSharesImpl: DracoonShares {
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
         urlRequest.httpMethod = HTTPMethod.delete.rawValue
         
-        self.sessionManager.request(urlRequest)
+        self.session.request(urlRequest)
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
     }
@@ -194,7 +194,7 @@ class DracoonSharesImpl: DracoonShares {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(UploadShare.self, decoder: self.decoder, requestType: .createULShare, completion: completion)
             
@@ -210,7 +210,7 @@ class DracoonSharesImpl: DracoonShares {
             "filter" : "targetId:eq:\(nodeId)"
         ]
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: parameters)
+        self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(UploadShareList.self, decoder: self.decoder, completion: completion)
     }
@@ -218,7 +218,7 @@ class DracoonSharesImpl: DracoonShares {
     func getUploadShareQrCode(shareId: Int64, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/uploads/\(shareId)/qr"
         
-        self.sessionManager.request(requestUrl, method: .get)
+        self.session.request(requestUrl, method: .get)
             .validate()
             .decode(UploadShare.self, decoder: self.decoder, completion: completion)
     }
@@ -234,7 +234,7 @@ class DracoonSharesImpl: DracoonShares {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(UploadShare.self, decoder: self.decoder, requestType: .createULShare, completion: completion)
         } catch {
@@ -248,7 +248,7 @@ class DracoonSharesImpl: DracoonShares {
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
         urlRequest.httpMethod = HTTPMethod.delete.rawValue
         
-        self.sessionManager.request(urlRequest)
+        self.session.request(urlRequest)
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
     }
