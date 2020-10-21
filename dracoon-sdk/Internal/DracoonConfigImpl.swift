@@ -10,13 +10,13 @@ import Alamofire
 
 class DracoonConfigImpl: DracoonConfig {
     
-    let sessionManager: Alamofire.SessionManager
+    let session: Alamofire.Session
     let serverUrl: URL
     let apiPath: String
     let decoder: JSONDecoder
     
     init(config: DracoonRequestConfig) {
-        self.sessionManager = config.sessionManager
+        self.session = config.session
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
         self.decoder = config.decoder
@@ -25,7 +25,7 @@ class DracoonConfigImpl: DracoonConfig {
     func getSystemDefaults(completion: @escaping DataRequest.DecodeCompletion<SystemDefaults>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/defaults"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
             .decode(SystemDefaults.self, decoder: self.decoder, completion: completion)
     }
@@ -33,7 +33,7 @@ class DracoonConfigImpl: DracoonConfig {
     func getGeneralSettings(completion: @escaping DataRequest.DecodeCompletion<GeneralSettings>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/general"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
             .decode(GeneralSettings.self, decoder: self.decoder, completion: completion)
     }
@@ -41,7 +41,7 @@ class DracoonConfigImpl: DracoonConfig {
     func getInfrastructureProperties(completion: @escaping DataRequest.DecodeCompletion<InfrastructureProperties>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/infrastructure"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
             .decode(InfrastructureProperties.self, decoder: self.decoder, completion: completion)
     }
@@ -49,8 +49,16 @@ class DracoonConfigImpl: DracoonConfig {
     func getPasswordPolicies(completion: @escaping DataRequest.DecodeCompletion<PasswordPoliciesConfig>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/policies/passwords"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
         .validate()
         .decode(PasswordPoliciesConfig.self, decoder: self.decoder, completion: completion)
+    }
+    
+    func getCryptoAlgorithms(completion: @escaping DataRequest.DecodeCompletion<AlgorithmVersionInfoList>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/policies/algorithms"
+        
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
+        .validate()
+        .decode(AlgorithmVersionInfoList.self, decoder: self.decoder, completion: completion)
     }
 }

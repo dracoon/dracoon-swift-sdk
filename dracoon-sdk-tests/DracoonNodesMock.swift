@@ -25,7 +25,7 @@ class DracoonNodesMock: DracoonNodes {
     }
     
     func getFileKey(nodeId: Int64, completion: @escaping (Dracoon.Result<EncryptedFileKey>) -> Void) {
-        completion(Dracoon.Result.value(EncryptedFileKey(key: "encryptedFileKey", version: "test", iv: "iv", tag: "tag")))
+        completion(Dracoon.Result.value(EncryptedFileKey(key: "encryptedFileKey", version: .RSA2048_AES256GCM, iv: "iv", tag: "tag")))
     }
     
     func createRoom(request: CreateRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {}
@@ -48,13 +48,9 @@ class DracoonNodesMock: DracoonNodes {
     
     func cancelUpload(uploadId: String) {}
     
-    func completeBackgroundUpload(uploadId: String, completion: @escaping (Dracoon.Result<Node>) -> Void) {}
-    
     func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, sessionConfig: URLSessionConfiguration?) {}
     
     func cancelDownload(nodeId: Int64) {}
-    
-    func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void) {}
     
     func resumeBackgroundTasks() {}
     
@@ -68,7 +64,7 @@ class DracoonNodesMock: DracoonNodes {
     
     func removeFavorite(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void) {}
     
-    func createFileKey(version: String) throws -> PlainFileKey {
+    func createFileKey(version: PlainFileKeyVersion) throws -> PlainFileKey {
         return CryptoMock.getPlainFileKey()
     }
     
@@ -77,7 +73,12 @@ class DracoonNodesMock: DracoonNodes {
     }
     
     func encryptFileKey(fileKey: PlainFileKey, publicKey: UserPublicKey) throws -> EncryptedFileKey {
-        return EncryptedFileKey(key: "encryptedFileKey", version: "test", iv: "iv", tag: "tag")
+        switch publicKey.version {
+        case .RSA2048:
+            return EncryptedFileKey(key: "encryptedFileKey", version: .RSA2048_AES256GCM, iv: "iv", tag: "tag")
+        case .RSA4096:
+            return EncryptedFileKey(key: "encryptedFileKey", version: .RSA4096_AES256GCM, iv: "iv", tag: "tag")
+        }
     }
     
     

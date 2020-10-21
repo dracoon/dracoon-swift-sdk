@@ -18,7 +18,7 @@ class DracoonSharesTests: DracoonSdkTestCase {
     override func setUp() {
         super.setUp()
         
-        self.shares = DracoonSharesImpl(config: requestConfig, nodes: DracoonNodesMock(), account: DracoonAccountMock(), getEncryptionPassword: {
+        self.shares = DracoonSharesImpl(requestConfig: requestConfig, nodes: DracoonNodesMock(), account: DracoonAccountMock(), server: DracoonServerMock(), getEncryptionPassword: {
             return "encryptionPassword"
         })
     }

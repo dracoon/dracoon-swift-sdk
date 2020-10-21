@@ -19,6 +19,7 @@ public enum DracoonError: Error {
     case read_data_failure(at: URL)
     case write_data_failure(at: URL)
     case node_path_invalid(path: String)
+    case url_invalid(url: URL)
     case path_range_invalid
     case node_not_found(path: String)
     case file_does_not_exist(at: URL)
@@ -33,8 +34,15 @@ public enum DracoonError: Error {
     case keypair_failure(description: String)
     case keypair_decryption_failure
     case keypair_does_not_exist
+    
     case download_not_found
     case upload_not_found
+    
+    /* reason is one of
+     NSURLErrorCancelledReasonUserForceQuitApplication
+     NSURLErrorCancelledReasonBackgroundUpdatesDisabled
+     NSURLErrorCancelledReasonInsufficientSystemResources */
+    case background_download_cancelled(reason: Int, userInfo: [String: Any])
     
     case authorization_code_flow_in_progress(clientId: String, clientSecret: String, authorizationCode: String)
     case authorization_token_expired

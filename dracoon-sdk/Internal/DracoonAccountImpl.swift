@@ -11,7 +11,7 @@ import crypto_sdk
 
 class DracoonAccountImpl: DracoonAccount {
     
-    let sessionManager: Alamofire.SessionManager
+    let session: Alamofire.Session
     let serverUrl: URL
     let apiPath: String
     let oAuthTokenManager: OAuthInterceptor
@@ -20,7 +20,7 @@ class DracoonAccountImpl: DracoonAccount {
     let crypto: CryptoProtocol
     
     init(config: DracoonRequestConfig, crypto: CryptoProtocol) {
-        self.sessionManager = config.sessionManager
+        self.session = config.session
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
         self.oAuthTokenManager = config.oauthTokenManager
@@ -32,7 +32,7 @@ class DracoonAccountImpl: DracoonAccount {
     func getUserAccount(completion: @escaping (Dracoon.Result<UserAccount>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
             .decode(UserAccount.self, decoder: self.decoder, completion: completion)
         
@@ -41,18 +41,18 @@ class DracoonAccountImpl: DracoonAccount {
     func getCustomerAccount(completion: @escaping (Dracoon.Result<CustomerData>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/customer"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
             .decode(CustomerData.self, decoder: self.decoder, completion: completion)
     }
     
-    func generateUserKeyPair(password: String) throws -> UserKeyPair {
-        return try crypto.generateUserKeyPair(password: password, version: CryptoConstants.DEFAULT_VERSION)
+    func generateUserKeyPair(version: UserKeyPairVersion, password: String) throws -> UserKeyPair {
+        return try crypto.generateUserKeyPair(password: password, version: version)
     }
     
-    func setUserKeyPair(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+    func setUserKeyPair(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         do {
-            let userKeyPair = try crypto.generateUserKeyPair(password: password, version: CryptoConstants.DEFAULT_VERSION)
+            let userKeyPair = try crypto.generateUserKeyPair(password: password, version: version)
             let jsonBody = try encoder.encode(userKeyPair)
             
             let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
@@ -62,7 +62,7 @@ class DracoonAccountImpl: DracoonAccount {
             urlRequest.httpBody = jsonBody
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .response(completionHandler: { response in
                     if let error = response.error {
@@ -81,10 +81,21 @@ class DracoonAccountImpl: DracoonAccount {
         }
     }
     
+    func getUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        let parameters: Parameters = [
+            "version" : "\(version.rawValue)"
+        ]
+        self.sendGetUserKeyPairRequest(parameters: parameters, completion: completion)
+    }
+    
     func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        self.sendGetUserKeyPairRequest(parameters: Parameters(), completion: completion)
+    }
+    
+    private func sendGetUserKeyPairRequest(parameters: [String : Any], completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(UserKeyPair.self, decoder: self.decoder, completion: { result in
                 switch result {
@@ -101,34 +112,48 @@ class DracoonAccountImpl: DracoonAccount {
             })
     }
     
-    func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
-        self.getUserKeyPair(completion: { result in
-            
-            switch result {
-            case .error(let error):
-                completion(Dracoon.Result.error(error))
-            case .value(let userKeyPair):
-                let userPublicKey = UserPublicKey(publicKey: userKeyPair.publicKeyContainer.publicKey, version: userKeyPair.publicKeyContainer.version)
-                let userPrivateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
-                let keyPair = UserKeyPair(publicKey: userPublicKey, privateKey: userPrivateKey)
-                if self.crypto.checkUserKeyPair(keyPair: keyPair, password: password) {
-                    completion(Dracoon.Result.value(userKeyPair))
-                } else {
-                    completion(Dracoon.Result.error(DracoonError.keypair_decryption_failure))
-                }
-                
-            }
-            
+    func checkUserKeyPairPassword(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        self.getUserKeyPair(version: version, completion: { result in
+            self.handleCheckUserKeyPairResponse(result: result, password: password, completion: completion)
         })
     }
     
+    func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        self.getUserKeyPair(completion: { result in
+            self.handleCheckUserKeyPairResponse(result: result, password: password, completion: completion)
+        })
+    }
+    
+    private func handleCheckUserKeyPairResponse(result: Dracoon.Result<UserKeyPairContainer>, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        switch result {
+        case .error(let error):
+            completion(Dracoon.Result.error(error))
+        case .value(let userKeyPair):
+            let userPublicKey = UserPublicKey(publicKey: userKeyPair.publicKeyContainer.publicKey, version: userKeyPair.publicKeyContainer.version)
+            let userPrivateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
+            let keyPair = UserKeyPair(publicKey: userPublicKey, privateKey: userPrivateKey)
+            if self.crypto.checkUserKeyPair(keyPair: keyPair, password: password) {
+                completion(Dracoon.Result.value(userKeyPair))
+            } else {
+                completion(Dracoon.Result.error(DracoonError.keypair_decryption_failure))
+            }
+        }
+    }
+    
+    func deleteUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Response) -> Void) {
+        let parameters: Parameters = [
+            "version" : "\(version.rawValue)"
+        ]
+        self.sendDeleteUserKeyPairRequest(parameters: parameters, completion: completion)
+    }
+    
     func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void) {
+        self.sendDeleteUserKeyPairRequest(parameters: Parameters(), completion: completion)
+    }
+    
+    private func sendDeleteUserKeyPairRequest(parameters: [String : Any], completion: @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
-        
-        var urlRequest = URLRequest(url: URL(string: requestUrl)!)
-        urlRequest.httpMethod = HTTPMethod.delete.rawValue
-        
-        self.sessionManager.request(urlRequest)
+        self.session.request(requestUrl, method: .delete, parameters: parameters)
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
     }
@@ -136,7 +161,7 @@ class DracoonAccountImpl: DracoonAccount {
     func getUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/avatar"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
             .decode(Avatar.self, decoder: self.decoder, completion: completion)
     }
@@ -151,7 +176,7 @@ class DracoonAccountImpl: DracoonAccount {
                 var request = URLRequest(url: downloadUrl)
                 request.addValue("application/octet-stream", forHTTPHeaderField: "Accept")
                 
-                self.sessionManager
+                self.session
                     .download(request, to: { _, _ in
                         return (targetUrl, [.removePreviousFile, .createIntermediateDirectories])
                     })
@@ -181,26 +206,25 @@ class DracoonAccountImpl: DracoonAccount {
         request.httpMethod = HTTPMethod.post.rawValue
         request.addValue("multipart/formdata", forHTTPHeaderField: "Content-Type")
         
-        self.sessionManager.upload(multipartFormData: { formdata in
-            formdata.append(data, withName: "file", fileName: "file.name", mimeType: "application/octet-stream")
-            
-        }, with: request, encodingCompletion: { result in
-            switch result {
+        let uploadRequest = self.session.upload(multipartFormData: { formData in
+            formData.append(data, withName: "file", fileName: "file.name", mimeType: "application/octet-stream")
+        }, with: request)
+        uploadRequest.response(completionHandler: { response in
+            switch response.result {
+            case .success(_):
+                uploadRequest.validate()
+                uploadRequest.decode(Avatar.self, decoder: self.decoder, completion: completion)
             case .failure(let error):
                 let dracoonError = DracoonError.generic(error: error)
                 completion(Dracoon.Result.error(dracoonError))
-            case .success(let request, _, _):
-                request.validate()
-                request.decode(Avatar.self, decoder: self.decoder, completion: completion)
             }
-        })
-        
+            })
     }
     
     func deleteUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/avatar"
         
-        self.sessionManager.request(requestUrl, method: .delete, parameters: Parameters())
+        self.session.request(requestUrl, method: .delete, parameters: Parameters())
             .validate()
             .decode(Avatar.self, decoder: self.decoder, completion: completion)
     }
@@ -208,7 +232,7 @@ class DracoonAccountImpl: DracoonAccount {
     func getProfileAttributes(completion: @escaping (Dracoon.Result<AttributesResponse>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/profileAttributes"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
             .decode(AttributesResponse.self, decoder: self.decoder, completion: completion)
     }
@@ -224,7 +248,7 @@ class DracoonAccountImpl: DracoonAccount {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(ProfileAttributes.self, decoder: self.decoder, completion: completion)
             
@@ -243,7 +267,7 @@ class DracoonAccountImpl: DracoonAccount {
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
         urlRequest.httpMethod = HTTPMethod.delete.rawValue
         
-        self.sessionManager.request(urlRequest)
+        self.session.request(urlRequest)
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
     }

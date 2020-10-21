@@ -6,17 +6,16 @@
 //
 
 import Foundation
-
-
+import crypto_sdk
 
 public struct PublicKeyContainer: Codable {
 
     /** Version */
-    public var version: String
+    public var version: UserKeyPairVersion
     /** Public key */
     public var publicKey: String
 
-    public init(publicKey: String, version: String) {
+    public init(publicKey: String, version: UserKeyPairVersion) {
         self.publicKey = publicKey
         self.version = version
     }

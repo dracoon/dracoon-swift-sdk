@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 struct DracoonRequestConfig {
-    let sessionManager: Alamofire.SessionManager
+    let session: Alamofire.Session
     let serverUrl: URL
     let apiPath: String
     let oauthTokenManager: OAuthInterceptor

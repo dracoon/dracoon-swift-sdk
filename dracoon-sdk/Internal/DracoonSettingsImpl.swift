@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 class DracoonSettingsImpl: DracoonSettings {
-    let sessionManager: Alamofire.SessionManager
+    let session: Alamofire.Session
     let serverUrl: URL
     let apiPath: String
     let oAuthTokenManager: OAuthInterceptor
@@ -17,7 +17,7 @@ class DracoonSettingsImpl: DracoonSettings {
     let encoder: JSONEncoder
     
     init(config: DracoonRequestConfig) {
-        self.sessionManager = config.sessionManager
+        self.session = config.session
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
         self.oAuthTokenManager = config.oauthTokenManager
@@ -28,7 +28,7 @@ class DracoonSettingsImpl: DracoonSettings {
     func getServerSettings(completion: @escaping (Dracoon.Result<CustomerSettingsResponse>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/settings"
         
-        self.sessionManager.request(requestUrl, method: .get, parameters: Parameters())
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
             .decode(CustomerSettingsResponse.self, decoder: self.decoder, completion: completion)
     }
@@ -45,7 +45,7 @@ class DracoonSettingsImpl: DracoonSettings {
             urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
-            self.sessionManager.request(urlRequest)
+            self.session.request(urlRequest)
                 .validate()
                 .decode(CustomerSettingsResponse.self, decoder: self.decoder, completion: completion)
             

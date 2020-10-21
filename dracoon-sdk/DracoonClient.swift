@@ -51,34 +51,65 @@ public protocol DracoonAccount {
     
     /// Generates a RSA keypair. See [Crypto SDK](https://github.com/dracoon/dracoon-swift-crypto-sdk) for more information.
     ///
-    /// - Parameter password: The password used to encrypt the private key
+    /// - Parameters:
+    ///     - version: The version of the user key pair
+    ///     - password: The password used to encrypt the private key
     /// - Returns: The generated keypair
     /// - Throws: CryptoError if an error occured during key pair generation
-    func generateUserKeyPair(password: String) throws -> UserKeyPair
+    func generateUserKeyPair(version: UserKeyPairVersion, password: String) throws -> UserKeyPair
     
     /// Generates and sets the user's encryption key pair. See [Crypto SDK](https://github.com/dracoon/dracoon-swift-crypto-sdk) for more information.
     ///
     /// - Parameters:
+    ///   - version: The version of the user key pair
     ///   - password: The password used to encrypt the private key
     ///   - completion: Returns the [user's key pair](x-source-tag://UserKeyPairContainer) on success or an error.
-    func setUserKeyPair(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
+    func setUserKeyPair(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
     
-    /// Retrieves the user's key pair.
+    /// API version up to 4.24.0: Retrieves the user's key pair.
+    /// API version from 4.24.0: Retrieves the user's highest preference key pair.
     ///
-    /// - Parameter completion: Returns the user's key pair on success or an error
+    /// - Parameter completion: Returns the user's highest preference key pair on success or an error
     func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
     
-    /// Checks if the user's private key can be decrypted with the provided password.
+    /// Retrieves the user's key pair.
+    /// - Requires:  API version from 4.24.0.
+    ///
+    /// - Parameters:
+    ///   - version: The version of the user key pair
+    ///   - completion: Returns the user's key pair on success or an error
+    func getUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
+    
+    /// API version up to 4.24.0: Checks if the user's private key can be decrypted with the provided password.
+    /// API version from 4.24.0: Checks if the private key of the user's highest preference keypair can be decrypted with the provided password.
     ///
     /// - Parameters:
     ///   - password: The password used to encrypt the private key
     ///   - completion: Returns [user's key pair](x-source-tag://UserKeyPairContainer) on success or an error.
     func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
     
-    /// Deletes the user's keypair.
+    /// Checks if the user's private key can be decrypted with the provided password.
+    /// - Requires:  API version from 4.24.0.
+    ///
+    /// - Parameters:
+    ///   - version: The version of the user key pair
+    ///   - password: The password used to encrypt the private key
+    ///   - completion: Returns [user's key pair](x-source-tag://UserKeyPairContainer) on success or an error.
+    func checkUserKeyPairPassword(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void)
+    
+    /// API version up to 4.24.0: Deletes the user's keypair.
+    /// API version from 4.24.0: Deletes the user's lowest preference keypair.
     ///
     /// - Parameter completion: Returns an empty response on success or an error.
     func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Deletes the user's keypair.
+    /// - Requires:  API version from 4.24.0.
+    ///
+    /// - Parameters:
+    ///   - version: The version of the user key pair
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Response) -> Void)
     
     /// Retrieves the user's avatar.
     ///
@@ -141,10 +172,17 @@ public protocol DracoonConfig {
     /// - Parameter completion: Returns [infrastructure properties](x-source-tag://InfrastructureProperties) on success or an error.
     func getInfrastructureProperties(completion: @escaping DataRequest.DecodeCompletion<InfrastructureProperties>)
     
-    /// Returns the server's password policies. [Requires API Version >= 4.14.0]
+    /// Returns the server's password policies.
+    /// - Requires: API version from 4.14.0.
     ///
     /// - Parameter completion: Returns [password policies](x-source-tag://PasswordPoliciesConfig) on success or an error.
     func getPasswordPolicies(completion: @escaping DataRequest.DecodeCompletion<PasswordPoliciesConfig>)
+    
+    /// Returns a list of available algorithms.
+    /// - Requires: API version from 4.24.0.
+    ///
+    /// - Parameter completion: Returns an [algorithm version list](x-source-tag://AlgorithmVersionInfoList) on success or an error.
+    func getCryptoAlgorithms(completion: @escaping DataRequest.DecodeCompletion<AlgorithmVersionInfoList>)
 }
 
 public protocol DracoonUsers {}
@@ -281,13 +319,6 @@ public protocol DracoonNodes {
     /// - Parameter uploadId: The ID of the upload to be canceled
     func cancelUpload(uploadId: String)
     
-    /// Completes a file upload that was finished in background.
-    ///
-    /// - Parameters:
-    ///   - uploadId: The ID of the upload to be completed
-    ///   - completion: Returns the new node on success or an error.
-    func completeBackgroundUpload(uploadId: String, completion: @escaping (Dracoon.Result<Node>) -> Void)
-    
     /// Downloads a file.
     ///
     /// - Parameters:
@@ -301,13 +332,6 @@ public protocol DracoonNodes {
     ///
     /// - Parameter nodeId: The ID of the downloaded node
     func cancelDownload(nodeId: Int64)
-    
-    /// Completes a file download that was finished in background.
-    ///
-    /// - Parameters:
-    ///   - nodeId: The ID of the downloaded node
-    ///   - completion: Returns an empty response on success or an error.
-    func completeBackgroundDownload(nodeId: Int64, completion: @escaping (DracoonError?) -> Void)
     
     /// Resumes background tasks after application becomes active again
     /// If you started uploads or downloads with a background sessionConfiguration, this needs to be called in [UIApplicationDelegate.applicationDidBecomeActive](https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1622956-applicationdidbecomeactive).
@@ -370,7 +394,7 @@ public protocol DracoonNodes {
     /// - Parameter version: The crypto version to be used
     /// - Returns: The plain key
     /// - Throws: CryptoError if an error occured during key generation
-    func createFileKey(version: String) throws -> PlainFileKey
+    func createFileKey(version: PlainFileKeyVersion) throws -> PlainFileKey
     
     /// Decrypts a FileKey. See [Crypto SDK](https://github.com/dracoon/dracoon-swift-crypto-sdk) for more information.
     ///

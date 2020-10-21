@@ -18,8 +18,9 @@ public struct SoftwareVersionData: Codable {
     public var buildDate: Date
     /** Revision number */
     public var scmRevisionNumber: String?
-
-
+    /** Determines if the DRACOON Core is deployed in the cloud environment.
+     [Since version 4.24.0] */
+    public var isDracoonCloud: Bool?
 
 }
 

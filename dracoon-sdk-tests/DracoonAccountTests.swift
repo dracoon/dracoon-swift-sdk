@@ -147,7 +147,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
     
     func testGenerateUserKeyPair_returnsUserKeyPair() {
         
-        let keyPair = try? self.account.generateUserKeyPair(password: "")
+        let keyPair = try? self.account.generateUserKeyPair(version: .RSA2048, password: "")
         
         XCTAssertNotNil(keyPair)
     }
@@ -156,7 +156,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
         
         (self.crypto as! DracoonCryptoMock).testError = DracoonError.keypair_failure(description: "test")
         
-        XCTAssertThrowsError(try self.account.generateUserKeyPair(password: ""))
+        XCTAssertThrowsError(try self.account.generateUserKeyPair(version: .RSA2048, password: ""))
     }
     
     // MARK: SetUserKeyPair
@@ -167,7 +167,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
         let expectation = XCTestExpectation(description: "Returns UserKeyPair")
         var calledValue = false
         
-        self.account.setUserKeyPair(password: "", completion: { result in
+        self.account.setUserKeyPair(version: .RSA2048, password: "", completion: { result in
             switch result {
             case.error(_):
                 break
@@ -190,7 +190,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
         let expectation = XCTestExpectation(description: "Returns error")
         var calledError = false
         
-        self.account.setUserKeyPair(password: "", completion: { result in
+        self.account.setUserKeyPair(version: .RSA2048, password: "", completion: { result in
             switch result {
             case.error(_):
                 calledError = true

@@ -43,21 +43,18 @@ public class DracoonClientImpl: DracoonClient {
             trimmedUrl = serverUrl
         }
         
-        let sessionManager = Alamofire.SessionManager(configuration: sessionConfiguration)
-        
         oAuthTokenManager = OAuthTokenManager(authMode: authMode,
-                                              oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: trimmedUrl, sessionManager: sessionManager))
+                                              oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: trimmedUrl))
         oAuthTokenManager.setOAuthDelegate(oauthCallback)
-        
-        sessionManager.retrier = oAuthTokenManager
-        sessionManager.adapter = oAuthTokenManager
+        let session = Alamofire.Session(configuration: sessionConfiguration, interceptor: oAuthTokenManager)
+        oAuthTokenManager.startOAuthSession(session)
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(Formatter.dracoonFormatter)
         let encoder = JSONEncoder()
         let crypto = Crypto()
         
-        let requestConfig = DracoonRequestConfig(sessionManager: sessionManager, serverUrl: trimmedUrl, apiPath: DracoonConstants.API_PATH, oauthTokenManager: oAuthTokenManager, encoder: encoder, decoder: decoder)
+        let requestConfig = DracoonRequestConfig(session: session, serverUrl: trimmedUrl, apiPath: DracoonConstants.API_PATH, oauthTokenManager: oAuthTokenManager, encoder: encoder, decoder: decoder)
         
         server = DracoonServerImpl(config: requestConfig)
         account = DracoonAccountImpl(config: requestConfig, crypto: crypto)
@@ -66,7 +63,7 @@ public class DracoonClientImpl: DracoonClient {
         groups = NotImplementedYet()
         settings = DracoonSettingsImpl(config: requestConfig)
         nodes = DracoonNodesImpl(requestConfig: requestConfig, crypto: crypto, account: account, config: config, getEncryptionPassword: getEncryptionPassword)
-        shares = DracoonSharesImpl(config: requestConfig, nodes: nodes, account: account, getEncryptionPassword: getEncryptionPassword)
+        shares = DracoonSharesImpl(requestConfig: requestConfig, nodes: nodes, account: account, server: server, getEncryptionPassword: getEncryptionPassword)
     }
     
     let oAuthTokenManager: OAuthInterceptor
