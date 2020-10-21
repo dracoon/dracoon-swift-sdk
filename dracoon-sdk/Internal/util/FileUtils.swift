@@ -60,7 +60,7 @@ class DracoonFileHelper: FileHelper {
     
     func calculateMD5(_ data: Data) -> String {
         var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
-        _ =  data.withUnsafeBytes( { (rawBufferPointer: UnsafeRawBufferPointer) in
+        data.withUnsafeBytes( { (rawBufferPointer: UnsafeRawBufferPointer) in
             let bufferPointer = rawBufferPointer.bindMemory(to: UInt8.self)
             guard let pointer = bufferPointer.baseAddress else {
                 return
