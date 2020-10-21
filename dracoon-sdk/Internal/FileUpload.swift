@@ -65,7 +65,6 @@ public class FileUpload: DracoonUpload {
                 } else {
                     self.startEncryptedChunkedUpload(uploadUrl: response.uploadUrl)
                 }
-                
             case .error(let error):
                 self.callback?.onError?(error)
             }
@@ -155,7 +154,7 @@ public class FileUpload: DracoonUpload {
         var cipher: EncryptionCipher
         if let crypto = self.crypto {
             do {
-                let fileKey = try crypto.generateFileKey(version: CryptoConstants.DEFAULT_VERSION)
+                let fileKey = try crypto.generateFileKey(version: PlainFileKeyVersion.AES256GCM)
                 cipher = try crypto.createEncryptionCipher(fileKey: fileKey)
             } catch {
                 throw DracoonError.encryption_cipher_failure

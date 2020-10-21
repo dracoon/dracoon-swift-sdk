@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import crypto_sdk
 
 /// - Tag: UserKeyPairContainer
 public struct UserKeyPairContainer: Codable {
@@ -20,7 +21,7 @@ public struct UserKeyPairContainer: Codable {
         self.privateKeyContainer = privateKeyContainer
     }
     
-    public init(publicKey: String, publicVersion: String, privateKey: String, privateVersion: String) {
+    public init(publicKey: String, publicVersion: UserKeyPairVersion, privateKey: String, privateVersion: UserKeyPairVersion) {
         self.publicKeyContainer = PublicKeyContainer(publicKey: publicKey,
                                                     version: publicVersion)
          self.privateKeyContainer = PrivateKeyContainer(privateKey: privateKey,

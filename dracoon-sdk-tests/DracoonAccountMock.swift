@@ -45,19 +45,23 @@ class DracoonAccountMock: DracoonAccount {
         }
     }
     
-    func generateUserKeyPair(password: String) throws -> UserKeyPair {
-        let publicKey = UserPublicKey(publicKey: "public", version: "A")
-        let privateKey = UserPrivateKey(privateKey: "private", version: "A")
+    func generateUserKeyPair(version: UserKeyPairVersion, password: String) throws -> UserKeyPair {
+        let publicKey = UserPublicKey(publicKey: "public", version: version)
+        let privateKey = UserPrivateKey(privateKey: "private", version: version)
         return UserKeyPair(publicKey: publicKey, privateKey: privateKey)
     }
     
-    func setUserKeyPair(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
-        self.getUserKeyPair(completion: completion)
+    func setUserKeyPair(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        self.getUserKeyPair(version: version, completion: completion)
     }
     
     func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
-        let userPublicKey = UserPublicKey(publicKey: "publicKey", version: "test")
-        let userPrivateKey = UserPrivateKey(privateKey: "privateKey", version: "test")
+        self.getUserKeyPair(version: .RSA2048, completion: completion)
+    }
+    
+    func getUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        let userPublicKey = UserPublicKey(publicKey: "publicKey", version: version)
+        let userPrivateKey = UserPrivateKey(privateKey: "privateKey", version: version)
         let userKeyPair = UserKeyPair(publicKey: userPublicKey, privateKey: userPrivateKey)
         let container = UserKeyPairContainer(publicKey: userKeyPair.publicKeyContainer.publicKey,
                                              publicVersion: userKeyPair.publicKeyContainer.version,
@@ -67,10 +71,18 @@ class DracoonAccountMock: DracoonAccount {
     }
     
     func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
-        self.getUserKeyPair(completion: completion)
+        self.checkUserKeyPairPassword(version: .RSA2048, password: password, completion: completion)
+    }
+    
+    func checkUserKeyPairPassword(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+        self.getUserKeyPair(version: version, completion: completion)
     }
     
     func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void) {
+        self.deleteUserKeyPair(version: .RSA2048, completion: completion)
+    }
+    
+    func deleteUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Response) -> Void) {
         if let error = self.error {
             completion(Dracoon.Response(error: error))
         } else {
