@@ -224,7 +224,6 @@
 		E05A609F22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05A609E22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift */; };
 		E05A60A122CCCE1200DF7418 /* S3FileUploadPart.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05A60A022CCCE1200DF7418 /* S3FileUploadPart.swift */; };
 		E05A60A322CCDDB400DF7418 /* S3FileUploadStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05A60A222CCDDB400DF7418 /* S3FileUploadStatus.swift */; };
-		E07C89E522A528C900C7139E /* Avatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07C89E422A528C900C7139E /* Avatar.swift */; };
 		E07CF14224B463090046A3E0 /* ApiVersionCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07CF14124B463080046A3E0 /* ApiVersionCheck.swift */; };
 		E07CF14424B4B7210046A3E0 /* DracoonServerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07CF14324B4B7210046A3E0 /* DracoonServerMock.swift */; };
 		E07D1D202456CBE600AAF8CE /* PasswordPoliciesConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07D1D1F2456CBE600AAF8CE /* PasswordPoliciesConfig.swift */; };
@@ -503,7 +502,6 @@
 		E05A609E22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteS3FileUploadRequest.swift; sourceTree = "<group>"; };
 		E05A60A022CCCE1200DF7418 /* S3FileUploadPart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUploadPart.swift; sourceTree = "<group>"; };
 		E05A60A222CCDDB400DF7418 /* S3FileUploadStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUploadStatus.swift; sourceTree = "<group>"; };
-		E07C89E422A528C900C7139E /* Avatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Avatar.swift; sourceTree = "<group>"; };
 		E07CF14124B463080046A3E0 /* ApiVersionCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiVersionCheck.swift; sourceTree = "<group>"; };
 		E07CF14324B4B7210046A3E0 /* DracoonServerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonServerMock.swift; sourceTree = "<group>"; };
 		E07D1D1F2456CBE600AAF8CE /* PasswordPoliciesConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordPoliciesConfig.swift; sourceTree = "<group>"; };
@@ -848,7 +846,6 @@
 				DE52662921AFCF3800050482 /* CustomerSettingsResponse.swift */,
 				DE52662B21AFD09600050482 /* CustomerSettingsRequest.swift */,
 				E0B091E32232868700019D27 /* DracoonSDKErrorModel.swift */,
-				E07C89E622A56B7200C7139E /* Avatar.swift */,
 				E05A609E22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift */,
 				E05A60A022CCCE1200DF7418 /* S3FileUploadPart.swift */,
 				E05A60A222CCDDB400DF7418 /* S3FileUploadStatus.swift */,
@@ -989,7 +986,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1030;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = Dracoon;
 				TargetAttributes = {
 					E00067042057C6CD009CDA70 = {
@@ -1170,7 +1167,6 @@
 				8496F3C2205C0BB6000EE909 /* DracoonSharesImpl.swift in Sources */,
 				E00068132057D0BC009CDA70 /* LogOperation.swift in Sources */,
 				E000685F2057D0BC009CDA70 /* RestoreDeletedNodesRequest.swift in Sources */,
-				E07C89E522A528C900C7139E /* Avatar.swift in Sources */,
 				E09A584E24AE0FD100641838 /* AlgorithmVersionInfoList.swift in Sources */,
 				E0AA72EF2089EE3C001BC290 /* DracoonAccountImpl.swift in Sources */,
 				E000686F2057D0BC009CDA70 /* MoveNodesRequest.swift in Sources */,
@@ -1348,6 +1344,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1410,6 +1407,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
