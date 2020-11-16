@@ -989,7 +989,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1030;
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = Dracoon;
 				TargetAttributes = {
 					E00067042057C6CD009CDA70 = {
