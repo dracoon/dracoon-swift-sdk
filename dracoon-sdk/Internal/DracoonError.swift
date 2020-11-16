@@ -37,6 +37,7 @@ public enum DracoonError: Error {
     
     case download_not_found
     case upload_not_found
+    case upload_failed(statusCode: Int)
     
     /* reason is one of
      NSURLErrorCancelledReasonUserForceQuitApplication
