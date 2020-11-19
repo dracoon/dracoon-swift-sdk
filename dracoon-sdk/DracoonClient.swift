@@ -370,6 +370,36 @@ public protocol DracoonNodes {
     ///   - completion: Returns a [list of nodes](x-source-tag://NodeList) on success or an error.
     func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>)
     
+    /// Get comments for a specific node.
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the node
+    ///   - completion: Returns the [comments](x-source-tag://CommentList) on success or an error.
+    func getComments(for nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<CommentList>)
+    
+    /// Create a comment for a specific node.
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the node
+    ///   - commentText: The text of the comment
+    ///   - completion: Returns the [comment](x-source-tag://Comment) on success or an error.
+    func createComment(for nodeId: Int64, commentText: String, completion: @escaping DataRequest.DecodeCompletion<Comment>)
+    
+    /// Edit the text of an existing comment for a specific node.
+    ///
+    /// - Parameters:
+    ///   - commentId: The ID of the comment
+    ///   - updatedText: The updated text of the comment
+    ///   - completion: Returns the updated [comment](x-source-tag://Comment) on success or an error.
+    func updateComment(commentId: Int64, updatedText: String, completion: @escaping DataRequest.DecodeCompletion<Comment>)
+    
+    /// Delete an existing comment for a specific node.
+    ///
+    /// - Parameters:
+    ///   - commentId: The ID of the comment
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteComment(commentId: Int64, completion: @escaping (Dracoon.Response) -> Void)
+    
     /// Rerieves favorite nodes.
     ///
     /// - Parameter completion: Returns a [list of nodes](x-source-tag://NodeList) on success or an error.

@@ -260,6 +260,10 @@
 		E0AD911D22EA03B300741634 /* DracoonNodesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AD911C22EA03B300741634 /* DracoonNodesTests.swift */; };
 		E0AD911F22EA049300741634 /* DracoonAccountMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0AD911E22EA049300741634 /* DracoonAccountMock.swift */; };
 		E0B091E42232868700019D27 /* DracoonSDKErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B091E32232868700019D27 /* DracoonSDKErrorModel.swift */; };
+		E0B0EC802566BBE9006B2D65 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B0EC7F2566BBE9006B2D65 /* Comment.swift */; };
+		E0B0EC842566BC1D006B2D65 /* CommentList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B0EC832566BC1D006B2D65 /* CommentList.swift */; };
+		E0B0EC8A2566CE64006B2D65 /* CreateNodeCommentRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B0EC892566CE64006B2D65 /* CreateNodeCommentRequest.swift */; };
+		E0B0EC8E2566DA86006B2D65 /* ChangeNodeCommentRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0B0EC8D2566DA86006B2D65 /* ChangeNodeCommentRequest.swift */; };
 		E0C7A13D22CBB2A2003D2141 /* S3FileUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */; };
 		E0C7A13F22CBB44F003D2141 /* DracoonUpload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */; };
 		E0C7A14122CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14022CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift */; };
@@ -541,6 +545,10 @@
 		E0AD911C22EA03B300741634 /* DracoonNodesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonNodesTests.swift; sourceTree = "<group>"; };
 		E0AD911E22EA049300741634 /* DracoonAccountMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonAccountMock.swift; sourceTree = "<group>"; };
 		E0B091E32232868700019D27 /* DracoonSDKErrorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSDKErrorModel.swift; sourceTree = "<group>"; };
+		E0B0EC7F2566BBE9006B2D65 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		E0B0EC832566BC1D006B2D65 /* CommentList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentList.swift; sourceTree = "<group>"; };
+		E0B0EC892566CE64006B2D65 /* CreateNodeCommentRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNodeCommentRequest.swift; sourceTree = "<group>"; };
+		E0B0EC8D2566DA86006B2D65 /* ChangeNodeCommentRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeNodeCommentRequest.swift; sourceTree = "<group>"; };
 		E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUpload.swift; sourceTree = "<group>"; };
 		E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonUpload.swift; sourceTree = "<group>"; };
 		E0C7A14022CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePresignedUrlsRequest.swift; sourceTree = "<group>"; };
@@ -666,8 +674,11 @@
 				E000677F2057D0B1009CDA70 /* BrandingConfig.swift */,
 				E00067822057D0B1009CDA70 /* BrandingServerInfo.swift */,
 				E00067852057D0B1009CDA70 /* ChangeGroupMembersRequest.swift */,
+				E0B0EC8D2566DA86006B2D65 /* ChangeNodeCommentRequest.swift */,
 				E00067892057D0B2009CDA70 /* ChangeUserPasswordRequest.swift */,
 				E000673B2057D0AB009CDA70 /* ChunkUploadResponse.swift */,
+				E0B0EC7F2566BBE9006B2D65 /* Comment.swift */,
+				E0B0EC832566BC1D006B2D65 /* CommentList.swift */,
 				E000673C2057D0AB009CDA70 /* CompleteUploadRequest.swift */,
 				E000678A2057D0B2009CDA70 /* ConfigOptionList.swift */,
 				E000675B2057D0AE009CDA70 /* ConfigRoomRequest.swift */,
@@ -680,6 +691,7 @@
 				E000673D2057D0AC009CDA70 /* CreateFileUploadResponse.swift */,
 				E000678C2057D0B2009CDA70 /* CreateFolderRequest.swift */,
 				E000671F2057D0A9009CDA70 /* CreateGroupRequest.swift */,
+				E0B0EC892566CE64006B2D65 /* CreateNodeCommentRequest.swift */,
 				E000678B2057D0B2009CDA70 /* CreateOAuthClientRequest.swift */,
 				E00067BB2057D0B6009CDA70 /* CreateOpenIdIdpConfigRequest.swift */,
 				E00067302057D0AA009CDA70 /* CreateRoomRequest.swift */,
@@ -1056,6 +1068,7 @@
 				E04862F3243C9C7300EE0617 /* UpdateDownloadShareRequest.swift in Sources */,
 				E00067D72057D0BC009CDA70 /* PendingUserData.swift in Sources */,
 				E00068092057D0BC009CDA70 /* PendingAssignmentsRequest.swift in Sources */,
+				E0B0EC8E2566DA86006B2D65 /* ChangeNodeCommentRequest.swift in Sources */,
 				E00068452057D0BC009CDA70 /* Node.swift in Sources */,
 				E00068712057D0BC009CDA70 /* CreateOpenIdIdpConfigRequest.swift in Sources */,
 				E00067E02057D0BC009CDA70 /* DownloadShareList.swift in Sources */,
@@ -1098,6 +1111,7 @@
 				E00068582057D0BC009CDA70 /* LoginRequest.swift in Sources */,
 				8496F3B120591B16000EE909 /* DracoonClientImpl.swift in Sources */,
 				E00067CA2057D0BC009CDA70 /* UserFileKeyList.swift in Sources */,
+				E0B0EC842566BC1D006B2D65 /* CommentList.swift in Sources */,
 				E000686C2057D0BC009CDA70 /* RoomGroupsDeleteBatchRequest.swift in Sources */,
 				E00068442057D0BC009CDA70 /* Right.swift in Sources */,
 				E00068602057D0BC009CDA70 /* MailServerConfig.swift in Sources */,
@@ -1124,6 +1138,7 @@
 				8496F3B720591D2D000EE909 /* DracoonNodesImpl.swift in Sources */,
 				E00067D22057D0BC009CDA70 /* NewCustomerRequest.swift in Sources */,
 				E01C7A1B20F62DFF00BBC518 /* UploadCallback.swift in Sources */,
+				E0B0EC8A2566CE64006B2D65 /* CreateNodeCommentRequest.swift in Sources */,
 				E00068382057D0BC009CDA70 /* BrandingServerInfo.swift in Sources */,
 				E00068762057D0BC009CDA70 /* CreateUserRequest.swift in Sources */,
 				E00067F92057D0BC009CDA70 /* RadiusConfigUpdateRequest.swift in Sources */,
@@ -1138,6 +1153,7 @@
 				E07D1D222456CCAA00AAF8CE /* LoginPasswordPolicies.swift in Sources */,
 				E000681E2057D0BC009CDA70 /* CustomerData.swift in Sources */,
 				E000683C2057D0BC009CDA70 /* CreateShareUploadChannelRequest.swift in Sources */,
+				E0B0EC802566BBE9006B2D65 /* Comment.swift in Sources */,
 				E0C7A14522CBBE11003D2141 /* PresignedUrl.swift in Sources */,
 				E000682B2057D0BC009CDA70 /* UpdateActiveDirectoryConfigRequest.swift in Sources */,
 				E0D695032382F8EB00D39A42 /* AttributesResponse.swift in Sources */,
