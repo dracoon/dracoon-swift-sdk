@@ -131,7 +131,7 @@ public class ResponseModelFactory {
     }
     
     private func getDownloadShare() -> DownloadShare {
-        let userInfo = UserInfo(_id: 32, displayName: "displayName")
+        let userInfo = UserInfo(_id: 32)
         return DownloadShare(_id: 1337, nodeId: 42, accessKey: "accessKey", notifyCreator: false, cntDownloads: 10, createdAt: Date(), createdBy: userInfo, name: nil, notes: nil, showCreatorName: false, showCreatorUsername: false, isProtected: nil, expireAt: nil, maxDownloads: nil, recipients: nil, smsRecipients: nil, nodePath: nil, dataUrl: nil, isEncrypted: nil)
     }
     
@@ -141,7 +141,7 @@ public class ResponseModelFactory {
     }
     
     private func getUploadShare() -> UploadShare {
-        let userInfo = UserInfo(_id: 32, displayName: "displayName")
+        let userInfo = UserInfo(_id: 32)
         return UploadShare(_id: 1337, targetId: 42, name: "name", isProtected: false, accessKey: "accessKey", notifyCreator: false, createdAt: Date(), createdBy: userInfo, targetPath: nil, expireAt: nil, isEncrypted: false, notes: nil, filesExpiryPeriod: nil, recipients: nil, smsRecipients: nil, cntFiles: nil, cntUploads: nil, showUploadedFiles: false, dataUrl: nil, maxSlots: nil, maxSize: nil)
     }
     
