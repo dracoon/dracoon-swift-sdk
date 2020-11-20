@@ -123,6 +123,15 @@ public protocol DracoonAccount {
     ///   - completion: Returns user avatar on success or an error.
     func downloadUserAvatar(targetUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void)
     
+    /// Downloads the user's avatar.
+    ///
+    /// - Parameters:
+    ///   - userId: The ID of the user
+    ///   - avatarUuid: The ID string of the avatar
+    ///   - targetUrl: URL to which the avatar image will be downloaded.
+    ///   - completion: Returns user avatar on success or an error.
+    func downloadUserAvatar(userId: Int64, avatarUuid: String, targetUrl: URL, completion: @escaping (Dracoon.Response) -> Void)
+    
     /// Updates the user's avatar.
     ///
     /// - Parameters:
