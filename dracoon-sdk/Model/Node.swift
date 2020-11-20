@@ -57,10 +57,13 @@ public struct Node: Codable {
     public var permissions: NodePermissions?
     /** Encryption state */
     public var isEncrypted: Bool?
-    /** Number of direct children (no recursion; for rooms / folders only) */
+    /** [Deprecated since v4.11.0] : Use cntRooms, cntFolders and cntFiles instead
+     Number of direct children (no recursion; for rooms / folders only) */
     public var cntChildren: Int?
     /** Number of deleted versions of this file / folder (for rooms / folders only) */
     public var cntDeletedVersions: Int?
+    /** Returns the number of comments of this node.  [Since version 4.10.0] */
+    public var cntComments: Int?
     /** Is Recycle Bin active (for rooms only) (default: false) */
     public var hasRecycleBin: Bool?
     /** Retention period for deleted nodes in days (Integer between 0 and 9999) */
@@ -85,12 +88,29 @@ public struct Node: Codable {
     public var s3Key: String?
     /** Is activities log active (for rooms only) (default: true) */
     public var hasActivitiesLog: Bool?
-    /** Child nodes list (if requested) (for rooms / folders only) */
+    /** [Deprecated since v4.10.0] Child nodes list (if requested) (for rooms / folders only) */
     public var children: [Node]?
     /** &#x60;DEPRECATED&#x60;: Number of admins (for rooms only) */
     public var cntAdmins: Int?
     /** &#x60;DEPRECATED&#x60;: Number of users (for rooms only) */
     public var cntUsers: Int?
+    /** Time the node was created on external file system [Since version 4.22.0] */
+    public var timestampCreation: Date?
+    /** Time the content of a node was last modified on external file system [Since version 4.22.0] */
+    public var timestampModification: Date?
+    /** Determines whether node is browsable by client (for rooms only) [Since version 4.11.0] */
+    public var isBrowsable: Bool?
+    /** Amount of direct child rooms where this node is the parent node
+     (no recursion; for rooms only) [Since version 4.11.0] */
+    public var cntRooms: Int?
+    /** Amount of direct child folders where this node is the parent node
+     (no recursion; for rooms / folders only) [Since version 4.11.0] */
+    public var cntFolders: Int?
+    /** Amount of direct child files where this node is the parent node
+     (no recursion; for rooms / folders only) [Since version 4.11.0] */
+    public var cntFiles: Int?
+    /** Auth parent room ID [Since version 4.15.0] */
+    public var authParentId: Int64?
 
 
     public enum CodingKeys: String, CodingKey { 
@@ -114,6 +134,7 @@ public struct Node: Codable {
         case isEncrypted
         case cntChildren
         case cntDeletedVersions
+        case cntComments
         case hasRecycleBin
         case recycleBinRetentionPeriod
         case quota
@@ -129,6 +150,11 @@ public struct Node: Codable {
         case children
         case cntAdmins
         case cntUsers
+        case isBrowsable
+        case cntRooms
+        case cntFolders
+        case cntFiles
+        case authParentId
     }
 
 

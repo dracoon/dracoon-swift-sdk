@@ -371,6 +371,7 @@ public protocol DracoonNodes {
     func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>)
     
     /// Get comments for a specific node.
+    /// - Requires:  API version from 4.10.0.
     ///
     /// - Parameters:
     ///   - nodeId: The ID of the node
@@ -378,6 +379,7 @@ public protocol DracoonNodes {
     func getComments(for nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<CommentList>)
     
     /// Create a comment for a specific node.
+    /// - Requires:  API version from 4.10.0.
     ///
     /// - Parameters:
     ///   - nodeId: The ID of the node
@@ -386,6 +388,7 @@ public protocol DracoonNodes {
     func createComment(for nodeId: Int64, commentText: String, completion: @escaping DataRequest.DecodeCompletion<Comment>)
     
     /// Edit the text of an existing comment for a specific node.
+    /// - Requires:  API version from 4.10.0.
     ///
     /// - Parameters:
     ///   - commentId: The ID of the comment
@@ -394,6 +397,7 @@ public protocol DracoonNodes {
     func updateComment(commentId: Int64, updatedText: String, completion: @escaping DataRequest.DecodeCompletion<Comment>)
     
     /// Delete an existing comment for a specific node.
+    /// - Requires:  API version from 4.10.0.
     ///
     /// - Parameters:
     ///   - commentId: The ID of the comment
