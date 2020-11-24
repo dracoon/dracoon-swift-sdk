@@ -14,7 +14,7 @@ public struct Comment: Codable {
     /** Comment ID */
     public var id: Int64
     /** Comment text */
-    public var text: String
+    public var text: String?
     /** Creation date */
     public var createdAt: Date
     /** Created by user info */
