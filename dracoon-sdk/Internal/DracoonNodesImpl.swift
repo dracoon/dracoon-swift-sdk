@@ -557,10 +557,20 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: Comments
     
-    func getComments(for nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<CommentList>) {
+    func getComments(for nodeId: Int64, limit: Int64?, offset: Int64?, completion: @escaping DataRequest.DecodeCompletion<CommentList>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(String(nodeId))/comments"
         
-        self.session.request(requestUrl, method: .get, parameters: Parameters())
+        var parameters = Parameters()
+        
+        if let limit = limit {
+            parameters["limit"] = limit
+        }
+        
+        if let offset = offset {
+            parameters["offset"] = offset
+        }
+        
+        self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
             .decode(CommentList.self, decoder: self.decoder, requestType: .getNodes, completion: completion)
     }

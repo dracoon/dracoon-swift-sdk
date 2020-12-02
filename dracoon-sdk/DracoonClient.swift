@@ -384,8 +384,10 @@ public protocol DracoonNodes {
     ///
     /// - Parameters:
     ///   - nodeId: The ID of the node
+    ///   - limit: Limits the number of returned nodes. Must be positive.
+    ///   - offset: Puts an offset on the returned nodes. Must be 0 or positive.
     ///   - completion: Returns the [comments](x-source-tag://CommentList) on success or an error.
-    func getComments(for nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<CommentList>)
+    func getComments(for nodeId: Int64, limit: Int64?, offset: Int64?, completion: @escaping DataRequest.DecodeCompletion<CommentList>)
     
     /// Create a comment for a specific node.
     /// - Requires:  API version from 4.10.0.
