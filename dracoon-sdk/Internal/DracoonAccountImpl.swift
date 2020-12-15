@@ -181,10 +181,11 @@ class DracoonAccountImpl: DracoonAccount {
                         return (targetUrl, [.removePreviousFile, .createIntermediateDirectories])
                     })
                     .response(completionHandler: { downloadResponse in
-                        if let downloadError = downloadResponse.error {
-                            completion(Dracoon.Result.error(DracoonError.generic(error: downloadError)))
-                        } else {
+                        switch downloadResponse.result {
+                        case .success(_):
                             completion(Dracoon.Result.value(avatar))
+                        case .failure(let error):
+                            completion(Dracoon.Result.error(DracoonError.generic(error: error)))
                         }
                     })
             }
@@ -200,10 +201,11 @@ class DracoonAccountImpl: DracoonAccount {
                 return (targetUrl, [.removePreviousFile, .createIntermediateDirectories])
             })
             .response(completionHandler: { downloadResponse in
-                if let downloadError = downloadResponse.error {
-                    completion(Dracoon.Response(error: DracoonError.generic(error: downloadError)))
-                } else {
+                switch downloadResponse.result {
+                case .success(_):
                     completion(Dracoon.Response(error: nil))
+                case .failure(let error):
+                    completion(Dracoon.Response(error: DracoonError.generic(error: error)))
                 }
             })
     }
