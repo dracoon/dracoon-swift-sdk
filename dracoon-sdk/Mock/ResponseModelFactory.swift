@@ -66,6 +66,10 @@ public class ResponseModelFactory {
             return self.getPasswordPoliciesConfig() as? E
         } else if type == AlgorithmVersionInfoList.self {
             return self.getAlgorithmVersionInfoList() as? E
+        } else if type == Comment.self {
+            return self.getComment() as? E
+        } else if type == CommentList.self {
+            return self.getCommentList() as? E
         }
         return nil
     }
@@ -201,5 +205,15 @@ public class ResponseModelFactory {
         let fileKeyAlgos = [FileKeyAlgorithm(version: .RSA2048_AES256GCM, description: "", status: .REQUIRED)]
         let keyPairAlgos = [KeyPairAlgorithm(version: .RSA2048, description: "", status: .REQUIRED)]
         return AlgorithmVersionInfoList(fileKeyAlgorithms: fileKeyAlgos, keyPairAlgorithms: keyPairAlgos)
+    }
+    
+    private func getComment() -> Comment {
+        return Comment(id: 42, text: "test", createdAt: Date(), createdBy: nil, updatedAt: nil, updatedBy: nil, isChanged: false, isDeleted: false)
+    }
+    
+    private func getCommentList() -> CommentList {
+        let range = ModelRange(offset: 0, limit: 0, total: 1)
+        let items = [self.getComment()]
+        return CommentList(range: range, items: items)
     }
 }
