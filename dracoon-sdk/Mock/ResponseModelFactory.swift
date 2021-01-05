@@ -92,7 +92,7 @@ public class ResponseModelFactory {
     
     private func getNodeList() -> NodeList {
         
-        let range = ModelRange(offset: 0, limit: 0, total: 1)
+        let range = ModelRange(offset: 0, limit: 1, total: 1)
         let nodes = [self.getNode()]
         
         return NodeList(range: range, items: nodes)
@@ -140,7 +140,7 @@ public class ResponseModelFactory {
     }
     
     private func getDownloadShareList() -> DownloadShareList {
-        let range = ModelRange(offset: 0, limit: 0, total: 1)
+        let range = ModelRange(offset: 0, limit: 1, total: 1)
         return DownloadShareList(range: range, items: [self.getDownloadShare()])
     }
     
@@ -150,7 +150,7 @@ public class ResponseModelFactory {
     }
     
     private func getUploadShareList() -> UploadShareList {
-        let range = ModelRange(offset: 0, limit: 0, total: 1)
+        let range = ModelRange(offset: 0, limit: 1, total: 1)
         return UploadShareList(range: range, items: [self.getUploadShare()])
     }
     
@@ -163,7 +163,7 @@ public class ResponseModelFactory {
     }
     
     private func getMissingKeysResponse() -> MissingKeysResponse {
-        let range = ModelRange(offset: 0, limit: 0, total: 1)
+        let range = ModelRange(offset: 0, limit: 1, total: 1)
         let userFileMapping = UserIdFileIdItem(userId: 42, fileId: 1337)
         let userKeyMapping = UserUserPublicKey(_id: 42, publicKeyContainer: UserPublicKey(publicKey: "publicKey", version: .RSA2048))
         let fileKey = FileFileKeys(_id: 1337, fileKeyContainer: EncryptedFileKey(key: "encryptedKey", version: .RSA2048_AES256GCM, iv: "iv", tag: "tag"))
@@ -184,7 +184,7 @@ public class ResponseModelFactory {
     private func getAttributesResponse() -> AttributesResponse {
         let keyValueEntry1 = KeyValueEntry(key: "testKey1", value: "testValue1")
         let keyValueEntry2 = KeyValueEntry(key: "testKey2", value: "testValue2")
-        return AttributesResponse(range: ModelRange(offset: 0, limit: 0, total: 1), items: [keyValueEntry1, keyValueEntry2])
+        return AttributesResponse(range: ModelRange(offset: 0, limit: 2, total: 2), items: [keyValueEntry1, keyValueEntry2])
     }
     
     private func getProfileAttributes() -> ProfileAttributes {
@@ -212,7 +212,7 @@ public class ResponseModelFactory {
     }
     
     private func getCommentList() -> CommentList {
-        let range = ModelRange(offset: 0, limit: 0, total: 1)
+        let range = ModelRange(offset: 0, limit: 1, total: 1)
         let items = [self.getComment()]
         return CommentList(range: range, items: items)
     }
