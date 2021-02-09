@@ -89,7 +89,7 @@ public class ResponseModelFactory {
     private func getNode() -> Node {
         let userInfo = UserInfo(_id: 1338)
         
-        return Node(_id: 1337, type: .room, name: "name", timestampCreation: Date(), timestampModification: Date(), parentId: 42, parentPath: "/root", createdAt: Date(), createdBy: userInfo, updatedAt: Date(), updatedBy: userInfo, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, inheritPermissions: false, isEncrypted: true, encryptionInfo: nil, cntDeletedVersions: 0, cntComments: 0, cntDownloadShares: 0, cntUploadShares: 0, recycleBinRetentionPeriod: 0, hasActivitiesLog: false, quota: nil, isFavorite: true, branchVersion: nil, mediaToken: nil, isBrowsable: true, cntRooms: 0, cntFolders: 1, cntFiles: 5, authParentId: nil, cntChildren: 6, hasRecycleBin: true, children: nil, cntAdmins: nil, cntUsers: nil)
+        return Node(_id: 1337, type: .room, name: "name", timestampCreation: Date(), timestampModification: Date(), parentId: 42, parentPath: "/root", createdAt: Date(), createdBy: userInfo, updatedAt: Date(), updatedBy: userInfo, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, inheritPermissions: false, isEncrypted: false, encryptionInfo: nil, cntDeletedVersions: 0, cntComments: 0, cntDownloadShares: 0, cntUploadShares: 0, recycleBinRetentionPeriod: 0, hasActivitiesLog: false, quota: nil, isFavorite: true, branchVersion: nil, mediaToken: nil, isBrowsable: true, cntRooms: 0, cntFolders: 1, cntFiles: 5, authParentId: nil, cntChildren: 6, hasRecycleBin: true, children: nil, cntAdmins: nil, cntUsers: nil)
     }
     
     private func getNodeList() -> NodeList {
@@ -113,7 +113,7 @@ public class ResponseModelFactory {
     }
     
     private func getDownloadTokenGenerateResponse() -> DownloadTokenGenerateResponse {
-        return DownloadTokenGenerateResponse(downloadUrl: nil, token: "downloadToken")
+        return DownloadTokenGenerateResponse(downloadUrl: "https://dracoon.team/api/v4/downloads/downloadToken", token: "downloadToken")
     }
     
     private func getSoftwareVersionData() -> SoftwareVersionData {
