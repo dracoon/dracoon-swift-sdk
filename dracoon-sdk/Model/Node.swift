@@ -27,6 +27,10 @@ public struct Node: Codable {
     public var type: ModelType
     /** Name */
     public var name: String
+    /** Time the node was created on external file system [Since version 4.22.0] */
+    public var timestampCreation: Date?
+    /** Time the content of a node was last modified on external file system [Since version 4.22.0] */
+    public var timestampModification: Date?
     /** Parent node ID (room or folder) */
     public var parentId: Int64?
     /** Parent node path &#x60;/&#x60; if node is a root node (room) */
@@ -55,49 +59,32 @@ public struct Node: Codable {
     public var notes: String?
     /** Available permissions for this node */
     public var permissions: NodePermissions?
+    /** Inherit permissions from parent room (Inherit permissions from parent room (default: false if parentId is 0; otherwise true) */
+    public var inheritPermissions: Bool?
     /** Encryption state */
     public var isEncrypted: Bool?
-    /** [Deprecated since v4.11.0] : Use cntRooms, cntFolders and cntFiles instead
-     Number of direct children (no recursion; for rooms / folders only) */
-    public var cntChildren: Int?
+    /** Encryption info (states) */
+    public var encryptionInfo: EncryptionInfo?
     /** Number of deleted versions of this file / folder (for rooms / folders only) */
     public var cntDeletedVersions: Int?
     /** Returns the number of comments of this node.  [Since version 4.10.0] */
     public var cntComments: Int?
-    /** Is Recycle Bin active (for rooms only) (default: false) */
-    public var hasRecycleBin: Bool?
-    /** Retention period for deleted nodes in days (Integer between 0 and 9999) */
-    public var recycleBinRetentionPeriod: Int?
-    /** Quota in byte */
-    public var quota: Int64?
     /** Returns the number of Download Shares of this node. */
     public var cntDownloadShares: Int?
     /** Returns the number of Upload Shares of this node. */
     public var cntUploadShares: Int?
+    /** Retention period for deleted nodes in days (Integer between 0 and 9999) */
+    public var recycleBinRetentionPeriod: Int?
+    /** Is activities log active (for rooms only) (default: true) */
+    public var hasActivitiesLog: Bool?
+    /** Quota in byte */
+    public var quota: Int64?
     /** Node is marked as favorite (for rooms / folders only) */
     public var isFavorite: Bool?
-    /** Inherit permissions from parent room (default: &#x60;false&#x60; if &#x60;parentId&#x60; is &#x60;0&#x60;; otherwise: &#x60;true&#x60;) */
-    public var inheritPermissions: Bool?
-    /** Encryption info (states) */
-    public var encryptionInfo: EncryptionInfo?
     /** Version of last change in this node or a node further down the tree. */
     public var branchVersion: Int64?
     /** Media server media token */
     public var mediaToken: String?
-    /** S3 key */
-    public var s3Key: String?
-    /** Is activities log active (for rooms only) (default: true) */
-    public var hasActivitiesLog: Bool?
-    /** [Deprecated since v4.10.0] Child nodes list (if requested) (for rooms / folders only) */
-    public var children: [Node]?
-    /** &#x60;DEPRECATED&#x60;: Number of admins (for rooms only) */
-    public var cntAdmins: Int?
-    /** &#x60;DEPRECATED&#x60;: Number of users (for rooms only) */
-    public var cntUsers: Int?
-    /** Time the node was created on external file system [Since version 4.22.0] */
-    public var timestampCreation: Date?
-    /** Time the content of a node was last modified on external file system [Since version 4.22.0] */
-    public var timestampModification: Date?
     /** Determines whether node is browsable by client (for rooms only) [Since version 4.11.0] */
     public var isBrowsable: Bool?
     /** Amount of direct child rooms where this node is the parent node
@@ -111,6 +98,18 @@ public struct Node: Codable {
     public var cntFiles: Int?
     /** Auth parent room ID [Since version 4.15.0] */
     public var authParentId: Int64?
+    
+    /** [Deprecated since v4.11.0] : Use cntRooms, cntFolders and cntFiles instead
+     Number of direct children (no recursion; for rooms / folders only) */
+    public var cntChildren: Int?
+    /** [Deprecated since v4.10.0] Is Recycle Bin active (for rooms only) (default: false) */
+    public var hasRecycleBin: Bool?
+    /** [Deprecated since v4.10.0] Child nodes list (if requested) (for rooms / folders only) */
+    public var children: [Node]?
+    /** [Deprecated since v4.2.0] Number of admins (for rooms only) */
+    public var cntAdmins: Int?
+    /** [Deprecated since v4.2.0] Number of users (for rooms only) */
+    public var cntUsers: Int?
 
 
     public enum CodingKeys: String, CodingKey { 
@@ -145,7 +144,6 @@ public struct Node: Codable {
         case encryptionInfo
         case branchVersion
         case mediaToken
-        case s3Key
         case hasActivitiesLog
         case children
         case cntAdmins
