@@ -98,19 +98,6 @@ public struct Node: Codable {
     public var cntFiles: Int?
     /** Auth parent room ID [Since version 4.15.0] */
     public var authParentId: Int64?
-    
-    /** [Deprecated since v4.11.0] : Use cntRooms, cntFolders and cntFiles instead
-     Number of direct children (no recursion; for rooms / folders only) */
-    public var cntChildren: Int?
-    /** [Deprecated since v4.10.0] Is Recycle Bin active (for rooms only) (default: false) */
-    public var hasRecycleBin: Bool?
-    /** [Deprecated since v4.10.0] Child nodes list (if requested) (for rooms / folders only) */
-    public var children: [Node]?
-    /** [Deprecated since v4.2.0] Number of admins (for rooms only) */
-    public var cntAdmins: Int?
-    /** [Deprecated since v4.2.0] Number of users (for rooms only) */
-    public var cntUsers: Int?
-
 
     public enum CodingKeys: String, CodingKey { 
         case _id = "id"
@@ -131,10 +118,8 @@ public struct Node: Codable {
         case notes
         case permissions
         case isEncrypted
-        case cntChildren
         case cntDeletedVersions
         case cntComments
-        case hasRecycleBin
         case recycleBinRetentionPeriod
         case quota
         case cntDownloadShares
@@ -145,9 +130,6 @@ public struct Node: Codable {
         case branchVersion
         case mediaToken
         case hasActivitiesLog
-        case children
-        case cntAdmins
-        case cntUsers
         case isBrowsable
         case cntRooms
         case cntFolders

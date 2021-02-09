@@ -15,30 +15,6 @@ public struct GroupUser: Codable {
     public var userInfo: UserInfo
     /** Determines whether user is a member of the group or not */
     public var isMember: Bool
-    
-    /** [Deprecated since v4.11.0]
-     Unique identifier for the user */
-    public var _id: Int64
-    /** [Deprecated since v4.11.0]
-     User login name */
-    public var login: String
-    /** [Deprecated since v4.11.0]
-     Display name */
-    public var displayName: String
-    /** [Deprecated since v4.11.0]
-     Email */
-    public var email: String
-
-
-    public enum CodingKeys: String, CodingKey {
-        case userInfo
-        case _id = "id"
-        case isMember
-        case login
-        case displayName
-        case email
-    }
-
 
 }
 

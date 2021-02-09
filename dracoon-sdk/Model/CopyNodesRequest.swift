@@ -21,10 +21,6 @@ public struct CopyNodesRequest: Codable {
     public var resolutionStrategy: ResolutionStrategy?
     /** Preserve Download Share Links and point them to the new node. (default: false) */
     public var keepShareLinks: Bool?
-    
-    /** [Deprecated since v4.5.0] */
-    public var nodeIds: [Int64]?
-
 
     public init(items: [CopyNode], resolutionStrategy: ResolutionStrategy?, keepShareLinks: Bool?) {
         self.items = items

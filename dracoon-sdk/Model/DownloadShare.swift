@@ -48,10 +48,6 @@ public struct DownloadShare: Codable {
     
     /** [Deprecated since v4.20.0] Notify creator on every download. (default: false) */
     public var notifyCreator: Bool?
-    /** [Deprecated since v4.11.0] CSV string of recipient emails */
-    public var recipients: String?
-    /** [Deprecated since v4.11.0] CSV string of recipient MSISDNs */
-    public var smsRecipients: String?
 
 
     public enum CodingKeys: String, CodingKey { 
@@ -69,8 +65,6 @@ public struct DownloadShare: Codable {
         case isProtected
         case expireAt
         case maxDownloads
-        case recipients
-        case smsRecipients
         case nodePath
         case dataUrl
         case isEncrypted

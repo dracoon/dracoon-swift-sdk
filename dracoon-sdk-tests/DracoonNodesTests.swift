@@ -21,7 +21,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         // set config to not support S3 storage
         let configMock = DracoonConfigMock()
-        configMock.generalSettingsResponse = GeneralSettings(sharePasswordSmsEnabled: nil, cryptoEnabled: nil, emailNotificationButtonEnabled: nil, eulaEnabled: nil, mediaServerEnabled: nil, weakPasswordEnabled: nil, useS3Storage: false)
+        configMock.generalSettingsResponse = GeneralSettings(sharePasswordSmsEnabled: nil, cryptoEnabled: nil, emailNotificationButtonEnabled: nil, eulaEnabled: nil, weakPasswordEnabled: nil, useS3Storage: false, mediaServerEnabled: nil)
         
         self.nodes = DracoonNodesImpl(requestConfig: self.requestConfig, crypto: self.crypto, account: DracoonAccountMock(), config: configMock, getEncryptionPassword: {
             return self.encryptionPassword
@@ -448,7 +448,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
     func testDownload_withDownloadUrl_callsOnComplete() {
         
         self.setResponseModel(Node.self, statusCode: 200)
-        let responseModel = DownloadTokenGenerateResponse(downloadUrl: "https://dracoon.team", token: "token")
+        let responseModel = DownloadTokenGenerateResponse(downloadUrl: "https://dracoon.team")
         MockURLProtocol.responseWithModel(DownloadTokenGenerateResponse.self, model: responseModel, statusCode: 200)
         if #available(iOS 11.0, *) {
             self.setResponseModel(Node.self, statusCode: 200)
@@ -628,7 +628,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
 extension Node {
     
     init(_id: Int64, type: ModelType, name: String, _ customize: ((inout Node) -> Void)? = nil) {
-        self.init(_id: _id, type: type, name: name, timestampCreation: nil, timestampModification: nil, parentId: nil, parentPath: nil, createdAt: nil, createdBy: nil, updatedAt: nil, updatedBy: nil, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, inheritPermissions: nil, isEncrypted: nil, encryptionInfo: nil, cntDeletedVersions: nil, cntComments: nil, cntDownloadShares: nil, cntUploadShares: nil, recycleBinRetentionPeriod: nil, hasActivitiesLog: nil, quota: nil, isFavorite: nil, branchVersion: nil, mediaToken: nil, isBrowsable: nil, cntRooms: nil, cntFolders: nil, cntFiles: nil, authParentId: nil, cntChildren: nil, hasRecycleBin: nil, children: nil, cntAdmins: nil, cntUsers: nil)
+        self.init(_id: _id, type: type, name: name, timestampCreation: nil, timestampModification: nil, parentId: nil, parentPath: nil, createdAt: nil, createdBy: nil, updatedAt: nil, updatedBy: nil, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, inheritPermissions: nil, isEncrypted: nil, encryptionInfo: nil, cntDeletedVersions: nil, cntComments: nil, cntDownloadShares: nil, cntUploadShares: nil, recycleBinRetentionPeriod: nil, hasActivitiesLog: nil, quota: nil, isFavorite: nil, branchVersion: nil, mediaToken: nil, isBrowsable: nil, cntRooms: nil, cntFolders: nil, cntFiles: nil, authParentId: nil)
         customize?(&self)
     }
 }

@@ -24,14 +24,12 @@ public struct NewCustomerResponse: Codable {
     public var quotaMax: Int64
     /** Maximal number of users */
     public var userMax: Int
-    /** Customer lock status: * &#x60;false&#x60; - unlocked * &#x60;true&#x60; - locked  All users of this customer will be blocked and can not login anymore. (default: false) */
-    public var lockStatus: Bool
     /** First admin user of a customer */
     public var firstAdminUser: FirstAdminUser
+    /** Determines if customer is locked */
+    public var isLocked: Bool?
     /** Unique identifier for the customer */
     public var _id: Int64?
-    /** Customer activation code string: * valid only for types &#x60;free&#x60; and &#x60;demo&#x60; * for &#x60;pay&#x60; customers it is empty */
-    public var activationCode: String?
     /** Number of days left for trial period (relevant only for type &#x60;demo&#x60;) */
     public var trialDays: Int?
     /** Provider customer ID value (relevant only for type &#x60;pay&#x60;) */
@@ -40,6 +38,10 @@ public struct NewCustomerResponse: Codable {
     public var createdAt: Date?
     /** Customer attributes */
     public var customerAttributes: CustomerAttributes?
+    /** Maximal number of webhooks [Since v4.19.0] */
+    public var webhooksMax: Int64?
+    /** Customer UUID [Since v4.21.0] */
+    public var customerUuid: String?
 
 
     public enum CodingKeys: String, CodingKey { 
@@ -47,14 +49,15 @@ public struct NewCustomerResponse: Codable {
         case customerContractType
         case quotaMax
         case userMax
-        case lockStatus
         case firstAdminUser
+        case isLocked
         case _id = "id"
-        case activationCode
         case trialDays
         case providerCustomerId
         case createdAt
         case customerAttributes
+        case webhooksMax
+        case customerUuid
     }
 
 

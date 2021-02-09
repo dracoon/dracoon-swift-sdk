@@ -72,18 +72,6 @@ public struct UserAccount: Codable {
     /** [Deprecated since v4.12.0]
      Gender */
     public var gender: Gender?
-    /** [Deprecated since v4.6.0]
-     Last successful logon IP address */
-    public var lastLoginSuccessIp: String?
-    /** [Deprecated since v4.6.0]
-     Last failed logon IP address */
-    public var lastLoginFailIp: String?
-    /** [Deprecated since v4.7.0]
-     User lock status: * &#x60;0&#x60; - locked * &#x60;1&#x60; - Web access allowed * &#x60;2&#x60; - Web and mobile access allowed */
-    public var lockStatus: Int?
-    /** [Deprecated since v4.10.0]
-     Customer information */
-    public var customer: CustomerData?
     
     public enum Gender: String, Codable {
         case m = "m"
@@ -98,9 +86,7 @@ public struct UserAccount: Codable {
         case firstName
         case lastName
         case isLocked
-        case lockStatus
         case hasManageableRooms
-        case customer
         case userRoles
         case authData
         case authMethods
@@ -110,13 +96,9 @@ public struct UserAccount: Codable {
         case gender
         case expireAt
         case isEncryptionEnabled
-        case lastLoginSuccessAt
-        case lastLoginFailAt
         case userGroups
         case userAttributes
         case email
-        case lastLoginSuccessIp
-        case lastLoginFailIp
         case homeRoomId
         case mustSetEmail
     }

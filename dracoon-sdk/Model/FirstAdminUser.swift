@@ -51,9 +51,6 @@ public struct FirstAdminUser: Codable {
     /** [Deprecated since v4.12.0]
      Gender */
     public var gender: Gender?
-    /** [Deprecated since v4.7.0]
-     Language ID or ISO 639-1 code */
-    public var language: String?
     
     public enum Gender: String, Codable {
         case m = "m"

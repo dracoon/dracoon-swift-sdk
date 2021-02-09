@@ -15,11 +15,6 @@ public struct CreateFileUploadResponse: Codable {
     public var uploadUrl: String
     /** Upload (channel) ID */
     public var uploadId: String
-    
-    /** [Deprecated since v4.3.0] Upload token */
-    public var token: String
-
-
 
 }
 

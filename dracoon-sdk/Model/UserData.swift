@@ -56,9 +56,6 @@ public struct UserData: Codable {
     /** [Deprecated since v4.12.0]
      Gender */
     public var gender: Gender?
-    /** [Deprecated since v4.7.0]
-     User lock status: * &#x60;0&#x60; - locked * &#x60;1&#x60; - Web access allowed * &#x60;2&#x60; - Web and mobile access allowed */
-    public var lockStatus: Int
     
     public enum Gender: String, Codable {
         case m = "m"
@@ -72,7 +69,6 @@ public struct UserData: Codable {
         case firstName
         case lastName
         case isLocked
-        case lockStatus
         case authData
         case authMethods
         case email

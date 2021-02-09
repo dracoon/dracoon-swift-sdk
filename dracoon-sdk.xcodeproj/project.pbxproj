@@ -52,7 +52,6 @@
 		E00067F32057D0BC009CDA70 /* CreateFileUploadResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E000673D2057D0AC009CDA70 /* CreateFileUploadResponse.swift */; };
 		E00067F42057D0BC009CDA70 /* FirstAdminUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E000673E2057D0AC009CDA70 /* FirstAdminUser.swift */; };
 		E00067F52057D0BC009CDA70 /* NodeList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E000673F2057D0AC009CDA70 /* NodeList.swift */; };
-		E00067FB2057D0BC009CDA70 /* UpdateUserRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067452057D0AC009CDA70 /* UpdateUserRequest.swift */; };
 		E00067FD2057D0BC009CDA70 /* CustomerList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067472057D0AC009CDA70 /* CustomerList.swift */; };
 		E00067FE2057D0BC009CDA70 /* UpdateRoomRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067482057D0AC009CDA70 /* UpdateRoomRequest.swift */; };
 		E00067FF2057D0BC009CDA70 /* UploadShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067492057D0AC009CDA70 /* UploadShare.swift */; };
@@ -261,7 +260,6 @@
 		E000673D2057D0AC009CDA70 /* CreateFileUploadResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateFileUploadResponse.swift; sourceTree = "<group>"; };
 		E000673E2057D0AC009CDA70 /* FirstAdminUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirstAdminUser.swift; sourceTree = "<group>"; };
 		E000673F2057D0AC009CDA70 /* NodeList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NodeList.swift; sourceTree = "<group>"; };
-		E00067452057D0AC009CDA70 /* UpdateUserRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUserRequest.swift; sourceTree = "<group>"; };
 		E00067472057D0AC009CDA70 /* CustomerList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerList.swift; sourceTree = "<group>"; };
 		E00067482057D0AC009CDA70 /* UpdateRoomRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateRoomRequest.swift; sourceTree = "<group>"; };
 		E00067492057D0AC009CDA70 /* UploadShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadShare.swift; sourceTree = "<group>"; };
@@ -620,7 +618,6 @@
 				E00067482057D0AC009CDA70 /* UpdateRoomRequest.swift */,
 				E00067652057D0AF009CDA70 /* UpdateSystemDefaults.swift */,
 				E04862F4243C9EA400EE0617 /* UpdateUploadShareRequest.swift */,
-				E00067452057D0AC009CDA70 /* UpdateUserRequest.swift */,
 				E00067492057D0AC009CDA70 /* UploadShare.swift */,
 				E00067282057D0AA009CDA70 /* UploadShareList.swift */,
 				E00067702057D0B0009CDA70 /* UserAccount.swift */,
@@ -847,7 +844,6 @@
 				E00067DB2057D0BC009CDA70 /* UpdateFolderRequest.swift in Sources */,
 				E04862F5243C9EA400EE0617 /* UpdateUploadShareRequest.swift in Sources */,
 				E00067FF2057D0BC009CDA70 /* UploadShare.swift in Sources */,
-				E00067FB2057D0BC009CDA70 /* UpdateUserRequest.swift in Sources */,
 				E000686A2057D0BC009CDA70 /* NewCustomerResponse.swift in Sources */,
 				E0C7A13D22CBB2A2003D2141 /* S3FileUpload.swift in Sources */,
 				E0107DC62163A19E008AAE6C /* DracoonConfigImpl.swift in Sources */,

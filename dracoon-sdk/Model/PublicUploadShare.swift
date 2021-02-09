@@ -37,11 +37,6 @@ public struct PublicUploadShare: Codable {
     public var remainingSize: Int64?
     /** Remaining slots */
     public var remainingSlots: Int?
-    
-    /** [Deprecated since v4.2.0] Maximal amount of files to upload */
-    public var maxSlots: Int
-    /** [Deprecated since v4.2.0] Maximal total size of uploaded files (in bytes) */
-    public var maxSize: Double?
 
 
 

@@ -30,8 +30,6 @@ public struct UserInfo: Codable {
     
     /** [Deprecated since v4.18.0] Title  */
     public var title: String?
-    /** [Deprecated since v4.11.0]:  Display name */
-    public var displayName: String?
 
     public enum CodingKeys: String, CodingKey { 
         case _id = "id"
@@ -42,7 +40,6 @@ public struct UserInfo: Codable {
         case lastName
         case email
         case title
-        case displayName
     }
 
     public init(_id: Int64) {

@@ -12,12 +12,7 @@ import Foundation
 public struct DownloadTokenGenerateResponse: Codable {
 
     /** Download URL */
-    public var downloadUrl: String?
-    
-    /** [Deprecated since v4.3.0] Download token */
-    public var token: String
-
-
+    public var downloadUrl: String
 
 }
 
