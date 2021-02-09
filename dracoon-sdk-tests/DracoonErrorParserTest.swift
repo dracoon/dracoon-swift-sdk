@@ -217,6 +217,10 @@ class DracoonErrorParserTest: XCTestCase {
         returnedApiCode = self.parseError(code: code, errorCode: -80019)
         XCTAssert(expectedApiCode == returnedApiCode)
         
+        expectedApiCode = DracoonApiCode.VALIDATION_INPUT_CONTAINS_INVALID_CHARACTERS
+        returnedApiCode = self.parseError(code: code, errorCode: -80023)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
         expectedApiCode = DracoonApiCode.VALIDATION_INVALID_OFFSET_OR_LIMIT
         returnedApiCode = self.parseError(code: code, errorCode: -80024)
         XCTAssert(expectedApiCode == returnedApiCode)
@@ -231,6 +235,14 @@ class DracoonErrorParserTest: XCTestCase {
 
         expectedApiCode = DracoonApiCode.VALIDATION_FIELD_NOT_BETWEEN_0_10
         returnedApiCode = self.parseError(code: code, errorCode: -80035)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.VALIDATION_INVALID_ETAGS
+        returnedApiCode = self.parseError(code: code, errorCode: -80045)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.S3_DIRECT_UPLOAD_ENFORCED
+        returnedApiCode = self.parseError(code: code, errorCode: -90033)
         XCTAssert(expectedApiCode == returnedApiCode)
     }
     
@@ -455,6 +467,10 @@ class DracoonErrorParserTest: XCTestCase {
         expectedApiCode = DracoonApiCode.SERVER_USER_NOT_FOUND
         returnedApiCode = self.parseError(code: code, errorCode: -70501)
         XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.S3_UPLOAD_ID_NOT_FOUND
+        returnedApiCode = self.parseError(code: code, errorCode: -90034)
+        XCTAssert(expectedApiCode == returnedApiCode)
     }
     
     func testConflictApiCodes() {
@@ -540,6 +556,10 @@ class DracoonErrorParserTest: XCTestCase {
         
         expectedApiCode = DracoonApiCode.PRECONDITION_MUST_CHANGE_USER_NAME
         returnedApiCode = self.parseError(code: code, errorCode: -10106)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.PRECONDITION_S3_STORAGE_DISABLED
+        returnedApiCode = self.parseError(code: code, errorCode: -90030)
         XCTAssert(expectedApiCode == returnedApiCode)
     }
     
