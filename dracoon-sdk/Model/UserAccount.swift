@@ -25,10 +25,10 @@ public struct UserAccount: Codable {
     /** List of user roles */
     public var userRoles: RoleList
     /** IETF language tag
-     [Since version 4.10.0] */
+     [Since version 4.20.0] */
     public var language: String?
     /** User Authentication Data */
-    public var authData: UserAuthData
+    public var authData: UserAuthData?
     /** If true, the user must set the email at the first login.
      [Since version 4.13.0] */
     public var mustSetEmail: Bool?
