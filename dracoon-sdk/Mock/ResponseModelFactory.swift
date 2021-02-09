@@ -129,7 +129,7 @@ public class ResponseModelFactory {
     }
     
     private func getGeneralSettings() -> GeneralSettings {
-        return GeneralSettings(sharePasswordSmsEnabled: false, cryptoEnabled: true, emailNotificationButtonEnabled: true, eulaEnabled: true, mediaServerEnabled: true, weakPasswordEnabled: false, useS3Storage: true)
+        return GeneralSettings(sharePasswordSmsEnabled: false, cryptoEnabled: true, emailNotificationButtonEnabled: true, eulaEnabled: true, weakPasswordEnabled: false, useS3Storage: true, mediaServerEnabled: true)
     }
     
     private func getInfrastructureProperties() -> InfrastructureProperties {

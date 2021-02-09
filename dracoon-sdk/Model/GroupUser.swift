@@ -11,19 +11,27 @@ import Foundation
 
 public struct GroupUser: Codable {
 
-    /** Unique identifier for the user */
-    public var _id: Int64
-    /** Is group member */
+    /** User information */
+    public var userInfo: UserInfo
+    /** Determines whether user is a member of the group or not */
     public var isMember: Bool
-    /** User login name */
+    
+    /** [Deprecated since v4.11.0]
+     Unique identifier for the user */
+    public var _id: Int64
+    /** [Deprecated since v4.11.0]
+     User login name */
     public var login: String
-    /** Display name */
+    /** [Deprecated since v4.11.0]
+     Display name */
     public var displayName: String
-    /** Email (not used) */
+    /** [Deprecated since v4.11.0]
+     Email */
     public var email: String
 
 
-    public enum CodingKeys: String, CodingKey { 
+    public enum CodingKeys: String, CodingKey {
+        case userInfo
         case _id = "id"
         case isMember
         case login

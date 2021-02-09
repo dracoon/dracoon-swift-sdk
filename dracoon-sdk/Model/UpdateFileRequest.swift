@@ -18,6 +18,10 @@ public struct UpdateFileRequest: Codable {
     public var classification: Int?
     /** User notes Use empty string to remove. */
     public var notes: String?
+    /** Time the node was created on external file system [Since version 4.22.0] */
+    public var timestampCreation: Date?
+    /** Time the content of a node was last modified on external file system [Since version 4.22.0] */
+    public var timestampModification: Date?
 
     public init() {}
 
