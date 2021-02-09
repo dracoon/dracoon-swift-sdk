@@ -9,65 +9,87 @@ import Foundation
 
 /// - Tag: UserAccount
 public struct UserAccount: Codable {
-
-    public enum Gender: String, Codable { 
-        case m = "m"
-        case f = "f"
-        case n = "n"
-    }
     /** Unique identifier for the user */
     public var _id: Int64
     /** Username
      [Since version 4.13.0] */
     public var userName: String?
-    /** User login name
-     [DEPRECATED since 4.13.0]*/
-    public var login: String
-    /** User has changed the password */
-    public var needsToChangePassword: Bool
     /** User first name */
     public var firstName: String
     /** User last name */
     public var lastName: String
-    /** User lock status: * &#x60;0&#x60; - locked * &#x60;1&#x60; - Web access allowed * &#x60;2&#x60; - Web and mobile access allowed */
-    public var lockStatus: Int
+    /** Determines if  user is locked*/
+    public var isLocked: Bool
     /** User has manageable rooms */
     public var hasManageableRooms: Bool
-    /** Customer information */
-    public var customer: CustomerData
     /** List of user roles */
     public var userRoles: RoleList
-    /** Authentication methods: * &#x60;sql&#x60; * &#x60;active_directory&#x60; * &#x60;radius&#x60; * &#x60;openid&#x60; */
-    public var authMethods: [UserAuthMethod]
-    /** If true, the user must change the &#x60;userName&#x60; at the first login. (default: false) */
-    public var needsToChangeUserName: Bool?
-    /** User has accepted EULA. Present, if EULA is system global active. cf. &#x60;GET config/settings&#x60; - &#x60;eula_active&#x60; */
+    /** IETF language tag
+     [Since version 4.10.0] */
+    public var language: String?
+    /** User Authentication Data */
+    public var authData: UserAuthData
+    /** If true, the user must set the email at the first login.
+     [Since version 4.13.0] */
+    public var mustSetEmail: Bool?
+    /** User has accepted EULA. Present if EULA is system globally active.*/
     public var needsToAcceptEULA: Bool?
-    /** Job title */
-    public var title: String?
-    /** Gender */
-    public var gender: Gender?
     /** Expiration date */
     public var expireAt: Date?
-    /** User has generated private key. Possible if **TripleCrypt™ technology** is active for this customer */
+    /** User has generated private key. Possible if client-side encryption is active for this customer. */
     public var isEncryptionEnabled: Bool?
     /** Last successful logon date */
     public var lastLoginSuccessAt: Date?
     /** Last failed logon date */
     public var lastLoginFailAt: Date?
+    /** Email */
+    public var email: String?
+    /** Phone number */
+    public var phone: String?
+    /** The id of the users Home Room **/
+    public var homeRoomId: Int64?
     /** All groups the user is member of */
     public var userGroups: [UserGroup]?
     /** User attributes */
     public var userAttributes: UserAttributes?
-    /** Email (not used) */
-    public var email: String?
-    /** Last successful logon IP address */
+    
+    /** [Deprecated since v4.18.0]
+     Job title */
+    public var title: String?
+    /** [Deprecated since 4.13.0]
+     User login name */
+    public var login: String
+    /** [Deprecated since v4.13.0]
+     Please use authData.login instead.
+     Authentication methods: * &#x60;sql&#x60; * &#x60;active_directory&#x60; * &#x60;radius&#x60; * &#x60;openid&#x60; */
+    public var authMethods: [UserAuthMethod]
+    /** [Deprecated since v4.13.0]
+     User has changed the password */
+    public var needsToChangePassword: Bool
+    /** [Deprecated since v4.13.0]
+     If true, the user must change the &#x60;userName&#x60; at the first login. (default: false) */
+    public var needsToChangeUserName: Bool?
+    /** [Deprecated since v4.12.0]
+     Gender */
+    public var gender: Gender?
+    /** [Deprecated since v4.6.0]
+     Last successful logon IP address */
     public var lastLoginSuccessIp: String?
-    /** Last failed logon IP address */
+    /** [Deprecated since v4.6.0]
+     Last failed logon IP address */
     public var lastLoginFailIp: String?
-    /** The id of the users Home Room **/
-    public var homeRoomId: Int64?
-
+    /** [Deprecated since v4.7.0]
+     User lock status: * &#x60;0&#x60; - locked * &#x60;1&#x60; - Web access allowed * &#x60;2&#x60; - Web and mobile access allowed */
+    public var lockStatus: Int
+    /** [Deprecated since v4.10.0]
+     Customer information */
+    public var customer: CustomerData
+    
+    public enum Gender: String, Codable {
+        case m = "m"
+        case f = "f"
+        case n = "n"
+    }
 
     public enum CodingKeys: String, CodingKey { 
         case _id = "id"
@@ -75,10 +97,12 @@ public struct UserAccount: Codable {
         case needsToChangePassword
         case firstName
         case lastName
+        case isLocked
         case lockStatus
         case hasManageableRooms
         case customer
         case userRoles
+        case authData
         case authMethods
         case needsToChangeUserName
         case needsToAcceptEULA
@@ -94,6 +118,7 @@ public struct UserAccount: Codable {
         case lastLoginSuccessIp
         case lastLoginFailIp
         case homeRoomId
+        case mustSetEmail
     }
 
 

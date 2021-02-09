@@ -218,6 +218,7 @@
 		E030CDFB20FCBEC0001DEB31 /* DracoonRequestConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E030CDFA20FCBEC0001DEB31 /* DracoonRequestConfig.swift */; };
 		E030CDFD20FCF03F001DEB31 /* FileDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E030CDFC20FCF03F001DEB31 /* FileDownload.swift */; };
 		E033136022F43EB100A09E7F /* DracoonValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E033135F22F43EB100A09E7F /* DracoonValidatorTests.swift */; };
+		E03F1A9525D292F000C9388E /* UserAuthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F1A9425D292EF00C9388E /* UserAuthData.swift */; };
 		E03F595525D1A4C400CD9F33 /* DracoonUsersImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F595425D1A4C400CD9F33 /* DracoonUsersImpl.swift */; };
 		E03F595925D1AE7100CD9F33 /* DracoonUsersMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F595825D1AE7100CD9F33 /* DracoonUsersMock.swift */; };
 		E03F595F25D1B28700CD9F33 /* DracoonUsersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F595E25D1B28700CD9F33 /* DracoonUsersTests.swift */; };
@@ -504,6 +505,7 @@
 		E030CDFA20FCBEC0001DEB31 /* DracoonRequestConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonRequestConfig.swift; sourceTree = "<group>"; };
 		E030CDFC20FCF03F001DEB31 /* FileDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDownload.swift; sourceTree = "<group>"; };
 		E033135F22F43EB100A09E7F /* DracoonValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonValidatorTests.swift; sourceTree = "<group>"; };
+		E03F1A9425D292EF00C9388E /* UserAuthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthData.swift; sourceTree = "<group>"; };
 		E03F595425D1A4C400CD9F33 /* DracoonUsersImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonUsersImpl.swift; sourceTree = "<group>"; };
 		E03F595825D1AE7100CD9F33 /* DracoonUsersMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonUsersMock.swift; sourceTree = "<group>"; };
 		E03F595E25D1B28700CD9F33 /* DracoonUsersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonUsersTests.swift; sourceTree = "<group>"; };
@@ -874,6 +876,7 @@
 				E09A584924AE0EEA00641838 /* FilekeyAlgorithm.swift */,
 				E09A584B24AE0F8D00641838 /* KeyPairAlgorithm.swift */,
 				E09A584D24AE0FD100641838 /* AlgorithmVersionInfoList.swift */,
+				E03F1A9425D292EF00C9388E /* UserAuthData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1104,6 +1107,7 @@
 				E00067DE2057D0BC009CDA70 /* UploadShareList.swift in Sources */,
 				E00068412057D0BC009CDA70 /* CreateOAuthClientRequest.swift in Sources */,
 				E00068282057D0BC009CDA70 /* PublicDownloadShare.swift in Sources */,
+				E03F1A9525D292F000C9388E /* UserAuthData.swift in Sources */,
 				E00068772057D0BC009CDA70 /* UpdateFileRequest.swift in Sources */,
 				E00068122057D0BC009CDA70 /* RoomUserList.swift in Sources */,
 				E000685E2057D0BC009CDA70 /* AuditUserPermission.swift in Sources */,
