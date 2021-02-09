@@ -145,6 +145,7 @@
 		E030CDFD20FCF03F001DEB31 /* FileDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E030CDFC20FCF03F001DEB31 /* FileDownload.swift */; };
 		E033136022F43EB100A09E7F /* DracoonValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E033135F22F43EB100A09E7F /* DracoonValidatorTests.swift */; };
 		E03F1A9525D292F000C9388E /* UserAuthData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F1A9425D292EF00C9388E /* UserAuthData.swift */; };
+		E03F1B0125D30BBE00C9388E /* CustomerData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F1B0025D30BBE00C9388E /* CustomerData.swift */; };
 		E03F595525D1A4C400CD9F33 /* DracoonUsersImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F595425D1A4C400CD9F33 /* DracoonUsersImpl.swift */; };
 		E03F595925D1AE7100CD9F33 /* DracoonUsersMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F595825D1AE7100CD9F33 /* DracoonUsersMock.swift */; };
 		E03F595F25D1B28700CD9F33 /* DracoonUsersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03F595E25D1B28700CD9F33 /* DracoonUsersTests.swift */; };
@@ -358,6 +359,7 @@
 		E030CDFC20FCF03F001DEB31 /* FileDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDownload.swift; sourceTree = "<group>"; };
 		E033135F22F43EB100A09E7F /* DracoonValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonValidatorTests.swift; sourceTree = "<group>"; };
 		E03F1A9425D292EF00C9388E /* UserAuthData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAuthData.swift; sourceTree = "<group>"; };
+		E03F1B0025D30BBE00C9388E /* CustomerData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerData.swift; sourceTree = "<group>"; };
 		E03F595425D1A4C400CD9F33 /* DracoonUsersImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonUsersImpl.swift; sourceTree = "<group>"; };
 		E03F595825D1AE7100CD9F33 /* DracoonUsersMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonUsersMock.swift; sourceTree = "<group>"; };
 		E03F595E25D1B28700CD9F33 /* DracoonUsersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonUsersTests.swift; sourceTree = "<group>"; };
@@ -544,6 +546,7 @@
 				E00067C02057D0B9009CDA70 /* CreateUserRequest.swift */,
 				E00067522057D0AD009CDA70 /* Customer.swift */,
 				E000677C2057D0B1009CDA70 /* CustomerAttributes.swift */,
+				E03F1B0025D30BBE00C9388E /* CustomerData.swift */,
 				E00067472057D0AC009CDA70 /* CustomerList.swift */,
 				E000678D2057D0B2009CDA70 /* DeleteDeletedNodesRequest.swift */,
 				E00067372057D0AB009CDA70 /* DeletedNode.swift */,
@@ -953,6 +956,7 @@
 				E00068012057D0BC009CDA70 /* MoveNode.swift in Sources */,
 				E0146C182231223200781246 /* DracoonErrorParser.swift in Sources */,
 				E000687E2057D50D009CDA70 /* OAuthHelper.swift in Sources */,
+				E03F1B0125D30BBE00C9388E /* CustomerData.swift in Sources */,
 				E00068362057D0BC009CDA70 /* S3ConfigCreateRequest.swift in Sources */,
 				E00068302057D0BC009CDA70 /* MissingKeysResponse.swift in Sources */,
 				E05A60A322CCDDB400DF7418 /* S3FileUploadStatus.swift in Sources */,
