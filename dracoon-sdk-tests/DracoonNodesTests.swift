@@ -628,7 +628,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
 extension Node {
     
     init(_id: Int64, type: ModelType, name: String, _ customize: ((inout Node) -> Void)? = nil) {
-        self.init(_id: _id, type: type, name: name, parentId: nil, parentPath: nil, createdAt: nil, createdBy: nil, updatedAt: nil, updatedBy: nil, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, isEncrypted: nil, cntChildren: nil, cntDeletedVersions: nil, hasRecycleBin: nil, recycleBinRetentionPeriod: nil, quota: nil, cntDownloadShares: nil, cntUploadShares: nil, isFavorite: nil, inheritPermissions: nil, encryptionInfo: nil, branchVersion: nil, mediaToken: nil, s3Key: nil, hasActivitiesLog: nil, children: nil, cntAdmins: nil, cntUsers: nil)
+        self.init(_id: _id, type: type, name: name, timestampCreation: nil, timestampModification: nil, parentId: nil, parentPath: nil, createdAt: nil, createdBy: nil, updatedAt: nil, updatedBy: nil, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, inheritPermissions: nil, isEncrypted: nil, encryptionInfo: nil, cntDeletedVersions: nil, cntComments: nil, cntDownloadShares: nil, cntUploadShares: nil, recycleBinRetentionPeriod: nil, hasActivitiesLog: nil, quota: nil, isFavorite: nil, branchVersion: nil, mediaToken: nil, isBrowsable: nil, cntRooms: nil, cntFolders: nil, cntFiles: nil, authParentId: nil, cntChildren: nil, hasRecycleBin: nil, children: nil, cntAdmins: nil, cntUsers: nil)
         customize?(&self)
     }
 }
