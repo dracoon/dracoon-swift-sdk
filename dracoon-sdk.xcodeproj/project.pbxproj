@@ -53,8 +53,6 @@
 		E00067EB2057D0BC009CDA70 /* PublicUploadShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067352057D0AB009CDA70 /* PublicUploadShare.swift */; };
 		E00067EC2057D0BC009CDA70 /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067362057D0AB009CDA70 /* Language.swift */; };
 		E00067ED2057D0BC009CDA70 /* DeletedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067372057D0AB009CDA70 /* DeletedNode.swift */; };
-		E00067EE2057D0BC009CDA70 /* SyslogEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067382057D0AB009CDA70 /* SyslogEvent.swift */; };
-		E00067EF2057D0BC009CDA70 /* UpdateSyslogConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067392057D0AB009CDA70 /* UpdateSyslogConfig.swift */; };
 		E00067F12057D0BC009CDA70 /* ChunkUploadResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E000673B2057D0AB009CDA70 /* ChunkUploadResponse.swift */; };
 		E00067F22057D0BC009CDA70 /* CompleteUploadRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E000673C2057D0AB009CDA70 /* CompleteUploadRequest.swift */; };
 		E00067F32057D0BC009CDA70 /* CreateFileUploadResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E000673D2057D0AC009CDA70 /* CreateFileUploadResponse.swift */; };
@@ -91,7 +89,6 @@
 		E00068262057D0BC009CDA70 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067702057D0B0009CDA70 /* UserAccount.swift */; };
 		E00068272057D0BC009CDA70 /* Role.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067712057D0B0009CDA70 /* Role.swift */; };
 		E00068282057D0BC009CDA70 /* PublicDownloadShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067722057D0B0009CDA70 /* PublicDownloadShare.swift */; };
-		E000682C2057D0BC009CDA70 /* UpdateMailServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067762057D0B0009CDA70 /* UpdateMailServerConfig.swift */; };
 		E000682D2057D0BC009CDA70 /* S3ConfigUpdateRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067772057D0B0009CDA70 /* S3ConfigUpdateRequest.swift */; };
 		E000682E2057D0BC009CDA70 /* UpdateCustomerRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067782057D0B0009CDA70 /* UpdateCustomerRequest.swift */; };
 		E000682F2057D0BC009CDA70 /* DeleteNodesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067792057D0B0009CDA70 /* DeleteNodesRequest.swift */; };
@@ -116,7 +113,6 @@
 		E00068482057D0BC009CDA70 /* FailoverServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067922057D0B3009CDA70 /* FailoverServer.swift */; };
 		E000684A2057D0BC009CDA70 /* UpdateEventlogConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067942057D0B3009CDA70 /* UpdateEventlogConfig.swift */; };
 		E000684B2057D0BC009CDA70 /* UserGroupList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067952057D0B3009CDA70 /* UserGroupList.swift */; };
-		E000684C2057D0BC009CDA70 /* SyslogEventList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067962057D0B3009CDA70 /* SyslogEventList.swift */; };
 		E000684D2057D0BC009CDA70 /* UpdateCustomerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067972057D0B3009CDA70 /* UpdateCustomerResponse.swift */; };
 		E00068512057D0BC009CDA70 /* ModelRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = E000679B2057D0B3009CDA70 /* ModelRange.swift */; };
 		E00068522057D0BC009CDA70 /* UpdateUserAccountRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E000679C2057D0B3009CDA70 /* UpdateUserAccountRequest.swift */; };
@@ -135,7 +131,6 @@
 		E00068632057D0BC009CDA70 /* RoomUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067AD2057D0B5009CDA70 /* RoomUser.swift */; };
 		E00068642057D0BC009CDA70 /* UserAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067AE2057D0B5009CDA70 /* UserAttributes.swift */; };
 		E00068652057D0BC009CDA70 /* LogOperationList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067AF2057D0B5009CDA70 /* LogOperationList.swift */; };
-		E00068662057D0BC009CDA70 /* SyslogConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067B02057D0B5009CDA70 /* SyslogConfig.swift */; };
 		E00068672057D0BC009CDA70 /* UserAuthMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067B12057D0B5009CDA70 /* UserAuthMethod.swift */; };
 		E00068682057D0BC009CDA70 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067B22057D0B5009CDA70 /* UserInfo.swift */; };
 		E00068692057D0BC009CDA70 /* SoftwareVersionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00067B32057D0B5009CDA70 /* SoftwareVersionData.swift */; };
@@ -293,8 +288,6 @@
 		E00067352057D0AB009CDA70 /* PublicUploadShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicUploadShare.swift; sourceTree = "<group>"; };
 		E00067362057D0AB009CDA70 /* Language.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
 		E00067372057D0AB009CDA70 /* DeletedNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeletedNode.swift; sourceTree = "<group>"; };
-		E00067382057D0AB009CDA70 /* SyslogEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyslogEvent.swift; sourceTree = "<group>"; };
-		E00067392057D0AB009CDA70 /* UpdateSyslogConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateSyslogConfig.swift; sourceTree = "<group>"; };
 		E000673B2057D0AB009CDA70 /* ChunkUploadResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChunkUploadResponse.swift; sourceTree = "<group>"; };
 		E000673C2057D0AB009CDA70 /* CompleteUploadRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompleteUploadRequest.swift; sourceTree = "<group>"; };
 		E000673D2057D0AC009CDA70 /* CreateFileUploadResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateFileUploadResponse.swift; sourceTree = "<group>"; };
@@ -331,7 +324,6 @@
 		E00067702057D0B0009CDA70 /* UserAccount.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
 		E00067712057D0B0009CDA70 /* Role.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Role.swift; sourceTree = "<group>"; };
 		E00067722057D0B0009CDA70 /* PublicDownloadShare.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicDownloadShare.swift; sourceTree = "<group>"; };
-		E00067762057D0B0009CDA70 /* UpdateMailServerConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateMailServerConfig.swift; sourceTree = "<group>"; };
 		E00067772057D0B0009CDA70 /* S3ConfigUpdateRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = S3ConfigUpdateRequest.swift; sourceTree = "<group>"; };
 		E00067782057D0B0009CDA70 /* UpdateCustomerRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCustomerRequest.swift; sourceTree = "<group>"; };
 		E00067792057D0B0009CDA70 /* DeleteNodesRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeleteNodesRequest.swift; sourceTree = "<group>"; };
@@ -356,7 +348,6 @@
 		E00067922057D0B3009CDA70 /* FailoverServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FailoverServer.swift; sourceTree = "<group>"; };
 		E00067942057D0B3009CDA70 /* UpdateEventlogConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateEventlogConfig.swift; sourceTree = "<group>"; };
 		E00067952057D0B3009CDA70 /* UserGroupList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserGroupList.swift; sourceTree = "<group>"; };
-		E00067962057D0B3009CDA70 /* SyslogEventList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyslogEventList.swift; sourceTree = "<group>"; };
 		E00067972057D0B3009CDA70 /* UpdateCustomerResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateCustomerResponse.swift; sourceTree = "<group>"; };
 		E000679B2057D0B3009CDA70 /* ModelRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelRange.swift; sourceTree = "<group>"; };
 		E000679C2057D0B3009CDA70 /* UpdateUserAccountRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateUserAccountRequest.swift; sourceTree = "<group>"; };
@@ -375,7 +366,6 @@
 		E00067AD2057D0B5009CDA70 /* RoomUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomUser.swift; sourceTree = "<group>"; };
 		E00067AE2057D0B5009CDA70 /* UserAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAttributes.swift; sourceTree = "<group>"; };
 		E00067AF2057D0B5009CDA70 /* LogOperationList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogOperationList.swift; sourceTree = "<group>"; };
-		E00067B02057D0B5009CDA70 /* SyslogConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyslogConfig.swift; sourceTree = "<group>"; };
 		E00067B12057D0B5009CDA70 /* UserAuthMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserAuthMethod.swift; sourceTree = "<group>"; };
 		E00067B22057D0B5009CDA70 /* UserInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		E00067B32057D0B5009CDA70 /* SoftwareVersionData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoftwareVersionData.swift; sourceTree = "<group>"; };
@@ -684,9 +674,6 @@
 				E000672E2057D0AA009CDA70 /* SdsServerTime.swift */,
 				E07D1D232456D5A300AAF8CE /* SharesPasswordPolicies.swift */,
 				E00067B32057D0B5009CDA70 /* SoftwareVersionData.swift */,
-				E00067B02057D0B5009CDA70 /* SyslogConfig.swift */,
-				E00067382057D0AB009CDA70 /* SyslogEvent.swift */,
-				E00067962057D0B3009CDA70 /* SyslogEventList.swift */,
 				E00067C32057D0BB009CDA70 /* SystemDefaults.swift */,
 				E000676E2057D0B0009CDA70 /* SystemInfo.swift */,
 				E00067782057D0B0009CDA70 /* UpdateCustomerRequest.swift */,
@@ -697,9 +684,7 @@
 				E00067252057D0A9009CDA70 /* UpdateFolderRequest.swift */,
 				E00067BA2057D0B6009CDA70 /* UpdateGeneralSettings.swift */,
 				E000679E2057D0B4009CDA70 /* UpdateGroupRequest.swift */,
-				E00067762057D0B0009CDA70 /* UpdateMailServerConfig.swift */,
 				E00067482057D0AC009CDA70 /* UpdateRoomRequest.swift */,
-				E00067392057D0AB009CDA70 /* UpdateSyslogConfig.swift */,
 				E00067652057D0AF009CDA70 /* UpdateSystemDefaults.swift */,
 				E04862F4243C9EA400EE0617 /* UpdateUploadShareRequest.swift */,
 				E000679C2057D0B3009CDA70 /* UpdateUserAccountRequest.swift */,
@@ -951,7 +936,6 @@
 				E00068552057D0BC009CDA70 /* UserFileKeySetRequest.swift in Sources */,
 				E00067EC2057D0BC009CDA70 /* Language.swift in Sources */,
 				E0C7A14322CBBDAE003D2141 /* PresignedUrlList.swift in Sources */,
-				E00067EF2057D0BC009CDA70 /* UpdateSyslogConfig.swift in Sources */,
 				E00067ED2057D0BC009CDA70 /* DeletedNode.swift in Sources */,
 				E02CB9E3205AAF8100E29948 /* DracoonConstants.swift in Sources */,
 				E000687A2057D0BC009CDA70 /* DeletedNodeSummary.swift in Sources */,
@@ -1020,7 +1004,6 @@
 				E00067E72057D0BC009CDA70 /* EventlogConfig.swift in Sources */,
 				E08C5A3123844E8700948EF5 /* ProfileAttributes.swift in Sources */,
 				E00068392057D0BC009CDA70 /* CreateDownloadShareRequest.swift in Sources */,
-				E00067EE2057D0BC009CDA70 /* SyslogEvent.swift in Sources */,
 				E00067DD2057D0BC009CDA70 /* RoomUsersAddBatchRequestItem.swift in Sources */,
 				E00067F52057D0BC009CDA70 /* NodeList.swift in Sources */,
 				E00068742057D0BC009CDA70 /* ModelErrorResponse.swift in Sources */,
@@ -1040,7 +1023,6 @@
 				E0AA72EF2089EE3C001BC290 /* DracoonAccountImpl.swift in Sources */,
 				E000686F2057D0BC009CDA70 /* MoveNodesRequest.swift in Sources */,
 				E00068022057D0BC009CDA70 /* UserItem.swift in Sources */,
-				E000684C2057D0BC009CDA70 /* SyslogEventList.swift in Sources */,
 				E07CF14224B463090046A3E0 /* ApiVersionCheck.swift in Sources */,
 				E000680C2057D0BC009CDA70 /* CreateUploadShareRequest.swift in Sources */,
 				E0146C1A2231263100781246 /* DracoonApiCode.swift in Sources */,
@@ -1057,7 +1039,6 @@
 				E0AA72EB2089DD0B001BC290 /* FileUpload.swift in Sources */,
 				E00068272057D0BC009CDA70 /* Role.swift in Sources */,
 				E000683D2057D0BC009CDA70 /* UserGroup.swift in Sources */,
-				E00068662057D0BC009CDA70 /* SyslogConfig.swift in Sources */,
 				8496F3B320591C53000EE909 /* DracoonServerImpl.swift in Sources */,
 				E00068262057D0BC009CDA70 /* UserAccount.swift in Sources */,
 				E00067F32057D0BC009CDA70 /* CreateFileUploadResponse.swift in Sources */,
@@ -1110,7 +1091,6 @@
 				E00068642057D0BC009CDA70 /* UserAttributes.swift in Sources */,
 				E00067FA2057D0BC009CDA70 /* RoomUsersDeleteBatchRequest.swift in Sources */,
 				E00067C82057D0BC009CDA70 /* FileFileKeys.swift in Sources */,
-				E000682C2057D0BC009CDA70 /* UpdateMailServerConfig.swift in Sources */,
 				E00067F22057D0BC009CDA70 /* CompleteUploadRequest.swift in Sources */,
 				E00068572057D0BC009CDA70 /* Group.swift in Sources */,
 				E00067D52057D0BC009CDA70 /* CreateGroupRequest.swift in Sources */,
