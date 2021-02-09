@@ -12,7 +12,7 @@ public struct GeneralSettings: Codable {
 
     /** Allow sending of share passwords via SMS */
     public var sharePasswordSmsEnabled: Bool?
-    /** Activation status of TripleCrypt™ technology. Can only be enabled once; disabling is not possible. */
+    /** Activation status of client-side encryption. Can only be enabled once; disabling is not possible. */
     public var cryptoEnabled: Bool?
     /** Enable email notification button */
     public var emailNotificationButtonEnabled: Bool?

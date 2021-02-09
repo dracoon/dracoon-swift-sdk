@@ -25,16 +25,6 @@ extension CreateRoomRequest {
     }
 }
 
-extension CreateShareUploadChannelRequest {
-    public init(name: String, _ customize: ((inout CreateShareUploadChannelRequest) -> Void)? = nil) {
-        self.init(name: name,
-                  size: nil,
-                  password: nil)
-        customize?(&self)
-    }
-    
-}
-
 extension CreateFileUploadRequest {
     public init(parentId: Int64,name: String, _ customize: ((inout CreateFileUploadRequest) -> Void)? = nil) {
         self.init(parentId: parentId,

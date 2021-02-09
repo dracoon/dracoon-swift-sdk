@@ -15,8 +15,10 @@ public struct PublicUploadShare: Codable {
     public var isProtected: Bool
     /** Creation date */
     public var createdAt: Date
-    /** &#x60;DEPRECATED&#x60;: Maximal amount of files to upload */
-    public var maxSlots: Int
+    /** Creator name [Since v4.11.0] */
+    public var creatorName: String
+    /** Creator username [Since v4.11.0] */
+    public var creatorUsername: String?
     /** Share display name (alias name) */
     public var name: String?
     /** Encryption state */
@@ -31,7 +33,14 @@ public struct PublicUploadShare: Codable {
     public var userUserPublicKeyList: UserUserPublicKeyList?
     /** Allow display of already uploaded files (default: false) */
     public var showUploadedFiles: Bool?
-    /** &#x60;DEPRECATED&#x60;: Maximal total size of uploaded files (in bytes) */
+    /** Remaining size */
+    public var remainingSize: Int64?
+    /** Remaining slots */
+    public var remainingSlots: Int?
+    
+    /** [Deprecated since v4.2.0] Maximal amount of files to upload */
+    public var maxSlots: Int
+    /** [Deprecated since v4.2.0] Maximal total size of uploaded files (in bytes) */
     public var maxSize: Double?
 
 

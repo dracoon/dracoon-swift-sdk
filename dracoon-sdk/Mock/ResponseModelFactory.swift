@@ -75,10 +75,10 @@ public class ResponseModelFactory {
     }
     
     private func getTestUserAccount() -> UserAccount {
-        
         let userRoles = RoleList(items: [])
+        let userAuthData = UserAuthData(method: .openid, login: "testUser", password: nil, mustChangePassword: false, adConfigId: nil, oidConfigId: 1337)
         
-        let responseModel = UserAccount(_id: 42, login: "test", needsToChangePassword: false, firstName: "Test", lastName: "Test", lockStatus: 0, hasManageableRooms: true, customer: self.getTestCustomerData(), userRoles: userRoles, authMethods: [], needsToChangeUserName: nil, needsToAcceptEULA: nil, title: nil, gender: nil, expireAt: nil, isEncryptionEnabled: true, lastLoginSuccessAt: nil, lastLoginFailAt: nil, userGroups: nil, userAttributes: nil, email: nil, lastLoginSuccessIp: nil, lastLoginFailIp: nil, homeRoomId: 2345)
+        let responseModel = UserAccount(_id: 42, userName: "test", firstName: "test", lastName: "test", isLocked: false, hasManageableRooms: false, userRoles: userRoles, language: nil, authData: userAuthData, mustSetEmail: false, needsToAcceptEULA: false, expireAt: nil, isEncryptionEnabled: true, lastLoginSuccessAt: nil, lastLoginFailAt: nil, email: nil, phone: nil, homeRoomId: nil, userGroups: nil, userAttributes: nil, title: nil, login: "testUser", authMethods: nil, needsToChangePassword: nil, needsToChangeUserName: nil, gender: nil, lastLoginSuccessIp: nil, lastLoginFailIp: nil, lockStatus: 0, customer: self.getTestCustomerData())
         return responseModel
     }
     
@@ -87,7 +87,9 @@ public class ResponseModelFactory {
     }
     
     private func getNode() -> Node {
-        return Node(_id: 1337, type: .room, name: "name", parentId: nil, parentPath: "/root", createdAt: nil, createdBy: nil, updatedAt: nil, updatedBy: nil, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, isEncrypted: nil, cntChildren: nil, cntDeletedVersions: nil, hasRecycleBin: nil, recycleBinRetentionPeriod: nil, quota: nil, cntDownloadShares: nil, cntUploadShares: nil, isFavorite: nil, inheritPermissions: nil, encryptionInfo: nil, branchVersion: nil, mediaToken: nil, s3Key: nil, hasActivitiesLog: nil, children: nil, cntAdmins: nil, cntUsers: nil)
+        let userInfo = UserInfo(_id: 1338)
+        
+        return Node(_id: 1337, type: .room, name: "name", timestampCreation: Date(), timestampModification: Date(), parentId: 42, parentPath: "/root", createdAt: Date(), createdBy: userInfo, updatedAt: Date(), updatedBy: userInfo, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, inheritPermissions: false, isEncrypted: true, encryptionInfo: nil, cntDeletedVersions: 0, cntComments: 0, cntDownloadShares: 0, cntUploadShares: 0, recycleBinRetentionPeriod: 0, hasActivitiesLog: false, quota: nil, isFavorite: true, branchVersion: nil, mediaToken: nil, isBrowsable: true, cntRooms: 0, cntFolders: 1, cntFiles: 5, authParentId: nil, cntChildren: 6, hasRecycleBin: true, children: nil, cntAdmins: nil, cntUsers: nil)
     }
     
     private func getNodeList() -> NodeList {
@@ -107,7 +109,7 @@ public class ResponseModelFactory {
     }
     
     private func getCreateFileUploadResponse() -> CreateFileUploadResponse {
-        return CreateFileUploadResponse(uploadId: "uploadId", token: "uploadToken", uploadUrl: "https://dracoon.team/api/v4/uploads/uploadToken")
+        return CreateFileUploadResponse(uploadUrl: "https://dracoon.team/api/v4/uploads/uploadToken", uploadId: "uploadId", token: "uploadToken")
     }
     
     private func getDownloadTokenGenerateResponse() -> DownloadTokenGenerateResponse {
@@ -136,7 +138,7 @@ public class ResponseModelFactory {
     
     private func getDownloadShare() -> DownloadShare {
         let userInfo = UserInfo(_id: 32)
-        return DownloadShare(_id: 1337, nodeId: 42, accessKey: "accessKey", notifyCreator: false, cntDownloads: 10, createdAt: Date(), createdBy: userInfo, name: nil, notes: nil, showCreatorName: false, showCreatorUsername: false, isProtected: nil, expireAt: nil, maxDownloads: nil, recipients: nil, smsRecipients: nil, nodePath: nil, dataUrl: nil, isEncrypted: nil)
+        return DownloadShare(_id: 1337, nodeId: 42, accessKey: "accessKey", cntDownloads: 10, createdAt: Date(), createdBy: userInfo, name: nil, notes: nil, showCreatorName: false, showCreatorUsername: false, isProtected: false, expireAt: nil, maxDownloads: nil, nodePath: nil, dataUrl: nil, isEncrypted: false, internalNotes: nil, notifyCreator: false, recipients: nil, smsRecipients: nil)
     }
     
     private func getDownloadShareList() -> DownloadShareList {
@@ -146,7 +148,7 @@ public class ResponseModelFactory {
     
     private func getUploadShare() -> UploadShare {
         let userInfo = UserInfo(_id: 32)
-        return UploadShare(_id: 1337, targetId: 42, name: "name", isProtected: false, accessKey: "accessKey", notifyCreator: false, createdAt: Date(), createdBy: userInfo, targetPath: nil, expireAt: nil, isEncrypted: false, notes: nil, filesExpiryPeriod: nil, recipients: nil, smsRecipients: nil, cntFiles: nil, cntUploads: nil, showUploadedFiles: false, dataUrl: nil, maxSlots: nil, maxSize: nil)
+        return UploadShare(_id: 1337, targetId: 42, name: "name", isProtected: false, accessKey: "accessKey", createdAt: Date(), createdBy: userInfo, targetPath: nil, expireAt: nil, isEncrypted: true, notes: nil, filesExpiryPeriod: nil, cntFiles: nil, cntUploads: nil, showUploadedFiles: false, dataUrl: nil, maxSlots: nil, maxSize: nil, showCreatorName: false, showCreatorUsername: false, internalNotes: nil, notifyCreator: nil, recipients: nil, smsRecipients: nil)
     }
     
     private func getUploadShareList() -> UploadShareList {

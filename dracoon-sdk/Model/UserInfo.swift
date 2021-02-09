@@ -27,6 +27,7 @@ public struct UserInfo: Codable {
     public var lastName: String?
     /** Email [Since v4.11.0] */
     public var email: String?
+    
     /** [Deprecated since v4.18.0] Title  */
     public var title: String?
     /** [Deprecated since v4.11.0]:  Display name */

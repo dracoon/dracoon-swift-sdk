@@ -13,7 +13,8 @@ public struct DownloadTokenGenerateResponse: Codable {
 
     /** Download URL */
     public var downloadUrl: String?
-    /** &#x60;DEPRECATED&#x60;: Download token */
+    
+    /** [Deprecated since v4.3.0] Download token */
     public var token: String
 
 

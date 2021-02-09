@@ -18,7 +18,7 @@ public struct UserAccount: Codable {
     public var firstName: String
     /** User last name */
     public var lastName: String
-    /** Determines if  user is locked*/
+    /** Determines if  user is locked */
     public var isLocked: Bool
     /** User has manageable rooms */
     public var hasManageableRooms: Bool
@@ -57,15 +57,15 @@ public struct UserAccount: Codable {
      Job title */
     public var title: String?
     /** [Deprecated since 4.13.0]
-     User login name */
-    public var login: String
-    /** [Deprecated since v4.13.0]
      Please use authData.login instead.
+     User login name */
+    public var login: String?
+    /** [Deprecated since v4.13.0]
      Authentication methods: * &#x60;sql&#x60; * &#x60;active_directory&#x60; * &#x60;radius&#x60; * &#x60;openid&#x60; */
-    public var authMethods: [UserAuthMethod]
+    public var authMethods: [UserAuthMethod]?
     /** [Deprecated since v4.13.0]
      User has changed the password */
-    public var needsToChangePassword: Bool
+    public var needsToChangePassword: Bool?
     /** [Deprecated since v4.13.0]
      If true, the user must change the &#x60;userName&#x60; at the first login. (default: false) */
     public var needsToChangeUserName: Bool?
@@ -80,10 +80,10 @@ public struct UserAccount: Codable {
     public var lastLoginFailIp: String?
     /** [Deprecated since v4.7.0]
      User lock status: * &#x60;0&#x60; - locked * &#x60;1&#x60; - Web access allowed * &#x60;2&#x60; - Web and mobile access allowed */
-    public var lockStatus: Int
+    public var lockStatus: Int?
     /** [Deprecated since v4.10.0]
      Customer information */
-    public var customer: CustomerData
+    public var customer: CustomerData?
     
     public enum Gender: String, Codable {
         case m = "m"

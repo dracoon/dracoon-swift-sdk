@@ -11,12 +11,13 @@ import Foundation
 
 public struct CreateFileUploadResponse: Codable {
 
-    /** Upload (channel) ID */
-    public var uploadId: String
-    /** &#x60;DEPRECATED&#x60;: Upload token */
-    public var token: String
     /** (public) Upload URL */
     public var uploadUrl: String
+    /** Upload (channel) ID */
+    public var uploadId: String
+    
+    /** [Deprecated since v4.3.0] Upload token */
+    public var token: String
 
 
 
