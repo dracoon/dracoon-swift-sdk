@@ -18,7 +18,10 @@ public struct SystemDefaults: Codable {
     public var uploadShareDefaultExpirationPeriod: Int?
     /** Default expiration period for all uploaded files in days. */
     public var fileDefaultExpirationPeriod: Int?
-
+    /** Defines if new users get the role Non Member Viewer by default [Since v4.12.0] */
+    public var nonmemberViewerDefault: Bool?
+    /** Defines if login fields should be hidden [Since v4.13.0] */
+    public var hideLoginInputFields: Bool?
 
 
 }
