@@ -67,7 +67,7 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
         self.callback?.onCanceled?()
     }
     
-    fileprivate func getDownloadToken(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<DownloadTokenGenerateResponse>) {
+    fileprivate func getDownloadURL(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<DownloadTokenGenerateResponse>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/" + String(nodeId) + "/downloads"
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
@@ -80,16 +80,10 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
     }
     
     fileprivate func requestDownload() {
-        self.getDownloadToken(nodeId: self.nodeId, completion: { result in
+        self.getDownloadURL(nodeId: self.nodeId, completion: { result in
             switch result {
-            case .value(let tokenResponse):
-                if let downloadUrl = tokenResponse.downloadUrl {
-                    self.download(url: downloadUrl)
-                } else {
-                    let url = self.serverUrl.absoluteString + self.apiPath + "/downloads/" + tokenResponse.token
-                    self.download(url: url)
-                }
-                break
+            case .value(let response):
+                self.download(url: response.downloadUrl)
             case .error(let error):
                 self.callback?.onError?(error)
             }

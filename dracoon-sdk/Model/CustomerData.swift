@@ -26,12 +26,6 @@ public struct CustomerData: Codable {
     public var accountsUsed: Int
     /** Clientside encryption for customer enabled */
     public var customerEncryptionEnabled: Bool
-    /** Total number of files Visible only with at least one global role. */
-    public var cntFiles: Int64?
-    /** Total number of folders Visible only with at least one global role. */
-    public var cntFolders: Int64?
-    /** Total number of rooms Visible only with at least one global role. */
-    public var cntRooms: Int64?
 
 
     public enum CodingKeys: String, CodingKey { 
@@ -43,9 +37,6 @@ public struct CustomerData: Codable {
         case accountsLimit
         case accountsUsed
         case customerEncryptionEnabled
-        case cntFiles
-        case cntFolders
-        case cntRooms
     }
 
 

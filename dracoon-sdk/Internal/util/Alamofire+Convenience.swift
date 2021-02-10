@@ -16,6 +16,10 @@ public struct Dracoon {
     
     public struct Response {
         public let error: DracoonError?
+        
+        public init(error: DracoonError?) {
+            self.error = error
+        }
     }
 }
 

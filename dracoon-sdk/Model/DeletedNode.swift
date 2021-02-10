@@ -55,8 +55,6 @@ public struct DeletedNode: Codable {
     public var deletedAt: Date?
     /** Deleted by user info */
     public var deletedBy: UserInfo?
-    /** S3 key */
-    public var s3Key: UserInfo?
 
 
     public enum CodingKeys: String, CodingKey { 
@@ -77,7 +75,6 @@ public struct DeletedNode: Codable {
         case updatedBy
         case deletedAt
         case deletedBy
-        case s3Key
     }
 
 

@@ -16,8 +16,6 @@ public struct DownloadShare: Codable {
     public var nodeId: Int64
     /** Share access key to generate secure link */
     public var accessKey: String
-    /** Notify creator on every download. (default: false) */
-    public var notifyCreator: Bool
     /** Downloads counter (incremented on each download) */
     public var cntDownloads: Int
     /** Creation date */
@@ -38,10 +36,6 @@ public struct DownloadShare: Codable {
     public var expireAt: Date?
     /** Max allowed downloads */
     public var maxDownloads: Int?
-    /** CSV string of recipient emails */
-    public var recipients: String?
-    /** CSV string of recipient MSISDNs */
-    public var smsRecipients: String?
     /** Path to shared download node */
     public var nodePath: String?
     /** Base64 encoded qr code image data */
@@ -51,6 +45,9 @@ public struct DownloadShare: Codable {
     /** Internal notes. Limited to 255 characters.
      [Since version 4.11.0] */
     public var internalNotes: String?
+    
+    /** [Deprecated since v4.20.0] Notify creator on every download. (default: false) */
+    public var notifyCreator: Bool?
 
 
     public enum CodingKeys: String, CodingKey { 
@@ -68,8 +65,6 @@ public struct DownloadShare: Codable {
         case isProtected
         case expireAt
         case maxDownloads
-        case recipients
-        case smsRecipients
         case nodePath
         case dataUrl
         case isEncrypted

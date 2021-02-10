@@ -59,7 +59,7 @@ public class DracoonClientImpl: DracoonClient {
         server = DracoonServerImpl(config: requestConfig)
         account = DracoonAccountImpl(config: requestConfig, crypto: crypto)
         config = DracoonConfigImpl(config: requestConfig)
-        users = NotImplementedYet()
+        users = DracoonUsersImpl(config: requestConfig)
         groups = NotImplementedYet()
         settings = DracoonSettingsImpl(config: requestConfig)
         nodes = DracoonNodesImpl(requestConfig: requestConfig, crypto: crypto, account: account, config: config, getEncryptionPassword: getEncryptionPassword)
@@ -84,7 +84,7 @@ public class DracoonClientImpl: DracoonClient {
     
     public var settings: DracoonSettings
     
-    class NotImplementedYet: DracoonUsers, DracoonGroups {
+    class NotImplementedYet: DracoonGroups {
     }
     
     public func getAccessToken() -> String? {

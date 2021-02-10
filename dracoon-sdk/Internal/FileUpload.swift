@@ -264,6 +264,8 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
             self.callback?.onError?(DracoonError.generic(error: error))
+        } else if let response = task.response as? HTTPURLResponse, response.statusCode >= 400 {
+            self.callback?.onError?(DracoonError.upload_failed(statusCode: response.statusCode))
         } else {
             self.completeUpload(uploadUrl: self.uploadUrl!, encryptedFileKey: self.encryptedFileKey)
         }

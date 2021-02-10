@@ -524,6 +524,8 @@ class DracoonNodesImpl: DracoonNodes {
             .decode(NodeList.self, decoder: self.decoder, requestType: .searchNodes, completion: completion)
     }
     
+    // MARK: Favorites
+    
     func getFavorites(completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/search"
         
@@ -547,6 +549,86 @@ class DracoonNodesImpl: DracoonNodes {
     
     func removeFavorite(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(nodeId)/favorite"
+        
+        self.session.request(requestUrl, method: .delete)
+            .validate()
+            .handleResponse(decoder: self.decoder, completion: completion)
+    }
+    
+    // MARK: Comments
+    
+    func getComments(for nodeId: Int64, limit: Int64?, offset: Int64?, completion: @escaping DataRequest.DecodeCompletion<CommentList>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(String(nodeId))/comments"
+        
+        var parameters = Parameters()
+        
+        if let limit = limit {
+            parameters["limit"] = limit
+        }
+        
+        if let offset = offset {
+            parameters["offset"] = offset
+        }
+        
+        self.session.request(requestUrl, method: .get, parameters: parameters)
+            .validate()
+            .decode(CommentList.self, decoder: self.decoder, requestType: .getNodes, completion: completion)
+    }
+    
+    func createComment(for nodeId: Int64, commentText: String, completion: @escaping DataRequest.DecodeCompletion<Comment>) {
+        guard !commentText.isEmpty else {
+            let apiError = DracoonSDKErrorModel(errorCode: .VALIDATION_FIELD_CANNOT_BE_EMPTY, httpStatusCode: 400)
+            completion(Dracoon.Result.error(DracoonError.api(error: apiError)))
+            return
+        }
+        let request = CreateNodeCommentRequest(text: commentText)
+        do {
+            let jsonBody = try encoder.encode(request)
+            
+            let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(String(nodeId))/comments"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.session.request(urlRequest)
+                .validate()
+                .decode(Comment.self, decoder: self.decoder, requestType: .other, completion: completion)
+            
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
+    func updateComment(commentId: Int64, updatedText: String, completion: @escaping DataRequest.DecodeCompletion<Comment>) {
+        guard !updatedText.isEmpty else {
+            let apiError = DracoonSDKErrorModel(errorCode: .VALIDATION_FIELD_CANNOT_BE_EMPTY, httpStatusCode: 400)
+            completion(Dracoon.Result.error(DracoonError.api(error: apiError)))
+            return
+        }
+        let request = ChangeNodeCommentRequest(text: updatedText)
+        do {
+            let jsonBody = try encoder.encode(request)
+            
+            let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/comments/\(String(commentId))"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.session.request(urlRequest)
+                .validate()
+                .decode(Comment.self, decoder: self.decoder, requestType: .other, completion: completion)
+            
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
+    func deleteComment(commentId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/comments/\(String(commentId))"
         
         self.session.request(requestUrl, method: .delete)
             .validate()
@@ -614,11 +696,11 @@ class DracoonNodesImpl: DracoonNodes {
         let item = items[Int(progress.completedUnitCount)]
         
         guard let fileId = item.fileId, let userId = item.userId,
-            let userPublicKey = self.getUserPublicKey(userId: userId, keys: missingKeys.users!),
-            let fileKey = self.getFileKeyForFile(fileId: fileId, keys: missingKeys.files!) else {
-                progress.completedUnitCount = progress.completedUnitCount + 1
-                self.generateMissingFileKey(missingKeys: missingKeys, progress: progress, results: results, completion: completion)
-                return
+              let userPublicKey = self.getUserPublicKey(userId: userId, keys: missingKeys.users!),
+              let fileKey = self.getFileKeyForFile(fileId: fileId, keys: missingKeys.files!) else {
+            progress.completedUnitCount = progress.completedUnitCount + 1
+            self.generateMissingFileKey(missingKeys: missingKeys, progress: progress, results: results, completion: completion)
+            return
         }
         var keyItems = results
         

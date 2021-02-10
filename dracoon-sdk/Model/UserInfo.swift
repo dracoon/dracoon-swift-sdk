@@ -13,17 +13,37 @@ public struct UserInfo: Codable {
 
     /** Unique identifier for the user */
     public var _id: Int64
-    /** Display name */
-    public var displayName: String
+    /** User type is one of
+     internal, external, system or deleted
+     [Since v4.11.0] */
+    public var userType: String?
+    /** Avatar UUID [Since v4.11.0] */
+    public var avatarUuid: String?
+    /** Username (only returned for internal users) [Since v4.13.0] */
+    public var userName: String?
+    /** User first name (mandatory if userType is internal) [Since v4.11.0] */
+    public var firstName: String?
+    /** User last name (mandatory if userType is internal) [Since v4.11.0] */
+    public var lastName: String?
+    /** Email [Since v4.11.0] */
+    public var email: String?
+    
+    /** [Deprecated since v4.18.0] Title  */
+    public var title: String?
 
     public enum CodingKeys: String, CodingKey { 
         case _id = "id"
-        case displayName
+        case userType
+        case avatarUuid
+        case userName
+        case firstName
+        case lastName
+        case email
+        case title
     }
 
-    public init(_id: Int64, displayName: String) {
+    public init(_id: Int64) {
         self._id = _id
-        self.displayName = displayName
     }
 }
 

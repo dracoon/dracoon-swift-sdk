@@ -83,6 +83,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     case VALIDATION_ENCRYPTED_FILE_CAN_ONLY_BE_RESTORED_IN_ORIGINAL_ROOM = 3127
     case VALIDATION_KEEPSHARELINKS_ONLY_WITH_OVERWRITE = 3128
     case VALIDATION_INVALID_ETAGS = 3129
+    case VALIDATION_INPUT_CONTAINS_INVALID_CHARACTERS = 3130
     
     // Shares
     
@@ -301,6 +302,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "Keep share links is only allowed with resolution strategy 'overwrite'."
         case .VALIDATION_INVALID_ETAGS:
             return "Invalid Etag(s)"
+        case .VALIDATION_INPUT_CONTAINS_INVALID_CHARACTERS:
+            return "Input contains invalid characters."
             
         case .VALIDATION_DL_SHARE_CANNOT_CREATE_ON_ENCRYPTED_ROOM_FOLDER:
             return "A download share cannot be created on a encrypted room or folder."

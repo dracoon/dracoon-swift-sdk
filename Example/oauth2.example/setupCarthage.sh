@@ -3,6 +3,7 @@ cat Cartfile | grep -v "file" > NewCartfile
 mv NewCartfile Cartfile
 
 # Add Dependency to the parent folder
-echo "git \"file://$(pwd)/../../sdk-swift\"" >> Cartfile
+echo "git \"file://$(pwd)/../../\"" >> Cartfile
 
-carthage bootstrap --no-use-binaries --platform ios
+chmod +x carthage-build.sh
+./carthage-build.sh bootstrap --no-use-binaries --platform ios

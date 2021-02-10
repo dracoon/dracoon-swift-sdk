@@ -14,6 +14,10 @@ public struct PublicKeyContainer: Codable {
     public var version: UserKeyPairVersion
     /** Public key */
     public var publicKey: String
+    /** Creation date [Since 4.24.0] */
+    public var createdAt: Date?
+    /** Created by user [Since 4.24.0] */
+    public var createdBy: Int64?
 
     public init(publicKey: String, version: UserKeyPairVersion) {
         self.publicKey = publicKey

@@ -35,7 +35,6 @@ class DracoonAccountImpl: DracoonAccount {
         self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
             .decode(UserAccount.self, decoder: self.decoder, completion: completion)
-        
     }
     
     func getCustomerAccount(completion: @escaping (Dracoon.Result<CustomerData>) -> Void) {
@@ -181,10 +180,11 @@ class DracoonAccountImpl: DracoonAccount {
                         return (targetUrl, [.removePreviousFile, .createIntermediateDirectories])
                     })
                     .response(completionHandler: { downloadResponse in
-                        if let downloadError = downloadResponse.error {
-                            completion(Dracoon.Result.error(DracoonError.generic(error: downloadError)))
-                        } else {
+                        switch downloadResponse.result {
+                        case .success(_):
                             completion(Dracoon.Result.value(avatar))
+                        case .failure(let error):
+                            completion(Dracoon.Result.error(DracoonError.generic(error: error)))
                         }
                     })
             }

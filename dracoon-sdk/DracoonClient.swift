@@ -185,7 +185,16 @@ public protocol DracoonConfig {
     func getCryptoAlgorithms(completion: @escaping DataRequest.DecodeCompletion<AlgorithmVersionInfoList>)
 }
 
-public protocol DracoonUsers {}
+public protocol DracoonUsers {
+    /// Downloads the user's avatar.
+    ///
+    /// - Parameters:
+    ///   - userId: The ID of the user
+    ///   - avatarUuid: The ID string of the avatar
+    ///   - targetUrl: URL to which the avatar image will be downloaded.
+    ///   - completion: Returns user avatar on success or an error.
+    func downloadUserAvatar(userId: Int64, avatarUuid: String, targetUrl: URL, completion: @escaping (Dracoon.Response) -> Void)
+}
 
 public protocol DracoonGroups {}
 
@@ -369,6 +378,42 @@ public protocol DracoonNodes {
     ///   - limit: Limits the number of returned nodes. Must be positive.
     ///   - completion: Returns a [list of nodes](x-source-tag://NodeList) on success or an error.
     func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>)
+    
+    /// Get comments for a specific node.
+    /// - Requires:  API version from 4.10.0.
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the node
+    ///   - limit: Limits the number of returned nodes. Must be positive.
+    ///   - offset: Puts an offset on the returned nodes. Must be 0 or positive.
+    ///   - completion: Returns the [comments](x-source-tag://CommentList) on success or an error.
+    func getComments(for nodeId: Int64, limit: Int64?, offset: Int64?, completion: @escaping DataRequest.DecodeCompletion<CommentList>)
+    
+    /// Create a comment for a specific node.
+    /// - Requires:  API version from 4.10.0.
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the node
+    ///   - commentText: The text of the comment
+    ///   - completion: Returns the [comment](x-source-tag://Comment) on success or an error.
+    func createComment(for nodeId: Int64, commentText: String, completion: @escaping DataRequest.DecodeCompletion<Comment>)
+    
+    /// Edit the text of an existing comment for a specific node.
+    /// - Requires:  API version from 4.10.0.
+    ///
+    /// - Parameters:
+    ///   - commentId: The ID of the comment
+    ///   - updatedText: The updated text of the comment
+    ///   - completion: Returns the updated [comment](x-source-tag://Comment) on success or an error.
+    func updateComment(commentId: Int64, updatedText: String, completion: @escaping DataRequest.DecodeCompletion<Comment>)
+    
+    /// Delete an existing comment for a specific node.
+    /// - Requires:  API version from 4.10.0.
+    ///
+    /// - Parameters:
+    ///   - commentId: The ID of the comment
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteComment(commentId: Int64, completion: @escaping (Dracoon.Response) -> Void)
     
     /// Rerieves favorite nodes.
     ///

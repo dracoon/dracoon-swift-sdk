@@ -30,12 +30,10 @@ public struct Customer: Codable {
     public var userMax: Int
     /** Number of users which are already allocated. */
     public var userUsed: Int
-    /** Customer lock status: * &#x60;false&#x60; - unlocked * &#x60;true&#x60; - locked  All users of this customer will be blocked and can not login anymore. (default: false) */
-    public var lockStatus: Bool
     /** Creation date */
     public var createdAt: Date
-    /** Customer activation code string: * valid only for types &#x60;free&#x60; and &#x60;demo&#x60; * for &#x60;pay&#x60; customers it is empty */
-    public var activationCode: String?
+    /** Determines if  customer is locked */
+    public var isLocked: Bool?
     /** Number of days left for trial period (relevant only for type &#x60;demo&#x60;) */
     public var trialDaysLeft: Int?
     /** Provider customer ID value (relevant only for type &#x60;pay&#x60;) */
@@ -46,7 +44,10 @@ public struct Customer: Codable {
     public var lastLoginAt: Date?
     /** Customer attributes */
     public var customerAttributes: CustomerAttributes?
-
+    /** Maximal number of webhooks [Since v4.19.0] */
+    public var webhooksMax: Int64?
+    /** Customer UUID [Since v4.21.0] */
+    public var customerUuid: String?
 
     public enum CodingKeys: String, CodingKey { 
         case _id = "id"
@@ -56,14 +57,15 @@ public struct Customer: Codable {
         case quotaUsed
         case userMax
         case userUsed
-        case lockStatus
         case createdAt
-        case activationCode
+        case isLocked
         case trialDaysLeft
         case providerCustomerId
         case updatedAt
         case lastLoginAt
         case customerAttributes
+        case webhooksMax
+        case customerUuid
     }
 
 

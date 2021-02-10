@@ -13,7 +13,17 @@ public struct SystemInfo: Codable {
 
     /** System default language cf. [RFC 5646](https://tools.ietf.org/html/rfc5646) */
     public var languageDefault: String
-    /** Authentication methods: * &#x60;sql&#x60; * &#x60;active_directory&#x60; * &#x60;radius&#x60; * &#x60;openid&#x60; */
+    /** Defines if login fields should be hidden [Since v4.13.0] */
+    public var hideLoginInputFields: Bool?
+    /** List of S3 Hosts for CSP header [[Since v4.14.0]] */
+    public var s3Hosts: [String]?
+    /** Determines whether S3 direct upload is enforced or not [Since v4.15.0] */
+    public var s3EnforceDirectUpload: Bool?
+    /** Defines if S3 is used as storage backend [Since v4.21.0] */
+    public var useS3Storage: Bool?
+    
+    /** [Deprecated since v4.13.0]
+     Authentication methods: * &#x60;sql&#x60; * &#x60;active_directory&#x60; * &#x60;radius&#x60; * &#x60;openid&#x60; */
     public var authMethods: [AuthMethod]
 
 

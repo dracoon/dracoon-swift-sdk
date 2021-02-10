@@ -19,7 +19,10 @@ public struct InfrastructureProperties: Codable {
     /** Enforce direct upload to S3
      [Since version 4.13.0] */
     public var s3EnforceDirectUpload: Bool?
-
+    /** Determines if the DRACOON Core is deployed in the cloud environment [Since v4.21.0] */
+    public var isDracoonCloud: Bool?
+    /** Current tenant UUID [Since v4.21.0] */
+    public var tenantUuid: String?
 
 }
 

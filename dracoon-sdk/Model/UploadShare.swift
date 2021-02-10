@@ -20,8 +20,6 @@ public struct UploadShare: Codable {
     public var isProtected: Bool
     /** Share access key to generate secure link */
     public var accessKey: String
-    /** Notify creator on every upload. (default: false) */
-    public var notifyCreator: Bool
     /** Creation date */
     public var createdAt: Date
     /** Created by user info */
@@ -36,10 +34,6 @@ public struct UploadShare: Codable {
     public var notes: String?
     /** Number of days after which uploaded files expire */
     public var filesExpiryPeriod: Int?
-    /** CSV string of recipient emails */
-    public var recipients: String?
-    /** CSV string of recipient MSISDNs */
-    public var smsRecipients: String?
     /** Total amount of existing files uploaded with this share. */
     public var cntFiles: Int?
     /** Total amount of uploads conducted with this share. */
@@ -62,6 +56,9 @@ public struct UploadShare: Codable {
      [Since version 4.11.0] */
     public var internalNotes: String?
     
+    /** [Deprecated since v4.20.0] Notify creator on every upload. (default: false) */
+    public var notifyCreator: Bool?
+    
     
     public enum CodingKeys: String, CodingKey { 
         case _id = "id"
@@ -77,8 +74,6 @@ public struct UploadShare: Codable {
         case isEncrypted
         case notes
         case filesExpiryPeriod
-        case recipients
-        case smsRecipients
         case cntFiles
         case cntUploads
         case showUploadedFiles

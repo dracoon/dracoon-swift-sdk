@@ -15,6 +15,10 @@ public struct CopyNode: Codable {
     public var _id: Int64
     /** New node name */
     public var name: String?
+    /** Time the node was created on external file system [Since version 4.22.0] */
+    public var timestampCreation: Date?
+    /** Time the content of a node was last modified on external file system [Since version 4.22.0] */
+    public var timestampModification: Date?
 
 
     public enum CodingKeys: String, CodingKey { 
