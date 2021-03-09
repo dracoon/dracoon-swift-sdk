@@ -95,7 +95,7 @@ class DracoonNodesMock: DracoonNodes {
         self.returnErrorOrNodeList(completion)
     }
     
-    func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
+    func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, sorting: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
         self.returnErrorOrNodeList(completion)
     }
     
