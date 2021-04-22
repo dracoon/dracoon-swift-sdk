@@ -6,7 +6,7 @@ A library to access DRACOON REST API
 
 #### Minimum Requirements
 
-Xcode 11.0 or newer
+Xcode 12
 
 #### Carthage
 
@@ -18,16 +18,16 @@ Add the SDK and its dependencies to your Cartfile:
 
 Then run
 
-`./carthage-build.sh update --platform iOS --cache-builds`
+`./carthage-build.sh update --use-xcframeworks --platform iOS`
 
-To add the frameworks to your project, open it in Xcode, choose the "General" tab in targets settings and add it to "Linked Frameworks and Libraries".
+To add the xcframework to your project, open it in Xcode, select the "Build phases" tab in targets settings and add it to "Link Binary With Libraries". Then select "General" and choose "Embed and Sign" in the "Frameworks, Libraries, and Embedded Content" section.
 
 #### CocoaPods
 
 Add to your Podfile:
 ```
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '10'
+platform :ios, '11.4'
 use_frameworks!
 
 target '<Your Target Name>' do
