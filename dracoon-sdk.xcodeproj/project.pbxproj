@@ -16,8 +16,10 @@
 		8496F3C0205AB32B000EE909 /* DracoonError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496F3BF205AB32B000EE909 /* DracoonError.swift */; };
 		8496F3C2205C0BB6000EE909 /* DracoonSharesImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496F3C1205C0BB6000EE909 /* DracoonSharesImpl.swift */; };
 		84CD42F72113023000A2F6A4 /* RequestBuilders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CD42F62113023000A2F6A4 /* RequestBuilders.swift */; };
-		DBA0E15B26305F2200AAFE6D /* Alamofire.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */; };
-		DBA0E15F26305F2500AAFE6D /* crypto_sdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */; };
+		DB7A486B2632C28700F587B2 /* Alamofire.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */; };
+		DB7A486C2632C28700F587B2 /* Alamofire.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DB7A486F2632C28900F587B2 /* crypto_sdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */; };
+		DB7A48702632C28900F587B2 /* crypto_sdk.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DE52662A21AFCF3800050482 /* CustomerSettingsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662921AFCF3800050482 /* CustomerSettingsResponse.swift */; };
 		DE52662C21AFD09600050482 /* CustomerSettingsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662B21AFD09600050482 /* CustomerSettingsRequest.swift */; };
 		DE52662E21AFF2AB00050482 /* DracoonSettingsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662D21AFF2AB00050482 /* DracoonSettingsImpl.swift */; };
@@ -212,6 +214,21 @@
 			remoteInfo = "dracoon-sdk";
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DB7A486D2632C28700F587B2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DB7A486C2632C28700F587B2 /* Alamofire.xcframework in Embed Frameworks */,
+				DB7A48702632C28900F587B2 /* crypto_sdk.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		845044A121119EA0005C4806 /* Alamofire.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Alamofire.framework; sourceTree = "<group>"; };
@@ -420,8 +437,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBA0E15B26305F2200AAFE6D /* Alamofire.xcframework in Frameworks */,
-				DBA0E15F26305F2500AAFE6D /* crypto_sdk.xcframework in Frameworks */,
+				DB7A486B2632C28700F587B2 /* Alamofire.xcframework in Frameworks */,
+				DB7A486F2632C28900F587B2 /* crypto_sdk.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -744,6 +761,7 @@
 				E00067002057C6CD009CDA70 /* Sources */,
 				E00067012057C6CD009CDA70 /* Frameworks */,
 				E00067022057C6CD009CDA70 /* Headers */,
+				DB7A486D2632C28700F587B2 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
