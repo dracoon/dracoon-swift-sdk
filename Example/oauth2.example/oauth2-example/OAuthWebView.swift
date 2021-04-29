@@ -10,7 +10,7 @@ import UIKit
 import WebKit
 import dracoon_sdk
 
-protocol OAuthWebViewDelegate: class {
+protocol OAuthWebViewDelegate: AnyObject {
     func receivedCode(code: String)
 }
 
