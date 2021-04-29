@@ -3,12 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		845044A921119F56005C4806 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 845044A121119EA0005C4806 /* Alamofire.framework */; };
-		845044AA21119F56005C4806 /* crypto_sdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 845044A221119EA1005C4806 /* crypto_sdk.framework */; };
 		8496F3AE205916A1000EE909 /* DracoonClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496F3AD205916A1000EE909 /* DracoonClient.swift */; };
 		8496F3B120591B16000EE909 /* DracoonClientImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496F3B020591B16000EE909 /* DracoonClientImpl.swift */; };
 		8496F3B320591C53000EE909 /* DracoonServerImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496F3B220591C53000EE909 /* DracoonServerImpl.swift */; };
@@ -18,6 +16,8 @@
 		8496F3C0205AB32B000EE909 /* DracoonError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496F3BF205AB32B000EE909 /* DracoonError.swift */; };
 		8496F3C2205C0BB6000EE909 /* DracoonSharesImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496F3C1205C0BB6000EE909 /* DracoonSharesImpl.swift */; };
 		84CD42F72113023000A2F6A4 /* RequestBuilders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CD42F62113023000A2F6A4 /* RequestBuilders.swift */; };
+		DB7A486B2632C28700F587B2 /* Alamofire.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */; };
+		DB7A486F2632C28900F587B2 /* crypto_sdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */; };
 		DE52662A21AFCF3800050482 /* CustomerSettingsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662921AFCF3800050482 /* CustomerSettingsResponse.swift */; };
 		DE52662C21AFD09600050482 /* CustomerSettingsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662B21AFD09600050482 /* CustomerSettingsRequest.swift */; };
 		DE52662E21AFF2AB00050482 /* DracoonSettingsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662D21AFF2AB00050482 /* DracoonSettingsImpl.swift */; };
@@ -225,6 +225,8 @@
 		8496F3BF205AB32B000EE909 /* DracoonError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonError.swift; sourceTree = "<group>"; };
 		8496F3C1205C0BB6000EE909 /* DracoonSharesImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSharesImpl.swift; sourceTree = "<group>"; };
 		84CD42F62113023000A2F6A4 /* RequestBuilders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestBuilders.swift; sourceTree = "<group>"; };
+		DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Alamofire.xcframework; path = Carthage/Build/Alamofire.xcframework; sourceTree = "<group>"; };
+		DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = crypto_sdk.xcframework; path = Carthage/Build/crypto_sdk.xcframework; sourceTree = "<group>"; };
 		DE52662921AFCF3800050482 /* CustomerSettingsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSettingsResponse.swift; sourceTree = "<group>"; };
 		DE52662B21AFD09600050482 /* CustomerSettingsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSettingsRequest.swift; sourceTree = "<group>"; };
 		DE52662D21AFF2AB00050482 /* DracoonSettingsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSettingsImpl.swift; sourceTree = "<group>"; };
@@ -418,8 +420,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				845044A921119F56005C4806 /* Alamofire.framework in Frameworks */,
-				845044AA21119F56005C4806 /* crypto_sdk.framework in Frameworks */,
+				DB7A486B2632C28700F587B2 /* Alamofire.xcframework in Frameworks */,
+				DB7A486F2632C28900F587B2 /* crypto_sdk.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -660,6 +662,8 @@
 		E00068882057E6C8009CDA70 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */,
+				DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */,
 				E0AD911222E9D40D00741634 /* crypto_sdk.framework */,
 				845044A121119EA0005C4806 /* Alamofire.framework */,
 				E0AD911022E9D3FD00741634 /* Alamofire.framework */,
@@ -740,7 +744,6 @@
 				E00067002057C6CD009CDA70 /* Sources */,
 				E00067012057C6CD009CDA70 /* Frameworks */,
 				E00067022057C6CD009CDA70 /* Headers */,
-				E00067032057C6CD009CDA70 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -776,7 +779,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1030;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = Dracoon;
 				TargetAttributes = {
 					E00067042057C6CD009CDA70 = {
@@ -790,7 +793,7 @@
 				};
 			};
 			buildConfigurationList = E00066FF2057C6CD009CDA70 /* Build configuration list for PBXProject "dracoon-sdk" */;
-			compatibilityVersion = "Xcode 8.0";
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -809,13 +812,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		E00067032057C6CD009CDA70 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		E0AD90EC22E85B3000741634 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1043,6 +1039,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1091,7 +1088,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1106,6 +1103,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1148,10 +1146,11 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1161,6 +1160,7 @@
 		E000670E2057C6CD009CDA70 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -1170,28 +1170,30 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.1.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				"VALID_ARCHS[sdk=iphonesimulator*]" = x86_64;
 			};
 			name = Debug;
 		};
 		E000670F2057C6CD009CDA70 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -1201,21 +1203,22 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 2.1.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				"VALID_ARCHS[sdk=iphonesimulator*]" = x86_64;
 			};
 			name = Release;
 		};
@@ -1225,13 +1228,16 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DCJ6BPJV88;
-				FRAMEWORK_SEARCH_PATHS = (
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = "dracoon-sdk-tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks;",
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = "dracoon-sdk-tests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks; $(inherited) $(PROJECT_DIR)/Carthage/Build/iOS";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk-tests";
@@ -1247,13 +1253,16 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = DCJ6BPJV88;
-				FRAMEWORK_SEARCH_PATHS = (
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = "dracoon-sdk-tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks;",
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
-				INFOPLIST_FILE = "dracoon-sdk-tests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks; $(inherited) $(PROJECT_DIR)/Carthage/Build/iOS";
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";

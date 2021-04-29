@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DRACOON-SDK'
-  s.version          = '2.1.0'
+  s.version          = '2.2.0'
   s.summary          = 'Official DRACOON SDK'
 
   s.description      = <<-DESC
@@ -21,12 +21,11 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/dracoon/dracoon-swift-sdk.git', :tag => "v" + s.version.to_s }
   s.module_name      = 'dracoon_sdk'
 
-  s.ios.deployment_target = '10'
-  s.swift_version = '5'
-  s.pod_target_xcconfig = { 'VALID_ARCHS' => 'x86_64 armv7 arm64' }
+  s.ios.deployment_target = '11.4'
+  s.swift_version = '5.3'
 
   s.source_files = 'dracoon-sdk/**/*'
 
    s.dependency 'Alamofire', '~> 5.4.0'
-   s.dependency 'DRACOON-Crypto-SDK', '~> 2.0.0'
+   s.dependency 'DRACOON-Crypto-SDK', '~> 2.1.0'
 end

@@ -499,7 +499,7 @@ class DracoonNodesImpl: DracoonNodes {
         
     }
     
-    func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
+    func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, sorting: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/search"
         
         var parameters: Parameters = [
@@ -517,6 +517,9 @@ class DracoonNodesImpl: DracoonNodes {
         }
         if let filter = filter {
             parameters["filter"] = filter
+        }
+        if let sorting = sorting {
+            parameters["sort"] = sorting
         }
         
         self.session.request(requestUrl, method: .get, parameters: parameters)

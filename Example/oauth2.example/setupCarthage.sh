@@ -6,4 +6,4 @@ mv NewCartfile Cartfile
 echo "git \"file://$(pwd)/../../\"" >> Cartfile
 
 chmod +x carthage-build.sh
-./carthage-build.sh bootstrap --no-use-binaries --platform ios
+carthage bootstrap --no-use-binaries --platform ios --use-xcframeworks

@@ -7,7 +7,7 @@ targets:
       ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES: $(inherited)
     type: application
     platform: iOS
-    deploymentTarget: "9.3"
+    deploymentTarget: "11.4"
     sources:
       - oauth2-example
     dependencies:

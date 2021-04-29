@@ -95,7 +95,7 @@ class DracoonNodesMock: DracoonNodes {
         self.returnErrorOrNodeList(completion)
     }
     
-    func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
+    func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, sorting: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
         self.returnErrorOrNodeList(completion)
     }
     
@@ -125,6 +125,8 @@ class DracoonNodesMock: DracoonNodes {
             return EncryptedFileKey(key: "encryptedFileKey", version: .RSA2048_AES256GCM, iv: "iv", tag: "tag")
         case .RSA4096:
             return EncryptedFileKey(key: "encryptedFileKey", version: .RSA4096_AES256GCM, iv: "iv", tag: "tag")
+        default:
+            throw DracoonError.keypair_failure(description: "Unknown version: \(publicKey.version)")
         }
     }
     

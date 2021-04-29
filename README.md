@@ -6,46 +6,39 @@ A library to access DRACOON REST API
 
 #### Minimum Requirements
 
-Xcode 11.0 or newer
+Xcode 12.3
 
 #### Carthage
 
-Add the SDK and its dependencies to your Cartfile:
+Add the SDK to your Cartfile:
 
-`github "dracoon/dracoon-swift-sdk.git" ~> 2.1.0`
-`github "Alamofire/Alamofire" ~> 5.4.0`
-`github "dracoon/dracoon-swift-crypto-sdk.git" ~> 2.0.0`
+`github "dracoon/dracoon-swift-sdk.git" ~> 2.2.0`
 
 Then run
 
-`./carthage-build.sh update --platform iOS --cache-builds`
+`carthage update --platform iOS`
 
-To add the frameworks to your project, open it in Xcode, choose the "General" tab in targets settings and add it to "Linked Frameworks and Libraries".
+to create a framework or
+
+`carthage update --use-xcframeworks --platform iOS`
+
+to create an xcframework.
 
 #### CocoaPods
 
 Add to your Podfile:
 ```
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '10'
+platform :ios, '11.4'
 use_frameworks!
 
 target '<Your Target Name>' do
-pod 'DRACOON-SDK', '~> 2.1.0'
+pod 'DRACOON-SDK', '~> 2.2.0'
 end
 ```
 Then run
 
 `pod install`
-
-#### Build examples
-
-The example app in /Example/oauth2.example shows a possible setup for Carthage or CocoaPods.
-Run `sh setupCarthage.sh` and `sh setupCocoaPods.sh`.
-The run `sh regenerateProjects` to generate both the example projects.
-
-To run the Carthage project open `oauth2.carthage.example.xcodeproj`
-To run the CocoaPods project open `oauth2.cocoapods.example.xcworkspace`
 
 # Example
 
