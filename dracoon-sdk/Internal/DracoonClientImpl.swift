@@ -50,7 +50,16 @@ public class DracoonClientImpl: DracoonClient {
         oAuthTokenManager.startOAuthSession(session)
         
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(Formatter.dracoonFormatter)
+        decoder.dateDecodingStrategy = .custom({ decoder -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateStr = try container.decode(String.self)
+            if let secondsDate = DateFormatter.dracoonFormatter.date(from: dateStr) {
+                return secondsDate
+            } else if let millisecondsDate = DateFormatter.dracoonMillisecondsFormatter.date(from: dateStr) {
+                return millisecondsDate
+            }
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Error decoding date string \(dateStr)")
+        })
         let encoder = JSONEncoder()
         let crypto = Crypto()
         
@@ -102,7 +111,15 @@ public extension Formatter {
         formatter.calendar = Calendar(identifier: .iso8601)
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        return formatter
+    }()
+    static let dracoonMillisecondsFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         return formatter
     }()
 }
