@@ -34,9 +34,9 @@ public struct CreateFileUploadRequest: Codable {
      [Since version 4.13.0] */
     public var directS3Upload: Bool?
     /** Time the node was created on external file system [Since version 4.22.0] */
-    public var timestampCreation: Date?
+    public var timestampCreation: String?
     /** Time the content of a node was last modified on external file system [Since version 4.22.0] */
-    public var timestampModification: Date?
+    public var timestampModification: String?
 
 
 }

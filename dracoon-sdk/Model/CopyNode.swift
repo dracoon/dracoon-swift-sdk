@@ -16,14 +16,16 @@ public struct CopyNode: Codable {
     /** New node name */
     public var name: String?
     /** Time the node was created on external file system [Since version 4.22.0] */
-    public var timestampCreation: Date?
+    public var timestampCreation: String?
     /** Time the content of a node was last modified on external file system [Since version 4.22.0] */
-    public var timestampModification: Date?
+    public var timestampModification: String?
 
 
     public enum CodingKeys: String, CodingKey { 
         case _id = "id"
         case name
+        case timestampCreation
+        case timestampModification
     }
     
     public init(nodeId: Int64, name: String?) {
