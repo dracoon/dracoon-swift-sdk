@@ -21,5 +21,7 @@ public struct DracoonConstants {
     
     public static let ENCRYPTION_BUFFER_SIZE = 200 * 1024
     public static let DECRYPTION_BUFFER_SIZE = 200 * 1024
+    
+    public static let DEFAULT_429_WAITING_TIME_SECONDS = 1
 }
 

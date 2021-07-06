@@ -74,6 +74,13 @@ public extension DataRequest {
                 return DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: response.statusCode))
             }
         }
+        if let response = urlResponse, response.statusCode == DracoonErrorParser.HTTPStatusCode.TOO_MANY_REQUESTS {
+            if let waitingTimeSeconds = response.allHeaderFields["Retry-After"] as? Int {
+                return DracoonError.too_many_requests_sent(waitingTimeSeconds: waitingTimeSeconds)
+            } else {
+                return DracoonError.too_many_requests_sent(waitingTimeSeconds: DracoonConstants.DEFAULT_429_WAITING_TIME_SECONDS)
+            }
+        }
         guard let data = responseData else {
             return DracoonError.generic(error: error)
         }
