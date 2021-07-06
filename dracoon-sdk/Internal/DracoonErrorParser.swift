@@ -38,6 +38,7 @@ public class DracoonErrorParser {
         public static let NOT_FOUND = 404
         public static let CONFLICT = 409
         public static let PRECONDITION_FAILED = 412
+        public static let TOO_MANY_REQUESTS = 429
         public static let BAD_GATEWAY = 502
         public static let GATEWAY_TIMEOUT = 504
         public static let INSUFFICIENT_STORAGE = 507
@@ -65,6 +66,8 @@ public class DracoonErrorParser {
             return self.parseConflict(response, requestType: requestType)
         case Status.PRECONDITION_FAILED:
             return self.parsePreconditionFailed(response, requestType: requestType)
+        case Status.TOO_MANY_REQUESTS:
+            return DracoonApiCode.SERVER_TOO_MANY_REQUESTS
         case Status.BAD_GATEWAY:
             return self.parseBadGateway(response, requestType: requestType)
         case Status.GATEWAY_TIMEOUT:

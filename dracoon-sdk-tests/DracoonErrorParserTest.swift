@@ -21,6 +21,7 @@ class DracoonErrorParserTest: XCTestCase {
         XCTAssert(DracoonErrorParser.HTTPStatusCode.NOT_FOUND == 404)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.CONFLICT == 409)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.PRECONDITION_FAILED == 412)
+        XCTAssert(DracoonErrorParser.HTTPStatusCode.TOO_MANY_REQUESTS == 429)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.BAD_GATEWAY == 502)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.GATEWAY_TIMEOUT == 504)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.INSUFFICIENT_STORAGE == 507)
@@ -560,6 +561,15 @@ class DracoonErrorParserTest: XCTestCase {
         
         expectedApiCode = DracoonApiCode.PRECONDITION_S3_STORAGE_DISABLED
         returnedApiCode = self.parseError(code: code, errorCode: -90030)
+        XCTAssert(expectedApiCode == returnedApiCode)
+    }
+    
+    func testTooManyRequestsApiCodes() {
+        let code = 429
+        var expectedApiCode, returnedApiCode: DracoonApiCode
+        
+        expectedApiCode = DracoonApiCode.SERVER_TOO_MANY_REQUESTS
+        returnedApiCode = self.parseError(code: code, errorCode: nil)
         XCTAssert(expectedApiCode == returnedApiCode)
     }
     

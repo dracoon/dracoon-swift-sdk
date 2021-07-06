@@ -280,6 +280,9 @@ class DracoonApiCodeTests: XCTestCase {
         XCTAssert(DracoonApiCode.SERVER_UNKNOWN_ERROR.rawValue == 5000)
         XCTAssertEqual(DracoonApiCode.SERVER_UNKNOWN_ERROR.description, "An unknown server error occurred.")
         
+        XCTAssert(DracoonApiCode.SERVER_TOO_MANY_REQUESTS.rawValue == 5011)
+        XCTAssertEqual(DracoonApiCode.SERVER_TOO_MANY_REQUESTS.description, "Too many requests sent.")
+        
         XCTAssert(DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED.rawValue == 5090)
         XCTAssertEqual(DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED.description, "The AV scanner detected that the file could be malicious.")
         

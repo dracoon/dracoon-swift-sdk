@@ -127,6 +127,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     // MARK: Server errors
     
     case SERVER_UNKNOWN_ERROR = 5000
+    case SERVER_TOO_MANY_REQUESTS = 5011
     case SERVER_MALICIOUS_FILE_DETECTED = 5090
     
     // Nodes
@@ -355,6 +356,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             
         case .SERVER_UNKNOWN_ERROR:
             return "An unknown server error occurred."
+        case .SERVER_TOO_MANY_REQUESTS:
+            return "Too many requests sent."
         case .SERVER_MALICIOUS_FILE_DETECTED:
             return "The AV scanner detected that the file could be malicious."
             
