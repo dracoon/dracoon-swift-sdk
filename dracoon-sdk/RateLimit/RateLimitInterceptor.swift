@@ -9,13 +9,20 @@
 import Foundation
 import Alamofire
 
-protocol RateLimitInterceptor : RequestInterceptor {}
+public protocol RateLimitInterceptor : RequestInterceptor {
+    func setRateLimitAppliedDelegate(_ delegate: RateLimitAppliedDelegate?)
+}
 
 class RateLimitManager: RateLimitInterceptor {
     
+    weak var delegate: RateLimitAppliedDelegate?
+    
+    func setRateLimitAppliedDelegate(_ delegate: RateLimitAppliedDelegate?) {
+        self.delegate = delegate
+    }
+    
     typealias AdaptRequestCompletion = (Result<URLRequest, Error>) -> Void
     private var requestsToSend: [URLRequest:AdaptRequestCompletion] = [:]
-    
     
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
         guard let existingTimer = self.timer, existingTimer.isValid else {
@@ -36,6 +43,7 @@ class RateLimitManager: RateLimitInterceptor {
             completion(.doNotRetry)
             return
         }
+        self.delegate?.rateLimitApplied(waitingTimeSeconds: waitingTimeSeconds)
         self.requestsToRetry.append(completion)
         
         // prevents other failed requests to simultaneously start a timer

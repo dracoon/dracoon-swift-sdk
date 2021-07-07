@@ -26,7 +26,9 @@ public class DracoonClientImpl: DracoonClient {
                 getEncryptionPassword: @escaping () -> String?,
                 sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
                 oauthClient: OAuthClient? = nil,
-                oauthCallback: OAuthTokenChangedDelegate? = nil) {
+                oauthCallback: OAuthTokenChangedDelegate? = nil,
+                rateLimitHandler: RateLimitInterceptor? = nil,
+                rateLimitCallback: RateLimitAppliedDelegate? = nil) {
         
         if sessionConfiguration.identifier != nil {
             fatalError("Initalization with background config is not supported.")
@@ -46,7 +48,8 @@ public class DracoonClientImpl: DracoonClient {
         oAuthTokenManager = OAuthTokenManager(authMode: authMode,
                                               oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: trimmedUrl))
         oAuthTokenManager.setOAuthDelegate(oauthCallback)
-        let rateLimitInterceptor = RateLimitManager()
+        let rateLimitInterceptor = rateLimitHandler ?? RateLimitManager()
+        rateLimitInterceptor.setRateLimitAppliedDelegate(rateLimitCallback)
         let interceptors = Interceptor(interceptors: [rateLimitInterceptor, oAuthTokenManager])
         let session = Alamofire.Session(configuration: sessionConfiguration, interceptor: interceptors)
         oAuthTokenManager.startOAuthSession(session)

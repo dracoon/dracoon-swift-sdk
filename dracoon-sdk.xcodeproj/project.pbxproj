@@ -19,6 +19,7 @@
 		DB7A486B2632C28700F587B2 /* Alamofire.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */; };
 		DB7A486F2632C28900F587B2 /* crypto_sdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */; };
 		DBE12F3F2693511900A7856B /* RateLimitInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE12F3E2693511900A7856B /* RateLimitInterceptor.swift */; };
+		DBF1560C2695CE6800AD542B /* RateLimitAppliedDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF1560B2695CE6800AD542B /* RateLimitAppliedDelegate.swift */; };
 		DE52662A21AFCF3800050482 /* CustomerSettingsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662921AFCF3800050482 /* CustomerSettingsResponse.swift */; };
 		DE52662C21AFD09600050482 /* CustomerSettingsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662B21AFD09600050482 /* CustomerSettingsRequest.swift */; };
 		DE52662E21AFF2AB00050482 /* DracoonSettingsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662D21AFF2AB00050482 /* DracoonSettingsImpl.swift */; };
@@ -229,6 +230,7 @@
 		DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Alamofire.xcframework; path = Carthage/Build/Alamofire.xcframework; sourceTree = "<group>"; };
 		DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = crypto_sdk.xcframework; path = Carthage/Build/crypto_sdk.xcframework; sourceTree = "<group>"; };
 		DBE12F3E2693511900A7856B /* RateLimitInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateLimitInterceptor.swift; sourceTree = "<group>"; };
+		DBF1560B2695CE6800AD542B /* RateLimitAppliedDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateLimitAppliedDelegate.swift; sourceTree = "<group>"; };
 		DE52662921AFCF3800050482 /* CustomerSettingsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSettingsResponse.swift; sourceTree = "<group>"; };
 		DE52662B21AFD09600050482 /* CustomerSettingsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSettingsRequest.swift; sourceTree = "<group>"; };
 		DE52662D21AFF2AB00050482 /* DracoonSettingsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSettingsImpl.swift; sourceTree = "<group>"; };
@@ -463,7 +465,6 @@
 				E0AA72EA2089DD0B001BC290 /* FileUpload.swift */,
 				E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */,
 				E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */,
-				DBE12F3E2693511900A7856B /* RateLimitInterceptor.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -477,6 +478,15 @@
 				E07CF14124B463080046A3E0 /* ApiVersionCheck.swift */,
 			);
 			path = util;
+			sourceTree = "<group>";
+		};
+		DBF1560A2695CE2000AD542B /* RateLimit */ = {
+			isa = PBXGroup;
+			children = (
+				DBE12F3E2693511900A7856B /* RateLimitInterceptor.swift */,
+				DBF1560B2695CE6800AD542B /* RateLimitAppliedDelegate.swift */,
+			);
+			path = RateLimit;
 			sourceTree = "<group>";
 		};
 		E00066FB2057C6CD009CDA70 = {
@@ -505,6 +515,7 @@
 				E02321ED241B7FA6000595FD /* Mock */,
 				8496F3AF205919D8000EE909 /* Internal */,
 				E00068852057E487009CDA70 /* OAuth */,
+				DBF1560A2695CE2000AD542B /* RateLimit */,
 				E00067102057D015009CDA70 /* Model */,
 				E00068812057DC23009CDA70 /* DracoonAuthMode.swift */,
 				E00067082057C6CD009CDA70 /* dracoon_sdk.h */,
@@ -880,6 +891,7 @@
 				E00067FE2057D0BC009CDA70 /* UpdateRoomRequest.swift in Sources */,
 				8496F3BC20596889000EE909 /* OAuthTokenManager.swift in Sources */,
 				E00067E62057D0BC009CDA70 /* CreateRoomRequest.swift in Sources */,
+				DBF1560C2695CE6800AD542B /* RateLimitAppliedDelegate.swift in Sources */,
 				E000681C2057D0BC009CDA70 /* UserIdFileIdItem.swift in Sources */,
 				E00068212057D0BC009CDA70 /* CopyNodesRequest.swift in Sources */,
 				E00068802057D5A7009CDA70 /* OAuthConstants.swift in Sources */,
