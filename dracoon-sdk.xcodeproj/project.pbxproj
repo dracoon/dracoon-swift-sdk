@@ -18,6 +18,7 @@
 		84CD42F72113023000A2F6A4 /* RequestBuilders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CD42F62113023000A2F6A4 /* RequestBuilders.swift */; };
 		DB7A486B2632C28700F587B2 /* Alamofire.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */; };
 		DB7A486F2632C28900F587B2 /* crypto_sdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */; };
+		DBE12F3F2693511900A7856B /* RateLimitInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE12F3E2693511900A7856B /* RateLimitInterceptor.swift */; };
 		DE52662A21AFCF3800050482 /* CustomerSettingsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662921AFCF3800050482 /* CustomerSettingsResponse.swift */; };
 		DE52662C21AFD09600050482 /* CustomerSettingsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662B21AFD09600050482 /* CustomerSettingsRequest.swift */; };
 		DE52662E21AFF2AB00050482 /* DracoonSettingsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662D21AFF2AB00050482 /* DracoonSettingsImpl.swift */; };
@@ -227,6 +228,7 @@
 		84CD42F62113023000A2F6A4 /* RequestBuilders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestBuilders.swift; sourceTree = "<group>"; };
 		DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Alamofire.xcframework; path = Carthage/Build/Alamofire.xcframework; sourceTree = "<group>"; };
 		DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = crypto_sdk.xcframework; path = Carthage/Build/crypto_sdk.xcframework; sourceTree = "<group>"; };
+		DBE12F3E2693511900A7856B /* RateLimitInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateLimitInterceptor.swift; sourceTree = "<group>"; };
 		DE52662921AFCF3800050482 /* CustomerSettingsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSettingsResponse.swift; sourceTree = "<group>"; };
 		DE52662B21AFD09600050482 /* CustomerSettingsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSettingsRequest.swift; sourceTree = "<group>"; };
 		DE52662D21AFF2AB00050482 /* DracoonSettingsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSettingsImpl.swift; sourceTree = "<group>"; };
@@ -461,6 +463,7 @@
 				E0AA72EA2089DD0B001BC290 /* FileUpload.swift */,
 				E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */,
 				E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */,
+				DBE12F3E2693511900A7856B /* RateLimitInterceptor.swift */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -957,6 +960,7 @@
 				E000681B2057D0BC009CDA70 /* UpdateSystemDefaults.swift in Sources */,
 				E02321EF241B7FEF000595FD /* ResponseModelFactory.swift in Sources */,
 				E000683B2057D0BC009CDA70 /* ChangeGroupMembersRequest.swift in Sources */,
+				DBE12F3F2693511900A7856B /* RateLimitInterceptor.swift in Sources */,
 				E0C7A14122CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift in Sources */,
 				E00067C92057D0BC009CDA70 /* ConflictNode.swift in Sources */,
 				E00067FD2057D0BC009CDA70 /* CustomerList.swift in Sources */,

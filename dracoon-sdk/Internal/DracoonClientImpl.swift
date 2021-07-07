@@ -46,7 +46,9 @@ public class DracoonClientImpl: DracoonClient {
         oAuthTokenManager = OAuthTokenManager(authMode: authMode,
                                               oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: trimmedUrl))
         oAuthTokenManager.setOAuthDelegate(oauthCallback)
-        let session = Alamofire.Session(configuration: sessionConfiguration, interceptor: oAuthTokenManager)
+        let rateLimitInterceptor = RateLimitManager()
+        let interceptors = Interceptor(interceptors: [rateLimitInterceptor, oAuthTokenManager])
+        let session = Alamofire.Session(configuration: sessionConfiguration, interceptor: interceptors)
         oAuthTokenManager.startOAuthSession(session)
         
         let decoder = JSONDecoder()

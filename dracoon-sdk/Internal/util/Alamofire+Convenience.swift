@@ -75,7 +75,8 @@ public extension DataRequest {
             }
         }
         if let response = urlResponse, response.statusCode == DracoonErrorParser.HTTPStatusCode.TOO_MANY_REQUESTS {
-            if let waitingTimeSeconds = response.allHeaderFields["Retry-After"] as? Int {
+            if let waitingTimeSecondsString = response.allHeaderFields["Retry-After"] as? String,
+               let waitingTimeSeconds = Int(waitingTimeSecondsString) {
                 return DracoonError.too_many_requests_sent(waitingTimeSeconds: waitingTimeSeconds)
             } else {
                 return DracoonError.too_many_requests_sent(waitingTimeSeconds: DracoonConstants.DEFAULT_429_WAITING_TIME_SECONDS)
