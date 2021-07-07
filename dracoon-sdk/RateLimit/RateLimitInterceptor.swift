@@ -43,8 +43,12 @@ class RateLimitManager: RateLimitInterceptor {
             completion(.doNotRetry)
             return
         }
+        if request.retryCount < 3 {
+            self.requestsToRetry.append(completion)
+        } else {
+            completion(.doNotRetry)
+        }
         self.delegate?.rateLimitApplied(waitingTimeSeconds: waitingTimeSeconds)
-        self.requestsToRetry.append(completion)
         
         // prevents other failed requests to simultaneously start a timer
         lock.lock(); defer { lock.unlock() }
