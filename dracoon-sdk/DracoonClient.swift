@@ -24,6 +24,7 @@ public protocol DracoonClient {
 
     func getAccessToken() -> String?
     func getRefreshToken() -> String?
+    func restoreRateLimitExpiration(_ date: Date)
 }
 
 public protocol DracoonServer {

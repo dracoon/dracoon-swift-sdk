@@ -9,6 +9,7 @@
 import Foundation
 import Alamofire
 
+/// - Tag: RateLimitInterceptor
 public protocol RateLimitInterceptor : RequestInterceptor {
     func setRateLimitAppliedDelegate(_ delegate: RateLimitAppliedDelegate?)
     func restoreExpirationDate(_ date: Date)

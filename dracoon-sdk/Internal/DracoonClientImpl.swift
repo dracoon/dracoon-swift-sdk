@@ -21,6 +21,8 @@ public class DracoonClientImpl: DracoonClient {
     ///   - sessionConfiguration: Custom configuration can be passed here, otherwise default configuration is used.
     ///   - oauthClient: Custom [OAuthClient](x-source-tag://OAuthClient) implementation can be passed here, otherwise internal implementation is used.
     ///   - oauthCallback: The [OAuthTokenChangedDelegate](x-source-tag://OAuthTokenChangedDelegate) informs about token changes.
+    ///   - rateLimitHandler: Custom [RateLimitInterceptor](x-source-tag://RateLimitInterceptor) implementation can be passed here, otherwise internal implementation is used.
+    ///   - rateLimitCallback: The [RateLimitAppliedDelegate](x-source-tag://RateLimitAppliedDelegate) informs about rate limit changes.
     public init(serverUrl: URL,
                 authMode: DracoonAuthMode,
                 getEncryptionPassword: @escaping () -> String?,
