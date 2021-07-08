@@ -23,5 +23,6 @@ public struct DracoonConstants {
     public static let DECRYPTION_BUFFER_SIZE = 200 * 1024
     
     public static let DEFAULT_429_WAITING_TIME_SECONDS = 1
+    public static let MAX_429_WAITING_TRESHOLD_SECONDS = 20
 }
 

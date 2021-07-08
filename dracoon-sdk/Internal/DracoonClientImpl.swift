@@ -48,7 +48,7 @@ public class DracoonClientImpl: DracoonClient {
         oAuthTokenManager = OAuthTokenManager(authMode: authMode,
                                               oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: trimmedUrl))
         oAuthTokenManager.setOAuthDelegate(oauthCallback)
-        let rateLimitInterceptor = rateLimitHandler ?? RateLimitManager()
+        rateLimitInterceptor = rateLimitHandler ?? RateLimitManager()
         rateLimitInterceptor.setRateLimitAppliedDelegate(rateLimitCallback)
         let interceptors = Interceptor(interceptors: [rateLimitInterceptor, oAuthTokenManager])
         let session = Alamofire.Session(configuration: sessionConfiguration, interceptor: interceptors)
@@ -82,6 +82,8 @@ public class DracoonClientImpl: DracoonClient {
     
     let oAuthTokenManager: OAuthInterceptor
     
+    let rateLimitInterceptor: RateLimitInterceptor
+    
     public var server: DracoonServer
     
     public var account: DracoonAccount
@@ -107,6 +109,10 @@ public class DracoonClientImpl: DracoonClient {
     
     public func getRefreshToken() -> String? {
         return self.oAuthTokenManager.getRefreshToken()
+    }
+    
+    public func restoreRateLimitExpiration(_ date: Date) {
+        self.rateLimitInterceptor.restoreExpirationDate(date)
     }
 }
 

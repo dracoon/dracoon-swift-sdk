@@ -11,6 +11,7 @@ import Alamofire
 
 public protocol RateLimitInterceptor : RequestInterceptor {
     func setRateLimitAppliedDelegate(_ delegate: RateLimitAppliedDelegate?)
+    func restoreExpirationDate(_ date: Date)
 }
 
 class RateLimitManager: RateLimitInterceptor {
@@ -19,6 +20,17 @@ class RateLimitManager: RateLimitInterceptor {
     
     func setRateLimitAppliedDelegate(_ delegate: RateLimitAppliedDelegate?) {
         self.delegate = delegate
+    }
+    
+    func restoreExpirationDate(_ date: Date) {
+        if let existingTimer = self.timer, existingTimer.isValid {
+            return
+        }
+        let difference = date.timeIntervalSince(Date())
+        if difference > 0, Int(difference) <= DracoonConstants.MAX_429_WAITING_TRESHOLD_SECONDS {
+            let waitingTimeSeconds = difference.rounded(.up)
+            self.startTimer(timeInterval: waitingTimeSeconds)
+        }
     }
     
     typealias AdaptRequestCompletion = (Result<URLRequest, Error>) -> Void
@@ -32,7 +44,6 @@ class RateLimitManager: RateLimitInterceptor {
         self.requestsToSend[urlRequest] = completion
     }
     
-    // contains the completion handlers of the requests that failed due to status code 429
     typealias RequestRetryCompletion = (RetryResult) -> Void
     private var requestsToRetry: [RequestRetryCompletion] = []
     private var timer: Timer?
@@ -48,17 +59,21 @@ class RateLimitManager: RateLimitInterceptor {
         } else {
             completion(.doNotRetry)
         }
-        self.delegate?.rateLimitApplied(waitingTimeSeconds: waitingTimeSeconds)
+        self.delegate?.rateLimitApplied(expirationDate: Date(timeIntervalSinceNow: TimeInterval(waitingTimeSeconds)))
         
         // prevents other failed requests to simultaneously start a timer
         lock.lock(); defer { lock.unlock() }
         
+        self.startTimer(timeInterval: TimeInterval(waitingTimeSeconds))
+    }
+    
+    private func startTimer(timeInterval: TimeInterval) {
         DispatchQueue.main.async {
             if let existingTimer = self.timer, existingTimer.isValid {
                 existingTimer.invalidate()
             }
             
-            let timer = Timer(timeInterval: TimeInterval(waitingTimeSeconds), repeats: false, block: { [weak self] t in
+            let timer = Timer(timeInterval: timeInterval, repeats: false, block: { [weak self] t in
                 t.invalidate()
                 self?.retryRequests()
                 self?.sendQueuedRequests()

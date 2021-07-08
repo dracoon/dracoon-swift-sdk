@@ -10,5 +10,5 @@ import Foundation
 
 /// - Tag: RateLimitAppliedDelegate
 public protocol RateLimitAppliedDelegate: AnyObject {
-    func rateLimitApplied(waitingTimeSeconds: Int)
+    func rateLimitApplied(expirationDate: Date)
 }
