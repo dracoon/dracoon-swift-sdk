@@ -34,6 +34,7 @@ public class DracoonErrorParser {
     public struct HTTPStatusCode {
         public static let BAD_REQUEST = 400
         public static let UNAUTHORIZED = 401
+        public static let PAYMENT_REQUIRED = 402
         public static let FORBIDDEN = 403
         public static let NOT_FOUND = 404
         public static let CONFLICT = 409
@@ -58,6 +59,8 @@ public class DracoonErrorParser {
             return self.parseBadRequest(response, requestType: requestType)
         case Status.UNAUTHORIZED:
             return self.parseUnauthorized(response, requestType: requestType)
+        case Status.PAYMENT_REQUIRED:
+            return DracoonApiCode.PRECONDITION_PAYMENT_REQUIRED
         case Status.FORBIDDEN:
             return self.parseForbidden(response, requestType: requestType)
         case Status.NOT_FOUND:

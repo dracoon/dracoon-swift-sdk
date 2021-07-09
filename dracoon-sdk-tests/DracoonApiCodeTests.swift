@@ -78,6 +78,12 @@ class DracoonApiCodeTests: XCTestCase {
         
         XCTAssert(DracoonApiCode.PRECONDITION_MUST_CHANGE_PASSWORD.rawValue == 2103)
         XCTAssertEqual(DracoonApiCode.PRECONDITION_MUST_CHANGE_PASSWORD.description, "User must change his password.")
+        
+        XCTAssert(DracoonApiCode.PRECONDITION_S3_STORAGE_DISABLED.rawValue == 2104)
+        XCTAssertEqual(DracoonApiCode.PRECONDITION_S3_STORAGE_DISABLED.description, "S3 storage disabled.")
+        
+        XCTAssert(DracoonApiCode.PRECONDITION_PAYMENT_REQUIRED.rawValue == 2105)
+        XCTAssertEqual(DracoonApiCode.PRECONDITION_PAYMENT_REQUIRED.description, "Payment is required before calling this method.")
     }
     
     func testValidationApiErrorCodes() {

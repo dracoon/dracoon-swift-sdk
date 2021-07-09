@@ -17,6 +17,7 @@ class DracoonErrorParserTest: XCTestCase {
     func testHTTPStatusCodes() {
         XCTAssert(DracoonErrorParser.HTTPStatusCode.BAD_REQUEST == 400)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.UNAUTHORIZED == 401)
+        XCTAssert(DracoonErrorParser.HTTPStatusCode.PAYMENT_REQUIRED == 402)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.FORBIDDEN == 403)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.NOT_FOUND == 404)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.CONFLICT == 409)
@@ -261,6 +262,15 @@ class DracoonErrorParserTest: XCTestCase {
         
         expectedApiCode = DracoonApiCode.AUTH_OAUTH_CLIENT_NO_PERMISSION
         returnedApiCode = self.parseError(code: code, errorCode: -10006)
+        XCTAssert(expectedApiCode == returnedApiCode)
+    }
+    
+    func testPaymentRequiredApiCodes() {
+        let code = 402
+        var expectedApiCode, returnedApiCode: DracoonApiCode
+        
+        expectedApiCode = DracoonApiCode.PRECONDITION_PAYMENT_REQUIRED
+        returnedApiCode = self.parseError(code: code, errorCode: nil)
         XCTAssert(expectedApiCode == returnedApiCode)
     }
     
