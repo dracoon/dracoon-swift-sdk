@@ -22,8 +22,19 @@ public protocol DracoonClient {
     var shares: DracoonShares { get }
     var settings: DracoonSettings { get }
 
+    /// Get current OAuth access token.
+    ///
+    /// - Returns: The token if available.
     func getAccessToken() -> String?
+
+    /// Get current OAuth refresh token.
+    ///
+    /// - Returns: The token if available.
     func getRefreshToken() -> String?
+
+    /// Sets rate limit if date is in the future.
+    ///
+    /// - Parameter date: The expiration date of the rate limit.
     func restoreRateLimitExpiration(_ date: Date)
 }
 
