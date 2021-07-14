@@ -103,6 +103,8 @@ public struct Node: Codable {
         case _id = "id"
         case type
         case name
+        case timestampCreation
+        case timestampModification
         case parentId
         case parentPath
         case createdAt

@@ -34,10 +34,12 @@ public class DracoonErrorParser {
     public struct HTTPStatusCode {
         public static let BAD_REQUEST = 400
         public static let UNAUTHORIZED = 401
+        public static let PAYMENT_REQUIRED = 402
         public static let FORBIDDEN = 403
         public static let NOT_FOUND = 404
         public static let CONFLICT = 409
         public static let PRECONDITION_FAILED = 412
+        public static let TOO_MANY_REQUESTS = 429
         public static let BAD_GATEWAY = 502
         public static let GATEWAY_TIMEOUT = 504
         public static let INSUFFICIENT_STORAGE = 507
@@ -57,6 +59,8 @@ public class DracoonErrorParser {
             return self.parseBadRequest(response, requestType: requestType)
         case Status.UNAUTHORIZED:
             return self.parseUnauthorized(response, requestType: requestType)
+        case Status.PAYMENT_REQUIRED:
+            return DracoonApiCode.PRECONDITION_PAYMENT_REQUIRED
         case Status.FORBIDDEN:
             return self.parseForbidden(response, requestType: requestType)
         case Status.NOT_FOUND:
@@ -65,6 +69,8 @@ public class DracoonErrorParser {
             return self.parseConflict(response, requestType: requestType)
         case Status.PRECONDITION_FAILED:
             return self.parsePreconditionFailed(response, requestType: requestType)
+        case Status.TOO_MANY_REQUESTS:
+            return DracoonApiCode.SERVER_TOO_MANY_REQUESTS
         case Status.BAD_GATEWAY:
             return self.parseBadGateway(response, requestType: requestType)
         case Status.GATEWAY_TIMEOUT:

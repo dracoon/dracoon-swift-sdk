@@ -21,12 +21,16 @@ public class DracoonClientImpl: DracoonClient {
     ///   - sessionConfiguration: Custom configuration can be passed here, otherwise default configuration is used.
     ///   - oauthClient: Custom [OAuthClient](x-source-tag://OAuthClient) implementation can be passed here, otherwise internal implementation is used.
     ///   - oauthCallback: The [OAuthTokenChangedDelegate](x-source-tag://OAuthTokenChangedDelegate) informs about token changes.
+    ///   - rateLimitHandler: Custom [RateLimitInterceptor](x-source-tag://RateLimitInterceptor) implementation can be passed here, otherwise internal implementation is used.
+    ///   - rateLimitCallback: The [RateLimitAppliedDelegate](x-source-tag://RateLimitAppliedDelegate) informs about rate limit changes.
     public init(serverUrl: URL,
                 authMode: DracoonAuthMode,
                 getEncryptionPassword: @escaping () -> String?,
                 sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
                 oauthClient: OAuthClient? = nil,
-                oauthCallback: OAuthTokenChangedDelegate? = nil) {
+                oauthCallback: OAuthTokenChangedDelegate? = nil,
+                rateLimitHandler: RateLimitInterceptor? = nil,
+                rateLimitCallback: RateLimitAppliedDelegate? = nil) {
         
         if sessionConfiguration.identifier != nil {
             fatalError("Initalization with background config is not supported.")
@@ -46,11 +50,23 @@ public class DracoonClientImpl: DracoonClient {
         oAuthTokenManager = OAuthTokenManager(authMode: authMode,
                                               oAuthClient: oauthClient ?? OAuthClientImpl(serverUrl: trimmedUrl))
         oAuthTokenManager.setOAuthDelegate(oauthCallback)
-        let session = Alamofire.Session(configuration: sessionConfiguration, interceptor: oAuthTokenManager)
+        rateLimitInterceptor = rateLimitHandler ?? RateLimitManager()
+        rateLimitInterceptor.setRateLimitAppliedDelegate(rateLimitCallback)
+        let interceptors = Interceptor(interceptors: [rateLimitInterceptor, oAuthTokenManager])
+        let session = Alamofire.Session(configuration: sessionConfiguration, interceptor: interceptors)
         oAuthTokenManager.startOAuthSession(session)
         
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(Formatter.dracoonFormatter)
+        decoder.dateDecodingStrategy = .custom({ decoder -> Date in
+            let container = try decoder.singleValueContainer()
+            let dateStr = try container.decode(String.self)
+            if let secondsDate = DateFormatter.dracoonFormatter.date(from: dateStr) {
+                return secondsDate
+            } else if let millisecondsDate = DateFormatter.dracoonMillisecondsFormatter.date(from: dateStr) {
+                return millisecondsDate
+            }
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Error decoding date string \(dateStr)")
+        })
         let encoder = JSONEncoder()
         let crypto = Crypto()
         
@@ -67,6 +83,8 @@ public class DracoonClientImpl: DracoonClient {
     }
     
     let oAuthTokenManager: OAuthInterceptor
+    
+    let rateLimitInterceptor: RateLimitInterceptor
     
     public var server: DracoonServer
     
@@ -94,6 +112,10 @@ public class DracoonClientImpl: DracoonClient {
     public func getRefreshToken() -> String? {
         return self.oAuthTokenManager.getRefreshToken()
     }
+    
+    public func restoreRateLimitExpiration(_ date: Date) {
+        self.rateLimitInterceptor.restoreExpirationDate(date)
+    }
 }
 
 public extension Formatter {
@@ -102,7 +124,15 @@ public extension Formatter {
         formatter.calendar = Calendar(identifier: .iso8601)
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        return formatter
+    }()
+    static let dracoonMillisecondsFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .iso8601)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         return formatter
     }()
 }

@@ -50,4 +50,5 @@ public enum DracoonError: Error {
     
     case connection_timeout
     case offline
+    case too_many_requests_sent(waitingTimeSeconds: Int)
 }

@@ -17,10 +17,12 @@ class DracoonErrorParserTest: XCTestCase {
     func testHTTPStatusCodes() {
         XCTAssert(DracoonErrorParser.HTTPStatusCode.BAD_REQUEST == 400)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.UNAUTHORIZED == 401)
+        XCTAssert(DracoonErrorParser.HTTPStatusCode.PAYMENT_REQUIRED == 402)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.FORBIDDEN == 403)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.NOT_FOUND == 404)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.CONFLICT == 409)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.PRECONDITION_FAILED == 412)
+        XCTAssert(DracoonErrorParser.HTTPStatusCode.TOO_MANY_REQUESTS == 429)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.BAD_GATEWAY == 502)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.GATEWAY_TIMEOUT == 504)
         XCTAssert(DracoonErrorParser.HTTPStatusCode.INSUFFICIENT_STORAGE == 507)
@@ -260,6 +262,15 @@ class DracoonErrorParserTest: XCTestCase {
         
         expectedApiCode = DracoonApiCode.AUTH_OAUTH_CLIENT_NO_PERMISSION
         returnedApiCode = self.parseError(code: code, errorCode: -10006)
+        XCTAssert(expectedApiCode == returnedApiCode)
+    }
+    
+    func testPaymentRequiredApiCodes() {
+        let code = 402
+        var expectedApiCode, returnedApiCode: DracoonApiCode
+        
+        expectedApiCode = DracoonApiCode.PRECONDITION_PAYMENT_REQUIRED
+        returnedApiCode = self.parseError(code: code, errorCode: nil)
         XCTAssert(expectedApiCode == returnedApiCode)
     }
     
@@ -560,6 +571,15 @@ class DracoonErrorParserTest: XCTestCase {
         
         expectedApiCode = DracoonApiCode.PRECONDITION_S3_STORAGE_DISABLED
         returnedApiCode = self.parseError(code: code, errorCode: -90030)
+        XCTAssert(expectedApiCode == returnedApiCode)
+    }
+    
+    func testTooManyRequestsApiCodes() {
+        let code = 429
+        var expectedApiCode, returnedApiCode: DracoonApiCode
+        
+        expectedApiCode = DracoonApiCode.SERVER_TOO_MANY_REQUESTS
+        returnedApiCode = self.parseError(code: code, errorCode: nil)
         XCTAssert(expectedApiCode == returnedApiCode)
     }
     

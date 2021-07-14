@@ -33,7 +33,10 @@ public struct CreateFileUploadRequest: Codable {
     /** Indicates direct upload to S3
      [Since version 4.13.0] */
     public var directS3Upload: Bool?
-
+    /** Time the node was created on external file system [Since version 4.22.0] */
+    public var timestampCreation: String?
+    /** Time the content of a node was last modified on external file system [Since version 4.22.0] */
+    public var timestampModification: String?
 
 
 }
