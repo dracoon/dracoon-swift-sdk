@@ -12,7 +12,7 @@ Xcode 12.3
 
 Add the SDK to your Cartfile:
 
-`github "dracoon/dracoon-swift-sdk.git" ~> 2.2.0`
+`github "dracoon/dracoon-swift-sdk.git" ~> 2.3.0`
 
 Then run
 
@@ -33,7 +33,7 @@ platform :ios, '11.4'
 use_frameworks!
 
 target '<Your Target Name>' do
-pod 'DRACOON-SDK', '~> 2.2.0'
+pod 'DRACOON-SDK', '~> 2.3.0'
 end
 ```
 Then run
