@@ -46,6 +46,14 @@ class DracoonConfigImpl: DracoonConfig {
             .decode(InfrastructureProperties.self, decoder: self.decoder, completion: completion)
     }
     
+    func getClassificationPolicies(completion: @escaping DataRequest.DecodeCompletion<ClassificationPoliciesConfig>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/policies/classifications"
+        
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
+        .validate()
+        .decode(ClassificationPoliciesConfig.self, decoder: self.decoder, completion: completion)
+    }
+    
     func getPasswordPolicies(completion: @escaping DataRequest.DecodeCompletion<PasswordPoliciesConfig>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/policies/passwords"
         

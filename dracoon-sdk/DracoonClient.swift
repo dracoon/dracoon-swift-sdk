@@ -185,6 +185,12 @@ public protocol DracoonConfig {
     func getInfrastructureProperties(completion: @escaping DataRequest.DecodeCompletion<InfrastructureProperties>)
 
     /// Returns the server's password policies.
+    /// - Requires: API version from 4.30.0.
+    ///
+    /// - Parameter completion: Returns [classification policies](x-source-tag://ClassificationPoliciesConfig) on success or an error.
+    func getClassificationPolicies(completion: @escaping DataRequest.DecodeCompletion<ClassificationPoliciesConfig>)
+    
+    /// Returns the server's password policies.
     /// - Requires: API version from 4.14.0.
     ///
     /// - Parameter completion: Returns [password policies](x-source-tag://PasswordPoliciesConfig) on success or an error.

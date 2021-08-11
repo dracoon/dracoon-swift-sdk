@@ -70,6 +70,8 @@ public class ResponseModelFactory {
             return self.getComment() as? E
         } else if type == CommentList.self {
             return self.getCommentList() as? E
+        } else if type == ClassificationPoliciesConfig.self {
+            return self.getClassificationPoliciesConfig() as? E
         }
         return nil
     }
@@ -193,6 +195,11 @@ public class ResponseModelFactory {
         let keyValueEntry1 = KeyValueEntry(key: "testKey1", value: "testValue1")
         let keyValueEntry2 = KeyValueEntry(key: "testKey2", value: "testValue2")
         return ProfileAttributes(items: [keyValueEntry1, keyValueEntry2])
+    }
+    
+    private func getClassificationPoliciesConfig() -> ClassificationPoliciesConfig {
+        let shareClassifications = ShareClassificationPolicies(classificationRequiresSharePassword: 0)
+        return ClassificationPoliciesConfig(shareClassificationPolicies: shareClassifications)
     }
     
     private func getPasswordPoliciesConfig() -> PasswordPoliciesConfig {
