@@ -408,6 +408,44 @@ class DracoonNodesImpl: DracoonNodes {
         self.uploads.removeValue(forKey: uploadId)
     }
     
+    func createFileUpload(request: CreateFileUploadRequest, fileSize: Int64, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
+        do {
+            var createRequest = request
+            createRequest.size = fileSize
+            let jsonBody = try encoder.encode(createRequest)
+            let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.session.request(urlRequest)
+                .validate()
+                .decode(CreateFileUploadResponse.self, decoder: self.decoder, requestType: .createUpload, completion: completion)
+            
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
+    func completeFileUpload(request: CompleteUploadRequest, uploadUrl: URL, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+        do {
+            let jsonBody = try encoder.encode(request)
+            var urlRequest = URLRequest(url: uploadUrl)
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            session.request(urlRequest)
+                .validate()
+                .decode(Node.self, decoder: self.decoder, completion: completion)
+            
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
     // MARK: Download file
     
     func downloadFile(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, sessionConfig: URLSessionConfiguration?) {

@@ -345,7 +345,11 @@ public protocol DracoonNodes {
     ///
     /// - Parameter uploadId: The ID of the upload to be canceled
     func cancelUpload(uploadId: String)
-
+    
+    func createFileUpload(request: CreateFileUploadRequest, fileSize: Int64, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>)
+    
+    func completeFileUpload(request: CompleteUploadRequest, uploadUrl: URL, completion: @escaping DataRequest.DecodeCompletion<Node>)
+    
     /// Downloads a file.
     ///
     /// - Parameters:
