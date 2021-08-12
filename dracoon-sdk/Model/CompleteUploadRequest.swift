@@ -16,6 +16,9 @@ public struct CompleteUploadRequest: Codable {
         case overwrite = "overwrite"
         case fail = "fail"
     }
+    
+    public init() {}
+    
     /** Node conflict resolution strategy: * &#x60;autorename&#x60; * &#x60;overwrite&#x60; * &#x60;fail&#x60;  (default: &#x60;autorename&#x60;) */
     public var resolutionStrategy: ResolutionStrategy?
     /** Preserve Download Share Links and point them to the new node. (default: false) */
