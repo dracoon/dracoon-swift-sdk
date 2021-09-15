@@ -346,8 +346,24 @@ public protocol DracoonNodes {
     /// - Parameter uploadId: The ID of the upload to be canceled
     func cancelUpload(uploadId: String)
     
+    /// Creates a file upload channel.
+    ///
+    /// - warning: You only have to use this if you want to implement your own custom upload. To use the build-in upload just use uploadFile(...).
+    ///
+    /// - Parameters:
+    ///   - request: The [CreateFileUploadRequest](x-source-tag://CreateFileUploadRequest) model
+    ///   - fileSize: The size of the file to be uploaded.
+    ///   - completion: Returns the response [CreateFileUploadResponse](x-source-tag://CreateFileUploadResponse) on success or an error.
     func createFileUpload(request: CreateFileUploadRequest, fileSize: Int64, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>)
     
+    /// Closes a file upload channel.
+    ///
+    /// - warning: You only have to use this if you want to implement your own custom upload. To use the build-in upload just use uploadFile(...).
+    ///
+    /// - Parameters:
+    ///   - request: The [CompleteUploadRequest](x-source-tag://CompleteUploadRequest) model
+    ///   - uploadUrl: The uploadUrl of the channel to be closed.
+    ///   - completion: Returns the new node [Node](x-source-tag://Node) on success or an error.
     func completeFileUpload(request: CompleteUploadRequest, uploadUrl: URL, completion: @escaping DataRequest.DecodeCompletion<Node>)
     
     /// Downloads a file.
