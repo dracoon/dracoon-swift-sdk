@@ -313,6 +313,9 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
     }
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        guard totalBytesExpectedToWrite != NSURLSessionTransferSizeUnknown else {
+            return
+        }
         let fractionCompleted = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
         self.callback?.onProgress?(fractionCompleted)
     }
