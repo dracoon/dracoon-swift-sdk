@@ -282,7 +282,15 @@ public protocol DracoonNodes {
     ///   - request: The [UpdateRoomRequest](x-source-tag://UpdateRoomRequest) model
     ///   - completion: Returns the updated [node](x-source-tag://Node) on success or an error.
     func updateRoom(roomId: Int64, request: UpdateRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>)
-
+    
+    /// Updates a room's configuration.
+    ///
+    /// - Parameters:
+    ///   - roomId: The ID of the room node.
+    ///   - request: The [ConfigRoomRequest](x-source-tag://ConfigRoomRequest) model
+    ///   - completion: Returns the updated [node](x-source-tag://Node) on success or an error.
+    func updateRoomConfig(roomId: Int64, request: ConfigRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>)
+    
     /// Creates a new folder.
     ///
     /// - Parameters:

@@ -21,12 +21,15 @@ class DracoonNodesMock: DracoonNodes {
     var commentListResponse: CommentList
     var commentResponse: Comment
     
+    var createFileUploadResponse: CreateFileUploadResponse
+    
     init() {
         let modelFactory = ResponseModelFactory()
         self.nodeListResponse = modelFactory.getTestResponseModel(NodeList.self)!
         self.nodeResponse = modelFactory.getTestResponseModel(Node.self)!
         self.commentListResponse = modelFactory.getTestResponseModel(CommentList.self)!
         self.commentResponse = modelFactory.getTestResponseModel(Comment.self)!
+        self.createFileUploadResponse = modelFactory.getTestResponseModel(CreateFileUploadResponse.self)!
     }
     
     func getNodes(parentNodeId: Int64, limit: Int64?, offset: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
@@ -57,6 +60,10 @@ class DracoonNodesMock: DracoonNodes {
         self.returnErrorOrNode(completion)
     }
     
+    func updateRoomConfig(roomId: Int64, request: ConfigRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+        self.returnErrorOrNode(completion)
+    }
+    
     func createFolder(request: CreateFolderRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
         self.returnErrorOrNode(completion)
     }
@@ -82,6 +89,18 @@ class DracoonNodesMock: DracoonNodes {
     }
     
     func uploadFile(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, sessionConfig: URLSessionConfiguration?) {}
+    
+    func createFileUpload(request: CreateFileUploadRequest, fileSize: Int64, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
+        if let error = self.error {
+            completion(Dracoon.Result.error(error))
+        } else {
+            completion(Dracoon.Result.value(self.createFileUploadResponse))
+        }
+    }
+    
+    func completeFileUpload(request: CompleteUploadRequest, uploadUrl: URL, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+        self.returnErrorOrNode(completion)
+    }
     
     func cancelUpload(uploadId: String) {}
     

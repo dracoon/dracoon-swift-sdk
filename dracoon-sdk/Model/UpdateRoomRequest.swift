@@ -16,6 +16,10 @@ public struct UpdateRoomRequest: Codable {
     public var quota: Int64?
     /** User notes Use empty string to remove. */
     public var notes: String?
+    /** Time the node was created on external file system [Since version 4.22.0] */
+    public var timestampCreation: String?
+    /** Time the content of a node was last modified on external file system [Since version 4.22.0] */
+    public var timestampModification: String?
 
     public init() {}
 

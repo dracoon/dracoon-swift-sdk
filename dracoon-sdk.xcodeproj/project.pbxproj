@@ -20,6 +20,7 @@
 		DB7A486F2632C28900F587B2 /* crypto_sdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */; };
 		DB8D51BA26C3BC0B002F50B6 /* ClassificationPoliciesConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8D51B926C3BC0B002F50B6 /* ClassificationPoliciesConfig.swift */; };
 		DB8D51BC26C3BC3C002F50B6 /* ShareClassificationPolicies.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8D51BB26C3BC3C002F50B6 /* ShareClassificationPolicies.swift */; };
+		DBBB320826FB3E8E006477EF /* ConfigRoomRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBB320726FB3E8E006477EF /* ConfigRoomRequest.swift */; };
 		DBE12F3F2693511900A7856B /* RateLimitInterceptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBE12F3E2693511900A7856B /* RateLimitInterceptor.swift */; };
 		DBF1560C2695CE6800AD542B /* RateLimitAppliedDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBF1560B2695CE6800AD542B /* RateLimitAppliedDelegate.swift */; };
 		DE52662A21AFCF3800050482 /* CustomerSettingsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE52662921AFCF3800050482 /* CustomerSettingsResponse.swift */; };
@@ -233,6 +234,7 @@
 		DB8D51BB26C3BC3C002F50B6 /* ShareClassificationPolicies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareClassificationPolicies.swift; sourceTree = "<group>"; };
 		DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Alamofire.xcframework; path = Carthage/Build/Alamofire.xcframework; sourceTree = "<group>"; };
 		DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = crypto_sdk.xcframework; path = Carthage/Build/crypto_sdk.xcframework; sourceTree = "<group>"; };
+		DBBB320726FB3E8E006477EF /* ConfigRoomRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigRoomRequest.swift; sourceTree = "<group>"; };
 		DBE12F3E2693511900A7856B /* RateLimitInterceptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateLimitInterceptor.swift; sourceTree = "<group>"; };
 		DBF1560B2695CE6800AD542B /* RateLimitAppliedDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateLimitAppliedDelegate.swift; sourceTree = "<group>"; };
 		DE52662921AFCF3800050482 /* CustomerSettingsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSettingsResponse.swift; sourceTree = "<group>"; };
@@ -542,6 +544,7 @@
 				E0B0EC832566BC1D006B2D65 /* CommentList.swift */,
 				E05A609E22CCCDB400DF7418 /* CompleteS3FileUploadRequest.swift */,
 				E000673C2057D0AB009CDA70 /* CompleteUploadRequest.swift */,
+				DBBB320726FB3E8E006477EF /* ConfigRoomRequest.swift */,
 				E00067132057D0A8009CDA70 /* ConflictNode.swift */,
 				E000671D2057D0A9009CDA70 /* CopyNode.swift */,
 				E000676B2057D0AF009CDA70 /* CopyNodesRequest.swift */,
@@ -870,6 +873,7 @@
 				E0C7A14322CBBDAE003D2141 /* PresignedUrlList.swift in Sources */,
 				E00067ED2057D0BC009CDA70 /* DeletedNode.swift in Sources */,
 				E02CB9E3205AAF8100E29948 /* DracoonConstants.swift in Sources */,
+				DBBB320826FB3E8E006477EF /* ConfigRoomRequest.swift in Sources */,
 				E000687A2057D0BC009CDA70 /* DeletedNodeSummary.swift in Sources */,
 				E00067DE2057D0BC009CDA70 /* UploadShareList.swift in Sources */,
 				E00068282057D0BC009CDA70 /* PublicDownloadShare.swift in Sources */,

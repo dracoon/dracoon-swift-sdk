@@ -170,6 +170,27 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
+    func updateRoomConfig(roomId: Int64, request: ConfigRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+        
+        do {
+            let jsonBody = try encoder.encode(request)
+            
+            let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/rooms/\(String(roomId))/config"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.session.request(urlRequest)
+                .validate()
+                .decode(Node.self, decoder: self.decoder, requestType: .updateRoom, completion: completion)
+            
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
     func createFolder(request: CreateFolderRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
         
         do {
