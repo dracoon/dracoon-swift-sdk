@@ -341,7 +341,7 @@ class DracoonNodesImpl: DracoonNodes {
                         self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
                     case .value(let isS3Upload):
                         if isS3Upload {
-                            self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                            self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
                         } else {
                             self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
                         }
@@ -376,9 +376,9 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     private func startS3Upload(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback,
-                               resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?) {
+                               resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
         let s3upload = S3FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
-                                    crypto: cryptoImpl, sessionConfig: nil, account: self.account)
+                                    crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account)
         
         let innerCallback = UploadCallback()
         innerCallback.onCanceled = callback.onCanceled
