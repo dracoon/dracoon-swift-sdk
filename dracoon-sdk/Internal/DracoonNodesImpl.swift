@@ -411,7 +411,7 @@ class DracoonNodesImpl: DracoonNodes {
                         case .error(let error):
                             onComplete(Dracoon.Result.error(error))
                         case .value(let properties):
-                            onComplete(Dracoon.Result.value(properties.s3EnforceDirectUpload != nil))
+                            onComplete(Dracoon.Result.value(properties.s3EnforceDirectUpload ?? false))
                         }
                     })
                 } else {
