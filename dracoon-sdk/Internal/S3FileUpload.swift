@@ -14,7 +14,7 @@ public class S3FileUpload: FileUpload {
     let MAX_URL_FETCH_COUNT: Int32 = 10
     
     var s3Urls: [PresignedUrl]?
-    // chunk size from Constants or 5 MB; 5MB is least S3 chunk size
+    // chunk size from Constants or 5 MB; 5MB is least S3 chunk size; 5GB is maximum S3 chunk size;
     var chunkSize: Int64 = DracoonConstants.S3_CHUNK_SIZE < 1024*1024*5 ? 1024*1024*5 : Int64(DracoonConstants.S3_CHUNK_SIZE)
     var neededParts: Int32 = 0
     var lastPartSize: Int64 = 0
