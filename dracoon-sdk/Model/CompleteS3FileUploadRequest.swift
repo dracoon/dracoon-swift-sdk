@@ -8,7 +8,7 @@
 import Foundation
 import crypto_sdk
 
-struct CompleteS3FileUploadRequest: Codable {
+public struct CompleteS3FileUploadRequest: Codable {
     
     /** List of S3 file upload parts */
     public var parts: [S3FileUploadPart]
@@ -21,6 +21,13 @@ struct CompleteS3FileUploadRequest: Codable {
     public var fileName: String?
     /** Encrypted file key for shares out of encrypted rooms */
     public var fileKey: EncryptedFileKey?
-    /** List of user file keys */
-    //public var userFileKeyList: UserFileKeyList?
+    
+    public init(parts: [S3FileUploadPart], resolutionStrategy: CompleteUploadRequest.ResolutionStrategy?,
+                keepShareLinks: Bool?, fileName: String?, fileKey: EncryptedFileKey?) {
+        self.parts = parts
+        self.resolutionStrategy = resolutionStrategy
+        self.keepShareLinks = keepShareLinks
+        self.fileName = fileName
+        self.fileKey = fileKey
+    }
 }

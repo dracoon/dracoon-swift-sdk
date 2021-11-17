@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PresignedUrlList: Codable {
+public struct PresignedUrlList: Codable {
     
     /** List of presigned URLs */
     public var urls: [PresignedUrl]

@@ -7,9 +7,14 @@
 
 import Foundation
 
-struct S3FileUploadPart: Codable {
+public struct S3FileUploadPart: Codable {
     
     public var partNumber: Int32
     public var partEtag: String
+    
+    public init(partNumber: Int32, partEtag: String) {
+        self.partNumber = partNumber
+        self.partEtag = partEtag
+    }
     
 }
