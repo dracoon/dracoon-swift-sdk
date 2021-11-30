@@ -38,6 +38,7 @@ public enum DracoonError: Error {
     case download_not_found
     case upload_not_found
     case upload_failed(statusCode: Int)
+    case exceeds_maximum_s3_upload_size(fileSize: Int64, maximumSize: Int64)
     
     /* reason is one of
      NSURLErrorCancelledReasonUserForceQuitApplication

@@ -43,6 +43,11 @@ public class S3FileUpload: FileUpload {
     // MARK: Start S3 Upload
     
     override public func start() {
+        if self.uploadSessionConfig?.identifier != nil,
+           self.fileSize > DracoonConstants.S3_BACKGROUND_UPLOAD_MAX_SIZE {
+            self.callback?.onError?(DracoonError.exceeds_maximum_s3_upload_size(fileSize: self.fileSize, maximumSize: DracoonConstants.S3_BACKGROUND_UPLOAD_MAX_SIZE))
+            return
+        }
         self.createFileUpload(request: request, completion: { result in
             switch result {
             case .value(let response):
