@@ -10,6 +10,10 @@ import Foundation
 
 
 public struct RoleList: Codable {
+    
+    public init(items: [Role]) {
+        self.items = items
+    }
 
     /** List of roles */
     public var items: [Role]

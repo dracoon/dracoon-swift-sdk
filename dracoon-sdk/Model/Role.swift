@@ -10,6 +10,12 @@ import Foundation
 
 
 public struct Role: Codable {
+    
+    public init(id: Int, name: String, description: String) {
+        self._id = id
+        self.name = name
+        self._description = description
+    }
 
     /** Unique identifier for the role */
     public var _id: Int
