@@ -8,7 +8,7 @@
 public struct DracoonConstants {
     
     public static let API_PATH = "/api/v4"
-    public static let API_MIN_VERSION = "4.0.0"
+    public static let API_MIN_VERSION = "4.12.0"
     
     public static let AUTHORIZATION_HEADER = "Authorization"
     public static let AUTHORIZATION_TYPE = "Bearer"
