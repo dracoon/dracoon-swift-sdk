@@ -243,6 +243,10 @@ class DracoonErrorParserTest: XCTestCase {
         returnedApiCode = self.parseError(code: code, errorCode: -80045)
         XCTAssert(expectedApiCode == returnedApiCode)
         
+        expectedApiCode = DracoonApiCode.VALIDATION_POLICY_VIOLATION
+        returnedApiCode = self.parseError(code: code, errorCode: -80064)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
         expectedApiCode = DracoonApiCode.S3_DIRECT_UPLOAD_ENFORCED
         returnedApiCode = self.parseError(code: code, errorCode: -90033)
         XCTAssert(expectedApiCode == returnedApiCode)

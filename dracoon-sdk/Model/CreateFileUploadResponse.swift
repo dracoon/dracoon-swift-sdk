@@ -8,7 +8,7 @@
 import Foundation
 
 
-
+/// - Tag: CreateFileUploadResponse
 public struct CreateFileUploadResponse: Codable {
 
     /** (public) Upload URL */

@@ -142,6 +142,27 @@ class DracoonNodesTests: DracoonSdkTestCase {
         XCTAssertTrue(calledValue)
     }
     
+    func testUpdateRoomConfig() {
+        
+        self.setResponseModel(Node.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns node")
+        var calledValue = false
+        
+        let request = ConfigRoomRequest()
+        self.nodes.updateRoomConfig(roomId: 42, request: request, completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case.value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
     // MARK: Folders
     
     func testCreateFolder() {

@@ -10,6 +10,12 @@ import Foundation
 
 
 public struct Right: Codable {
+    
+    public init(id: Int, name: String, description: String) {
+        self._id = id
+        self.name = name
+        self._description = description
+    }
 
     /** Unique identifier for the right */
     public var _id: Int

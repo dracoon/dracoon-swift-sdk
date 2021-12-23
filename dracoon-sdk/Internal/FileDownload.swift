@@ -244,8 +244,8 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
             return
         }
         let nsError = error as NSError
-        if nsError.code == NSURLErrorCancelled,
-           let reason = nsError.userInfo[NSURLErrorBackgroundTaskCancelledReasonKey] as? NSNumber {
+        if nsError.code == NSURLErrorCancelled {
+            let reason = (nsError.userInfo[NSURLErrorBackgroundTaskCancelledReasonKey] as? NSNumber) ?? -1
             let dracoonError: DracoonError = DracoonError.background_download_cancelled(reason: reason.intValue, userInfo: nsError.userInfo)
             self.callback?.onError?(dracoonError)
             return
@@ -313,6 +313,9 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
     }
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        guard totalBytesExpectedToWrite != NSURLSessionTransferSizeUnknown else {
+            return
+        }
         let fractionCompleted = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
         self.callback?.onProgress?(fractionCompleted)
     }

@@ -212,6 +212,9 @@ class DracoonApiCodeTests: XCTestCase {
         XCTAssert(DracoonApiCode.VALIDATION_UL_SHARE_NAME_ALREADY_EXISTS.rawValue == 3201)
         XCTAssertEqual(DracoonApiCode.VALIDATION_UL_SHARE_NAME_ALREADY_EXISTS.description, "Upload share name already exists.")
         
+        XCTAssert(DracoonApiCode.VALIDATION_POLICY_VIOLATION.rawValue == 3202)
+        XCTAssertEqual(DracoonApiCode.VALIDATION_POLICY_VIOLATION.description, "Operation violates policy.")
+        
         // Customer
         
         XCTAssert(DracoonApiCode.VALIDATION_PLACEHOLDER_CUSTOMER.rawValue == 3400)

@@ -194,6 +194,8 @@ public class DracoonErrorParser {
             return DracoonApiCode.VALIDATION_FIELD_NOT_BETWEEN_0_10
         case -80045:
             return DracoonApiCode.VALIDATION_INVALID_ETAGS
+        case -80064:
+            return DracoonApiCode.VALIDATION_POLICY_VIOLATION
         case -90033:
             return DracoonApiCode.S3_DIRECT_UPLOAD_ENFORCED
         default:

@@ -8,7 +8,7 @@
 public struct DracoonConstants {
     
     public static let API_PATH = "/api/v4"
-    public static let API_MIN_VERSION = "4.0.0"
+    public static let API_MIN_VERSION = "4.12.0"
     
     public static let AUTHORIZATION_HEADER = "Authorization"
     public static let AUTHORIZATION_TYPE = "Bearer"
@@ -16,6 +16,7 @@ public struct DracoonConstants {
     
     public static let S3_CHUNK_SIZE = 1024*1024*5
     public static let S3_UPLOAD_MAX_RETRIES = 3
+    public static let S3_BACKGROUND_UPLOAD_MAX_SIZE: Int64 = 1024*1024*1024*5
     
     public static let MISSING_FILEKEYS_MAX_COUNT = 5 as Int64
     

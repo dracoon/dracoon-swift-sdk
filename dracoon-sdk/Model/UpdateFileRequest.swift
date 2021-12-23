@@ -14,7 +14,7 @@ public struct UpdateFileRequest: Codable {
     public var name: String?
     /** Expiration date / time */
     public var expiration: ObjectExpiration?
-    /** Expiration date / time */
+    /** Classification of file */
     public var classification: Int?
     /** User notes Use empty string to remove. */
     public var notes: String?

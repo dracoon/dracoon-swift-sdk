@@ -19,12 +19,15 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
     override func setUp() {
         super.setUp()
         
-        self.nodes = DracoonNodesImpl(requestConfig: self.requestConfig, crypto: self.crypto, account: DracoonAccountMock(), config: DracoonConfigMock(), getEncryptionPassword: {
+        let config = DracoonConfigMock()
+        config.generalSettingsResponse.useS3Storage = true
+        config.infrastructurePropertiesResponse.s3EnforceDirectUpload = true
+        self.nodes = DracoonNodesImpl(requestConfig: self.requestConfig, crypto: self.crypto, account: DracoonAccountMock(), config: config, getEncryptionPassword: {
             return self.encryptionPassword
         })
     }
     
-    // MARK: S3 Upload
+    // MARK: S3 Foreground Upload
     
     func testUpload_succeeds_callsOnComplete() {
         
@@ -336,6 +339,32 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         
         let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
+        
+        self.testWaiter.wait(for: [expectation], timeout: 60.0)
+        XCTAssertTrue(calledOnError)
+    }
+    
+    // MARK: S3 Background Upload
+    
+    func testUploadBackground_withFileSizeTooLarge_callsOnError() {
+        
+        self.setResponseModel(Node.self, statusCode: 200)
+        
+        let expectation = XCTestExpectation(description: "Calls onError")
+        var calledOnError = false
+        (FileUtils.fileHelper as! FileUtilsMock).size = DracoonConstants.S3_BACKGROUND_UPLOAD_MAX_SIZE + 1
+        
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
+        let uploadCallback = UploadCallback()
+        
+        uploadCallback.onError = { error in
+            calledOnError = true
+            expectation.fulfill()
+        }
+        
+        let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
+        let testSessionConfig = URLSessionConfiguration.background(withIdentifier: "com.dracoon.test")
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: testSessionConfig)
         
         self.testWaiter.wait(for: [expectation], timeout: 60.0)
         XCTAssertTrue(calledOnError)

@@ -14,6 +14,12 @@ public struct UpdateFolderRequest: Codable {
     public var name: String?
     /** User notes Use empty string to remove. */
     public var notes: String?
+    /** Provided (or default) classification is taken from room when file gets uploaded without any classification. [Since version 4.30.0] */
+    public var classification: Int?
+    /** Time the node was created on external file system [Since version 4.22.0] */
+    public var timestampCreation: String?
+    /** Time the content of a node was last modified on external file system [Since version 4.22.0] */
+    public var timestampModification: String?
 
     public init() {}
 

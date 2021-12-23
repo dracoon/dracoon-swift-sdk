@@ -262,6 +262,10 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
     // MARK: URLSessionDataDelegate
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        self.handleUploadCompletion(session, task: task, didCompleteWithError: error)
+    }
+    
+    func handleUploadCompletion(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         if let error = error {
             self.callback?.onError?(DracoonError.generic(error: error))
         } else if let response = task.response as? HTTPURLResponse, response.statusCode >= 400 {
@@ -275,6 +279,10 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
     }
     
     public func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        self.handleUploadProgress(totalBytesSent: totalBytesSent)
+    }
+    
+    func handleUploadProgress(totalBytesSent: Int64) {
         let fractionCompleted = Float(totalBytesSent)/Float(self.fileSize)
         self.callback?.onProgress?(fractionCompleted)
     }

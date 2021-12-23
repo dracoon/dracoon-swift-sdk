@@ -170,6 +170,27 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
+    func updateRoomConfig(roomId: Int64, request: ConfigRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+        
+        do {
+            let jsonBody = try encoder.encode(request)
+            
+            let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/rooms/\(String(roomId))/config"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.session.request(urlRequest)
+                .validate()
+                .decode(Node.self, decoder: self.decoder, requestType: .updateRoom, completion: completion)
+            
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
     func createFolder(request: CreateFolderRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
         
         do {
@@ -320,7 +341,7 @@ class DracoonNodesImpl: DracoonNodes {
                         self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
                     case .value(let isS3Upload):
                         if isS3Upload {
-                            self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl)
+                            self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
                         } else {
                             self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
                         }
@@ -355,9 +376,9 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     private func startS3Upload(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback,
-                               resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?) {
+                               resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
         let s3upload = S3FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
-                                    crypto: cryptoImpl, sessionConfig: nil, account: self.account)
+                                    crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account)
         
         let innerCallback = UploadCallback()
         innerCallback.onCanceled = callback.onCanceled
@@ -390,7 +411,7 @@ class DracoonNodesImpl: DracoonNodes {
                         case .error(let error):
                             onComplete(Dracoon.Result.error(error))
                         case .value(let properties):
-                            onComplete(Dracoon.Result.value(properties.s3EnforceDirectUpload != nil))
+                            onComplete(Dracoon.Result.value(properties.s3EnforceDirectUpload ?? false))
                         }
                     })
                 } else {
@@ -406,6 +427,44 @@ class DracoonNodesImpl: DracoonNodes {
         }
         upload.cancel()
         self.uploads.removeValue(forKey: uploadId)
+    }
+    
+    func createFileUpload(request: CreateFileUploadRequest, fileSize: Int64, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
+        do {
+            var createRequest = request
+            createRequest.size = fileSize
+            let jsonBody = try encoder.encode(createRequest)
+            let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/uploads"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.session.request(urlRequest)
+                .validate()
+                .decode(CreateFileUploadResponse.self, decoder: self.decoder, requestType: .createUpload, completion: completion)
+            
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
+    func completeFileUpload(request: CompleteUploadRequest, uploadUrl: URL, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+        do {
+            let jsonBody = try encoder.encode(request)
+            var urlRequest = URLRequest(url: uploadUrl)
+            urlRequest.httpMethod = HTTPMethod.put.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            session.request(urlRequest)
+                .validate()
+                .decode(Node.self, decoder: self.decoder, completion: completion)
+            
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
     }
     
     // MARK: Download file

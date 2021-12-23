@@ -90,6 +90,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     
     case VALIDATION_DL_SHARE_CANNOT_CREATE_ON_ENCRYPTED_ROOM_FOLDER = 3200
     case VALIDATION_UL_SHARE_NAME_ALREADY_EXISTS = 3201
+    case VALIDATION_POLICY_VIOLATION = 3202
     
     // Customer
     
@@ -313,6 +314,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "A download share cannot be created on a encrypted room or folder."
         case .VALIDATION_UL_SHARE_NAME_ALREADY_EXISTS:
             return "Upload share name already exists."
+        case .VALIDATION_POLICY_VIOLATION:
+            return "Operation violates policy."
             
         case .VALIDATION_PLACEHOLDER_CUSTOMER:
             return "Placeholder for customer validation errors"

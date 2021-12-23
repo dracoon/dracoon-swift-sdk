@@ -15,6 +15,7 @@ class DracoonConfigMock: DracoonConfig {
     var systemDefaultsResponse: SystemDefaults
     var generalSettingsResponse: GeneralSettings
     var infrastructurePropertiesResponse: InfrastructureProperties
+    var classificationPoliciesResponse: ClassificationPoliciesConfig
     var passwordPoliciesResponse: PasswordPoliciesConfig
     var algoVersionInfoList: AlgorithmVersionInfoList
     
@@ -23,6 +24,7 @@ class DracoonConfigMock: DracoonConfig {
         self.systemDefaultsResponse = modelFactory.getTestResponseModel(SystemDefaults.self)!
         self.generalSettingsResponse = modelFactory.getTestResponseModel(GeneralSettings.self)!
         self.infrastructurePropertiesResponse = modelFactory.getTestResponseModel(InfrastructureProperties.self)!
+        self.classificationPoliciesResponse = modelFactory.getTestResponseModel(ClassificationPoliciesConfig.self)!
         self.passwordPoliciesResponse = modelFactory.getTestResponseModel(PasswordPoliciesConfig.self)!
         self.algoVersionInfoList = modelFactory.getTestResponseModel(AlgorithmVersionInfoList.self)!
     }
@@ -48,6 +50,14 @@ class DracoonConfigMock: DracoonConfig {
             completion(Dracoon.Result.error(error))
         } else {
             completion(Dracoon.Result.value((self.infrastructurePropertiesResponse)))
+        }
+    }
+    
+    func getClassificationPolicies(completion: @escaping DataRequest.DecodeCompletion<ClassificationPoliciesConfig>) {
+        if let error = self.error {
+            completion(Dracoon.Result.error(error))
+        } else {
+            completion(Dracoon.Result.value((self.classificationPoliciesResponse)))
         }
     }
     

@@ -185,6 +185,12 @@ public protocol DracoonConfig {
     func getInfrastructureProperties(completion: @escaping DataRequest.DecodeCompletion<InfrastructureProperties>)
 
     /// Returns the server's password policies.
+    /// - Requires: API version from 4.30.0.
+    ///
+    /// - Parameter completion: Returns [classification policies](x-source-tag://ClassificationPoliciesConfig) on success or an error.
+    func getClassificationPolicies(completion: @escaping DataRequest.DecodeCompletion<ClassificationPoliciesConfig>)
+    
+    /// Returns the server's password policies.
     /// - Requires: API version from 4.14.0.
     ///
     /// - Parameter completion: Returns [password policies](x-source-tag://PasswordPoliciesConfig) on success or an error.
@@ -276,7 +282,15 @@ public protocol DracoonNodes {
     ///   - request: The [UpdateRoomRequest](x-source-tag://UpdateRoomRequest) model
     ///   - completion: Returns the updated [node](x-source-tag://Node) on success or an error.
     func updateRoom(roomId: Int64, request: UpdateRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>)
-
+    
+    /// Updates a room's configuration.
+    ///
+    /// - Parameters:
+    ///   - roomId: The ID of the room node.
+    ///   - request: The [ConfigRoomRequest](x-source-tag://ConfigRoomRequest) model
+    ///   - completion: Returns the updated [node](x-source-tag://Node) on success or an error.
+    func updateRoomConfig(roomId: Int64, request: ConfigRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>)
+    
     /// Creates a new folder.
     ///
     /// - Parameters:
@@ -339,7 +353,27 @@ public protocol DracoonNodes {
     ///
     /// - Parameter uploadId: The ID of the upload to be canceled
     func cancelUpload(uploadId: String)
-
+    
+    /// Creates a file upload channel.
+    ///
+    /// - warning: You only have to use this if you want to implement your own custom upload. To use the build-in upload just use uploadFile(...).
+    ///
+    /// - Parameters:
+    ///   - request: The [CreateFileUploadRequest](x-source-tag://CreateFileUploadRequest) model
+    ///   - fileSize: The size of the file to be uploaded.
+    ///   - completion: Returns the response [CreateFileUploadResponse](x-source-tag://CreateFileUploadResponse) on success or an error.
+    func createFileUpload(request: CreateFileUploadRequest, fileSize: Int64, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>)
+    
+    /// Closes a file upload channel.
+    ///
+    /// - warning: You only have to use this if you want to implement your own custom upload. To use the build-in upload just use uploadFile(...).
+    ///
+    /// - Parameters:
+    ///   - request: The [CompleteUploadRequest](x-source-tag://CompleteUploadRequest) model
+    ///   - uploadUrl: The uploadUrl of the channel to be closed.
+    ///   - completion: Returns the new node [Node](x-source-tag://Node) on success or an error.
+    func completeFileUpload(request: CompleteUploadRequest, uploadUrl: URL, completion: @escaping DataRequest.DecodeCompletion<Node>)
+    
     /// Downloads a file.
     ///
     /// - Parameters:
