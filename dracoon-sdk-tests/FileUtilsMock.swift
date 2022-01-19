@@ -6,6 +6,7 @@
 //  Copyright © 2019 Dracoon. All rights reserved.
 //
 
+import Foundation
 @testable import dracoon_sdk
 
 class FileUtilsMock: FileHelper {
