@@ -28,7 +28,7 @@ let package = Package(
                 .product(name: "crypto_sdk", package: "crypto_sdk")],
             path: "dracoon-sdk"),
         .testTarget(
-            name: "dracoon_sdk_tests",
+            name: "dracoon-sdk-tests",
             dependencies: [
                 .target(name: "dracoon_sdk"),
                 .product(name: "Alamofire", package: "Alamofire")],
