@@ -22,6 +22,7 @@ class OAuthWebView: UIViewController, WKNavigationDelegate {
 
     override func loadView() {
         let webConfiguration = WKWebViewConfiguration()
+        webConfiguration.websiteDataStore = .nonPersistent()
         webView = WKWebView(frame: .zero, configuration: webConfiguration)
         webView.navigationDelegate = self
         view = webView
@@ -38,7 +39,9 @@ class OAuthWebView: UIViewController, WKNavigationDelegate {
 
     fileprivate func requestAuthorization() {
         guard let serverUrl = URL(string: OAuthConfig.serverUrl) else {
-            print("Set OAuth configuration in OAuthConfig class before using this example")
+            let errorMessage = "Set OAuth configuration in OAuthConfig class before using this example"
+            print(errorMessage)
+            self.showError(message: errorMessage)
             return
         }
 
@@ -58,6 +61,13 @@ class OAuthWebView: UIViewController, WKNavigationDelegate {
         } catch {
             print("Error creating authorization url: \(error)")
         }
+    }
+    
+    private func showError(message: String) {
+        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        let action = UIAlertAction(title: "Ok", style: .cancel) { _ in alertController.dismiss(animated: true, completion: nil) }
+        alertController.addAction(action)
+        self.present(alertController, animated: true, completion: nil)
     }
 
 
