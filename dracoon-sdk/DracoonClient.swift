@@ -21,6 +21,7 @@ public protocol DracoonClient {
     var nodes: DracoonNodes { get }
     var shares: DracoonShares { get }
     var settings: DracoonSettings { get }
+    var subscriptions: DracoonSubscriptions { get }
 
     /// Get current OAuth access token.
     ///
