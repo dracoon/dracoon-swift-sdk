@@ -38,6 +38,8 @@ public protocol DracoonClient {
     func restoreRateLimitExpiration(_ date: Date)
 }
 
+// MARK: DracoonServer
+
 public protocol DracoonServer {
     /// Retrieves the server's version.
     ///
@@ -49,6 +51,8 @@ public protocol DracoonServer {
     /// - Parameter completion: Returns [server time](x-source-tag://SdsServerTime) on success or an error.
     func getServerTime(completion: @escaping DataRequest.DecodeCompletion<SdsServerTime>)
 }
+
+// MARK: DracoonAccount
 
 public protocol DracoonAccount {
     /// Retrieves user account information.
@@ -168,6 +172,8 @@ public protocol DracoonAccount {
     func deleteProfileAttributes(key: String, completion: @escaping (Dracoon.Response) -> Void)
 }
 
+// MARK: DracoonConfig
+
 public protocol DracoonConfig {
     /// Retrieves the server's system default settings.
     ///
@@ -203,6 +209,8 @@ public protocol DracoonConfig {
     func getCryptoAlgorithms(completion: @escaping DataRequest.DecodeCompletion<AlgorithmVersionInfoList>)
 }
 
+// MARK: DracoonUsers
+
 public protocol DracoonUsers {
     /// Downloads the user's avatar.
     ///
@@ -213,6 +221,8 @@ public protocol DracoonUsers {
     ///   - completion: Returns user avatar on success or an error.
     func downloadUserAvatar(userId: Int64, avatarUuid: String, targetUrl: URL, completion: @escaping (Dracoon.Response) -> Void)
 }
+
+// MARK: DracoonSubscriptions
 
 public protocol DracoonSubscriptions {
     
@@ -353,6 +363,8 @@ public protocol DracoonSubscriptions {
 
 public protocol DracoonGroups {}
 
+// MARK: DracoonSettings
+
 public protocol DracoonSettings {
     /// Retrieves the customer's settings.
     ///
@@ -366,6 +378,8 @@ public protocol DracoonSettings {
     ///   - completion: Returns new [customer's settings](x-source-tag://CustomerSettingsResponse) on success or an error.
     func updateServerSettings(request: CustomerSettingsRequest, completion: @escaping (Dracoon.Result<CustomerSettingsResponse>) -> Void)
 }
+
+// MARK: DracoonNodes
 
 public protocol DracoonNodes {
     /// Retrieves child nodes of a node. Parameters _offset_ and _limit_ restrict the result to a specific range.
@@ -700,6 +714,8 @@ public extension DracoonNodes {
         self.searchNodes(parentNodeId: parentNodeId, searchString: searchString, depthLevel: depthLevel, filter: filter, sorting: nil, offset: offset, limit: limit, completion: completion)
     }
 }
+
+// MARK: DracoonShares
 
 public protocol DracoonShares {
     /// Creates a download share.
