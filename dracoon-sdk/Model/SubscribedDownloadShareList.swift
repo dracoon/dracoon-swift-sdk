@@ -13,7 +13,7 @@ public struct SubscribedDownloadShareList: Codable {
     
     /** Range */
     public var range: ModelRange
-    /** Subscribed download share information */
+    /** List of subscribed download shares */
     public var items: [SubscribedDownloadShare]
     
     public init(range: ModelRange, items: [SubscribedDownloadShare]){

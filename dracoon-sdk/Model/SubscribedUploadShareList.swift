@@ -8,12 +8,12 @@
 
 import Foundation
 
-/// - Tag: SubscribedDownloadShareList
+/// - Tag: SubscribedUploadShareList
 public struct SubscribedUploadShareList: Codable {
     
     /** Range */
     public var range: ModelRange
-    /** Subscribed upload share information */
+    /** List of subscribed upload shares */
     public var items: [SubscribedUploadShare]
     
     public init(range: ModelRange, items: [SubscribedUploadShare]){

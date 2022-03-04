@@ -226,6 +226,73 @@ public protocol DracoonUsers {
 
 public protocol DracoonSubscriptions {
     
+    /// Retrieve a list of subscribed nodes for current user.
+    ///
+    /// Filtering:
+    /// All filter fields are connected via logical conjunction (AND)
+    /// Filter string syntax: FIELD_NAME:OPERATOR:VALUE[:VALUE...]
+    /// Example:
+    /// authParentId:eq:#
+    /// Get download shares where authParentId equals #.
+    ///
+    /// Filtering options:
+    /// FIELD NAME:OPERATOR:VALUE
+    /// nodeId:eq:long value
+    /// authParentId:eq:long value
+    ///
+    /// Sorting:
+    /// Sort string syntax: FIELD_NAME:ORDER
+    /// ORDER can be asc or desc.
+    /// Multiple sort criteria are possible.
+    /// Fields are connected via logical conjunction AND.
+    /// Example:
+    /// nodeId:desc|authParentId:asc
+    /// Sort by nodeId descending AND authParentId ascending.
+    ///
+    /// Sorting options:
+    /// FIELD NAME
+    /// nodeId
+    /// authParentId
+    ///
+    /// - Requires: API version from 4.20.0
+    ///
+    /// - Parameters:
+    ///   - filter: Filter string
+    ///   - limit: Range limit. Maximum 500. For more results please use paging with offset and limit.
+    ///   - offset: Range offset
+    ///   - sort: Sort string
+    ///   - completion: Returns a [list of subscribed nodes](x-source-tag://SubscribedNodeList) on success or an error.
+    func getNodeSubscriptions(filter: String?, limit: Int?, offset: Int?, sort: String?, completion: @escaping (Dracoon.Result<SubscribedNodeList>) -> Void)
+    
+    /// Subscribe/Unsubscribe nodes for notifications.
+    /// Maximum number of subscriptions is 200.
+    ///
+    /// - Requires: API version from 4.25.0
+    ///
+    /// - Parameters:
+    ///   - subscribe: Determines if subscriptions of share IDs in array are created or deleted.
+    ///   - nodeIds: List of node IDs to (un)subscribe.
+    ///   - completion: Returns an empty response on success or an error.
+    func updateNodeSubscriptions(subscribe: Bool, nodeIds: [Int64], completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Subscribe node for notifications.
+    ///
+    /// - Requires: API version from 4.20.0
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the node to be subscribed.
+    ///   - completion: Returns the [subscribed node](x-source-tag://SubscribedNode) on success or an error.
+    func subscribeNode(nodeId: Int64, completion: @escaping (Dracoon.Result<SubscribedNode>) -> Void)
+    
+    /// Unsubscribe node from notifications.
+    ///
+    /// - Requires: API version from 4.20.0
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the node to be unsubscribed.
+    ///   - completion: Returns an empty response on success or an error.
+    func unsubscribeNode(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void)
+    
     /// Retrieve a list of subscribed Download Shares for current user.
     ///
     /// Filtering:
@@ -271,7 +338,7 @@ public protocol DracoonSubscriptions {
     ///
     /// - Parameters:
     ///   - subscribe: Determines if subscriptions of share IDs in array are created or deleted.
-    ///   - shareIds: List of share IDs to be (un)subscribed.
+    ///   - shareIds: List of share IDs to (un)subscribe.
     ///   - completion: Returns an empty response on success or an error.
     func updateDownloadShareSubscriptions(subscribe: Bool, shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void)
     
@@ -338,7 +405,7 @@ public protocol DracoonSubscriptions {
     ///
     /// - Parameters:
     ///   - subscribe: Determines if subscriptions of share IDs in array are created or deleted.
-    ///   - shareIds: List of share IDs to be (un)subscribed.
+    ///   - shareIds: List of share IDs to (un)subscribe.
     ///   - completion: Returns an empty response on success or an error.
     func updateUploadShareSubscriptions(subscribe: Bool, shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void)
     

@@ -22,6 +22,8 @@
 		DB7442B427D205C400CD0064 /* UpdateSubscriptionsBulkRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7442B327D205C400CD0064 /* UpdateSubscriptionsBulkRequest.swift */; };
 		DB7442B627D20C0D00CD0064 /* SubscribedUploadShareList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7442B527D20C0D00CD0064 /* SubscribedUploadShareList.swift */; };
 		DB7442B827D20C2F00CD0064 /* SubscribedUploadShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7442B727D20C2F00CD0064 /* SubscribedUploadShare.swift */; };
+		DB7442BA27D2137900CD0064 /* SubscribedNodeList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7442B927D2137900CD0064 /* SubscribedNodeList.swift */; };
+		DB7442BC27D2138E00CD0064 /* SubscribedNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7442BB27D2138E00CD0064 /* SubscribedNode.swift */; };
 		DB7A486B2632C28700F587B2 /* Alamofire.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */; };
 		DB7A486F2632C28900F587B2 /* crypto_sdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */; };
 		DB8D51BA26C3BC0B002F50B6 /* ClassificationPoliciesConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8D51B926C3BC0B002F50B6 /* ClassificationPoliciesConfig.swift */; };
@@ -242,6 +244,8 @@
 		DB7442B327D205C400CD0064 /* UpdateSubscriptionsBulkRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateSubscriptionsBulkRequest.swift; sourceTree = "<group>"; };
 		DB7442B527D20C0D00CD0064 /* SubscribedUploadShareList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribedUploadShareList.swift; sourceTree = "<group>"; };
 		DB7442B727D20C2F00CD0064 /* SubscribedUploadShare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribedUploadShare.swift; sourceTree = "<group>"; };
+		DB7442B927D2137900CD0064 /* SubscribedNodeList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribedNodeList.swift; sourceTree = "<group>"; };
+		DB7442BB27D2138E00CD0064 /* SubscribedNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribedNode.swift; sourceTree = "<group>"; };
 		DB8D51B926C3BC0B002F50B6 /* ClassificationPoliciesConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClassificationPoliciesConfig.swift; sourceTree = "<group>"; };
 		DB8D51BB26C3BC3C002F50B6 /* ShareClassificationPolicies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareClassificationPolicies.swift; sourceTree = "<group>"; };
 		DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Alamofire.xcframework; path = Carthage/Build/Alamofire.xcframework; sourceTree = "<group>"; };
@@ -648,6 +652,8 @@
 				E00067B32057D0B5009CDA70 /* SoftwareVersionData.swift */,
 				DB7442B127D1FCEB00CD0064 /* SubscribedDownloadShare.swift */,
 				DB7442AF27D1FCBA00CD0064 /* SubscribedDownloadShareList.swift */,
+				DB7442BB27D2138E00CD0064 /* SubscribedNode.swift */,
+				DB7442B927D2137900CD0064 /* SubscribedNodeList.swift */,
 				DB7442B727D20C2F00CD0064 /* SubscribedUploadShare.swift */,
 				DB7442B527D20C0D00CD0064 /* SubscribedUploadShareList.swift */,
 				E00067C32057D0BB009CDA70 /* SystemDefaults.swift */,
@@ -906,6 +912,7 @@
 				DE52662E21AFF2AB00050482 /* DracoonSettingsImpl.swift in Sources */,
 				E00067D12057D0BC009CDA70 /* UserFileKey.swift in Sources */,
 				E00067E32057D0BC009CDA70 /* DeletedNodeVersionsList.swift in Sources */,
+				DB7442BA27D2137900CD0064 /* SubscribedNodeList.swift in Sources */,
 				8496F3B120591B16000EE909 /* DracoonClientImpl.swift in Sources */,
 				E00067CA2057D0BC009CDA70 /* UserFileKeyList.swift in Sources */,
 				E0B0EC842566BC1D006B2D65 /* CommentList.swift in Sources */,
@@ -943,6 +950,7 @@
 				E0C7A14522CBBE11003D2141 /* PresignedUrl.swift in Sources */,
 				E0D695032382F8EB00D39A42 /* AttributesResponse.swift in Sources */,
 				E00067E82057D0BC009CDA70 /* DownloadShare.swift in Sources */,
+				DB7442BC27D2138E00CD0064 /* SubscribedNode.swift in Sources */,
 				8496F3BA20592080000EE909 /* Alamofire+Convenience.swift in Sources */,
 				E00068722057D0BC009CDA70 /* GroupIds.swift in Sources */,
 				E030CDFD20FCF03F001DEB31 /* FileDownload.swift in Sources */,
