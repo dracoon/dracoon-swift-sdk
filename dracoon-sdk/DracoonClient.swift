@@ -214,6 +214,143 @@ public protocol DracoonUsers {
     func downloadUserAvatar(userId: Int64, avatarUuid: String, targetUrl: URL, completion: @escaping (Dracoon.Response) -> Void)
 }
 
+public protocol DracoonSubscriptions {
+    
+    /// Retrieve a list of subscribed Download Shares for current user.
+    ///
+    /// Filtering:
+    /// All filter fields are connected via logical conjunction (AND)
+    /// Filter string syntax: FIELD_NAME:OPERATOR:VALUE[:VALUE...]
+    /// Example:
+    /// authParentId:eq:#
+    /// Get download shares where authParentId equals #.
+    ///
+    /// Filtering options:
+    /// FIELD NAME:OPERATOR:VALUE
+    /// downloadShareId:eq:long value
+    /// authParentId:eq:long value
+    ///
+    /// Sorting:
+    /// Sort string syntax: FIELD_NAME:ORDER
+    /// ORDER can be asc or desc.
+    /// Multiple sort criteria are possible.
+    /// Fields are connected via logical conjunction AND.
+    /// Example:
+    /// downloadShareId:desc|authParentId:asc
+    /// Sort by downloadShareId descending AND authParentId ascending.
+    ///
+    /// Sorting options:
+    /// FIELD NAME
+    /// downloadShareId
+    /// authParentId
+    ///
+    /// - Requires: API version from 4.20.0
+    ///
+    /// - Parameters:
+    ///   - filter: Filter string
+    ///   - limit: Range limit. Maximum 500. For more results please use paging with offset and limit.
+    ///   - offset: Range offset
+    ///   - sort: Sort string
+    ///   - completion: Returns a [list of subscribed Download Shares](x-source-tag://SubscribedDownloadShareList) on success or an error.
+    func getDownloadShareSubscriptions(filter: String?, limit: Int?, offset: Int?, sort: String?, completion: @escaping (Dracoon.Result<SubscribedDownloadShareList>) -> Void)
+    
+    /// Subscribe/Unsubscribe download shares for notifications.
+    /// Maximum number of subscriptions is 200.
+    ///
+    /// - Requires: API version from 4.25.0
+    ///
+    /// - Parameters:
+    ///   - subscribe: Determines if subscriptions of share IDs in array are created or deleted.
+    ///   - shareIds: List of share IDs to be (un)subscribed.
+    ///   - completion: Returns an empty response on success or an error.
+    func updateDownloadShareSubscriptions(subscribe: Bool, shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Subscribe Download Share for notifications.
+    ///
+    /// - Requires: API version from 4.20.0
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share to be subscribed.
+    ///   - completion: Returns the [subscribed Download Share](x-source-tag://SubscribedDownloadShare) on success or an error.
+    func subscribeDownloadShare(shareId: Int64, completion: @escaping (Dracoon.Result<SubscribedDownloadShare>) -> Void)
+    
+    /// Unsubscribe Download Share from notifications.
+    ///
+    /// - Requires: API version from 4.20.0
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share to be unsubscribed.
+    ///   - completion: Returns an empty response on success or an error.
+    func unsubscribeDownloadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Retrieve a list of subscribed Upload Shares for current user.
+    ///
+    /// Filtering:
+    /// All filter fields are connected via logical conjunction (AND)
+    /// Filter string syntax: FIELD_NAME:OPERATOR:VALUE[:VALUE...]
+    /// Example:
+    /// targetNodeId:eq:#
+    /// Get upload shares where targetNodeId equals #.
+    ///
+    /// Filtering options:
+    /// FIELD NAME:OPERATOR:VALUE
+    /// uploadShareId:eq:long value
+    /// targetNodeId:eq:long value
+    ///
+    /// Sorting:
+    /// Sort string syntax: FIELD_NAME:ORDER
+    /// ORDER can be asc or desc.
+    /// Multiple sort criteria are possible.
+    /// Fields are connected via logical conjunction AND.
+    /// Example:
+    /// uploadShareId:desc|targetNodeId:asc
+    /// Sort by uploadShareId descending AND targetNodeId ascending.
+    ///
+    /// Sorting options:
+    /// FIELD NAME
+    /// uploadShareId
+    /// targetNodeId
+    ///
+    /// - Requires: API version from 4.24.0
+    ///
+    /// - Parameters:
+    ///   - filter: Filter string
+    ///   - limit: Range limit. Maximum 500. For more results please use paging with offset and limit.
+    ///   - offset: Range offset
+    ///   - sort: Sort string
+    ///   - completion: Returns a [list of subscribed Upload Shares](x-source-tag://SubscribedUploadShareList) on success or an error.
+    func getUploadShareSubscriptions(filter: String?, limit: Int?, offset: Int?, sort: String?, completion: @escaping (Dracoon.Result<SubscribedUploadShareList>) -> Void)
+    
+    /// Subscribe/Unsubscribe upload shares for notifications.
+    /// Maximum number of subscriptions is 200.
+    ///
+    /// - Requires: API version from 4.25.0
+    ///
+    /// - Parameters:
+    ///   - subscribe: Determines if subscriptions of share IDs in array are created or deleted.
+    ///   - shareIds: List of share IDs to be (un)subscribed.
+    ///   - completion: Returns an empty response on success or an error.
+    func updateUploadShareSubscriptions(subscribe: Bool, shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Subscribe Upload Share for notifications.
+    ///
+    /// - Requires: API version from 4.24.0
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share to be subscribed.
+    ///   - completion: Returns the [subscribed Upload Share](x-source-tag://SubscribedUploadShare) on success or an error.
+    func subscribeUploadShare(shareId: Int64, completion: @escaping (Dracoon.Result<SubscribedUploadShare>) -> Void)
+    
+    /// Unsubscribe Upload Share from notifications.
+    ///
+    /// - Requires: API version from 4.24.0
+    ///
+    /// - Parameters:
+    ///   - shareId: The ID of the share to be unsubscribed.
+    ///   - completion: Returns an empty response on success or an error.
+    func unsubscribeUploadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void)
+}
+
 public protocol DracoonGroups {}
 
 public protocol DracoonSettings {
