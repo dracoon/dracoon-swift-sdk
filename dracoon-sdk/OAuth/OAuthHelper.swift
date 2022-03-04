@@ -16,7 +16,7 @@ public class OAuthHelper {
     ///   - clientId: The OAuth client ID.
     ///   - state: Value used to associate a Client session with.
     ///   - userAgentInfo: The userAgentInfo can be used to provide information about the application or device..
-    public static func createAuthorizationUrl(serverUrl: URL, clientId: String, state: String, userAgentInfo: String?) throws -> URL {
+    public static func createAuthorizationUrl(serverUrl: URL, clientId: String, state: String, userAgentInfo: String? = nil) throws -> URL {
         guard ValidatorUtils.isValid(serverUrl: serverUrl) else {
             throw DracoonError.invalidParameter(description: "Invalid server url")
         }
