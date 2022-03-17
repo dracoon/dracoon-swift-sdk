@@ -387,5 +387,19 @@ class DracoonApiCodeTests: XCTestCase {
         
         XCTAssert(DracoonApiCode.SERVER_SMS_COULD_NOT_BE_SENT.rawValue == 5801)
         XCTAssertEqual(DracoonApiCode.SERVER_SMS_COULD_NOT_BE_SENT.description, "SMS could not be sent.")
+        
+        // Subscriptions
+        
+        XCTAssert(DracoonApiCode.SERVER_NOTIFICATION_CONFIG_NOT_FOUND.rawValue == 5900)
+        XCTAssertEqual(DracoonApiCode.SERVER_NOTIFICATION_CONFIG_NOT_FOUND.description, "Notification configuration was not found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_NOTIFICATION_CHANNEL_NOT_FOUND.rawValue == 5901)
+        XCTAssertEqual(DracoonApiCode.SERVER_NOTIFICATION_CHANNEL_NOT_FOUND.description, "Notification channel was not found.")
+        
+        XCTAssert(DracoonApiCode.SERVER_NOTIFICATION_CHANNEL_DISABLED.rawValue == 5902)
+        XCTAssertEqual(DracoonApiCode.SERVER_NOTIFICATION_CHANNEL_DISABLED.description, "Notification channel is disabled.")
+        
+        XCTAssert(DracoonApiCode.SERVER_ILLEGAL_NOTIFICATION_CHANNEL.rawValue == 5903)
+        XCTAssertEqual(DracoonApiCode.SERVER_ILLEGAL_NOTIFICATION_CHANNEL.description, "The notification channel is illegal.")
     }
 }

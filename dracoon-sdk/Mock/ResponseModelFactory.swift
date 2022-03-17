@@ -72,6 +72,18 @@ public class ResponseModelFactory {
             return self.getCommentList() as? E
         } else if type == ClassificationPoliciesConfig.self {
             return self.getClassificationPoliciesConfig() as? E
+        } else if type == SubscribedNode.self {
+            return self.getSubscribedNode() as? E
+        } else if type == SubscribedNodeList.self {
+            return self.getSubscribedNodeList() as? E
+        } else if type == SubscribedDownloadShare.self {
+            return self.getSubscribedDownloadShare() as? E
+        } else if type == SubscribedDownloadShareList.self {
+            return self.getSubscribedDownloadShareList() as? E
+        } else if type == SubscribedUploadShare.self {
+            return self.getSubscribedUploadShare() as? E
+        } else if type == SubscribedUploadShareList.self {
+            return self.getSubscribedUploadShareList() as? E
         }
         return nil
     }
@@ -225,4 +237,35 @@ public class ResponseModelFactory {
         let items = [self.getComment()]
         return CommentList(range: range, items: items)
     }
+    
+    private func getSubscribedNode() -> SubscribedNode {
+        return SubscribedNode(id: 42, type: .file, authParentId: 21)
+    }
+    
+    private func getSubscribedNodeList() -> SubscribedNodeList {
+        let range = ModelRange(offset: 0, limit: 1, total: 1)
+        let items = [self.getSubscribedNode()]
+        return SubscribedNodeList(range: range, items: items)
+    }
+    
+    private func getSubscribedDownloadShare() -> SubscribedDownloadShare {
+        return SubscribedDownloadShare(id: 42, authParentId: 21)
+    }
+    
+    private func getSubscribedDownloadShareList() -> SubscribedDownloadShareList {
+        let range = ModelRange(offset: 0, limit: 1, total: 1)
+        let items = [self.getSubscribedDownloadShare()]
+        return SubscribedDownloadShareList(range: range, items: items)
+    }
+    
+    private func getSubscribedUploadShare() -> SubscribedUploadShare {
+        return SubscribedUploadShare(id: 42, targetNodeId: 21)
+    }
+    
+    private func getSubscribedUploadShareList() -> SubscribedUploadShareList {
+        let range = ModelRange(offset: 0, limit: 1, total: 1)
+        let items = [self.getSubscribedUploadShare()]
+        return SubscribedUploadShareList(range: range, items: items)
+    }
+    
 }

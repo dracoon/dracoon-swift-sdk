@@ -80,6 +80,7 @@ public class DracoonClientImpl: DracoonClient {
         settings = DracoonSettingsImpl(config: requestConfig)
         nodes = DracoonNodesImpl(requestConfig: requestConfig, crypto: crypto, account: account, config: config, getEncryptionPassword: getEncryptionPassword)
         shares = DracoonSharesImpl(requestConfig: requestConfig, nodes: nodes, account: account, server: server, getEncryptionPassword: getEncryptionPassword)
+        subscriptions = DracoonSubscriptionsImpl(config: requestConfig)
     }
     
     let oAuthTokenManager: OAuthInterceptor
@@ -101,6 +102,8 @@ public class DracoonClientImpl: DracoonClient {
     public var shares: DracoonShares
     
     public var settings: DracoonSettings
+    
+    public var subscriptions: DracoonSubscriptions
     
     class NotImplementedYet: DracoonGroups {
     }

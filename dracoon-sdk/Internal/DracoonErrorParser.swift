@@ -194,6 +194,8 @@ public class DracoonErrorParser {
             return DracoonApiCode.VALIDATION_FIELD_NOT_BETWEEN_0_10
         case -80045:
             return DracoonApiCode.VALIDATION_INVALID_ETAGS
+        case -80063:
+            return DracoonApiCode.VALIDATION_TOO_MANY_ITEMS
         case -80064:
             return DracoonApiCode.VALIDATION_POLICY_VIOLATION
         case -90033:
@@ -307,13 +309,21 @@ public class DracoonErrorParser {
         case -60000:
             return DracoonApiCode.SERVER_DL_SHARE_NOT_FOUND
         case -60500:
-            fallthrough
+            return DracoonApiCode.SERVER_UL_SHARE_NOT_FOUND
         case -20501:
             return DracoonApiCode.SERVER_UPLOAD_NOT_FOUND
         case -70020:
             return DracoonApiCode.SERVER_USER_KEY_PAIR_NOT_FOUND
         case -70028:
             return DracoonApiCode.SERVER_AVATAR_NOT_FOUND
+        case -70120:
+            return DracoonApiCode.SERVER_NOTIFICATION_CONFIG_NOT_FOUND
+        case -70121:
+            return DracoonApiCode.SERVER_NOTIFICATION_CHANNEL_NOT_FOUND
+        case -70122:
+            return DracoonApiCode.SERVER_NOTIFICATION_CHANNEL_DISABLED
+        case -70123:
+            return DracoonApiCode.SERVER_ILLEGAL_NOTIFICATION_CHANNEL
         case -70501:
             return DracoonApiCode.SERVER_USER_NOT_FOUND
         case -90034:

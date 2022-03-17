@@ -11,9 +11,9 @@ import Foundation
 
 public struct ModelRange: Codable {
 
-    /** Range offset */
+    /** Range information */
     public var offset: Int64
-    /** Range limit */
+    /** Range limit. Maximum 500. */
     public var limit: Int64
     /** Total items available */
     public var total: Int64
