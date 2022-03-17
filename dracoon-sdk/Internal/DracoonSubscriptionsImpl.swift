@@ -102,7 +102,7 @@ class DracoonSubscriptionsImpl: DracoonSubscriptions {
         
         self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
-            .decode(T.self, decoder: self.decoder, requestType: .subscriptions, completion: completion)
+            .decode(T.self, decoder: self.decoder, requestType: .other, completion: completion)
     }
     
     private func updateSubscriptions(subscribe: Bool, ids: [Int64], apiSuffix: ApiSuffix, completion: @escaping (Dracoon.Response) -> Void) {
@@ -134,7 +134,7 @@ class DracoonSubscriptionsImpl: DracoonSubscriptions {
         
         self.session.request(urlRequest)
             .validate()
-            .decode(T.self, decoder: self.decoder, requestType: .subscriptions, completion: completion)
+            .decode(T.self, decoder: self.decoder, requestType: .other, completion: completion)
     }
     
     private func unsubscribe(id: Int64, apiSuffix: ApiSuffix, completion: @escaping (Dracoon.Response) -> Void) {
