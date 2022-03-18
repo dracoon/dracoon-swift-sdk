@@ -8,11 +8,17 @@ A library to access DRACOON REST API
 
 Xcode 12.3
 
+#### Swift Package Manager
+
+Add this line to the dependencies section of your Package.swift:
+
+`.package(name: "crypto_sdk", url: "https://github.com/dracoon/dracoon-swift-sdk", .upToNextMajor(from: "2.5.0"))`
+
 #### Carthage
 
 Add the SDK to your Cartfile:
 
-`github "dracoon/dracoon-swift-sdk.git" ~> 2.2.0`
+`github "dracoon/dracoon-swift-sdk.git" ~> 2.5.0`
 
 Then run
 
@@ -29,11 +35,11 @@ to create an xcframework.
 Add to your Podfile:
 ```
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '11.4'
+platform :ios, '12.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-pod 'DRACOON-SDK', '~> 2.2.0'
+pod 'DRACOON-SDK', '~> 2.5.0'
 end
 ```
 Then run
