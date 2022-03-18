@@ -144,7 +144,7 @@ class DracoonNodesMock: DracoonNodes {
             return EncryptedFileKey(key: "encryptedFileKey", version: .RSA2048_AES256GCM, iv: "iv", tag: "tag")
         case .RSA4096:
             return EncryptedFileKey(key: "encryptedFileKey", version: .RSA4096_AES256GCM, iv: "iv", tag: "tag")
-        default:
+        @unknown default:
             throw DracoonError.keypair_failure(description: "Unknown version: \(publicKey.version)")
         }
     }
