@@ -38,7 +38,7 @@ class InitialViewController: UIViewController, OAuthWebViewDelegate, OAuthTokenC
             button.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
             button.widthAnchor.constraint(equalToConstant: 100),
             button.heightAnchor.constraint(equalToConstant: 50)
-            ])
+        ])
     }
     
     @objc func startLogin() {
