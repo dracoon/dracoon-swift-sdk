@@ -51,6 +51,7 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     case VALIDATION_FIELD_NOT_BETWEEN_0_9999 = 3006
     case VALIDATION_FIELD_NOT_BETWEEN_1_9999 = 3007
     case VALIDATION_INVALID_OFFSET_OR_LIMIT = 3008
+    case VALIDATION_TOO_MANY_ITEMS = 3009
     
     // Nodes
     
@@ -177,6 +178,13 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     case SERVER_SMS_IS_DISABLED = 5800
     case SERVER_SMS_COULD_NOT_BE_SENT = 5801
     case S3_DIRECT_UPLOAD_ENFORCED = 5802
+    
+    // Subscriptions
+    
+    case SERVER_NOTIFICATION_CONFIG_NOT_FOUND = 5900
+    case SERVER_NOTIFICATION_CHANNEL_NOT_FOUND = 5901
+    case SERVER_NOTIFICATION_CHANNEL_DISABLED = 5902
+    case SERVER_ILLEGAL_NOTIFICATION_CHANNEL = 5903
     
     public var description: String {
         switch self {
@@ -309,6 +317,8 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "Invalid Etag(s)"
         case .VALIDATION_INPUT_CONTAINS_INVALID_CHARACTERS:
             return "Input contains invalid characters."
+        case .VALIDATION_TOO_MANY_ITEMS:
+            return "Request contains too many items."
             
         case .VALIDATION_DL_SHARE_CANNOT_CREATE_ON_ENCRYPTED_ROOM_FOLDER:
             return "A download share cannot be created on a encrypted room or folder."
@@ -427,6 +437,15 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "SMS could not be sent."
         case .S3_DIRECT_UPLOAD_ENFORCED:
             return "S3 direct upload is enforced."
+            
+        case .SERVER_NOTIFICATION_CONFIG_NOT_FOUND:
+            return "Notification configuration was not found."
+        case .SERVER_NOTIFICATION_CHANNEL_NOT_FOUND:
+            return "Notification channel was not found."
+        case .SERVER_NOTIFICATION_CHANNEL_DISABLED:
+            return "Notification channel is disabled."
+        case .SERVER_ILLEGAL_NOTIFICATION_CHANNEL:
+            return "The notification channel is illegal."
         }
     }
 }

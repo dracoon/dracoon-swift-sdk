@@ -30,3 +30,5 @@ Pods/
 /Carthage
 /Example/oauth2.example/Carthage/
 UserInterfaceState.xcuserstate
+
+Package.resolved

@@ -3,21 +3,40 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		1ACDD9625F73FD322B13A631 /* NodeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9991CB9329EC2ACF1D7F3DF /* NodeTableViewController.swift */; };
 		1D3AF8BEF09F1F63D59FD1B5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C91D07DF126E943162B81AA6 /* AppDelegate.swift */; };
-		42D652F9B05E1159BB37DF28 /* crypto_sdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB549C9F5B104D3553658F18 /* crypto_sdk.framework */; };
-		4C051560D5C4719446339635 /* Alamofire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BA6F4583F972CC2A061CF28 /* Alamofire.framework */; };
 		596323EA00477389C842AA47 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C663467437B3CFFF0E1B9BF7 /* Assets.xcassets */; };
 		5ABCB974F0BDD29D26147390 /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D08A3CDF0DB7BDAFA59E0D9 /* InitialViewController.swift */; };
 		AB1D00F9C1B6289C590B0456 /* OAuthConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E65ABDA78FCBCEA579D2D12 /* OAuthConfig.swift */; };
+		DB374839279833C800F1DFC1 /* Alamofire.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB374837279833C800F1DFC1 /* Alamofire.xcframework */; };
+		DB37483A279833C800F1DFC1 /* crypto_sdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB374838279833C800F1DFC1 /* crypto_sdk.xcframework */; };
+		DB37483C2798349900F1DFC1 /* dracoon_sdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB37483B2798349900F1DFC1 /* dracoon_sdk.xcframework */; };
+		DB37483D279834BA00F1DFC1 /* dracoon_sdk.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DB37483B2798349900F1DFC1 /* dracoon_sdk.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DB37483E279834BE00F1DFC1 /* Alamofire.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DB374837279833C800F1DFC1 /* Alamofire.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DB37483F279834C200F1DFC1 /* crypto_sdk.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DB374838279833C800F1DFC1 /* crypto_sdk.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E51983359B01EF996C6F5EA5 /* OAuthWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 611324D9C31E2AE03EBFFE06 /* OAuthWebView.swift */; };
 		EB235E4CC4C4D06322107425 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 580B034E1F357EFE3383D9A5 /* LaunchScreen.storyboard */; };
-		F93DF9311DE44F4F1D2A7216 /* dracoon_sdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A06CB3B489C0BE4AD84422F /* dracoon_sdk.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DB374833279832CA00F1DFC1 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DB37483F279834C200F1DFC1 /* crypto_sdk.xcframework in Embed Frameworks */,
+				DB37483E279834BE00F1DFC1 /* Alamofire.xcframework in Embed Frameworks */,
+				DB37483D279834BA00F1DFC1 /* dracoon_sdk.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0E65ABDA78FCBCEA579D2D12 /* OAuthConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthConfig.swift; sourceTree = "<group>"; };
@@ -31,6 +50,9 @@
 		B9991CB9329EC2ACF1D7F3DF /* NodeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeTableViewController.swift; sourceTree = "<group>"; };
 		C663467437B3CFFF0E1B9BF7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C91D07DF126E943162B81AA6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DB374837279833C800F1DFC1 /* Alamofire.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Alamofire.xcframework; path = Carthage/Build/Alamofire.xcframework; sourceTree = "<group>"; };
+		DB374838279833C800F1DFC1 /* crypto_sdk.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = crypto_sdk.xcframework; path = Carthage/Build/crypto_sdk.xcframework; sourceTree = "<group>"; };
+		DB37483B2798349900F1DFC1 /* dracoon_sdk.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = dracoon_sdk.xcframework; path = Carthage/Build/dracoon_sdk.xcframework; sourceTree = "<group>"; };
 		DB549C9F5B104D3553658F18 /* crypto_sdk.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = crypto_sdk.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -39,9 +61,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42D652F9B05E1159BB37DF28 /* crypto_sdk.framework in Frameworks */,
-				4C051560D5C4719446339635 /* Alamofire.framework in Frameworks */,
-				F93DF9311DE44F4F1D2A7216 /* dracoon_sdk.framework in Frameworks */,
+				DB37483C2798349900F1DFC1 /* dracoon_sdk.xcframework in Frameworks */,
+				DB374839279833C800F1DFC1 /* Alamofire.xcframework in Frameworks */,
+				DB37483A279833C800F1DFC1 /* crypto_sdk.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,6 +124,9 @@
 		FAC703E38901F513C48C62A8 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DB37483B2798349900F1DFC1 /* dracoon_sdk.xcframework */,
+				DB374837279833C800F1DFC1 /* Alamofire.xcframework */,
+				DB374838279833C800F1DFC1 /* crypto_sdk.xcframework */,
 				6FCC3BB240741BC47B5CE289 /* Carthage */,
 			);
 			name = Frameworks;
@@ -116,8 +141,8 @@
 			buildPhases = (
 				894936119CEE9E34AF852804 /* Sources */,
 				C2D09DB188E2C31B86288061 /* Resources */,
-				AB912E916A2D4B3E6A160D46 /* Carthage */,
 				A40BC1CB633D27B2DE37F6BC /* Frameworks */,
+				DB374833279832CA00F1DFC1 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -134,7 +159,7 @@
 		FDF30796398E7639D78DAB8B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1320;
 			};
 			buildConfigurationList = 604E055881B312906169A28A /* Build configuration list for PBXProject "oauth2.carthage.example" */;
 			compatibilityVersion = "Xcode 10.0";
@@ -164,29 +189,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		AB912E916A2D4B3E6A160D46 /* Carthage */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Alamofire.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/crypto_sdk.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/dracoon_sdk.framework",
-			);
-			name = Carthage;
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/Alamofire.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/crypto_sdk.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/dracoon_sdk.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "carthage copy-frameworks\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		894936119CEE9E34AF852804 /* Sources */ = {
@@ -228,7 +230,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "oauth2-example/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -283,7 +285,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -342,7 +344,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -366,7 +368,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "oauth2-example/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

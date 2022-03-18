@@ -243,6 +243,10 @@ class DracoonErrorParserTest: XCTestCase {
         returnedApiCode = self.parseError(code: code, errorCode: -80045)
         XCTAssert(expectedApiCode == returnedApiCode)
         
+        expectedApiCode = DracoonApiCode.VALIDATION_TOO_MANY_ITEMS
+        returnedApiCode = self.parseError(code: code, errorCode: -80063)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
         expectedApiCode = DracoonApiCode.VALIDATION_POLICY_VIOLATION
         returnedApiCode = self.parseError(code: code, errorCode: -80064)
         XCTAssert(expectedApiCode == returnedApiCode)
@@ -463,7 +467,7 @@ class DracoonErrorParserTest: XCTestCase {
         returnedApiCode = self.parseError(code: code, errorCode: -60000)
         XCTAssert(expectedApiCode == returnedApiCode)
         
-        expectedApiCode = DracoonApiCode.SERVER_UPLOAD_NOT_FOUND
+        expectedApiCode = DracoonApiCode.SERVER_UL_SHARE_NOT_FOUND
         returnedApiCode = self.parseError(code: code, errorCode: -60500)
         XCTAssert(expectedApiCode == returnedApiCode)
         
@@ -477,6 +481,22 @@ class DracoonErrorParserTest: XCTestCase {
         
         expectedApiCode = DracoonApiCode.SERVER_USER_KEY_PAIR_NOT_FOUND
         returnedApiCode = self.parseError(code: code, errorCode: -70020)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.SERVER_NOTIFICATION_CONFIG_NOT_FOUND
+        returnedApiCode = self.parseError(code: code, errorCode: -70120)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.SERVER_NOTIFICATION_CHANNEL_NOT_FOUND
+        returnedApiCode = self.parseError(code: code, errorCode: -70121)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.SERVER_NOTIFICATION_CHANNEL_DISABLED
+        returnedApiCode = self.parseError(code: code, errorCode: -70122)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.SERVER_ILLEGAL_NOTIFICATION_CHANNEL
+        returnedApiCode = self.parseError(code: code, errorCode: -70123)
         XCTAssert(expectedApiCode == returnedApiCode)
         
         expectedApiCode = DracoonApiCode.SERVER_USER_NOT_FOUND
