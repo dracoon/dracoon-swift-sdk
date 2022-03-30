@@ -794,9 +794,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E000670D2057C6CD009CDA70 /* Build configuration list for PBXNativeTarget "dracoon-sdk" */;
 			buildPhases = (
+				E00067022057C6CD009CDA70 /* Headers */,
 				E00067002057C6CD009CDA70 /* Sources */,
 				E00067012057C6CD009CDA70 /* Frameworks */,
-				E00067022057C6CD009CDA70 /* Headers */,
 			);
 			buildRules = (
 			);
