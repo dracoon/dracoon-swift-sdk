@@ -7,7 +7,7 @@ variables:
   LANG: "en_US.UTF-8"
 
 before_script:
-  - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com:dracoon/ios/client/sdk-swift-sonar.git
+  - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/ios/client/sdk-swift-sonar.git
   - sh sdk-swift-sonar/setup.sh
 
 unit_tests:
