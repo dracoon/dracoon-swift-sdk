@@ -83,7 +83,11 @@ class InitialViewController: UIViewController, OAuthWebViewDelegate, OAuthTokenC
     // MARK:  - OAuth token changed delegate
     
     func tokenChanged(accessToken: String, refreshToken: String) {
-        // TODO store tokens
+        // TODO: store tokens
         self.openNodesView()
+    }
+    
+    func tokenRefreshFailed(error: DracoonError) {
+        debugPrint("token refresh failed: \(error)")
     }
 }

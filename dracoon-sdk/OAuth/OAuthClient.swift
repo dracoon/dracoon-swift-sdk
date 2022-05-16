@@ -42,7 +42,7 @@ class OAuthClientImpl: OAuthClient {
         
         session.request(requestUrl, method: .post, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
             .validate()
-            .decode(OAuthTokens.self, decoder: decoder, completion: completion)
+            .decode(OAuthTokens.self, decoder: decoder, requestType: .oauth, completion: completion)
     }
     
     func refreshAccessToken(session: Session, clientId: String, clientSecret: String, refreshToken: String, delegate: OAuthTokenChangedDelegate?, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>) {
@@ -60,6 +60,6 @@ class OAuthClientImpl: OAuthClient {
         
         session.request(requestUrl, method: .post, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
             .validate()
-            .decode(OAuthTokens.self, decoder: decoder, completion: completion)
+            .decode(OAuthTokens.self, decoder: decoder, requestType: .oauth, completion: completion)
     }
 }

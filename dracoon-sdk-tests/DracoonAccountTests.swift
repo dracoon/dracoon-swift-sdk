@@ -351,7 +351,7 @@ class DracoonAccountTests: DracoonSdkTestCase {
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
     }
     
-    func testDownloadUserAvatar_downloadFails_retunsError() {
+    func testDownloadUserAvatar_downloadFails_returnsError() {
         
         MockURLProtocol.responseWithError(NSError(domain: "SDKTest", code: NSURLErrorTimedOut, userInfo: nil), statusCode: 400)
         let expectation = XCTestExpectation(description: "Returns error")
