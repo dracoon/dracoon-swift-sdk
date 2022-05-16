@@ -6,19 +6,19 @@ A library to access DRACOON REST API
 
 #### Minimum Requirements
 
-Xcode 12.3
+Xcode 13
 
 #### Swift Package Manager
 
 Add this line to the dependencies section of your Package.swift:
 
-`.package(name: "crypto_sdk", url: "https://github.com/dracoon/dracoon-swift-sdk", .upToNextMajor(from: "2.5.0"))`
+`.package(name: "crypto_sdk", url: "https://github.com/dracoon/dracoon-swift-sdk", .upToNextMajor(from: "2.5.1"))`
 
 #### Carthage
 
 Add the SDK to your Cartfile:
 
-`github "dracoon/dracoon-swift-sdk.git" ~> 2.5.0`
+`github "dracoon/dracoon-swift-sdk.git" ~> 2.5.1`
 
 Then run
 
@@ -39,7 +39,7 @@ platform :ios, '12.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-pod 'DRACOON-SDK', '~> 2.5.0'
+pod 'DRACOON-SDK', '~> 2.5.1'
 end
 ```
 Then run
