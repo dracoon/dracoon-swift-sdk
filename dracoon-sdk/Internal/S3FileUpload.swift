@@ -173,10 +173,8 @@ public class S3FileUpload: FileUpload {
         urlRequest.httpMethod = HTTPMethod.put.rawValue
         urlRequest.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
         let task = uploadSession.uploadTask(with: urlRequest, fromFile: self.fileUrl)
-        if #available(iOS 11.0, *) {
-            if self.fileSize > 0 {
-                task.countOfBytesClientExpectsToSend = fileSize
-            }
+        if self.fileSize > 0 {
+            task.countOfBytesClientExpectsToSend = fileSize
         }
         self.urlSessionTask = task
         task.resume()
