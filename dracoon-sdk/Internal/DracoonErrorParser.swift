@@ -29,6 +29,7 @@ public class DracoonErrorParser {
         case deleteULShare
         case createUpload
         case getMissingFileKeys
+        case oauth
     }
     
     public struct HTTPStatusCode {

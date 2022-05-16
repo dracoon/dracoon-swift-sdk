@@ -102,19 +102,15 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
         let request = URLRequest(url: URL(string: url)!)
         let task = urlSession.downloadTask(with: request)
         self.urlSessionTask = task
-        if #available(iOS 11.0, *) {
-            self.nodes.getNode(nodeId: self.nodeId, completion: { result in
-                switch result {
-                case .error(let error):
-                    self.callback?.onError?(error)
-                case .value(let node):
-                    task.countOfBytesClientExpectsToReceive = node.size ?? 0
-                    task.resume()
-                }
-            })
-        } else {
-            task.resume()
-        }
+        self.nodes.getNode(nodeId: self.nodeId, completion: { result in
+            switch result {
+            case .error(let error):
+                self.callback?.onError?(error)
+            case .value(let node):
+                task.countOfBytesClientExpectsToReceive = node.size ?? 0
+                task.resume()
+            }
+        })
     }
     
     fileprivate func handleProgress(_ progress: Progress) {

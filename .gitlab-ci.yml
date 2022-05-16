@@ -1,0 +1,36 @@
+stages:
+  - unit_tests
+  - sonar
+
+variables:
+  LC_ALL: "en_US.UTF-8"
+  LANG: "en_US.UTF-8"
+
+before_script:
+  - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/ios/client/sdk-swift-sonar.git
+  - cd sdk-swift-sonar
+  - sh setup.sh
+  - cd ..
+
+unit_tests:
+  dependencies: []
+  stage: unit_tests
+  artifacts:
+    paths:
+      - TestResults/Logs/Test/*.xcresult
+  script:
+    - bundle exec fastlane runUnitTests
+    - cp sdk-swift-sonar/printCodeCoverage.sh TestResults/Logs/Test/
+    - cd TestResults/Logs/Test/
+    - ./printCodeCoverage.sh
+    - cd ../../../
+  coverage: '/Code coverage: \d+\.\d+/'
+  tags:
+    - darwin-amd64
+
+sonar:
+  stage: sonar
+  script:
+    - bundle exec fastlane runSonar
+  tags:
+    - darwin-amd64

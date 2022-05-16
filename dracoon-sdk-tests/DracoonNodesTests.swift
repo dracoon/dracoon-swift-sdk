@@ -446,22 +446,21 @@ class DracoonNodesTests: DracoonSdkTestCase {
     func testDownload_succeeds_callsOnComplete() {
         self.setResponseModel(Node.self, statusCode: 200)
         self.setResponseModel(DownloadTokenGenerateResponse.self, statusCode: 200)
-        if #available(iOS 11.0, *) {
-            self.setResponseModel(Node.self, statusCode: 200)
-        }
+        self.setResponseModel(Node.self, statusCode: 200)
+        MockURLProtocol.response(with: 200)
         let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
         let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
-        
+
         let callback = DownloadCallback()
-       
+
         callback.onComplete = { _ in
             calledOnComplete = true
             expectation.fulfill()
         }
-        
+
         self.nodes.downloadFile(nodeId: 42, targetUrl: url, callback: callback)
-        
+
         self.testWaiter.wait(for: [expectation], timeout: 5.0)
         XCTAssertTrue(calledOnComplete)
     }
@@ -471,9 +470,8 @@ class DracoonNodesTests: DracoonSdkTestCase {
         self.setResponseModel(Node.self, statusCode: 200)
         let responseModel = DownloadTokenGenerateResponse(downloadUrl: "https://dracoon.team")
         MockURLProtocol.responseWithModel(DownloadTokenGenerateResponse.self, model: responseModel, statusCode: 200)
-        if #available(iOS 11.0, *) {
-            self.setResponseModel(Node.self, statusCode: 200)
-        }
+        self.setResponseModel(Node.self, statusCode: 200)
+        MockURLProtocol.response(with: 200)
         let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
         let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false
@@ -518,9 +516,8 @@ class DracoonNodesTests: DracoonSdkTestCase {
         MockURLProtocol.responseWithModel(Node.self, model: encryptedNode, statusCode: 200)
         self.setResponseModel(EncryptedFileKey.self, statusCode: 200)
         self.setResponseModel(DownloadTokenGenerateResponse.self, statusCode: 200)
-        if #available(iOS 11.0, *) {
-            self.setResponseModel(Node.self, statusCode: 200)
-        }
+        self.setResponseModel(Node.self, statusCode: 200)
+        MockURLProtocol.response(with: 200)
         let url = Bundle(for: DracoonNodesTests.self).resourceURL!.appendingPathComponent("testDownload")
         let expectation = XCTestExpectation(description: "Calls onComplete")
         var calledOnComplete = false

@@ -69,6 +69,9 @@ public extension DataRequest {
         } else if underlyingError?._code == NSURLErrorNotConnectedToInternet {
             return DracoonError.offline
         }
+        if requestType == .oauth {
+            return self.handleOAuthError(decoder: decoder, error: error, urlResponse: urlResponse, responseData: responseData)
+        }
         if let response = urlResponse, response.statusCode == DracoonErrorParser.HTTPStatusCode.FORBIDDEN {
             if response.allHeaderFields["X-Forbidden"] as? String == "403" {
                 return DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: response.statusCode))
@@ -93,6 +96,18 @@ public extension DataRequest {
     private func parseError(error: ModelErrorResponse, requestType: DracoonErrorParser.RequestType) -> DracoonSDKErrorModel {
         let code = DracoonErrorParser.shared.parseApiErrorResponse(error, requestType: requestType)
         return DracoonSDKErrorModel(errorCode: code, httpStatusCode: error.code)
+    }
+    
+    private func handleOAuthError(decoder: JSONDecoder, error: AFError?, urlResponse: HTTPURLResponse?, responseData: Data?) -> DracoonError {
+        guard let data = responseData else {
+            return DracoonError.oauth_error_unknown(statusCode: urlResponse?.statusCode, description: error?.errorDescription)
+        }
+        do {
+            let error = try decoder.decode(OAuthErrorModel.self, from: data)
+            return DracoonError.oauth_error(errorModel: error)
+        } catch {}
+        
+        return DracoonError.oauth_error_unknown(statusCode: urlResponse?.statusCode, description: error?.errorDescription)
     }
 }
 
