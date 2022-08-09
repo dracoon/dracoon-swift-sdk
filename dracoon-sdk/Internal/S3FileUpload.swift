@@ -135,22 +135,22 @@ public class S3FileUpload: FileUpload {
             return
         }
         print("presignedUrl count \(urls.count)")
-        var cipher: EncryptionCipher?
-        if let crypto = self.crypto {
-            do {
-                let fileKey = try crypto.generateFileKey(version: PlainFileKeyVersion.AES256GCM)
-                cipher = try crypto.createEncryptionCipher(fileKey: fileKey)
-                self.cipher = cipher
-            } catch {
-                self.callback?.onError?(DracoonError.encryption_cipher_failure)
-                return
-            }
-        }
         if let sessionConfig = self.uploadSessionConfig,
            sessionConfig.identifier != nil {
             print("background s3 upload")
             self.uploadBackgroundToPresignedURL(firstUrl)
         } else {
+            var cipher: EncryptionCipher?
+            if let crypto = self.crypto {
+                do {
+                    let fileKey = try crypto.generateFileKey(version: PlainFileKeyVersion.AES256GCM)
+                    cipher = try crypto.createEncryptionCipher(fileKey: fileKey)
+                    self.cipher = cipher
+                } catch {
+                    self.callback?.onError?(DracoonError.encryption_cipher_failure)
+                    return
+                }
+            }
             print("foreground s3 upload")
             self.createNextChunk(uploadId: uploadId, presignedUrl: firstUrl, cipher: cipher, completion: {
                 self.completeS3Upload(uploadId: uploadId, cipher: cipher)
@@ -161,6 +161,17 @@ public class S3FileUpload: FileUpload {
     // MARK: Background S3 Upload
     
     fileprivate func uploadBackgroundToPresignedURL(_ presignedUrl: PresignedUrl) {
+        var fileToUpload = self.fileUrl
+        if self.crypto != nil {
+            do {
+                let result = try self.encryptFile()
+                self.cipher = result.cipher
+                fileToUpload = result.url
+            } catch {
+                self.callback?.onError?(error)
+                return
+            }
+        }
         let uploadUrl = presignedUrl.url
         let sessionConfiguration: URLSessionConfiguration
         if let sessionConfig = self.uploadSessionConfig {
@@ -172,7 +183,7 @@ public class S3FileUpload: FileUpload {
         var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
         urlRequest.httpMethod = HTTPMethod.put.rawValue
         urlRequest.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
-        let task = uploadSession.uploadTask(with: urlRequest, fromFile: self.fileUrl)
+        let task = uploadSession.uploadTask(with: urlRequest, fromFile: fileToUpload)
         if self.fileSize > 0 {
             task.countOfBytesClientExpectsToSend = fileSize
         }

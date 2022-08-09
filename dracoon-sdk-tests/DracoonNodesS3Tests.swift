@@ -369,4 +369,62 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         self.testWaiter.wait(for: [expectation], timeout: 60.0)
         XCTAssertTrue(calledOnError)
     }
+    
+    func testUploadBackground_withEncryptedTargetRoom_encryptsFile() {
+        
+        let expectation = XCTestExpectation(description: "Encrypts file")
+        
+        let encryptedNode = Node(_id: 1337, type: .file, name: "encryptedFile"){$0.isEncrypted = true}
+        MockURLProtocol.responseWithModel(Node.self, model: encryptedNode, statusCode: 200)
+        self.setResponseModel(CreateFileUploadResponse.self, statusCode: 200)
+        // Set part model
+        let lastUrlModel = PresignedUrlList(urls: [PresignedUrl(url: "https://dracoon.team/1", partNumber: 1)])
+        MockURLProtocol.responseWithModel(PresignedUrlList.self, model: lastUrlModel, statusCode: 200)
+        
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
+        let uploadCallback = UploadCallback()
+        uploadCallback.onError = { _ in
+            expectation.fulfill()
+        }
+        
+        let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
+        let testSessionConfig = URLSessionConfiguration.background(withIdentifier: "com.dracoon.test")
+        let cryptoMock = self.crypto as! DracoonCryptoMock
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: testSessionConfig)
+        
+        self.testWaiter.wait(for: [expectation], timeout: 30.0)
+        XCTAssertTrue(cryptoMock.generateFileKeyCalled)
+        XCTAssertTrue(cryptoMock.createdEncryptionCipher)
+    }
+    
+    func testUploadBackground_withEncryptedTargetRoomAndFailingCipher_returnsError() throws {
+        
+        let expectation = XCTestExpectation(description: "Returns crypto error")
+        var returnedError: DracoonError? = nil
+        
+        let encryptedNode = Node(_id: 1337, type: .file, name: "encryptedFile"){$0.isEncrypted = true}
+        MockURLProtocol.responseWithModel(Node.self, model: encryptedNode, statusCode: 200)
+        self.setResponseModel(CreateFileUploadResponse.self, statusCode: 200)
+        // Set part model
+        let lastUrlModel = PresignedUrlList(urls: [PresignedUrl(url: "https://dracoon.team/1", partNumber: 1)])
+        MockURLProtocol.responseWithModel(PresignedUrlList.self, model: lastUrlModel, statusCode: 200)
+        
+        let createFileUploadRequest = CreateFileUploadRequest(parentId: 42, name: "upload")
+        let uploadCallback = UploadCallback()
+        uploadCallback.onError = { error in
+            returnedError = error as? DracoonError
+            expectation.fulfill()
+        }
+        
+        let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
+        let testSessionConfig = URLSessionConfiguration.background(withIdentifier: "com.dracoon.test")
+        let cryptoMock = self.crypto as! DracoonCryptoMock
+        let testError = DracoonError.encryption_cipher_failure
+        cryptoMock.testError = testError
+        self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: testSessionConfig)
+        
+        self.testWaiter.wait(for: [expectation], timeout: 30.0)
+        let unwrappedError = try XCTUnwrap(returnedError)
+        XCTAssertTrue(unwrappedError.localizedDescription == testError.localizedDescription)
+    }
 }
