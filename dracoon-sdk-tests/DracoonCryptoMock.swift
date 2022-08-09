@@ -18,6 +18,9 @@ class DracoonCryptoMock: CryptoProtocol {
     var checkKeyPairSuccess = true
     var decryptFileKeyCalled = false
     var encryptFileKeyCalled = false
+    var generateFileKeyCalled = false
+    var createdEncryptionCipher = false
+    var createdDecryptionCipher = false
     
     func generateUserKeyPair(password: String, version: UserKeyPairVersion) throws -> UserKeyPair {
         self.generateKeyPairCalled = true
@@ -51,6 +54,7 @@ class DracoonCryptoMock: CryptoProtocol {
     }
     
     func generateFileKey(version: PlainFileKeyVersion) throws -> PlainFileKey {
+        self.generateFileKeyCalled = true
         if let error = testError {
             throw error
         }
@@ -58,6 +62,7 @@ class DracoonCryptoMock: CryptoProtocol {
     }
     
     func createEncryptionCipher(fileKey: PlainFileKey) throws -> EncryptionCipher {
+        self.createdEncryptionCipher = true
         if let error = testError {
             throw error
         }
@@ -65,11 +70,10 @@ class DracoonCryptoMock: CryptoProtocol {
     }
     
     func createDecryptionCipher(fileKey: PlainFileKey) throws -> DecryptionCipher {
+        self.createdDecryptionCipher = true
         if let error = testError {
             throw error
         }
         return CryptoMock.getDecyptionCipher()
     }
 }
-
-class TestEncryptionCipher {}

@@ -145,7 +145,7 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
         }
     }
     
-    private func encryptFile() throws -> (url: URL, cipher: EncryptionCipher) {
+    func encryptFile() throws -> (url: URL, cipher: EncryptionCipher) {
         var cipher: EncryptionCipher
         if let crypto = self.crypto {
             do {
