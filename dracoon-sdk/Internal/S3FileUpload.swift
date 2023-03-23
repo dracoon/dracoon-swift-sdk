@@ -126,7 +126,7 @@ public class S3FileUpload: FileUpload {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -190,7 +190,7 @@ public class S3FileUpload: FileUpload {
         let uploadSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
         var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
         urlRequest.httpMethod = HTTPMethod.put.rawValue
-        urlRequest.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+        urlRequest.addValue("application/octet-stream", forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
         let task = uploadSession.uploadTask(with: urlRequest, fromFile: fileToUpload)
         if self.fileSize > 0 {
             task.countOfBytesClientExpectsToSend = fileSize
@@ -235,7 +235,7 @@ public class S3FileUpload: FileUpload {
         urlRequest.httpMethod = HTTPMethod.put.rawValue
         
         var headers = HTTPHeaders()
-        headers["Content-Type"] = "application/octet-stream"
+        headers[ApiRequestConstants.headerFields.keys.contentType] = "application/octet-stream"
         
         let request = self.session.upload(chunk, to: requestUrl, method: .put, headers: headers)
         
@@ -397,7 +397,7 @@ public class S3FileUpload: FileUpload {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.put.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)

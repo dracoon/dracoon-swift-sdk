@@ -54,12 +54,12 @@ class DracoonAccountImpl: DracoonAccount {
             let userKeyPair = try crypto.generateUserKeyPair(password: password, version: version)
             let jsonBody = try encoder.encode(userKeyPair)
             
-            let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
+            let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.userAccountKeyPair
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
             urlRequest.httpBody = jsonBody
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             
             self.session.request(urlRequest)
                 .validate()
@@ -92,7 +92,7 @@ class DracoonAccountImpl: DracoonAccount {
     }
     
     private func sendGetUserKeyPairRequest(parameters: [String : Any], completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
-        let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
+        let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.userAccountKeyPair
         
         self.session.request(requestUrl, method: .get, parameters: parameters)
             .validate()
@@ -151,14 +151,14 @@ class DracoonAccountImpl: DracoonAccount {
     }
     
     private func sendDeleteUserKeyPairRequest(parameters: [String : Any], completion: @escaping (Dracoon.Response) -> Void) {
-        let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/keypair"
+        let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.userAccountKeyPair
         self.session.request(requestUrl, method: .delete, parameters: parameters)
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
     }
     
     func getUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
-        let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/avatar"
+        let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.userAccountAvatar
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
             .validate()
@@ -201,10 +201,10 @@ class DracoonAccountImpl: DracoonAccount {
             return
         }
         
-        let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/avatar"
+        let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.userAccountAvatar
         var request = URLRequest(url: URL(string: requestUrl)!)
         request.httpMethod = HTTPMethod.post.rawValue
-        request.addValue("multipart/formdata", forHTTPHeaderField: "Content-Type")
+        request.addValue("multipart/formdata", forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
         
         let uploadRequest = self.session.upload(multipartFormData: { formData in
             formData.append(data, withName: "file", fileName: "file.name", mimeType: "application/octet-stream")
@@ -222,7 +222,7 @@ class DracoonAccountImpl: DracoonAccount {
     }
     
     func deleteUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
-        let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/avatar"
+        let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.userAccountAvatar
         
         self.session.request(requestUrl, method: .delete, parameters: Parameters())
             .validate()
@@ -245,7 +245,7 @@ class DracoonAccountImpl: DracoonAccount {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.put.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
