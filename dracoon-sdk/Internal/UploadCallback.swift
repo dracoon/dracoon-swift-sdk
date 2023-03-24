@@ -15,5 +15,7 @@ public class UploadCallback {
     public var onProgress: ((Float) -> Void)?
     public var onComplete: ((Node) -> Void)?
     
-    public init() {}
+    public init() {
+        // Public initializer
+    }
 }

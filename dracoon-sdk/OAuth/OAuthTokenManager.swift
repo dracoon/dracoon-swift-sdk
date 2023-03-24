@@ -138,7 +138,9 @@ class OAuthTokenManager: OAuthInterceptor {
     }
     
     public func startOAuthSession(_ session: Session) {
-        self.getToken(session: session, completion: {_ in})
+        self.getToken(session: session, completion: { _ in
+            // Use OAuthTokenChangedDelegate to receive changes
+        })
     }
     
     private func getToken(session: Session, completion: @escaping (RetryResult) -> Void) {
