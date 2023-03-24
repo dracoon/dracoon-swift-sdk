@@ -72,10 +72,9 @@ public extension DataRequest {
         if requestType == .oauth {
             return self.handleOAuthError(decoder: decoder, error: error, urlResponse: urlResponse, responseData: responseData)
         }
-        if let response = urlResponse, response.statusCode == DracoonErrorParser.HTTPStatusCode.FORBIDDEN {
-            if response.allHeaderFields["X-Forbidden"] as? String == "403" {
-                return DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: response.statusCode))
-            }
+        if let response = urlResponse, response.statusCode == DracoonErrorParser.HTTPStatusCode.FORBIDDEN,
+           response.allHeaderFields["X-Forbidden"] as? String == "403" {
+            return DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: response.statusCode))
         }
         if let response = urlResponse, response.statusCode == DracoonErrorParser.HTTPStatusCode.TOO_MANY_REQUESTS {
             if let waitingTimeSecondsString = response.allHeaderFields["Retry-After"] as? String,

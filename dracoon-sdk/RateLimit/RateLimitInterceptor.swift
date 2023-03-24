@@ -63,8 +63,10 @@ class RateLimitManager: RateLimitInterceptor {
         self.delegate?.rateLimitApplied(expirationDate: Date(timeIntervalSinceNow: TimeInterval(waitingTimeSeconds)))
         
         // prevents other failed requests to simultaneously start a timer
-        lock.lock(); defer { lock.unlock() }
-        
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
         self.startTimer(timeInterval: TimeInterval(waitingTimeSeconds))
     }
     

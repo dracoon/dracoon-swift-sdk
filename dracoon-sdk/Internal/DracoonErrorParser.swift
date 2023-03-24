@@ -59,7 +59,7 @@ public class DracoonErrorParser {
         case Status.BAD_REQUEST:
             return self.parseBadRequest(response, requestType: requestType)
         case Status.UNAUTHORIZED:
-            return self.parseUnauthorized(response, requestType: requestType)
+            return self.parseUnauthorized(response)
         case Status.PAYMENT_REQUIRED:
             return DracoonApiCode.PRECONDITION_PAYMENT_REQUIRED
         case Status.FORBIDDEN:
@@ -69,17 +69,17 @@ public class DracoonErrorParser {
         case Status.CONFLICT:
             return self.parseConflict(response, requestType: requestType)
         case Status.PRECONDITION_FAILED:
-            return self.parsePreconditionFailed(response, requestType: requestType)
+            return self.parsePreconditionFailed(response)
         case Status.TOO_MANY_REQUESTS:
             return DracoonApiCode.SERVER_TOO_MANY_REQUESTS
         case Status.BAD_GATEWAY:
-            return self.parseBadGateway(response, requestType: requestType)
+            return self.parseBadGateway(response)
         case Status.GATEWAY_TIMEOUT:
-            return self.parseGatewayTimeout(response, requestType: requestType)
+            return self.parseGatewayTimeout(response)
         case Status.INSUFFICIENT_STORAGE:
-            return self.parseInsufficientStorage(response, requestType: requestType)
+            return self.parseInsufficientStorage(response)
         case Status.MALWARE_FOUND:
-            return self.parseMalwareFound(response, requestType: requestType)
+            return self.parseMalwareFound()
         default:
             return DracoonApiCode.SERVER_UNKNOWN_ERROR
         }
@@ -206,7 +206,7 @@ public class DracoonErrorParser {
         }
     }
     
-    private func parseUnauthorized(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
+    private func parseUnauthorized(_ response: ModelErrorResponse) -> DracoonApiCode {
         guard let apiErrorCode = response.errorCode else {
             return DracoonApiCode.AUTH_UNAUTHORIZED
         }
@@ -373,7 +373,7 @@ public class DracoonErrorParser {
         }
     }
     
-    private func parsePreconditionFailed(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
+    private func parsePreconditionFailed(_ response: ModelErrorResponse) -> DracoonApiCode {
         guard let apiErrorCode = response.errorCode else {
             return DracoonApiCode.PRECONDITION_UNKNOWN_ERROR
         }
@@ -392,7 +392,7 @@ public class DracoonErrorParser {
         }
     }
     
-    private func parseBadGateway(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
+    private func parseBadGateway(_ response: ModelErrorResponse) -> DracoonApiCode {
         guard let apiErrorCode = response.errorCode else {
             return DracoonApiCode.SERVER_UNKNOWN_ERROR
         }
@@ -403,7 +403,7 @@ public class DracoonErrorParser {
         return DracoonApiCode.SERVER_UNKNOWN_ERROR
     }
     
-    private func parseGatewayTimeout(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
+    private func parseGatewayTimeout(_ response: ModelErrorResponse) -> DracoonApiCode {
         guard let apiErrorCode = response.errorCode else {
             return DracoonApiCode.SERVER_UNKNOWN_ERROR
         }
@@ -414,7 +414,7 @@ public class DracoonErrorParser {
         return DracoonApiCode.SERVER_UNKNOWN_ERROR
     }
     
-    private func parseInsufficientStorage(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
+    private func parseInsufficientStorage(_ response: ModelErrorResponse) -> DracoonApiCode {
         guard let apiErrorCode = response.errorCode else {
             return DracoonApiCode.SERVER_INSUFFICIENT_STORAGE
         }
@@ -431,7 +431,7 @@ public class DracoonErrorParser {
         }
     }
     
-    private func parseMalwareFound(_ response: ModelErrorResponse, requestType: RequestType) -> DracoonApiCode {
+    private func parseMalwareFound() -> DracoonApiCode {
         return DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED
     }
 }

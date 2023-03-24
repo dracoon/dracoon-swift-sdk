@@ -335,18 +335,23 @@ class DracoonNodesImpl: DracoonNodes {
                     cryptoImpl = self.crypto
                 }
                 
-                self.isS3Upload(onComplete: { result in
-                    switch result {
-                    case .error(_):
-                        self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
-                    case .value(let isS3Upload):
-                        if isS3Upload {
-                            self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
-                        } else {
-                            self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
-                        }
-                    }
-                })
+                self.checkForS3AndStartUpload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
+            }
+        })
+    }
+    
+    private func checkForS3AndStartUpload(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback,
+                                          resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
+        self.isS3Upload(onComplete: { result in
+            switch result {
+            case .error(_):
+                self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
+            case .value(let isS3Upload):
+                if isS3Upload {
+                    self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
+                } else {
+                    self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
+                }
             }
         })
     }

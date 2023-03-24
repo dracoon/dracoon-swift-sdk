@@ -78,7 +78,10 @@ class OAuthTokenManager: OAuthInterceptor {
     
     func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
         if isUnauthorized(request: request) || isExpiredOrCodeFlow(error: error) {
-            lock.lock(); defer { lock.unlock() }
+            lock.lock()
+            defer {
+                lock.unlock()
+            }
             requestsToRetry.append(completion)
             if !isRefreshing {
                 self.getToken(session: session, completion: { [weak self] retryResult in
