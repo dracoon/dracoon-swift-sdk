@@ -366,6 +366,7 @@ class DracoonNodesImpl: DracoonNodes {
         innerCallback.onComplete = { node in
             if cryptoImpl != nil {
                 self.setMissingFileKeysBatch(nodeId: node._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
+                    // Don't wait for file key creation
                 })
             }
             callback.onComplete?(node)
@@ -390,6 +391,7 @@ class DracoonNodesImpl: DracoonNodes {
         innerCallback.onComplete = { node in
             if cryptoImpl != nil {
                 self.setMissingFileKeysBatch(nodeId: node._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
+                    // Don't wait for file key creation
                 })
             }
             callback.onComplete?(node)
