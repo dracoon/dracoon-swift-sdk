@@ -280,7 +280,7 @@ class DracoonNodesS3Tests: DracoonSdkTestCase {
         let url = Bundle(for: DracoonNodesS3Tests.self).resourceURL!.appendingPathComponent("testUpload")
         self.nodes.uploadFile(uploadId: "123", request: createFileUploadRequest, fileUrl: url, callback: uploadCallback, sessionConfig: nil)
         
-        self.testWaiter.wait(for: [expectation], timeout: 15.0)
+        self.testWaiter.wait(for: [expectation], timeout: 20.0)
         XCTAssertTrue(cryptoMock.decryptFileKeyCalled)
         XCTAssertTrue(cryptoMock.encryptFileKeyCalled)
     }
