@@ -210,6 +210,7 @@ class DracoonSharesImpl: DracoonShares {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.delete.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -327,6 +328,7 @@ class DracoonSharesImpl: DracoonShares {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.delete.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
