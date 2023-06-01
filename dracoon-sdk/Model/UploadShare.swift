@@ -55,6 +55,8 @@ public struct UploadShare: Codable {
     /** Internal notes. Limited to 255 characters.
      [Since version 4.11.0] */
     public var internalNotes: String?
+    /** Node type */
+    public var targetType: String?
     
     /** [Deprecated since v4.20.0] Notify creator on every upload. (default: false) */
     public var notifyCreator: Bool?
@@ -83,6 +85,7 @@ public struct UploadShare: Codable {
         case showCreatorName
         case showCreatorUsername
         case internalNotes
+        case targetType
     }
     
     

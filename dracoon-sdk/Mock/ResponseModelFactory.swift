@@ -152,7 +152,7 @@ public class ResponseModelFactory {
     
     private func getDownloadShare() -> DownloadShare {
         let userInfo = UserInfo(_id: 32)
-        return DownloadShare(_id: 1337, nodeId: 42, accessKey: "accessKey", cntDownloads: 10, createdAt: Date(), createdBy: userInfo, name: nil, notes: nil, showCreatorName: false, showCreatorUsername: false, isProtected: false, expireAt: nil, maxDownloads: nil, nodePath: nil, dataUrl: nil, isEncrypted: false, internalNotes: nil, notifyCreator: false)
+        return DownloadShare(_id: 1337, nodeId: 42, accessKey: "accessKey", cntDownloads: 10, createdAt: Date(), createdBy: userInfo, name: nil, notes: nil, showCreatorName: false, showCreatorUsername: false, isProtected: false, expireAt: nil, maxDownloads: nil, nodePath: nil, dataUrl: nil, isEncrypted: false, internalNotes: nil, nodeType: nil, notifyCreator: false)
     }
     
     private func getDownloadShareList() -> DownloadShareList {
@@ -162,7 +162,7 @@ public class ResponseModelFactory {
     
     private func getUploadShare() -> UploadShare {
         let userInfo = UserInfo(_id: 32)
-        return UploadShare(_id: 1337, targetId: 42, name: "name", isProtected: false, accessKey: "accessKey", createdAt: Date(), createdBy: userInfo, targetPath: nil, expireAt: nil, isEncrypted: true, notes: nil, filesExpiryPeriod: nil, cntFiles: nil, cntUploads: nil, showUploadedFiles: false, dataUrl: nil, maxSlots: nil, maxSize: nil, showCreatorName: false, showCreatorUsername: false, internalNotes: nil, notifyCreator: nil)
+        return UploadShare(_id: 1337, targetId: 42, name: "name", isProtected: false, accessKey: "accessKey", createdAt: Date(), createdBy: userInfo, targetPath: nil, expireAt: nil, isEncrypted: true, notes: nil, filesExpiryPeriod: nil, cntFiles: nil, cntUploads: nil, showUploadedFiles: false, dataUrl: nil, maxSlots: nil, maxSize: nil, showCreatorName: false, showCreatorUsername: false, internalNotes: nil, targetType: nil, notifyCreator: nil)
     }
     
     private func getUploadShareList() -> UploadShareList {

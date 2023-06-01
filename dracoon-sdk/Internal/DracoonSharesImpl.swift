@@ -140,6 +140,30 @@ class DracoonSharesImpl: DracoonShares {
         
     }
     
+    func getDownloadShares(offset: Int?, limit: Int?, filter: String?, sorting: String?, completion: @escaping DataRequest.DecodeCompletion<DownloadShareList>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/shares/downloads"
+        
+        var parameters = Parameters()
+        
+        if let limit = limit {
+            parameters["limit"] = limit
+        }
+        if let offset = offset {
+            parameters["offset"] = offset
+        }
+        if let filter = filter {
+            parameters["filter"] = filter
+        }
+        if let sorting = sorting {
+            parameters["sort"] = sorting
+        }
+        
+        self.session.request(requestUrl, method: .get, parameters: parameters)
+            .validate()
+            .decode(DownloadShareList.self, decoder: self.decoder, completion: completion)
+        
+    }
+    
     func getDownloadShareQrCode(shareId: Int64, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/downloads/\(shareId)/qr"
         
@@ -176,6 +200,25 @@ class DracoonSharesImpl: DracoonShares {
         self.session.request(urlRequest)
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
+    }
+    
+    func deleteDownloadShares(shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void) {
+        let requestModel = DeleteDownloadSharesRequest(shareIds: shareIds)
+        do {
+            let jsonBody = try encoder.encode(requestModel)
+            let requestUrl = serverUrl.absoluteString + apiPath + "/shares/downloads"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.delete.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.session.request(urlRequest)
+                .validate()
+                .handleResponse(decoder: self.decoder, completion: completion)
+        } catch {
+            completion(Dracoon.Response(error: DracoonError.encode(error: error)))
+        }
     }
     
     func createUploadShare(nodeId: Int64, name: String?, password: String?, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
@@ -215,6 +258,30 @@ class DracoonSharesImpl: DracoonShares {
             .decode(UploadShareList.self, decoder: self.decoder, completion: completion)
     }
     
+    func getUploadShares(offset: Int?, limit: Int?, filter: String?, sorting: String?, completion: @escaping DataRequest.DecodeCompletion<UploadShareList>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/shares/uploads"
+        
+        var parameters = Parameters()
+        
+        if let limit = limit {
+            parameters["limit"] = limit
+        }
+        if let offset = offset {
+            parameters["offset"] = offset
+        }
+        if let filter = filter {
+            parameters["filter"] = filter
+        }
+        if let sorting = sorting {
+            parameters["sort"] = sorting
+        }
+        
+        self.session.request(requestUrl, method: .get, parameters: parameters)
+            .validate()
+            .decode(UploadShareList.self, decoder: self.decoder, completion: completion)
+        
+    }
+    
     func getUploadShareQrCode(shareId: Int64, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/uploads/\(shareId)/qr"
         
@@ -251,5 +318,24 @@ class DracoonSharesImpl: DracoonShares {
         self.session.request(urlRequest)
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
+    }
+    
+    func deleteUploadShares(shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void) {
+        let requestModel = DeleteUploadSharesRequest(shareIds: shareIds)
+        do {
+            let jsonBody = try encoder.encode(requestModel)
+            let requestUrl = serverUrl.absoluteString + apiPath + "/shares/uploads"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.delete.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.session.request(urlRequest)
+                .validate()
+                .handleResponse(decoder: self.decoder, completion: completion)
+        } catch {
+            completion(Dracoon.Response(error: DracoonError.encode(error: error)))
+        }
     }
 }
