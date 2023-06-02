@@ -77,8 +77,13 @@ class OAuthTokenManager: OAuthInterceptor {
     private var requestsToRetry: [RequestRetryCompletion] = []
     // indicates that a request is trying to get a new access token
     private var isRefreshing = false
+    // indicates that the DracoonAuthMode is still valid
+    private var refreshTokenIsAssumedValid = true
     
     func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        guard refreshTokenIsAssumedValid else {
+            return
+        }
         if isUnauthorized(request: request) || isExpiredOrCodeFlow(error: error) {
             lock.lock(); defer { lock.unlock() }
             requestsToRetry.append(completion)
@@ -188,6 +193,14 @@ class OAuthTokenManager: OAuthInterceptor {
                     self.delegate?.tokenChanged(accessToken: tokens.access_token, refreshToken: tokens.refresh_token)
                     completion(.retry)
                 case .error(let error):
+                    switch error {
+                    case .oauth_error(errorModel: let model):
+                        if model.getErrorCode() == .invalid_grant {
+                            self.refreshTokenIsAssumedValid = false
+                        }
+                        break
+                    default: break
+                    }
                     self.delegate?.tokenRefreshFailed(error: error)
                     completion(.doNotRetry)
                 }
