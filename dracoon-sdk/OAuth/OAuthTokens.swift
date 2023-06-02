@@ -16,7 +16,10 @@ public struct OAuthTokens: Codable {
     var scope: String
 }
 
-
+public enum OAuthTokenType: String, Codable {
+    case accessToken = "access_token"
+    case refreshToken = "refresh_token"
+}
 
 
 public struct DracoonTokens {

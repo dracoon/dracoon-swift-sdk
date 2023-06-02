@@ -11,6 +11,7 @@ public struct OAuthConstants {
     
     public static let OAUTH_AUTHORIZE_PATH = "/authorize";
     public static let OAUTH_TOKEN_PATH = "/token";
+    public static let OAUTH_REVOKE_PATH = "/revoke"
     
     public static let OAUTH_FLOW = "code";
     
