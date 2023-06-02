@@ -19,7 +19,7 @@ protocol OAuthInterceptor: RequestInterceptor {
     func getAccessToken() -> String?
     func getRefreshToken() -> String?
     func startOAuthSession(_ session: Session)
-    func revokeTokens()
+    func revokeTokens(completion: ((DracoonError?) -> Void)?)
 }
 
 class OAuthTokenManager: OAuthInterceptor {
@@ -136,14 +136,18 @@ class OAuthTokenManager: OAuthInterceptor {
         }
     }
     
-    public func revokeTokens() {
+    public func revokeTokens(completion: ((DracoonError?) -> Void)?) {
         guard let session = self.session else {
-            self.delegate?.tokenRevocationResult(error: DracoonError.generic(error: nil))
+            let error = DracoonError.generic(error: nil)
+            self.delegate?.tokenRevocationResult(error: error)
+            completion?(error)
             return
         }
         switch mode {
         case .authorizationCode(clientId: _, clientSecret: _, authorizationCode: _):
-            self.delegate?.tokenRevocationResult(error: DracoonError.generic(error: nil))
+            let error = DracoonError.generic(error: nil)
+            self.delegate?.tokenRevocationResult(error: error)
+            completion?(error)
             return
         case .accessToken(accessToken: _):
             self.delegate?.tokenRevocationResult(error: DracoonError.generic(error: nil))
@@ -152,6 +156,7 @@ class OAuthTokenManager: OAuthInterceptor {
             oAuthClient.revokeOAuthToken(session: session, clientId: clientId, clientSecret: clientSecret, tokenType: .refreshToken, token: tokens.refreshToken, completion: { response in
                 if let revocationError = response.error {
                     self.delegate?.tokenRevocationResult(error: revocationError)
+                    completion?(revocationError)
                     return
                 }
                 guard let accessToken = tokens.accessToken else {
@@ -159,6 +164,7 @@ class OAuthTokenManager: OAuthInterceptor {
                 }
                 self.oAuthClient.revokeOAuthToken(session: session, clientId: clientId, clientSecret: clientSecret, tokenType: .accessToken, token: accessToken, completion: { response in
                     self.delegate?.tokenRevocationResult(error: response.error)
+                    completion?(response.error)
                 })
             })
         }

@@ -35,7 +35,8 @@ public protocol DracoonClient {
     
     /// Revoke current OAuth tokens
     ///
-    func revokeOAuthToken()
+    /// - Parameter completion: Returns nil on success or an error.
+    func revokeOAuthToken(completion: ((DracoonError?) -> Void)?)
 
     /// Sets rate limit if date is in the future.
     ///

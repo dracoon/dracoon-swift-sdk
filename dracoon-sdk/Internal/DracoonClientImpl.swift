@@ -116,8 +116,8 @@ public class DracoonClientImpl: DracoonClient {
         return self.oAuthTokenManager.getRefreshToken()
     }
     
-    public func revokeOAuthToken() {
-        self.oAuthTokenManager.revokeTokens()
+    public func revokeOAuthToken(completion: ((DracoonError?) -> Void)?) {
+        self.oAuthTokenManager.revokeTokens(completion: completion)
     }
     
     public func restoreRateLimitExpiration(_ date: Date) {
