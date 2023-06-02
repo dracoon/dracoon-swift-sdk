@@ -19,12 +19,14 @@ protocol OAuthInterceptor: RequestInterceptor {
     func getAccessToken() -> String?
     func getRefreshToken() -> String?
     func startOAuthSession(_ session: Session)
+    func revokeTokens()
 }
 
 class OAuthTokenManager: OAuthInterceptor {
     
     var oAuthClient: OAuthClient
     var mode: DracoonAuthMode
+    var session: Alamofire.Session?
     
     weak var delegate: OAuthTokenChangedDelegate?
     
@@ -134,7 +136,36 @@ class OAuthTokenManager: OAuthInterceptor {
         }
     }
     
+    public func revokeTokens() {
+        guard let session = self.session else {
+            self.delegate?.tokenRevocationResult(error: DracoonError.generic(error: nil))
+            return
+        }
+        switch mode {
+        case .authorizationCode(clientId: _, clientSecret: _, authorizationCode: _):
+            self.delegate?.tokenRevocationResult(error: DracoonError.generic(error: nil))
+            return
+        case .accessToken(accessToken: _):
+            self.delegate?.tokenRevocationResult(error: DracoonError.generic(error: nil))
+            return
+        case .accessRefreshToken(clientId: let clientId, clientSecret: let clientSecret, tokens: let tokens):
+            oAuthClient.revokeOAuthToken(session: session, clientId: clientId, clientSecret: clientSecret, tokenType: .refreshToken, token: tokens.refreshToken, completion: { response in
+                if let revocationError = response.error {
+                    self.delegate?.tokenRevocationResult(error: revocationError)
+                    return
+                }
+                guard let accessToken = tokens.accessToken else {
+                    return
+                }
+                self.oAuthClient.revokeOAuthToken(session: session, clientId: clientId, clientSecret: clientSecret, tokenType: .accessToken, token: accessToken, completion: { response in
+                    self.delegate?.tokenRevocationResult(error: response.error)
+                })
+            })
+        }
+    }
+    
     public func startOAuthSession(_ session: Session) {
+        self.session = session
         self.getToken(session: session, completion: {_ in})
     }
     

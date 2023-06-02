@@ -11,4 +11,5 @@ import Foundation
 public protocol OAuthTokenChangedDelegate: AnyObject {
     func tokenChanged(accessToken: String, refreshToken: String)
     func tokenRefreshFailed(error: DracoonError)
+    func tokenRevocationResult(error: DracoonError?)
 }
