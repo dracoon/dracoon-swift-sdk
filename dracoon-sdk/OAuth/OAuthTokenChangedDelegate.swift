@@ -13,3 +13,8 @@ public protocol OAuthTokenChangedDelegate: AnyObject {
     func tokenRefreshFailed(error: DracoonError)
     func tokenRevocationResult(error: DracoonError?)
 }
+
+extension OAuthTokenChangedDelegate {
+    // make optional to implement
+    func tokenRevocationResult(error: DracoonError?) {}
+}
