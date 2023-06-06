@@ -22,6 +22,11 @@ protocol OAuthInterceptor: RequestInterceptor {
     func revokeTokens(completion: ((DracoonError?) -> Void)?)
 }
 
+extension OAuthInterceptor {
+    // make optional to implement
+    func revokeTokens(completion: ((DracoonError?) -> Void)?) {}
+}
+
 class OAuthTokenManager: OAuthInterceptor {
     
     var oAuthClient: OAuthClient
