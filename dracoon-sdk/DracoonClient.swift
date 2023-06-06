@@ -32,6 +32,11 @@ public protocol DracoonClient {
     ///
     /// - Returns: The token if available.
     func getRefreshToken() -> String?
+    
+    /// Revoke current OAuth tokens
+    ///
+    /// - Parameter completion: Returns nil on success or an error.
+    func revokeOAuthToken(completion: ((DracoonError?) -> Void)?)
 
     /// Sets rate limit if date is in the future.
     ///

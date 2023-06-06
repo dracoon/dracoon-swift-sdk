@@ -16,6 +16,13 @@ public protocol OAuthClient {
     func getAccessToken(session: Session, clientId: String, clientSecret: String, code: String, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>)
     
     func refreshAccessToken(session: Session, clientId: String, clientSecret: String, refreshToken: String, delegate: OAuthTokenChangedDelegate?, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>)
+    
+    func revokeOAuthToken(session: Session, clientId: String, clientSecret: String, tokenType: OAuthTokenType, token: String, completion: @escaping (Dracoon.Response) -> Void)
+}
+
+public extension OAuthClient {
+    // make optional to implement
+    func revokeOAuthToken(session: Session, clientId: String, clientSecret: String, tokenType: OAuthTokenType, token: String, completion: @escaping (Dracoon.Response) -> Void) {}
 }
 
 class OAuthClientImpl: OAuthClient {
@@ -61,5 +68,23 @@ class OAuthClientImpl: OAuthClient {
         session.request(requestUrl, method: .post, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
             .validate()
             .decode(OAuthTokens.self, decoder: decoder, requestType: .oauth, completion: completion)
+    }
+    
+    func revokeOAuthToken(session: Session, clientId: String, clientSecret: String, tokenType: OAuthTokenType, token: String, completion: @escaping (Dracoon.Response) -> Void) {
+        
+        let requestUrl = serverUrl.absoluteString + OAuthConstants.OAUTH_PATH + OAuthConstants.OAUTH_REVOKE_PATH
+        
+        let parameters: Parameters = [
+            "client_id": clientId,
+            "token_type_hint": tokenType.rawValue,
+            "token": token
+        ]
+        let headers: HTTPHeaders = [
+            DracoonConstants.AUTHORIZATION_HEADER: OAuthHelper.createBasicAuthorizationString(clientId: clientId, clientSecret: clientSecret)
+        ]
+        
+        session.request(requestUrl, method: .post, parameters: parameters, encoding: URLEncoding(destination: .queryString), headers: headers)
+            .validate()
+            .handleResponse(decoder: self.decoder, completion: completion)
     }
 }
