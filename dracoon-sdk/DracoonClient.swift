@@ -739,6 +739,20 @@ public protocol DracoonNodes {
     /// - Returns: The encrypted key
     /// - Throws: CryptoError if an error occured during encryption
     func encryptFileKey(fileKey: PlainFileKey, publicKey: UserPublicKey) throws -> EncryptedFileKey
+    
+    /// Retrieve information about the virus protection verdicts of a list of node IDs.
+    ///
+    /// - Parameters:
+    ///   - nodeIds: The IDs of the nodes
+    ///   - completion: Returns the information on success or an error.
+    func generateVirusProtectionVerdict(for nodeIds: [Int64], completion: @escaping (DataRequest.DecodeCompletion<VirusProtectionVerdictResponse>))
+    
+    /// Permanently delete a malicious file..
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the node
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteMaliciousFilePermanently(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void)
 }
 
 public extension DracoonNodes {

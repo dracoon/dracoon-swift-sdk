@@ -33,6 +33,9 @@
 		DBAD69EE2A0B97D6003AF1F8 /* DeleteDownloadSharesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBAD69ED2A0B97D6003AF1F8 /* DeleteDownloadSharesRequest.swift */; };
 		DBAD69F02A0B99FC003AF1F8 /* DeleteUploadSharesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBAD69EF2A0B99FC003AF1F8 /* DeleteUploadSharesRequest.swift */; };
 		DBBA63FF2A2F2F7B0096EB6F /* VirusProtectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBA63FE2A2F2F7B0096EB6F /* VirusProtectionInfo.swift */; };
+		DBBA64012A2F330C0096EB6F /* NodeVirusProtectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBA64002A2F330C0096EB6F /* NodeVirusProtectionInfo.swift */; };
+		DBBA64032A2F34070096EB6F /* VirusProtectionVerdictRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBA64022A2F34070096EB6F /* VirusProtectionVerdictRequest.swift */; };
+		DBBA64052A2F356A0096EB6F /* VirusProtectionVerdictResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBA64042A2F356A0096EB6F /* VirusProtectionVerdictResponse.swift */; };
 		DBBB320826FB3E8E006477EF /* ConfigRoomRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBB320726FB3E8E006477EF /* ConfigRoomRequest.swift */; };
 		DBDE45F327E3285D00A6243B /* DracoonSubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDE45F227E3285D00A6243B /* DracoonSubscriptionTests.swift */; };
 		DBDE45F527E3331000A6243B /* DracoonSubscriptionsMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDE45F427E3331000A6243B /* DracoonSubscriptionsMock.swift */; };
@@ -262,6 +265,9 @@
 		DBAD69ED2A0B97D6003AF1F8 /* DeleteDownloadSharesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteDownloadSharesRequest.swift; sourceTree = "<group>"; };
 		DBAD69EF2A0B99FC003AF1F8 /* DeleteUploadSharesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteUploadSharesRequest.swift; sourceTree = "<group>"; };
 		DBBA63FE2A2F2F7B0096EB6F /* VirusProtectionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirusProtectionInfo.swift; sourceTree = "<group>"; };
+		DBBA64002A2F330C0096EB6F /* NodeVirusProtectionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeVirusProtectionInfo.swift; sourceTree = "<group>"; };
+		DBBA64022A2F34070096EB6F /* VirusProtectionVerdictRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirusProtectionVerdictRequest.swift; sourceTree = "<group>"; };
+		DBBA64042A2F356A0096EB6F /* VirusProtectionVerdictResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirusProtectionVerdictResponse.swift; sourceTree = "<group>"; };
 		DBBB320726FB3E8E006477EF /* ConfigRoomRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigRoomRequest.swift; sourceTree = "<group>"; };
 		DBDE45F227E3285D00A6243B /* DracoonSubscriptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSubscriptionTests.swift; sourceTree = "<group>"; };
 		DBDE45F427E3331000A6243B /* DracoonSubscriptionsMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSubscriptionsMock.swift; sourceTree = "<group>"; };
@@ -706,6 +712,9 @@
 				DBAD69ED2A0B97D6003AF1F8 /* DeleteDownloadSharesRequest.swift */,
 				DBAD69EF2A0B99FC003AF1F8 /* DeleteUploadSharesRequest.swift */,
 				DBBA63FE2A2F2F7B0096EB6F /* VirusProtectionInfo.swift */,
+				DBBA64002A2F330C0096EB6F /* NodeVirusProtectionInfo.swift */,
+				DBBA64022A2F34070096EB6F /* VirusProtectionVerdictRequest.swift */,
+				DBBA64042A2F356A0096EB6F /* VirusProtectionVerdictResponse.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -962,6 +971,7 @@
 				E00067D22057D0BC009CDA70 /* NewCustomerRequest.swift in Sources */,
 				E01C7A1B20F62DFF00BBC518 /* UploadCallback.swift in Sources */,
 				E0B0EC8A2566CE64006B2D65 /* CreateNodeCommentRequest.swift in Sources */,
+				DBBA64032A2F34070096EB6F /* VirusProtectionVerdictRequest.swift in Sources */,
 				E00068762057D0BC009CDA70 /* CreateUserRequest.swift in Sources */,
 				E00068692057D0BC009CDA70 /* SoftwareVersionData.swift in Sources */,
 				E00068562057D0BC009CDA70 /* InfrastructureProperties.swift in Sources */,
@@ -1037,6 +1047,7 @@
 				E000686D2057D0BC009CDA70 /* UserUserPublicKey.swift in Sources */,
 				E000681B2057D0BC009CDA70 /* UpdateSystemDefaults.swift in Sources */,
 				E02321EF241B7FEF000595FD /* ResponseModelFactory.swift in Sources */,
+				DBBA64052A2F356A0096EB6F /* VirusProtectionVerdictResponse.swift in Sources */,
 				E000683B2057D0BC009CDA70 /* ChangeGroupMembersRequest.swift in Sources */,
 				DBE12F3F2693511900A7856B /* RateLimitInterceptor.swift in Sources */,
 				E0C7A14122CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift in Sources */,
@@ -1054,6 +1065,7 @@
 				E00068842057DF8C009CDA70 /* ValidatorUtils.swift in Sources */,
 				E000682D2057D0BC009CDA70 /* S3ConfigUpdateRequest.swift in Sources */,
 				E000685B2057D0BC009CDA70 /* PublicDownloadTokenGenerateRequest.swift in Sources */,
+				DBBA64012A2F330C0096EB6F /* NodeVirusProtectionInfo.swift in Sources */,
 				E000686B2057D0BC009CDA70 /* RoleGroupList.swift in Sources */,
 				8496F3C0205AB32B000EE909 /* DracoonError.swift in Sources */,
 				E00067E42057D0BC009CDA70 /* SdsServerTime.swift in Sources */,

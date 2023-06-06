@@ -21,6 +21,8 @@ class DracoonNodesMock: DracoonNodes {
     var commentListResponse: CommentList
     var commentResponse: Comment
     
+    var virusProtectionVerdictResponse: VirusProtectionVerdictResponse
+    
     var createFileUploadResponse: CreateFileUploadResponse
     
     init() {
@@ -30,6 +32,7 @@ class DracoonNodesMock: DracoonNodes {
         self.commentListResponse = modelFactory.getTestResponseModel(CommentList.self)!
         self.commentResponse = modelFactory.getTestResponseModel(Comment.self)!
         self.createFileUploadResponse = modelFactory.getTestResponseModel(CreateFileUploadResponse.self)!
+        self.virusProtectionVerdictResponse = modelFactory.getTestResponseModel(VirusProtectionVerdictResponse.self)!
     }
     
     func getNodes(parentNodeId: Int64, limit: Int64?, offset: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
@@ -174,6 +177,18 @@ class DracoonNodesMock: DracoonNodes {
     }
     
     func deleteComment(commentId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+        self.returnErrorOrResponse(completion)
+    }
+    
+    func generateVirusProtectionVerdict(for nodeIds: [Int64], completion: @escaping (Alamofire.DataRequest.DecodeCompletion<dracoon_sdk.VirusProtectionVerdictResponse>)) {
+        if let error = self.error {
+            completion(Dracoon.Result.error(error))
+        } else {
+            completion(Dracoon.Result.value(self.virusProtectionVerdictResponse))
+        }
+    }
+    
+    func deleteMaliciousFilePermanently(nodeId: Int64, completion: @escaping (dracoon_sdk.Dracoon.Response) -> Void) {
         self.returnErrorOrResponse(completion)
     }
     

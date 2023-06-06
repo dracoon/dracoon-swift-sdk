@@ -88,6 +88,8 @@ public class ResponseModelFactory {
             return self.getSubscribedUploadShareList() as? E
         } else if type == VirusProtectionInfo.self {
             return self.getVirusProtectionInfo() as? E
+        } else if type == VirusProtectionVerdictResponse.self {
+            return self.getVirusProtectionVerdictResponse() as? E
         }
         return nil
     }
@@ -279,6 +281,11 @@ public class ResponseModelFactory {
     private func getVirusProtectionInfo() -> VirusProtectionInfo {
         let info = VirusProtectionInfo(verdict: .CLEAN)
         return info
+    }
+    
+    private func getVirusProtectionVerdictResponse() -> VirusProtectionVerdictResponse {
+        let info = NodeVirusProtectionInfo(nodeId: 42, verdict: .CLEAN)
+        return [info]
     }
     
 }
