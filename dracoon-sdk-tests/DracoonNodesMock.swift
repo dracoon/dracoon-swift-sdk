@@ -21,9 +21,11 @@ class DracoonNodesMock: DracoonNodes {
     var commentListResponse: CommentList
     var commentResponse: Comment
     
+    var createFileUploadResponse: CreateFileUploadResponse
+    
     var virusProtectionVerdictResponse: VirusProtectionVerdictResponse
     
-    var createFileUploadResponse: CreateFileUploadResponse
+    var roomPoliciesResponse: RoomPolicies
     
     init() {
         let modelFactory = ResponseModelFactory()
@@ -33,6 +35,7 @@ class DracoonNodesMock: DracoonNodes {
         self.commentResponse = modelFactory.getTestResponseModel(Comment.self)!
         self.createFileUploadResponse = modelFactory.getTestResponseModel(CreateFileUploadResponse.self)!
         self.virusProtectionVerdictResponse = modelFactory.getTestResponseModel(VirusProtectionVerdictResponse.self)!
+        self.roomPoliciesResponse = modelFactory.getTestResponseModel(RoomPolicies.self)!
     }
     
     func getNodes(parentNodeId: Int64, limit: Int64?, offset: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
@@ -190,6 +193,14 @@ class DracoonNodesMock: DracoonNodes {
     
     func deleteMaliciousFilePermanently(nodeId: Int64, completion: @escaping (dracoon_sdk.Dracoon.Response) -> Void) {
         self.returnErrorOrResponse(completion)
+    }
+    
+    func getRoomPolicies(roomId: Int64, completion: @escaping Alamofire.DataRequest.DecodeCompletion<dracoon_sdk.RoomPolicies>) {
+        if let error = self.error {
+            completion(Dracoon.Result.error(error))
+        } else {
+            completion(Dracoon.Result.value(self.roomPoliciesResponse))
+        }
     }
     
     // MARK: Helper

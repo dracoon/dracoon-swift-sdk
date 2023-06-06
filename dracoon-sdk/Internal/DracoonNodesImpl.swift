@@ -870,4 +870,14 @@ class DracoonNodesImpl: DracoonNodes {
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
     }
+    
+    // MARK: Policies
+    
+    func getRoomPolicies(roomId: Int64, completion: @escaping DataRequest.DecodeCompletion<RoomPolicies>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/rooms/\(roomId)/policies"
+        
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
+            .validate()
+            .decode(RoomPolicies.self, decoder: self.decoder, completion: completion)
+    }
 }

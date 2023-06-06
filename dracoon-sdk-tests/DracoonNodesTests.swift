@@ -643,7 +643,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
     
     // MARK: Anti-virus protection
     
-    func testGenerateVirusProtectionVerdict() {
+    func testGenerateVirusProtectionVerdict_returnsVirusProtectionVerdictResponse() {
         
         self.setResponseModel(VirusProtectionVerdictResponse.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns VirusProtectionVerdictResponse")
@@ -664,7 +664,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         XCTAssertTrue(calledValue)
     }
     
-    func testDeleteMaliciousFilePermanently() {
+    func testDeleteMaliciousFilePermanently_returnsResponse() {
         
         MockURLProtocol.response(with: 204)
         let expectation = XCTestExpectation(description: "Returns without error")
@@ -679,6 +679,28 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
         XCTAssertFalse(calledError)
+    }
+    
+    func testGetRoomPolicies_returnsRoomPolicies() {
+        
+        self.setResponseModel(RoomPolicies.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns RoomPolicies")
+        var calledValue = false
+        
+        self.nodes.getRoomPolicies(roomId: 42, completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case.value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+            
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
     }
     
 }

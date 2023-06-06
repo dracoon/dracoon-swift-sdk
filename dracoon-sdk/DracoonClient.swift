@@ -753,6 +753,13 @@ public protocol DracoonNodes {
     ///   - nodeId: The ID of the node
     ///   - completion: Returns an empty response on success or an error.
     func deleteMaliciousFilePermanently(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Retrieve the room policies.
+    ///
+    /// - Parameters:
+    ///   - roomId: The ID of the room.
+    ///   - completion: Returns the [RoomPolicies](x-source-tag://RoomPolicies) on success or an error.
+    func getRoomPolicies(roomId: Int64, completion: @escaping DataRequest.DecodeCompletion<RoomPolicies>)
 }
 
 public extension DracoonNodes {

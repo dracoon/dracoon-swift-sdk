@@ -90,6 +90,8 @@ public class ResponseModelFactory {
             return self.getVirusProtectionInfo() as? E
         } else if type == VirusProtectionVerdictResponse.self {
             return self.getVirusProtectionVerdictResponse() as? E
+        } else if type == RoomPolicies.self {
+            return self.getRoomPolicies() as? E
         }
         return nil
     }
@@ -286,6 +288,12 @@ public class ResponseModelFactory {
     private func getVirusProtectionVerdictResponse() -> VirusProtectionVerdictResponse {
         let info = NodeVirusProtectionInfo(nodeId: 42, verdict: .CLEAN)
         return [info]
+    }
+    
+    private func getRoomPolicies() -> RoomPolicies {
+        var policies = RoomPolicies(defaultExpirationPeriod: 0)
+        policies.virusProtectionEnabled = false
+        return policies
     }
     
 }
