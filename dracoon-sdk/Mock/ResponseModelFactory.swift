@@ -22,6 +22,8 @@ public class ResponseModelFactory {
             return self.getNode() as? E
         } else if type == NodeList.self {
             return self.getNodeList() as? E
+        } else if type == ModelRange.self {
+            return self.getModelRange() as? E
         } else if type == UserKeyPairContainer.self {
             return self.getUserKeyPairContainer() as? E
         } else if type == Avatar.self {
@@ -84,6 +86,8 @@ public class ResponseModelFactory {
             return self.getSubscribedUploadShare() as? E
         } else if type == SubscribedUploadShareList.self {
             return self.getSubscribedUploadShareList() as? E
+        } else if type == VirusProtectionInfo.self {
+            return self.getVirusProtectionInfo() as? E
         }
         return nil
     }
@@ -112,6 +116,10 @@ public class ResponseModelFactory {
         let nodes = [self.getNode()]
         
         return NodeList(range: range, items: nodes)
+    }
+    
+    private func getModelRange() -> ModelRange {
+        return ModelRange(offset: 0, limit: 1, total: 1)
     }
     
     private func getUserKeyPairContainer() -> UserKeyPairContainer {
@@ -266,6 +274,11 @@ public class ResponseModelFactory {
         let range = ModelRange(offset: 0, limit: 1, total: 1)
         let items = [self.getSubscribedUploadShare()]
         return SubscribedUploadShareList(range: range, items: items)
+    }
+    
+    private func getVirusProtectionInfo() -> VirusProtectionInfo {
+        let info = VirusProtectionInfo(verdict: .CLEAN)
+        return info
     }
     
 }
