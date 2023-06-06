@@ -20,6 +20,11 @@ public protocol OAuthClient {
     func revokeOAuthToken(session: Session, clientId: String, clientSecret: String, tokenType: OAuthTokenType, token: String, completion: @escaping (Dracoon.Response) -> Void)
 }
 
+public extension OAuthClient {
+    // make optional to implement
+    func revokeOAuthToken(session: Session, clientId: String, clientSecret: String, tokenType: OAuthTokenType, token: String, completion: @escaping (Dracoon.Response) -> Void) {}
+}
+
 class OAuthClientImpl: OAuthClient {
     
     let serverUrl: URL
