@@ -14,7 +14,7 @@ public protocol OAuthTokenChangedDelegate: AnyObject {
     func tokenRevocationResult(error: DracoonError?)
 }
 
-extension OAuthTokenChangedDelegate {
+public extension OAuthTokenChangedDelegate {
     // make optional to implement
     func tokenRevocationResult(error: DracoonError?) {}
 }
