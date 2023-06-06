@@ -314,6 +314,14 @@ class DracoonErrorParserTest: XCTestCase {
         returnedApiCode = self.parseError(code: code, errorCode: -40761)
         XCTAssert(expectedApiCode == returnedApiCode)
         
+        expectedApiCode = DracoonApiCode.SERVICE_ANTIVIRUS_SCAN_STILL_IN_PROGRESS
+        returnedApiCode = self.parseError(code: code, errorCode: -40764)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
+        expectedApiCode = DracoonApiCode.SERVICE_ANTIVIRUS_MALICIOUS_FILE_DETECTED
+        returnedApiCode = self.parseError(code: code, errorCode: -40765)
+        XCTAssert(expectedApiCode == returnedApiCode)
+        
         expectedApiCode = DracoonApiCode.SERVER_USER_KEY_PAIR_NOT_FOUND
         returnedApiCode = self.parseError(code: code, errorCode: -70020)
         XCTAssert(expectedApiCode == returnedApiCode)

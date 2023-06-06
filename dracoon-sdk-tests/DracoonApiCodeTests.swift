@@ -402,4 +402,14 @@ class DracoonApiCodeTests: XCTestCase {
         XCTAssert(DracoonApiCode.SERVER_ILLEGAL_NOTIFICATION_CHANNEL.rawValue == 5903)
         XCTAssertEqual(DracoonApiCode.SERVER_ILLEGAL_NOTIFICATION_CHANNEL.description, "The notification channel is illegal.")
     }
+    
+    
+    func testServicesApiErrorCodes() {
+        
+        XCTAssert(DracoonApiCode.SERVICE_ANTIVIRUS_SCAN_STILL_IN_PROGRESS.rawValue == 6000)
+        XCTAssertEqual(DracoonApiCode.SERVICE_ANTIVIRUS_SCAN_STILL_IN_PROGRESS.description, "Anti-virus scan is still in progress.")
+        
+        XCTAssert(DracoonApiCode.SERVICE_ANTIVIRUS_MALICIOUS_FILE_DETECTED.rawValue == 6001)
+        XCTAssertEqual(DracoonApiCode.SERVICE_ANTIVIRUS_MALICIOUS_FILE_DETECTED.description, "Anti-virus scan determined malicious file.")
+    }
 }
