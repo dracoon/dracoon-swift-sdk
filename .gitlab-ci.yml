@@ -8,9 +8,7 @@ variables:
 
 before_script:
   - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/ios/client/sdk-swift-sonar.git
-  - cd sdk-swift-sonar
-  - sh setup.sh
-  - cd ..
+  - sh sdk-swift-sonar/setup.sh
 
 unit_tests:
   dependencies: []
