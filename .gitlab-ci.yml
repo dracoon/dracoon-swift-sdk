@@ -13,15 +13,10 @@ before_script:
 unit_tests:
   dependencies: []
   stage: unit_tests
-  artifacts:
-    paths:
-      - TestResults/Logs/Test/*.xcresult
   script:
     - bundle exec fastlane runUnitTests
     - cp sdk-swift-sonar/printCodeCoverage.sh TestResults/Logs/Test/
-    - cd TestResults/Logs/Test/
-    - ./printCodeCoverage.sh
-    - cd ../../../
+    - sh TestResults/Logs/Test/printCodeCoverage.sh
   coverage: '/Code coverage: \d+\.\d+/'
   tags:
     - darwin-amd64
