@@ -18,7 +18,7 @@ public struct VirusProtectionInfo: Codable {
     }
     
     public var verdict: Verdict
-    public var lastCheckedAt: String?
+    public var lastCheckedAt: Date?
     public var sha256: String?
     
 }

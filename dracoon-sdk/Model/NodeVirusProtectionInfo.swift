@@ -12,7 +12,7 @@ public struct NodeVirusProtectionInfo: Codable {
     
     public var nodeId: Int64
     public var verdict: VirusProtectionInfo.Verdict
-    public var lastCheckedAt: String?
+    public var lastCheckedAt: Date?
     public var sha256: String?
     
 }
