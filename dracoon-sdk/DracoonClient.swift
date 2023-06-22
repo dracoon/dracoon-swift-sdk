@@ -741,13 +741,15 @@ public protocol DracoonNodes {
     func encryptFileKey(fileKey: PlainFileKey, publicKey: UserPublicKey) throws -> EncryptedFileKey
     
     /// Retrieve information about the virus protection verdicts of a list of node IDs.
+    /// - Requires:  API version from 4.44.0.
     ///
     /// - Parameters:
     ///   - nodeIds: The IDs of the nodes
     ///   - completion: Returns the information on success or an error.
     func generateVirusProtectionVerdict(for nodeIds: [Int64], completion: @escaping (DataRequest.DecodeCompletion<VirusProtectionVerdictResponse>))
     
-    /// Permanently delete a malicious file..
+    /// Permanently delete a malicious file.
+    /// - Requires:  API version from 4.44.0.
     ///
     /// - Parameters:
     ///   - nodeId: The ID of the node
