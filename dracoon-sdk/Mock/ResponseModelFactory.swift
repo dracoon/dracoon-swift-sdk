@@ -292,7 +292,7 @@ public class ResponseModelFactory {
     
     private func getRoomPolicies() -> RoomPolicies {
         var policies = RoomPolicies(defaultExpirationPeriod: 0)
-        policies.virusProtectionEnabled = false
+        policies.isVirusProtectionEnabled = false
         return policies
     }
     
