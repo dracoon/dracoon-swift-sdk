@@ -20,5 +20,5 @@ public struct RoomPolicies: Codable {
     /**
      [Since 4.44.0]
      Determines whether virus protection is enabled for room. To be set by room admins */
-    public var virusProtectionEnabled: Bool?
+    public var isVirusProtectionEnabled: Bool?
 }
