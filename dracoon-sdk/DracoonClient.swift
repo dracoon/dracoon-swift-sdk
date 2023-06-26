@@ -757,6 +757,7 @@ public protocol DracoonNodes {
     func deleteMaliciousFilePermanently(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void)
     
     /// Retrieve the room policies.
+    /// - Requires: API version from 4.32.0.
     ///
     /// - Parameters:
     ///   - roomId: The ID of the room.
