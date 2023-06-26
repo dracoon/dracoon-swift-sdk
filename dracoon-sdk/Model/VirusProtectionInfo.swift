@@ -11,7 +11,7 @@ import Foundation
 public struct VirusProtectionInfo: Codable {
     
     public enum Verdict: String, Codable {
-        case NO_SCANNING
+        case NOT_SCANNING
         case IN_PROGRESS
         case CLEAN
         case MALICIOUS
