@@ -11,7 +11,9 @@ import crypto_sdk
 
 public class ResponseModelFactory {
     
-    public init() {}
+    public init() {
+        // Public initializer
+    }
     
     public func getTestResponseModel<E: Encodable>(_ type: E.Type) -> E? {
         if type == UserAccount.self {

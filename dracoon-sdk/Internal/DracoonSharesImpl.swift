@@ -50,37 +50,45 @@ class DracoonSharesImpl: DracoonShares {
                         completion(Dracoon.Result.error(DracoonError.no_encryption_password))
                         return
                     }
-                    self.server.getServerVersion(completion: { result in
-                        switch result {
-                        case .error(let error):
-                            completion(Dracoon.Result.error(error))
-                        case .value(let versionInfo):
-                            let apiVersion = versionInfo.restApiVersion
-                            self.nodes.getFileKey(nodeId: nodeId, completion: { result in
-                                switch result {
-                                case .error(let error):
-                                    completion(Dracoon.Result.error(error))
-                                case .value(let encryptedFileKey):
-                                    let userKeyPairVersion = encryptedFileKey.getUserKeyPairVersion()
-                                    if ApiVersionCheck.isRequiredServerVersion(requiredVersion: ApiVersionCheck.CryptoUpdateVersion, currentApiVersion: apiVersion) {
-                                        self.account.checkUserKeyPairPassword(version: userKeyPairVersion, password: encryptionPassword, completion: { result in
-                                            self.handleUserKeyPairResponse(result: result, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
-                                        })
-                                    } else {
-                                        self.account.checkUserKeyPairPassword(password: encryptionPassword, completion: { result in
-                                            self.handleUserKeyPairResponse(result: result, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
-                                        })
-                                    }
-                                }
-                            })
-                        }
-                    })
+                    self.createEncryptedShare(nodeId: nodeId, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
                 } else {
                     let request = CreateDownloadShareRequest(nodeId: nodeId){$0.password = password}
                     self.requestCreateDownloadShare(request: request, completion: completion)
                 }
             }
         })
+    }
+    
+    private func createEncryptedShare(nodeId: Int64, encryptionPassword: String, shareEncryptionPassword: String, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+        self.server.getServerVersion(completion: { result in
+            switch result {
+            case .error(let error):
+                completion(Dracoon.Result.error(error))
+            case .value(let versionInfo):
+                let apiVersion = versionInfo.restApiVersion
+                self.nodes.getFileKey(nodeId: nodeId, completion: { result in
+                    switch result {
+                    case .error(let error):
+                        completion(Dracoon.Result.error(error))
+                    case .value(let encryptedFileKey):
+                        self.handleFileKeyResponse(nodeId: nodeId, encryptedFileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, apiVersion: apiVersion, completion: completion)
+                    }
+                })
+            }
+        })
+    }
+    
+    private func handleFileKeyResponse(nodeId: Int64, encryptedFileKey: EncryptedFileKey, encryptionPassword: String, shareEncryptionPassword: String, apiVersion: String, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+        let userKeyPairVersion = encryptedFileKey.getUserKeyPairVersion()
+        if ApiVersionCheck.isRequiredServerVersion(requiredVersion: ApiVersionCheck.CryptoUpdateVersion, currentApiVersion: apiVersion) {
+            self.account.checkUserKeyPairPassword(version: userKeyPairVersion, password: encryptionPassword, completion: { result in
+                self.handleUserKeyPairResponse(result: result, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
+            })
+        } else {
+            self.account.checkUserKeyPairPassword(password: encryptionPassword, completion: { result in
+                self.handleUserKeyPairResponse(result: result, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
+            })
+        }
     }
     
     private func handleUserKeyPairResponse(result: Dracoon.Result<UserKeyPairContainer>, nodeId: Int64, fileKey: EncryptedFileKey, encryptionPassword: String, shareEncryptionPassword: String, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
@@ -93,7 +101,10 @@ class DracoonSharesImpl: DracoonShares {
                 let plainFileKey = try self.nodes.decryptFileKey(fileKey: fileKey, privateKey: privateKey, password: encryptionPassword)
                 let shareKeyPair = try self.account.generateUserKeyPair(version: userKeyPair.publicKeyContainer.version, password: shareEncryptionPassword)
                 let shareFileKey = try self.nodes.encryptFileKey(fileKey: plainFileKey, publicKey: shareKeyPair.publicKeyContainer)
-                let request = CreateDownloadShareRequest(nodeId: nodeId){$0.keyPair = shareKeyPair; $0.fileKey = shareFileKey}
+                let request = CreateDownloadShareRequest(nodeId: nodeId) {
+                    $0.keyPair = shareKeyPair
+                    $0.fileKey = shareFileKey
+                }
                 self.requestCreateDownloadShare(request: request, completion: completion)
             } catch CryptoError.decrypt(let message){
                 completion(Dracoon.Result.error(DracoonError.filekey_decryption_failure(description: message)))
@@ -115,7 +126,7 @@ class DracoonSharesImpl: DracoonShares {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -180,7 +191,7 @@ class DracoonSharesImpl: DracoonShares {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.put.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -222,7 +233,10 @@ class DracoonSharesImpl: DracoonShares {
     }
     
     func createUploadShare(nodeId: Int64, name: String?, password: String?, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
-        let request = CreateUploadShareRequest(targetId: nodeId){$0.name = name; $0.password = password}
+        let request = CreateUploadShareRequest(targetId: nodeId) {
+            $0.name = name
+            $0.password = password
+        }
         self.requestCreateUploadShare(request: request, completion: completion)
     }
     
@@ -234,7 +248,7 @@ class DracoonSharesImpl: DracoonShares {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -298,7 +312,7 @@ class DracoonSharesImpl: DracoonShares {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.put.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)

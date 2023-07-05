@@ -23,7 +23,9 @@ public struct UpdateFileRequest: Codable {
     /** Time the content of a node was last modified on external file system [Since version 4.22.0] */
     public var timestampModification: String?
 
-    public init() {}
+    public init() {
+        // Public initializer
+    }
 
 }
 

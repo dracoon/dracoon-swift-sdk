@@ -15,5 +15,7 @@ public class DownloadCallback {
     public var onProgress: ((Float) -> Void)?
     public var onComplete: ((URL) -> Void)?
     
-    public init() {}
+    public init() {
+        // Public initializer
+    }
 }

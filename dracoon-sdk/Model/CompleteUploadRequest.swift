@@ -18,7 +18,9 @@ public struct CompleteUploadRequest: Codable {
         case fail = "fail"
     }
     
-    public init() {}
+    public init() {
+        // Public initializer
+    }
     
     /** Node conflict resolution strategy: * &#x60;autorename&#x60; * &#x60;overwrite&#x60; * &#x60;fail&#x60;  (default: &#x60;autorename&#x60;) */
     public var resolutionStrategy: ResolutionStrategy?

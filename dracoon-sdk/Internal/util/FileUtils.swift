@@ -11,7 +11,6 @@ import CommonCrypto
 
 protocol FileHelper {
     func calculateFileSize(filePath: URL) -> Int64?
-    func calculateMD5(_ data: Data) -> String
     func readData(_ fileUrl: URL) throws -> Data?
     func readData(_ fileUrl: URL?, range: NSRange) throws -> Data?
     func moveItem(at sourceUrl: URL, to targetUrl: URL) throws
@@ -24,10 +23,6 @@ class FileUtils {
     
     static func calculateFileSize(filePath: URL) -> Int64? {
         return self.fileHelper.calculateFileSize(filePath: filePath)
-    }
-    
-    static func calculateMD5(_ data: Data) -> String {
-        return self.fileHelper.calculateMD5(data)
     }
     
     static func readData(_ fileUrl: URL) throws -> Data? {
@@ -56,22 +51,6 @@ class DracoonFileHelper: FileHelper {
             return fileSize
         } catch {}
         return nil
-    }
-    
-    func calculateMD5(_ data: Data) -> String {
-        var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
-        data.withUnsafeBytes( { (rawBufferPointer: UnsafeRawBufferPointer) in
-            let bufferPointer = rawBufferPointer.bindMemory(to: UInt8.self)
-            guard let pointer = bufferPointer.baseAddress else {
-                return
-            }
-            CC_MD5(pointer, CC_LONG(data.count), &digest)
-        })
-        var digestHex = ""
-        for index in 0..<Int(CC_MD5_DIGEST_LENGTH) {
-            digestHex += String(format: "%02x", digest[index])
-        }
-        return digestHex
     }
     
     func readData(_ fileUrl: URL) throws -> Data? {

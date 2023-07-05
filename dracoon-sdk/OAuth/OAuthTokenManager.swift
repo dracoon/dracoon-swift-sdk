@@ -90,7 +90,10 @@ class OAuthTokenManager: OAuthInterceptor {
             return
         }
         if isUnauthorized(request: request) || isExpiredOrCodeFlow(error: error) {
-            lock.lock(); defer { lock.unlock() }
+            lock.lock()
+            defer {
+                lock.unlock()
+            }
             requestsToRetry.append(completion)
             if !isRefreshing {
                 self.getToken(session: session, completion: { [weak self] retryResult in
@@ -182,7 +185,9 @@ class OAuthTokenManager: OAuthInterceptor {
     
     public func startOAuthSession(_ session: Session) {
         self.session = session
-        self.getToken(session: session, completion: {_ in})
+        self.getToken(session: session, completion: { _ in
+            // Use OAuthTokenChangedDelegate to receive changes
+        })
     }
     
     private func getToken(session: Session, completion: @escaping (RetryResult) -> Void) {
