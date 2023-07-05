@@ -641,6 +641,68 @@ class DracoonNodesTests: DracoonSdkTestCase {
         XCTAssertFalse(calledError)
     }
     
+    // MARK: Anti-virus protection
+    
+    func testGenerateVirusProtectionVerdict_returnsVirusProtectionVerdictResponse() {
+        
+        self.setResponseModel(VirusProtectionVerdictResponse.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns VirusProtectionVerdictResponse")
+        var calledValue = false
+        
+        self.nodes.generateVirusProtectionVerdict(for: [42], completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case .value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
+    func testDeleteMaliciousFilePermanently_returnsResponse() {
+        
+        MockURLProtocol.response(with: 204)
+        let expectation = XCTestExpectation(description: "Returns without error")
+        var calledError = true
+        
+        self.nodes.deleteMaliciousFilePermanently(nodeId: 42, completion: { response in
+            if response.error == nil {
+                calledError = false
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertFalse(calledError)
+    }
+    
+    func testGetRoomPolicies_returnsRoomPolicies() {
+        
+        self.setResponseModel(RoomPolicies.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns RoomPolicies")
+        var calledValue = false
+        
+        self.nodes.getRoomPolicies(roomId: 42, completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case.value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+            
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
 }
 
 extension Node {

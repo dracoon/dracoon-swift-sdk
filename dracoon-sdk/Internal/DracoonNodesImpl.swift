@@ -841,4 +841,43 @@ class DracoonNodesImpl: DracoonNodes {
     func encryptFileKey(fileKey: PlainFileKey, publicKey: UserPublicKey) throws -> EncryptedFileKey {
         return try crypto.encryptFileKey(fileKey: fileKey, publicKey: publicKey)
     }
+    
+    // MARK: Anti-virus protection
+    
+    func generateVirusProtectionVerdict(for nodeIds: [Int64], completion: @escaping (DataRequest.DecodeCompletion<VirusProtectionVerdictResponse>)) {
+        let request = VirusProtectionVerdictRequest(nodeIds: nodeIds)
+        do {
+            let jsonBody = try encoder.encode(request)
+            let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/generate_verdict_info"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.session.request(urlRequest)
+                .validate()
+                .decode(VirusProtectionVerdictResponse.self, decoder: self.decoder, completion: completion)
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
+    func deleteMaliciousFilePermanently(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/malicious_files/\(nodeId)"
+        
+        self.session.request(requestUrl, method: .delete)
+            .validate()
+            .handleResponse(decoder: self.decoder, completion: completion)
+    }
+    
+    // MARK: Policies
+    
+    func getRoomPolicies(roomId: Int64, completion: @escaping DataRequest.DecodeCompletion<RoomPolicies>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/rooms/\(roomId)/policies"
+        
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
+            .validate()
+            .decode(RoomPolicies.self, decoder: self.decoder, completion: completion)
+    }
 }

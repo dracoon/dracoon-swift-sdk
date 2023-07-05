@@ -232,6 +232,10 @@ public class DracoonErrorParser {
             return DracoonApiCode.AUTH_USER_TEMPORARY_LOCKED
         case -40761:
             return DracoonApiCode.SERVER_USER_FILE_KEY_NOT_FOUND
+        case -40764:
+            return DracoonApiCode.SERVICE_ANTIVIRUS_SCAN_STILL_IN_PROGRESS
+        case -40765:
+            return DracoonApiCode.SERVICE_ANTIVIRUS_MALICIOUS_FILE_DETECTED
         case -70020:
             return DracoonApiCode.SERVER_USER_KEY_PAIR_NOT_FOUND
         default:

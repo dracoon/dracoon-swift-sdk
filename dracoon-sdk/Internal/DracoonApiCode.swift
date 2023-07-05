@@ -186,6 +186,11 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
     case SERVER_NOTIFICATION_CHANNEL_DISABLED = 5902
     case SERVER_ILLEGAL_NOTIFICATION_CHANNEL = 5903
     
+    // MARK: Service errors
+    
+    case SERVICE_ANTIVIRUS_SCAN_STILL_IN_PROGRESS = 6000
+    case SERVICE_ANTIVIRUS_MALICIOUS_FILE_DETECTED = 6001
+    
     public var description: String {
         switch self {
         case .UNKNOWN:
@@ -446,6 +451,11 @@ public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
             return "Notification channel is disabled."
         case .SERVER_ILLEGAL_NOTIFICATION_CHANNEL:
             return "The notification channel is illegal."
+            
+        case .SERVICE_ANTIVIRUS_SCAN_STILL_IN_PROGRESS:
+            return "Anti-virus scan is still in progress."
+        case .SERVICE_ANTIVIRUS_MALICIOUS_FILE_DETECTED:
+            return "Anti-virus scan determined malicious file."
         }
     }
 }

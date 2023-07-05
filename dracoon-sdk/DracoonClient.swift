@@ -739,6 +739,30 @@ public protocol DracoonNodes {
     /// - Returns: The encrypted key
     /// - Throws: CryptoError if an error occured during encryption
     func encryptFileKey(fileKey: PlainFileKey, publicKey: UserPublicKey) throws -> EncryptedFileKey
+    
+    /// Retrieve information about the virus protection verdicts of a list of node IDs.
+    /// - Requires:  API version from 4.44.0.
+    ///
+    /// - Parameters:
+    ///   - nodeIds: The IDs of the nodes
+    ///   - completion: Returns the information on success or an error.
+    func generateVirusProtectionVerdict(for nodeIds: [Int64], completion: @escaping (DataRequest.DecodeCompletion<VirusProtectionVerdictResponse>))
+    
+    /// Permanently delete a malicious file.
+    /// - Requires:  API version from 4.44.0.
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the node
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteMaliciousFilePermanently(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Retrieve the room policies.
+    /// - Requires: API version from 4.32.0.
+    ///
+    /// - Parameters:
+    ///   - roomId: The ID of the room.
+    ///   - completion: Returns the [RoomPolicies](x-source-tag://RoomPolicies) on success or an error.
+    func getRoomPolicies(roomId: Int64, completion: @escaping DataRequest.DecodeCompletion<RoomPolicies>)
 }
 
 public extension DracoonNodes {
