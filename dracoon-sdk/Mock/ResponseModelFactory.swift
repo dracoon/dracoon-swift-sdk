@@ -92,6 +92,8 @@ public class ResponseModelFactory {
             return self.getVirusProtectionVerdictResponse() as? E
         } else if type == RoomPolicies.self {
             return self.getRoomPolicies() as? E
+        } else if type == OAuthErrorModel.self {
+            return self.getOAuthErrorModel() as? E
         }
         return nil
     }
@@ -111,7 +113,7 @@ public class ResponseModelFactory {
     private func getNode() -> Node {
         let userInfo = UserInfo(_id: 1338)
         
-        return Node(_id: 1337, type: .room, name: "name", timestampCreation: Date(), timestampModification: Date(), parentId: 42, parentPath: "/root", createdAt: Date(), createdBy: userInfo, updatedAt: Date(), updatedBy: userInfo, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, inheritPermissions: false, isEncrypted: false, encryptionInfo: nil, cntDeletedVersions: 0, cntComments: 0, cntDownloadShares: 0, cntUploadShares: 0, recycleBinRetentionPeriod: 0, hasActivitiesLog: false, quota: nil, isFavorite: true, branchVersion: nil, mediaToken: nil, isBrowsable: true, cntRooms: 0, cntFolders: 1, cntFiles: 5, authParentId: nil)
+        return Node(_id: 1337, referenceId: 1337, type: .room, name: "name", timestampCreation: Date(), timestampModification: Date(), parentId: 42, parentPath: "/root", createdAt: Date(), createdBy: userInfo, updatedAt: Date(), updatedBy: userInfo, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, inheritPermissions: false, isEncrypted: false, encryptionInfo: nil, cntDeletedVersions: 0, cntComments: 0, cntDownloadShares: 0, cntUploadShares: 0, recycleBinRetentionPeriod: 0, hasActivitiesLog: false, quota: nil, isFavorite: true, branchVersion: nil, mediaToken: nil, isBrowsable: true, cntRooms: 0, cntFolders: 1, cntFiles: 5, authParentId: nil)
     }
     
     private func getNodeList() -> NodeList {
@@ -294,6 +296,11 @@ public class ResponseModelFactory {
         var policies = RoomPolicies(defaultExpirationPeriod: 0)
         policies.isVirusProtectionEnabled = false
         return policies
+    }
+    
+    private func getOAuthErrorModel() -> OAuthErrorModel {
+        let model = OAuthErrorModel(error: OAuthBadRequestErrorCode.invalid_client.rawValue)
+        return model
     }
     
 }

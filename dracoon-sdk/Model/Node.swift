@@ -23,6 +23,8 @@ public struct Node: Codable {
     }
     /** Node ID */
     public var _id: Int64
+    /** Reference id. Identical across all versions of a file. [Since version 4.37.0] */
+    public var referenceId: Int64?
     /** Node type */
     public var type: ModelType
     /** Name */
@@ -103,6 +105,7 @@ public struct Node: Codable {
 
     public enum CodingKeys: String, CodingKey { 
         case _id = "id"
+        case referenceId
         case type
         case name
         case timestampCreation
