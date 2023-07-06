@@ -12,13 +12,13 @@ Xcode 13
 
 Add this line to the dependencies section of your Package.swift:
 
-`.package(name: "crypto_sdk", url: "https://github.com/dracoon/dracoon-swift-sdk", .upToNextMajor(from: "2.5.2"))`
+`.package(name: "crypto_sdk", url: "https://github.com/dracoon/dracoon-swift-sdk", .upToNextMajor(from: "2.6.0"))`
 
 #### Carthage
 
 Add the SDK to your Cartfile:
 
-`github "dracoon/dracoon-swift-sdk.git" ~> 2.5.2`
+`github "dracoon/dracoon-swift-sdk.git" ~> 2.6.0`
 
 Then run
 
@@ -39,7 +39,7 @@ platform :ios, '12.0'
 use_frameworks!
 
 target '<Your Target Name>' do
-pod 'DRACOON-SDK', '~> 2.5.2'
+pod 'DRACOON-SDK', '~> 2.6.0'
 end
 ```
 Then run
