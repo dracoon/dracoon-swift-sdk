@@ -23,6 +23,8 @@ public struct Node: Codable {
     }
     /** Node ID */
     public var _id: Int64
+    /** Reference id. Identical across all versions of a file. [Since version 4.37.0] */
+    public var referenceId: Int64?
     /** Node type */
     public var type: ModelType
     /** Name */
@@ -98,9 +100,12 @@ public struct Node: Codable {
     public var cntFiles: Int?
     /** Auth parent room ID [Since version 4.15.0] */
     public var authParentId: Int64?
+    /** Verdict information for a node [Sice version 4.44.0] */
+    public var virusProtectionInfo: VirusProtectionInfo?
 
     public enum CodingKeys: String, CodingKey { 
         case _id = "id"
+        case referenceId
         case type
         case name
         case timestampCreation
@@ -137,6 +142,7 @@ public struct Node: Codable {
         case cntFolders
         case cntFiles
         case authParentId
+        case virusProtectionInfo
     }
 
 

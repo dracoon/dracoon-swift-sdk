@@ -35,6 +35,8 @@ public struct ConfigRoomRequest: Codable {
      (default: 2 - internal) */
     public var classification: Int?
     
-    public init() {}
+    public init() {
+        // Public initializer
+    }
     
 }

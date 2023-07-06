@@ -16,7 +16,9 @@
 		8496F3C0205AB32B000EE909 /* DracoonError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496F3BF205AB32B000EE909 /* DracoonError.swift */; };
 		8496F3C2205C0BB6000EE909 /* DracoonSharesImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496F3C1205C0BB6000EE909 /* DracoonSharesImpl.swift */; };
 		84CD42F72113023000A2F6A4 /* RequestBuilders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CD42F62113023000A2F6A4 /* RequestBuilders.swift */; };
+		DB09660B2A2F4398003A00BB /* RoomPolicies.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB09660A2A2F4398003A00BB /* RoomPolicies.swift */; };
 		DB10205828324496004D8525 /* DracoonOAuthClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB10205728324495004D8525 /* DracoonOAuthClientTests.swift */; };
+		DB3FEBA829CC391000211655 /* ApiRequestConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FEBA729CC391000211655 /* ApiRequestConstants.swift */; };
 		DB5BDD0D282E53850042E726 /* OAuthErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5BDD0C282E53850042E726 /* OAuthErrorModel.swift */; };
 		DB7442AE27D1FC2000CD0064 /* DracoonSubscriptionsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7442AD27D1FC2000CD0064 /* DracoonSubscriptionsImpl.swift */; };
 		DB7442B027D1FCBA00CD0064 /* SubscribedDownloadShareList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7442AF27D1FCBA00CD0064 /* SubscribedDownloadShareList.swift */; };
@@ -30,6 +32,12 @@
 		DB7A486F2632C28900F587B2 /* crypto_sdk.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */; };
 		DB8D51BA26C3BC0B002F50B6 /* ClassificationPoliciesConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8D51B926C3BC0B002F50B6 /* ClassificationPoliciesConfig.swift */; };
 		DB8D51BC26C3BC3C002F50B6 /* ShareClassificationPolicies.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB8D51BB26C3BC3C002F50B6 /* ShareClassificationPolicies.swift */; };
+		DBAD69EE2A0B97D6003AF1F8 /* DeleteDownloadSharesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBAD69ED2A0B97D6003AF1F8 /* DeleteDownloadSharesRequest.swift */; };
+		DBAD69F02A0B99FC003AF1F8 /* DeleteUploadSharesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBAD69EF2A0B99FC003AF1F8 /* DeleteUploadSharesRequest.swift */; };
+		DBBA63FF2A2F2F7B0096EB6F /* VirusProtectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBA63FE2A2F2F7B0096EB6F /* VirusProtectionInfo.swift */; };
+		DBBA64012A2F330C0096EB6F /* NodeVirusProtectionInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBA64002A2F330C0096EB6F /* NodeVirusProtectionInfo.swift */; };
+		DBBA64032A2F34070096EB6F /* VirusProtectionVerdictRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBA64022A2F34070096EB6F /* VirusProtectionVerdictRequest.swift */; };
+		DBBA64052A2F356A0096EB6F /* VirusProtectionVerdictResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBA64042A2F356A0096EB6F /* VirusProtectionVerdictResponse.swift */; };
 		DBBB320826FB3E8E006477EF /* ConfigRoomRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBB320726FB3E8E006477EF /* ConfigRoomRequest.swift */; };
 		DBDE45F327E3285D00A6243B /* DracoonSubscriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDE45F227E3285D00A6243B /* DracoonSubscriptionTests.swift */; };
 		DBDE45F527E3331000A6243B /* DracoonSubscriptionsMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBDE45F427E3331000A6243B /* DracoonSubscriptionsMock.swift */; };
@@ -242,7 +250,9 @@
 		8496F3BF205AB32B000EE909 /* DracoonError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonError.swift; sourceTree = "<group>"; };
 		8496F3C1205C0BB6000EE909 /* DracoonSharesImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSharesImpl.swift; sourceTree = "<group>"; };
 		84CD42F62113023000A2F6A4 /* RequestBuilders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestBuilders.swift; sourceTree = "<group>"; };
+		DB09660A2A2F4398003A00BB /* RoomPolicies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomPolicies.swift; sourceTree = "<group>"; };
 		DB10205728324495004D8525 /* DracoonOAuthClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonOAuthClientTests.swift; sourceTree = "<group>"; };
+		DB3FEBA729CC391000211655 /* ApiRequestConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiRequestConstants.swift; sourceTree = "<group>"; };
 		DB5BDD0C282E53850042E726 /* OAuthErrorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthErrorModel.swift; sourceTree = "<group>"; };
 		DB7442AD27D1FC2000CD0064 /* DracoonSubscriptionsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSubscriptionsImpl.swift; sourceTree = "<group>"; };
 		DB7442AF27D1FCBA00CD0064 /* SubscribedDownloadShareList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribedDownloadShareList.swift; sourceTree = "<group>"; };
@@ -256,6 +266,12 @@
 		DB8D51BB26C3BC3C002F50B6 /* ShareClassificationPolicies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareClassificationPolicies.swift; sourceTree = "<group>"; };
 		DBA0E15A26305F2200AAFE6D /* Alamofire.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Alamofire.xcframework; path = Carthage/Build/Alamofire.xcframework; sourceTree = "<group>"; };
 		DBA0E15E26305F2500AAFE6D /* crypto_sdk.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = crypto_sdk.xcframework; path = Carthage/Build/crypto_sdk.xcframework; sourceTree = "<group>"; };
+		DBAD69ED2A0B97D6003AF1F8 /* DeleteDownloadSharesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteDownloadSharesRequest.swift; sourceTree = "<group>"; };
+		DBAD69EF2A0B99FC003AF1F8 /* DeleteUploadSharesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteUploadSharesRequest.swift; sourceTree = "<group>"; };
+		DBBA63FE2A2F2F7B0096EB6F /* VirusProtectionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirusProtectionInfo.swift; sourceTree = "<group>"; };
+		DBBA64002A2F330C0096EB6F /* NodeVirusProtectionInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeVirusProtectionInfo.swift; sourceTree = "<group>"; };
+		DBBA64022A2F34070096EB6F /* VirusProtectionVerdictRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirusProtectionVerdictRequest.swift; sourceTree = "<group>"; };
+		DBBA64042A2F356A0096EB6F /* VirusProtectionVerdictResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirusProtectionVerdictResponse.swift; sourceTree = "<group>"; };
 		DBBB320726FB3E8E006477EF /* ConfigRoomRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigRoomRequest.swift; sourceTree = "<group>"; };
 		DBDE45F227E3285D00A6243B /* DracoonSubscriptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSubscriptionTests.swift; sourceTree = "<group>"; };
 		DBDE45F427E3331000A6243B /* DracoonSubscriptionsMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSubscriptionsMock.swift; sourceTree = "<group>"; };
@@ -507,6 +523,7 @@
 				E00068832057DF8C009CDA70 /* ValidatorUtils.swift */,
 				8496F3B920592080000EE909 /* Alamofire+Convenience.swift */,
 				E07CF14124B463080046A3E0 /* ApiVersionCheck.swift */,
+				DB3FEBA729CC391000211655 /* ApiRequestConstants.swift */,
 			);
 			path = util;
 			sourceTree = "<group>";
@@ -697,6 +714,13 @@
 				E00067B72057D0B6009CDA70 /* UserUserPublicKey.swift */,
 				E00067842057D0B1009CDA70 /* UserUserPublicKeyList.swift */,
 				84CD42F62113023000A2F6A4 /* RequestBuilders.swift */,
+				DBAD69ED2A0B97D6003AF1F8 /* DeleteDownloadSharesRequest.swift */,
+				DBAD69EF2A0B99FC003AF1F8 /* DeleteUploadSharesRequest.swift */,
+				DBBA63FE2A2F2F7B0096EB6F /* VirusProtectionInfo.swift */,
+				DBBA64002A2F330C0096EB6F /* NodeVirusProtectionInfo.swift */,
+				DBBA64022A2F34070096EB6F /* VirusProtectionVerdictRequest.swift */,
+				DBBA64042A2F356A0096EB6F /* VirusProtectionVerdictResponse.swift */,
+				DB09660A2A2F4398003A00BB /* RoomPolicies.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -889,6 +913,7 @@
 				E00067D82057D0BC009CDA70 /* PublicDownloadTokenGenerateResponse.swift in Sources */,
 				E00067DA2057D0BC009CDA70 /* S3Config.swift in Sources */,
 				DE52662A21AFCF3800050482 /* CustomerSettingsResponse.swift in Sources */,
+				DB3FEBA829CC391000211655 /* ApiRequestConstants.swift in Sources */,
 				E00068372057D0BC009CDA70 /* GroupList.swift in Sources */,
 				E01C7A1920F5065900BBC518 /* DownloadCallback.swift in Sources */,
 				E00068142057D0BC009CDA70 /* GroupUserList.swift in Sources */,
@@ -911,6 +936,7 @@
 				E02CB9E3205AAF8100E29948 /* DracoonConstants.swift in Sources */,
 				DBBB320826FB3E8E006477EF /* ConfigRoomRequest.swift in Sources */,
 				E000687A2057D0BC009CDA70 /* DeletedNodeSummary.swift in Sources */,
+				DB09660B2A2F4398003A00BB /* RoomPolicies.swift in Sources */,
 				E00067DE2057D0BC009CDA70 /* UploadShareList.swift in Sources */,
 				E00068282057D0BC009CDA70 /* PublicDownloadShare.swift in Sources */,
 				E03F1A9525D292F000C9388E /* UserAuthData.swift in Sources */,
@@ -935,6 +961,7 @@
 				DB5BDD0D282E53850042E726 /* OAuthErrorModel.swift in Sources */,
 				E07D1D242456D5A300AAF8CE /* SharesPasswordPolicies.swift in Sources */,
 				E00067CF2057D0BC009CDA70 /* RoleList.swift in Sources */,
+				DBBA63FF2A2F2F7B0096EB6F /* VirusProtectionInfo.swift in Sources */,
 				E00068422057D0BC009CDA70 /* CreateFolderRequest.swift in Sources */,
 				E00067FE2057D0BC009CDA70 /* UpdateRoomRequest.swift in Sources */,
 				8496F3BC20596889000EE909 /* OAuthTokenManager.swift in Sources */,
@@ -952,6 +979,7 @@
 				E00067D22057D0BC009CDA70 /* NewCustomerRequest.swift in Sources */,
 				E01C7A1B20F62DFF00BBC518 /* UploadCallback.swift in Sources */,
 				E0B0EC8A2566CE64006B2D65 /* CreateNodeCommentRequest.swift in Sources */,
+				DBBA64032A2F34070096EB6F /* VirusProtectionVerdictRequest.swift in Sources */,
 				E00068762057D0BC009CDA70 /* CreateUserRequest.swift in Sources */,
 				E00068692057D0BC009CDA70 /* SoftwareVersionData.swift in Sources */,
 				E00068562057D0BC009CDA70 /* InfrastructureProperties.swift in Sources */,
@@ -991,6 +1019,7 @@
 				E000680C2057D0BC009CDA70 /* CreateUploadShareRequest.swift in Sources */,
 				E0146C1A2231263100781246 /* DracoonApiCode.swift in Sources */,
 				E00068822057DC23009CDA70 /* DracoonAuthMode.swift in Sources */,
+				DBAD69F02A0B99FC003AF1F8 /* DeleteUploadSharesRequest.swift in Sources */,
 				E00068042057D0BC009CDA70 /* UserKeyPairContainer.swift in Sources */,
 				DB7442B827D20C2F00CD0064 /* SubscribedUploadShare.swift in Sources */,
 				E00068012057D0BC009CDA70 /* MoveNode.swift in Sources */,
@@ -1015,6 +1044,7 @@
 				E00068512057D0BC009CDA70 /* ModelRange.swift in Sources */,
 				DB8D51BC26C3BC3C002F50B6 /* ShareClassificationPolicies.swift in Sources */,
 				E00067EA2057D0BC009CDA70 /* FileKeyContainer.swift in Sources */,
+				DBAD69EE2A0B97D6003AF1F8 /* DeleteDownloadSharesRequest.swift in Sources */,
 				DB7442B627D20C0D00CD0064 /* SubscribedUploadShareList.swift in Sources */,
 				8496F3AE205916A1000EE909 /* DracoonClient.swift in Sources */,
 				E00068592057D0BC009CDA70 /* UserList.swift in Sources */,
@@ -1025,6 +1055,7 @@
 				E000686D2057D0BC009CDA70 /* UserUserPublicKey.swift in Sources */,
 				E000681B2057D0BC009CDA70 /* UpdateSystemDefaults.swift in Sources */,
 				E02321EF241B7FEF000595FD /* ResponseModelFactory.swift in Sources */,
+				DBBA64052A2F356A0096EB6F /* VirusProtectionVerdictResponse.swift in Sources */,
 				E000683B2057D0BC009CDA70 /* ChangeGroupMembersRequest.swift in Sources */,
 				DBE12F3F2693511900A7856B /* RateLimitInterceptor.swift in Sources */,
 				E0C7A14122CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift in Sources */,
@@ -1042,6 +1073,7 @@
 				E00068842057DF8C009CDA70 /* ValidatorUtils.swift in Sources */,
 				E000682D2057D0BC009CDA70 /* S3ConfigUpdateRequest.swift in Sources */,
 				E000685B2057D0BC009CDA70 /* PublicDownloadTokenGenerateRequest.swift in Sources */,
+				DBBA64012A2F330C0096EB6F /* NodeVirusProtectionInfo.swift in Sources */,
 				E000686B2057D0BC009CDA70 /* RoleGroupList.swift in Sources */,
 				8496F3C0205AB32B000EE909 /* DracoonError.swift in Sources */,
 				E00067E42057D0BC009CDA70 /* SdsServerTime.swift in Sources */,
@@ -1255,7 +1287,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.2;
+				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = NO;
@@ -1288,7 +1320,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.5.2;
+				MARKETING_VERSION = 2.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = NO;

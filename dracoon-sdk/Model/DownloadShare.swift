@@ -45,6 +45,8 @@ public struct DownloadShare: Codable {
     /** Internal notes. Limited to 255 characters.
      [Since version 4.11.0] */
     public var internalNotes: String?
+    /** Node type */
+    public var nodeType: String?
     
     /** [Deprecated since v4.20.0] Notify creator on every download. (default: false) */
     public var notifyCreator: Bool?
@@ -69,6 +71,7 @@ public struct DownloadShare: Codable {
         case dataUrl
         case isEncrypted
         case internalNotes
+        case nodeType
     }
 
 

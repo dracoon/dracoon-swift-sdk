@@ -84,7 +84,7 @@ class DracoonNodesImpl: DracoonNodes {
             return
         }
         let parentPath = String(nodePath[..<range.lowerBound])
-        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/search"
+        let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.nodesSearch
         
         let parameters: Parameters = [
             "search_string": String(nodeComponents.last!),
@@ -137,7 +137,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -158,7 +158,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.put.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -179,7 +179,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.put.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -200,7 +200,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -221,7 +221,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.put.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -243,7 +243,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.put.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -263,7 +263,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.delete.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -283,7 +283,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -303,7 +303,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -335,18 +335,23 @@ class DracoonNodesImpl: DracoonNodes {
                     cryptoImpl = self.crypto
                 }
                 
-                self.isS3Upload(onComplete: { result in
-                    switch result {
-                    case .error(_):
-                        self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
-                    case .value(let isS3Upload):
-                        if isS3Upload {
-                            self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
-                        } else {
-                            self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
-                        }
-                    }
-                })
+                self.checkForS3AndStartUpload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
+            }
+        })
+    }
+    
+    private func checkForS3AndStartUpload(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback,
+                                          resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
+        self.isS3Upload(onComplete: { result in
+            switch result {
+            case .error(_):
+                self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
+            case .value(let isS3Upload):
+                if isS3Upload {
+                    self.startS3Upload(uploadId: uploadId, request: request, fileUrl: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
+                } else {
+                    self.startUpload(uploadId: uploadId, request: request, filePath: fileUrl, callback: callback, resolutionStrategy: resolutionStrategy, cryptoImpl: cryptoImpl, sessionConfig: sessionConfig)
+                }
             }
         })
     }
@@ -361,6 +366,7 @@ class DracoonNodesImpl: DracoonNodes {
         innerCallback.onComplete = { node in
             if cryptoImpl != nil {
                 self.setMissingFileKeysBatch(nodeId: node._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
+                    // Don't wait for file key creation
                 })
             }
             callback.onComplete?(node)
@@ -385,6 +391,7 @@ class DracoonNodesImpl: DracoonNodes {
         innerCallback.onComplete = { node in
             if cryptoImpl != nil {
                 self.setMissingFileKeysBatch(nodeId: node._id, offset: 0, limit: DracoonConstants.MISSING_FILEKEYS_MAX_COUNT, completion: { _ in
+                    // Don't wait for file key creation
                 })
             }
             callback.onComplete?(node)
@@ -438,7 +445,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -455,7 +462,7 @@ class DracoonNodesImpl: DracoonNodes {
             let jsonBody = try encoder.encode(request)
             var urlRequest = URLRequest(url: uploadUrl)
             urlRequest.httpMethod = HTTPMethod.put.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             session.request(urlRequest)
@@ -537,7 +544,7 @@ class DracoonNodesImpl: DracoonNodes {
     // MARK: Search
     
     func searchNodes(parentNodeId: Int64, searchString: String, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
-        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/search"
+        let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.nodesSearch
         
         var parameters: Parameters = [
             "search_string": searchString,
@@ -559,7 +566,7 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, sorting: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
-        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/search"
+        let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.nodesSearch
         
         var parameters: Parameters = [
             "search_string": searchString,
@@ -589,7 +596,7 @@ class DracoonNodesImpl: DracoonNodes {
     // MARK: Favorites
     
     func getFavorites(completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
-        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/search"
+        let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.nodesSearch
         
         var parameters = Parameters()
         parameters["search_string"] = "*"
@@ -651,7 +658,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -677,7 +684,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.put.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -810,7 +817,7 @@ class DracoonNodesImpl: DracoonNodes {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -840,5 +847,44 @@ class DracoonNodesImpl: DracoonNodes {
     
     func encryptFileKey(fileKey: PlainFileKey, publicKey: UserPublicKey) throws -> EncryptedFileKey {
         return try crypto.encryptFileKey(fileKey: fileKey, publicKey: publicKey)
+    }
+    
+    // MARK: Anti-virus protection
+    
+    func generateVirusProtectionVerdict(for nodeIds: [Int64], completion: @escaping (DataRequest.DecodeCompletion<VirusProtectionVerdictResponse>)) {
+        let request = VirusProtectionVerdictRequest(nodeIds: nodeIds)
+        do {
+            let jsonBody = try encoder.encode(request)
+            let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/generate_verdict_info"
+            
+            var urlRequest = URLRequest(url: URL(string: requestUrl)!)
+            urlRequest.httpMethod = HTTPMethod.post.rawValue
+            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.httpBody = jsonBody
+            
+            self.session.request(urlRequest)
+                .validate()
+                .decode(VirusProtectionVerdictResponse.self, decoder: self.decoder, completion: completion)
+        } catch {
+            completion(Dracoon.Result.error(DracoonError.encode(error: error)))
+        }
+    }
+    
+    func deleteMaliciousFilePermanently(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/malicious_files/\(nodeId)"
+        
+        self.session.request(requestUrl, method: .delete)
+            .validate()
+            .handleResponse(decoder: self.decoder, completion: completion)
+    }
+    
+    // MARK: Policies
+    
+    func getRoomPolicies(roomId: Int64, completion: @escaping DataRequest.DecodeCompletion<RoomPolicies>) {
+        let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/rooms/\(roomId)/policies"
+        
+        self.session.request(requestUrl, method: .get, parameters: Parameters())
+            .validate()
+            .decode(RoomPolicies.self, decoder: self.decoder, completion: completion)
     }
 }

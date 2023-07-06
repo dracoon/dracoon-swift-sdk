@@ -97,13 +97,33 @@ class DracoonSharesTests: DracoonSdkTestCase {
         XCTAssertTrue(calledError)
     }
     
-    func testGetDownloadShares() {
+    func testGetDownloadShares_withNodeId() {
         
         self.setResponseModel(DownloadShareList.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns DownloadShareList")
         var calledValue = false
         
         self.shares.getDownloadShares(nodeId: 42, completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case .value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
+    func testGetDownloadShares() {
+        self.setResponseModel(DownloadShareList.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns DownloadShareList")
+        var calledValue = false
+        
+        self.shares.getDownloadShares(offset: nil, limit: nil, filter: nil, sorting: nil, completion: { result in
             switch result {
             case .error(_):
                 break
@@ -139,6 +159,74 @@ class DracoonSharesTests: DracoonSdkTestCase {
         XCTAssertTrue(calledValue)
     }
     
+    func testDeleteDownloadShare() {
+        
+        MockURLProtocol.response(with: 204)
+        let expectation = XCTestExpectation(description: "Returns without error")
+        var calledError = true
+        
+        self.shares.deleteDownloadShare(shareId: 42, completion: { response in
+            if response.error == nil {
+                calledError = false
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertFalse(calledError)
+    }
+    
+    func testDeleteDownloadShare_withUnknownId_returnsError() {
+        
+        MockURLProtocol.response(with: 404)
+        let expectation = XCTestExpectation(description: "Returns error")
+        var calledError = false
+        
+        self.shares.deleteDownloadShare(shareId: 43, completion: { response in
+            if response.error != nil {
+                calledError = true
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
+    }
+    
+    func testDeleteDownloadShares() {
+        
+        MockURLProtocol.response(with: 204)
+        let expectation = XCTestExpectation(description: "Returns without error")
+        var calledError = true
+        
+        self.shares.deleteDownloadShares(shareIds: [41,42], completion: { response in
+            if response.error == nil {
+                calledError = false
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertFalse(calledError)
+    }
+    
+    func testDeleteDownloadShares_withUnknownId_returnsError() {
+        
+        MockURLProtocol.response(with: 404)
+        let expectation = XCTestExpectation(description: "Returns error")
+        var calledError = false
+        
+        self.shares.deleteDownloadShares(shareIds: [43, 44], completion: { response in
+            if response.error != nil {
+                calledError = true
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
+    }
+    
     func testCreateUploadShare() {
         
         self.setResponseModel(UploadShare.self, statusCode: 200)
@@ -160,13 +248,34 @@ class DracoonSharesTests: DracoonSdkTestCase {
         XCTAssertTrue(calledValue)
     }
     
-    func testGetUploadShares() {
+    func testGetUploadShares_withNodeId() {
         
         self.setResponseModel(UploadShareList.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns UploadShareList")
         var calledValue = false
         
         self.shares.getUploadShares(nodeId: 42, completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case .value(let response):
+                calledValue = true
+                XCTAssertNotNil(response)
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledValue)
+    }
+    
+    func testGetUploadShares() {
+        
+        self.setResponseModel(UploadShareList.self, statusCode: 200)
+        let expectation = XCTestExpectation(description: "Returns UploadShareList")
+        var calledValue = false
+        
+        self.shares.getUploadShares(offset: nil, limit: nil, filter: nil, sorting: nil, completion: { result in
             switch result {
             case .error(_):
                 break
@@ -200,6 +309,74 @@ class DracoonSharesTests: DracoonSdkTestCase {
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
         XCTAssertTrue(calledValue)
+    }
+    
+    func testDeleteUploadShare() {
+        
+        MockURLProtocol.response(with: 204)
+        let expectation = XCTestExpectation(description: "Returns without error")
+        var calledError = true
+        
+        self.shares.deleteUploadShare(shareId: 42, completion: { response in
+            if response.error == nil {
+                calledError = false
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertFalse(calledError)
+    }
+    
+    func testDeleteUploadShare_withUnknownId_returnsError() {
+        
+        MockURLProtocol.response(with: 404)
+        let expectation = XCTestExpectation(description: "Returns error")
+        var calledError = false
+        
+        self.shares.deleteUploadShare(shareId: 43, completion: { response in
+            if response.error != nil {
+                calledError = true
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
+    }
+    
+    func testDeleteUploadShares() {
+        
+        MockURLProtocol.response(with: 204)
+        let expectation = XCTestExpectation(description: "Returns without error")
+        var calledError = true
+        
+        self.shares.deleteUploadShares(shareIds: [41,42], completion: { response in
+            if response.error == nil {
+                calledError = false
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertFalse(calledError)
+    }
+    
+    func testDeleteUploadShares_withUnknownId_returnsError() {
+        
+        MockURLProtocol.response(with: 404)
+        let expectation = XCTestExpectation(description: "Returns error")
+        var calledError = false
+        
+        self.shares.deleteUploadShares(shareIds: [43, 44], completion: { response in
+            if response.error != nil {
+                calledError = true
+                expectation.fulfill()
+            }
+        })
+        
+        self.testWaiter.wait(for: [expectation], timeout: 2.0)
+        XCTAssertTrue(calledError)
     }
 
 }

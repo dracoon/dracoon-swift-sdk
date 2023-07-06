@@ -22,7 +22,9 @@ public struct SharesPasswordPolicies: Codable {
         self.updatedBy = updatedBy
     }
     
-    public init() {}
+    public init() {
+        // Public initializer
+    }
     
     public var characterRules: CharacterRules?
     /** Minimum number of characters a password must contain (must be between 1 and 1024) */

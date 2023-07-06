@@ -18,10 +18,6 @@ class FileUtilsMock: FileHelper {
         return size
     }
     
-    func calculateMD5(_ data: Data) -> String {
-        return "md5"
-    }
-    
     func readData(_ fileUrl: URL) throws -> Data? {
         if returnsData {
             return Data(count: Int(size))

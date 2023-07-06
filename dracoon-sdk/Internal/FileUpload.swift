@@ -96,7 +96,7 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
             
             var urlRequest = URLRequest(url: URL(string: requestUrl)!)
             urlRequest.httpMethod = HTTPMethod.post.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             self.session.request(urlRequest)
@@ -118,7 +118,7 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
         let urlSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
         var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
         urlRequest.httpMethod = HTTPMethod.post.rawValue
-        urlRequest.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+        urlRequest.addValue("application/octet-stream", forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
         let task = urlSession.uploadTask(with: urlRequest, fromFile: self.fileUrl)
         if self.fileSize > 0 {
             task.countOfBytesClientExpectsToSend = fileSize
@@ -239,7 +239,7 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
             let jsonBody = try encoder.encode(request)
             var urlRequest = URLRequest(url: URL(string: uploadUrl)!)
             urlRequest.httpMethod = HTTPMethod.put.rawValue
-            urlRequest.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+            urlRequest.setValue(ApiRequestConstants.headerFields.values.applicationJsonCharsetUTF8, forHTTPHeaderField: ApiRequestConstants.headerFields.keys.contentType)
             urlRequest.httpBody = jsonBody
             
             session.request(urlRequest)

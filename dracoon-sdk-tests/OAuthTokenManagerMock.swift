@@ -42,4 +42,6 @@ class OAuthTokenManagerMock: OAuthInterceptor {
     func getRefreshToken() -> String? {
         return "refreshToken"
     }
+    
+    func revokeTokens(completion: ((DracoonError?) -> Void)?) {}
 }

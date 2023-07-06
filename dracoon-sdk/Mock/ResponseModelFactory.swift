@@ -11,7 +11,9 @@ import crypto_sdk
 
 public class ResponseModelFactory {
     
-    public init() {}
+    public init() {
+        // Public initializer
+    }
     
     public func getTestResponseModel<E: Encodable>(_ type: E.Type) -> E? {
         if type == UserAccount.self {
@@ -22,6 +24,8 @@ public class ResponseModelFactory {
             return self.getNode() as? E
         } else if type == NodeList.self {
             return self.getNodeList() as? E
+        } else if type == ModelRange.self {
+            return self.getModelRange() as? E
         } else if type == UserKeyPairContainer.self {
             return self.getUserKeyPairContainer() as? E
         } else if type == Avatar.self {
@@ -84,6 +88,14 @@ public class ResponseModelFactory {
             return self.getSubscribedUploadShare() as? E
         } else if type == SubscribedUploadShareList.self {
             return self.getSubscribedUploadShareList() as? E
+        } else if type == VirusProtectionInfo.self {
+            return self.getVirusProtectionInfo() as? E
+        } else if type == VirusProtectionVerdictResponse.self {
+            return self.getVirusProtectionVerdictResponse() as? E
+        } else if type == RoomPolicies.self {
+            return self.getRoomPolicies() as? E
+        } else if type == OAuthErrorModel.self {
+            return self.getOAuthErrorModel() as? E
         }
         return nil
     }
@@ -103,7 +115,7 @@ public class ResponseModelFactory {
     private func getNode() -> Node {
         let userInfo = UserInfo(_id: 1338)
         
-        return Node(_id: 1337, type: .room, name: "name", timestampCreation: Date(), timestampModification: Date(), parentId: 42, parentPath: "/root", createdAt: Date(), createdBy: userInfo, updatedAt: Date(), updatedBy: userInfo, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, inheritPermissions: false, isEncrypted: false, encryptionInfo: nil, cntDeletedVersions: 0, cntComments: 0, cntDownloadShares: 0, cntUploadShares: 0, recycleBinRetentionPeriod: 0, hasActivitiesLog: false, quota: nil, isFavorite: true, branchVersion: nil, mediaToken: nil, isBrowsable: true, cntRooms: 0, cntFolders: 1, cntFiles: 5, authParentId: nil)
+        return Node(_id: 1337, referenceId: 1337, type: .room, name: "name", timestampCreation: Date(), timestampModification: Date(), parentId: 42, parentPath: "/root", createdAt: Date(), createdBy: userInfo, updatedAt: Date(), updatedBy: userInfo, expireAt: nil, hash: nil, fileType: nil, mediaType: nil, size: nil, classification: nil, notes: nil, permissions: nil, inheritPermissions: false, isEncrypted: false, encryptionInfo: nil, cntDeletedVersions: 0, cntComments: 0, cntDownloadShares: 0, cntUploadShares: 0, recycleBinRetentionPeriod: 0, hasActivitiesLog: false, quota: nil, isFavorite: true, branchVersion: nil, mediaToken: nil, isBrowsable: true, cntRooms: 0, cntFolders: 1, cntFiles: 5, authParentId: nil)
     }
     
     private func getNodeList() -> NodeList {
@@ -112,6 +124,10 @@ public class ResponseModelFactory {
         let nodes = [self.getNode()]
         
         return NodeList(range: range, items: nodes)
+    }
+    
+    private func getModelRange() -> ModelRange {
+        return ModelRange(offset: 0, limit: 1, total: 1)
     }
     
     private func getUserKeyPairContainer() -> UserKeyPairContainer {
@@ -152,7 +168,7 @@ public class ResponseModelFactory {
     
     private func getDownloadShare() -> DownloadShare {
         let userInfo = UserInfo(_id: 32)
-        return DownloadShare(_id: 1337, nodeId: 42, accessKey: "accessKey", cntDownloads: 10, createdAt: Date(), createdBy: userInfo, name: nil, notes: nil, showCreatorName: false, showCreatorUsername: false, isProtected: false, expireAt: nil, maxDownloads: nil, nodePath: nil, dataUrl: nil, isEncrypted: false, internalNotes: nil, notifyCreator: false)
+        return DownloadShare(_id: 1337, nodeId: 42, accessKey: "accessKey", cntDownloads: 10, createdAt: Date(), createdBy: userInfo, name: nil, notes: nil, showCreatorName: false, showCreatorUsername: false, isProtected: false, expireAt: nil, maxDownloads: nil, nodePath: nil, dataUrl: nil, isEncrypted: false, internalNotes: nil, nodeType: nil, notifyCreator: false)
     }
     
     private func getDownloadShareList() -> DownloadShareList {
@@ -162,7 +178,7 @@ public class ResponseModelFactory {
     
     private func getUploadShare() -> UploadShare {
         let userInfo = UserInfo(_id: 32)
-        return UploadShare(_id: 1337, targetId: 42, name: "name", isProtected: false, accessKey: "accessKey", createdAt: Date(), createdBy: userInfo, targetPath: nil, expireAt: nil, isEncrypted: true, notes: nil, filesExpiryPeriod: nil, cntFiles: nil, cntUploads: nil, showUploadedFiles: false, dataUrl: nil, maxSlots: nil, maxSize: nil, showCreatorName: false, showCreatorUsername: false, internalNotes: nil, notifyCreator: nil)
+        return UploadShare(_id: 1337, targetId: 42, name: "name", isProtected: false, accessKey: "accessKey", createdAt: Date(), createdBy: userInfo, targetPath: nil, expireAt: nil, isEncrypted: true, notes: nil, filesExpiryPeriod: nil, cntFiles: nil, cntUploads: nil, showUploadedFiles: false, dataUrl: nil, maxSlots: nil, maxSize: nil, showCreatorName: false, showCreatorUsername: false, internalNotes: nil, targetType: nil, notifyCreator: nil)
     }
     
     private func getUploadShareList() -> UploadShareList {
@@ -266,6 +282,27 @@ public class ResponseModelFactory {
         let range = ModelRange(offset: 0, limit: 1, total: 1)
         let items = [self.getSubscribedUploadShare()]
         return SubscribedUploadShareList(range: range, items: items)
+    }
+    
+    private func getVirusProtectionInfo() -> VirusProtectionInfo {
+        let info = VirusProtectionInfo(verdict: .CLEAN)
+        return info
+    }
+    
+    private func getVirusProtectionVerdictResponse() -> VirusProtectionVerdictResponse {
+        let info = NodeVirusProtectionInfo(nodeId: 42, verdict: .CLEAN)
+        return [info]
+    }
+    
+    private func getRoomPolicies() -> RoomPolicies {
+        var policies = RoomPolicies(defaultExpirationPeriod: 0)
+        policies.isVirusProtectionEnabled = false
+        return policies
+    }
+    
+    private func getOAuthErrorModel() -> OAuthErrorModel {
+        let model = OAuthErrorModel(error: OAuthBadRequestErrorCode.invalid_client.rawValue)
+        return model
     }
     
 }

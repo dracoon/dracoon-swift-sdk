@@ -32,6 +32,11 @@ public protocol DracoonClient {
     ///
     /// - Returns: The token if available.
     func getRefreshToken() -> String?
+    
+    /// Revoke current OAuth tokens
+    ///
+    /// - Parameter completion: Returns nil on success or an error.
+    func revokeOAuthToken(completion: ((DracoonError?) -> Void)?)
 
     /// Sets rate limit if date is in the future.
     ///
@@ -734,6 +739,30 @@ public protocol DracoonNodes {
     /// - Returns: The encrypted key
     /// - Throws: CryptoError if an error occured during encryption
     func encryptFileKey(fileKey: PlainFileKey, publicKey: UserPublicKey) throws -> EncryptedFileKey
+    
+    /// Retrieve information about the virus protection verdicts of a list of node IDs.
+    /// - Requires:  API version from 4.44.0.
+    ///
+    /// - Parameters:
+    ///   - nodeIds: The IDs of the nodes
+    ///   - completion: Returns the information on success or an error.
+    func generateVirusProtectionVerdict(for nodeIds: [Int64], completion: @escaping (DataRequest.DecodeCompletion<VirusProtectionVerdictResponse>))
+    
+    /// Permanently delete a malicious file.
+    /// - Requires:  API version from 4.44.0.
+    ///
+    /// - Parameters:
+    ///   - nodeId: The ID of the node
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteMaliciousFilePermanently(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Retrieve the room policies.
+    /// - Requires: API version from 4.32.0.
+    ///
+    /// - Parameters:
+    ///   - roomId: The ID of the room.
+    ///   - completion: Returns the [RoomPolicies](x-source-tag://RoomPolicies) on success or an error.
+    func getRoomPolicies(roomId: Int64, completion: @escaping DataRequest.DecodeCompletion<RoomPolicies>)
 }
 
 public extension DracoonNodes {
@@ -807,6 +836,16 @@ public protocol DracoonShares {
     ///   - nodeId: The ID of the node
     ///   - completion: Returns a [list of existing download shares](x-source-tag://DownloadShareList) on success or an error.
     func getDownloadShares(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<DownloadShareList>)
+    
+    /// Retrieves existing download shares.
+    ///
+    /// - Parameters:
+    ///   - offset: Range offset
+    ///   - limit: Range limit. Maximum 500. For more results please use paging with offset and limit.
+    ///   - filter: Filter string
+    ///   - sorting: Sort string
+    ///   - completion: Returns a [list of existing download shares](x-source-tag://DownloadShareList) on success or an error.
+    func getDownloadShares(offset: Int?, limit: Int?, filter: String?, sorting: String?, completion: @escaping DataRequest.DecodeCompletion<DownloadShareList>)
 
     /// Retrieves download share containing a QR code image.
     ///
@@ -829,6 +868,14 @@ public protocol DracoonShares {
     ///   - shareId: The ID of the share
     ///   - completion: Returns an empty response on success or an error.
     func deleteDownloadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Deletes multiple download shares.
+    /// [Since version 4.21.0]
+    ///
+    /// - Parameters:
+    ///   - shareIds: The IDs of the shares
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteDownloadShares(shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void)
 
     /// Creates an upload share.
     ///
@@ -852,6 +899,16 @@ public protocol DracoonShares {
     ///   - nodeId: The ID of the node
     ///   - completion: Returns a [list of existing upload shares](x-source-tag://UploadShareList) on success or an error.
     func getUploadShares(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<UploadShareList>)
+    
+    /// Retrieves existing upload shares for a node.
+    ///
+    /// - Parameters:
+    ///   - offset: Range offset
+    ///   - limit: Range limit. Maximum 500. For more results please use paging with offset and limit.
+    ///   - filter: Filter string
+    ///   - sorting: Sort string
+    ///   - completion: Returns a [list of existing upload shares](x-source-tag://UploadShareList) on success or an error.
+    func getUploadShares(offset: Int?, limit: Int?, filter: String?, sorting: String?, completion: @escaping DataRequest.DecodeCompletion<UploadShareList>)
 
     /// Retrieves upload share containing a QR code image.
     ///
@@ -874,4 +931,12 @@ public protocol DracoonShares {
     ///   - shareId: The ID of the share
     ///   - completion: Returns an empty response on success or an error.
     func deleteUploadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void)
+    
+    /// Deletes multiple upload shares.
+    /// [Since version 4.21.0]
+    ///
+    /// - Parameters:
+    ///   - shareIds: The IDs of the shares
+    ///   - completion: Returns an empty response on success or an error.
+    func deleteUploadShares(shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void)
 }

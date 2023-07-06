@@ -8,22 +8,15 @@ variables:
 
 before_script:
   - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/ios/client/sdk-swift-sonar.git
-  - cd sdk-swift-sonar
-  - sh setup.sh
-  - cd ..
+  - sh sdk-swift-sonar/setup.sh
 
 unit_tests:
   dependencies: []
   stage: unit_tests
-  artifacts:
-    paths:
-      - TestResults/Logs/Test/*.xcresult
   script:
     - bundle exec fastlane runUnitTests
     - cp sdk-swift-sonar/printCodeCoverage.sh TestResults/Logs/Test/
-    - cd TestResults/Logs/Test/
-    - ./printCodeCoverage.sh
-    - cd ../../../
+    - sh TestResults/Logs/Test/printCodeCoverage.sh
   coverage: '/Code coverage: \d+\.\d+/'
   tags:
     - darwin-amd64

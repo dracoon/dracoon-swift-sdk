@@ -19,12 +19,19 @@ protocol OAuthInterceptor: RequestInterceptor {
     func getAccessToken() -> String?
     func getRefreshToken() -> String?
     func startOAuthSession(_ session: Session)
+    func revokeTokens(completion: ((DracoonError?) -> Void)?)
+}
+
+extension OAuthInterceptor {
+    // make optional to implement
+    func revokeTokens(completion: ((DracoonError?) -> Void)?) {}
 }
 
 class OAuthTokenManager: OAuthInterceptor {
     
     var oAuthClient: OAuthClient
     var mode: DracoonAuthMode
+    var session: Alamofire.Session?
     
     weak var delegate: OAuthTokenChangedDelegate?
     
@@ -75,10 +82,18 @@ class OAuthTokenManager: OAuthInterceptor {
     private var requestsToRetry: [RequestRetryCompletion] = []
     // indicates that a request is trying to get a new access token
     private var isRefreshing = false
+    // indicates that the DracoonAuthMode is still valid
+    private var refreshTokenIsAssumedValid = true
     
     func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        guard refreshTokenIsAssumedValid else {
+            return
+        }
         if isUnauthorized(request: request) || isExpiredOrCodeFlow(error: error) {
-            lock.lock(); defer { lock.unlock() }
+            lock.lock()
+            defer {
+                lock.unlock()
+            }
             requestsToRetry.append(completion)
             if !isRefreshing {
                 self.getToken(session: session, completion: { [weak self] retryResult in
@@ -134,8 +149,45 @@ class OAuthTokenManager: OAuthInterceptor {
         }
     }
     
+    public func revokeTokens(completion: ((DracoonError?) -> Void)?) {
+        guard let session = self.session else {
+            let error = DracoonError.generic(error: nil)
+            self.delegate?.tokenRevocationResult(error: error)
+            completion?(error)
+            return
+        }
+        switch mode {
+        case .authorizationCode(clientId: _, clientSecret: _, authorizationCode: _):
+            let error = DracoonError.generic(error: nil)
+            self.delegate?.tokenRevocationResult(error: error)
+            completion?(error)
+            return
+        case .accessToken(accessToken: _):
+            self.delegate?.tokenRevocationResult(error: DracoonError.generic(error: nil))
+            return
+        case .accessRefreshToken(clientId: let clientId, clientSecret: let clientSecret, tokens: let tokens):
+            oAuthClient.revokeOAuthToken(session: session, clientId: clientId, clientSecret: clientSecret, tokenType: .refreshToken, token: tokens.refreshToken, completion: { response in
+                if let revocationError = response.error {
+                    self.delegate?.tokenRevocationResult(error: revocationError)
+                    completion?(revocationError)
+                    return
+                }
+                guard let accessToken = tokens.accessToken else {
+                    return
+                }
+                self.oAuthClient.revokeOAuthToken(session: session, clientId: clientId, clientSecret: clientSecret, tokenType: .accessToken, token: accessToken, completion: { response in
+                    self.delegate?.tokenRevocationResult(error: response.error)
+                    completion?(response.error)
+                })
+            })
+        }
+    }
+    
     public func startOAuthSession(_ session: Session) {
-        self.getToken(session: session, completion: {_ in})
+        self.session = session
+        self.getToken(session: session, completion: { _ in
+            // Use OAuthTokenChangedDelegate to receive changes
+        })
     }
     
     private func getToken(session: Session, completion: @escaping (RetryResult) -> Void) {
@@ -151,6 +203,14 @@ class OAuthTokenManager: OAuthInterceptor {
                     self.delegate?.tokenChanged(accessToken: tokens.access_token, refreshToken: tokens.refresh_token)
                     completion(.retry)
                 case .error(let error):
+                    switch error {
+                    case .oauth_error(errorModel: let model):
+                        if model.getErrorCode() == .invalid_grant {
+                            self.refreshTokenIsAssumedValid = false
+                        }
+                        break
+                    default: break
+                    }
                     self.delegate?.tokenRefreshFailed(error: error)
                     completion(.doNotRetry)
                 }
