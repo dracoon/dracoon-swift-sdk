@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'DRACOON-SDK'
-  s.version          = '2.5.2'
+  s.version          = '2.6.0'
   s.summary          = 'Official DRACOON SDK'
 
   s.description      = <<-DESC
@@ -26,6 +26,6 @@ Pod::Spec.new do |s|
 
   s.source_files = 'dracoon-sdk/**/*'
 
-   s.dependency 'Alamofire', '~> 5.5.0'
+   s.dependency 'Alamofire', '~> 5.7.1'
    s.dependency 'DRACOON-Crypto-SDK', '~> 2.2.1'
 end
