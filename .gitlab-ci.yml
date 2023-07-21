@@ -5,6 +5,7 @@ stages:
 variables:
   LC_ALL: "en_US.UTF-8"
   LANG: "en_US.UTF-8"
+  DISABLE_QUALITY_GATES: 'false'
 
 before_script:
   - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/ios/client/sdk-swift-sonar.git
@@ -25,5 +26,11 @@ sonar:
   stage: sonar
   script:
     - bundle exec fastlane runSonar
+  rules:
+    - if: $DISABLE_QUALITY_GATES == "false" && ($CI_COMMIT_REF_SLUG == "main" || $CI_COMMIT_REF_SLUG == "release-candidate" || $CI_COMMIT_REF_SLUG == "develop" || $CI_COMMIT_REF_SLUG =~ /^hotfix-/)
+      when: on_success
+    - if: $DISABLE_QUALITY_GATES == "true" || ($CI_COMMIT_REF_SLUG != "main" && $CI_COMMIT_REF_SLUG != "release-candidate" && $CI_COMMIT_REF_SLUG != "develop" && $CI_COMMIT_REF_SLUG =~ /^hotfix-/)
+      allow_failure: true
+      when: on_success
   tags:
     - darwin-amd64
