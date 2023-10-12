@@ -33,9 +33,9 @@ sonar:
     - cp -r /opt/gitlab/Library/Artifacts/${CI_PIPELINE_ID}/TestResults .
     - bundle exec fastlane runSonar
   rules:
-    - if: $DISABLE_QUALITY_GATES == "false" && ($CI_COMMIT_REF_SLUG == "main" || $CI_COMMIT_REF_SLUG == "release-candidate" || $CI_COMMIT_REF_SLUG == "develop" || $CI_COMMIT_REF_SLUG =~ /^hotfix-/)
+    - if: $DISABLE_QUALITY_GATES == "false"
       when: on_success
-    - if: $DISABLE_QUALITY_GATES == "true" || ($CI_COMMIT_REF_SLUG != "main" && $CI_COMMIT_REF_SLUG != "release-candidate" && $CI_COMMIT_REF_SLUG != "develop" && $CI_COMMIT_REF_SLUG =~ /^hotfix-/)
+    - if: $DISABLE_QUALITY_GATES == "true"
       allow_failure: true
       when: on_success
   tags:
