@@ -1,4 +1,5 @@
 stages:
+  - build
   - unit_tests
   - sonar
 
@@ -12,6 +13,17 @@ before_script:
   - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/ios/client/sdk-swift-sonar.git
   - sh sdk-swift-sonar/setup.sh
 
+build:
+  dependencies: []
+  stage: build
+  script:
+    - bundle exec fastlane build
+    - sh /opt/gitlab/Library/cleanupArtifacts.sh
+    - mkdir /opt/gitlab/Library/Artifacts/${CI_PIPELINE_ID}
+  tags:
+    - darwin/arm64
+    - ios-build
+
 unit_tests:
   dependencies: []
   stage: unit_tests
@@ -19,8 +31,6 @@ unit_tests:
     - bundle exec fastlane runUnitTests
     - cp sdk-swift-sonar/printCodeCoverage.sh TestResults/Logs/Test/
     - sh TestResults/Logs/Test/printCodeCoverage.sh
-    - sh /opt/gitlab/Library/cleanupArtifacts.sh
-    - mkdir /opt/gitlab/Library/Artifacts/${CI_PIPELINE_ID}
     - cp -r TestResults /opt/gitlab/Library/Artifacts/${CI_PIPELINE_ID}
   coverage: '/Code coverage: \d+\.\d+/'
   tags:
