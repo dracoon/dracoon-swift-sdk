@@ -1,15 +1,28 @@
 stages:
+  - build
   - unit_tests
   - sonar
 
 variables:
   LC_ALL: "en_US.UTF-8"
   LANG: "en_US.UTF-8"
+  GIT_STRATEGY: clone
   DISABLE_QUALITY_GATES: 'false'
 
 before_script:
   - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/ios/client/sdk-swift-sonar.git
   - sh sdk-swift-sonar/setup.sh
+
+build:
+  dependencies: []
+  stage: build
+  script:
+    - bundle exec fastlane build
+    - sh /opt/gitlab/Library/cleanupArtifacts.sh
+    - mkdir /opt/gitlab/Library/Artifacts/${CI_PIPELINE_ID}
+  tags:
+    - darwin/arm64
+    - ios-build
 
 unit_tests:
   dependencies: []
@@ -18,19 +31,23 @@ unit_tests:
     - bundle exec fastlane runUnitTests
     - cp sdk-swift-sonar/printCodeCoverage.sh TestResults/Logs/Test/
     - sh TestResults/Logs/Test/printCodeCoverage.sh
+    - cp -r TestResults /opt/gitlab/Library/Artifacts/${CI_PIPELINE_ID}
   coverage: '/Code coverage: \d+\.\d+/'
   tags:
-    - darwin-amd64
+    - darwin/arm64
+    - ios-build
 
 sonar:
   stage: sonar
   script:
+    - cp -r /opt/gitlab/Library/Artifacts/${CI_PIPELINE_ID}/TestResults .
     - bundle exec fastlane runSonar
   rules:
-    - if: $DISABLE_QUALITY_GATES == "false" && ($CI_COMMIT_REF_SLUG == "main" || $CI_COMMIT_REF_SLUG == "release-candidate" || $CI_COMMIT_REF_SLUG == "develop" || $CI_COMMIT_REF_SLUG =~ /^hotfix-/)
+    - if: $DISABLE_QUALITY_GATES == "false"
       when: on_success
-    - if: $DISABLE_QUALITY_GATES == "true" || ($CI_COMMIT_REF_SLUG != "main" && $CI_COMMIT_REF_SLUG != "release-candidate" && $CI_COMMIT_REF_SLUG != "develop" && $CI_COMMIT_REF_SLUG =~ /^hotfix-/)
+    - if: $DISABLE_QUALITY_GATES == "true"
       allow_failure: true
       when: on_success
   tags:
-    - darwin-amd64
+    - darwin/arm64
+    - ios-build
