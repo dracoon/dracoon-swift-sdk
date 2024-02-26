@@ -15,7 +15,7 @@ public struct SoftwareVersionData: Codable {
     /** DRACOON server version */
     public var sdsServerVersion: String
     /** Build date */
-    public var buildDate: Date
+    public var buildDate: Date?
     /** Revision number */
     public var scmRevisionNumber: String?
     /** Determines if the DRACOON Core is deployed in the cloud environment.
