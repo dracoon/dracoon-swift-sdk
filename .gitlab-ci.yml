@@ -16,6 +16,7 @@ variables:
   LANG: "en_US.UTF-8"
   GIT_STRATEGY: clone
   DISABLE_QUALITY_GATES: 'false'
+  FORCE_REBUILDING_DEPENDENCIES: 'false'
 
 before_script:
   - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/ios/client/sdk-swift-sonar.git
@@ -23,6 +24,9 @@ before_script:
   - sh sdk-swift-sonar/setup.sh "${SONAR_BRANCH}" "${CI_COMMIT_SHORT_SHA}"
 
 build:
+  before_script:
+    - if [ $FORCE_REBUILDING_DEPENDENCIES == "true" ]; then rm -rf /opt/gitlab/Library/CarthageCache/*; else echo "Using local Carthage cache"; fi
+    - !reference ["default", "before_script"]
   dependencies: []
   stage: build
   script:
@@ -48,9 +52,14 @@ unit_tests:
 
 sonar:
   stage: sonar
+  secrets:
+    SONAR_TOKEN:
+      vault: Sonar/token@Build-Environment
+      file: false
   script:
     - cp -r /opt/gitlab/Library/Artifacts/${CI_PIPELINE_ID}/TestResults .
-    - bundle exec fastlane runSonar
+    - if [ $CI_PIPELINE_SOURCE == "merge_request_event" ]; then SONAR_BRANCH=$CI_MERGE_REQUEST_TARGET_BRANCH_NAME; else SONAR_BRANCH=$CI_COMMIT_REF_NAME; fi
+    - bundle exec fastlane runSonar token:$SONAR_TOKEN gitBranch:$SONAR_BRANCH commitHash:$CI_COMMIT_SHORT_SHA
   rules:
     - if: $DISABLE_QUALITY_GATES == "false"
       when: on_success
