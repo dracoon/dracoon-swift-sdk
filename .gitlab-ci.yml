@@ -1,3 +1,7 @@
+include:
+  # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.latest.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.latest.gitlab-ci.yml
+
 workflow:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -72,6 +76,17 @@ dependency_check:
   tags:
     - darwin/arm64
     - ios-build
+
+secret_detection:
+  stage: dependency_check
+  needs:
+    - job: build
+  rules:
+    - if: $ENABLE_SECRET_DETECTION != "true" ||
+        $SECRET_DETECTION_DISABLED == "true"
+      when: never
+    - when: on_success
+  allow_failure: false
 
 sonar:
   stage: sonar
