@@ -63,9 +63,6 @@ dependency_check:
       file: false
   needs:
     - job: build
-  artifacts:
-    paths:
-      - dependency-check-report.html
   script:
     - cp sdk-swift-sonar/cartfile_to_package.rb .
     - ruby cartfile_to_package.rb
