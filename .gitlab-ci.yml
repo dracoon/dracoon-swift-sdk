@@ -13,7 +13,7 @@ workflow:
 stages:
   - build
   - unit_tests
-  - dependency_check
+  - validate
   - sonar
 
 variables:
@@ -22,11 +22,13 @@ variables:
   GIT_STRATEGY: clone
   DISABLE_QUALITY_GATES: 'false'
   FORCE_REBUILDING_DEPENDENCIES: 'false'
+  # Gitlab Secret Detection
+  ENABLE_SECRET_DETECTION: "true"
 
 default:
   before_script:
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/cicd/pipeline/sdk-swift-sonar.git
-    - if [ $CI_PIPELINE_SOURCE == "merge_request_event" ]; then SONAR_BRANCH=$CI_MERGE_REQUEST_TARGET_BRANCH_NAME; else SONAR_BRANCH=$CI_COMMIT_REF_NAME; fi
+    - SONAR_BRANCH=$CI_COMMIT_REF_NAME
     - sh sdk-swift-sonar/setup.sh "${SONAR_BRANCH}" "${CI_COMMIT_SHORT_SHA}"
   id_tokens:
     ID_TOKEN:
@@ -60,7 +62,7 @@ unit_tests:
     - ios-build
     
 dependency_check:
-  stage: dependency_check
+  stage: validate
   secrets:
     NVD_API_KEY:
       vault: nist-nvd-ios/api-key@Build-Environment
@@ -78,7 +80,9 @@ dependency_check:
     - ios-build
 
 secret_detection:
-  stage: dependency_check
+  stage: validate
+  before_script:
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/cicd/pipeline/sdk-swift-sonar.git
   needs:
     - job: build
   rules:
@@ -86,7 +90,7 @@ secret_detection:
         $SECRET_DETECTION_DISABLED == "true"
       when: never
     - when: on_success
-  allow_failure: true
+  allow_failure: false
 
 sonar:
   stage: sonar
