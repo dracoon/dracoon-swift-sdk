@@ -22,6 +22,8 @@ variables:
   GIT_STRATEGY: clone
   DISABLE_QUALITY_GATES: 'false'
   FORCE_REBUILDING_DEPENDENCIES: 'false'
+  # Gitlab Secret Detection
+  ENABLE_SECRET_DETECTION: "true"
 
 default:
   before_script:
