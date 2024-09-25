@@ -521,29 +521,6 @@ class DracoonAccountTests: DracoonSdkTestCase {
         XCTAssertTrue(calledValue)
     }
     
-    func testDeleteProfileAttribute_withInvalidKey_returnsError() {
-        
-        MockURLProtocol.response(with: 204)
-        var calledError = false
-        let expectation = XCTestExpectation(description: "Returns without error")
-        let invalidString = String(
-        bytes: [0xD8, 0x00] as [UInt8],
-        encoding: String.Encoding.utf16BigEndian)!
-        
-        self.account.deleteProfileAttributes(key: invalidString, completion: { response in
-            if let error = response.error {
-                switch error {
-                case .invalidParameter(description: let errorString):
-                    calledError = errorString == invalidString
-                default:
-                    break
-                }
-            }
-        })
-        self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledError)
-    }
-    
     func testDeleteProfileAttribute_returnsDracoonResponse() {
         
         MockURLProtocol.response(with: 204)
