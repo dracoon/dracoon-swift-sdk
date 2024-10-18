@@ -10,7 +10,7 @@ import Alamofire
 import crypto_sdk
 import CommonCrypto
 
-public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
+public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate, @unchecked Sendable {
     
     let session: Alamofire.Session
     let serverUrl: URL
@@ -191,7 +191,7 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
         }
     }
     
-    private func encryptFileKey(cipher: EncryptionCipher, completion: @escaping (Dracoon.Result<EncryptedFileKey>) -> Void) {
+    private func encryptFileKey(cipher: EncryptionCipher, completion: @Sendable @escaping (Dracoon.Result<EncryptedFileKey>) -> Void) {
         guard let crypto = self.crypto else {
             return
         }
@@ -251,7 +251,7 @@ public class FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate {
         }
     }
     
-    func deleteUpload(uploadUrl: String, completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteUpload(uploadUrl: String, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         self.session.request(uploadUrl, method: .delete, parameters: Parameters())
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)

@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct Right: Codable {
+public struct Right: Codable, Sendable {
     
     public init(id: Int, name: String, description: String) {
         self._id = id

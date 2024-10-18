@@ -22,7 +22,7 @@ public enum OAuthTokenType: String, Codable {
 }
 
 
-public struct DracoonTokens {
+public struct DracoonTokens: Sendable {
     
     public init(refreshToken: String, accessToken: String? = nil, timestamp: Date = Date(), accessTokenValidity: TimeInterval = 3600/*one hour*/) {
         self.refreshToken = refreshToken

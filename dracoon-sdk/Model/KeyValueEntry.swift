@@ -9,7 +9,7 @@ import Foundation
 
 
 /// - Tag: KeyValueEntry
-public struct KeyValueEntry: Codable {
+public struct KeyValueEntry: Codable, Sendable {
     
     public init(key: String, value: String) {
         self.key = key

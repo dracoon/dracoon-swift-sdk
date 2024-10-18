@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum DracoonApiCode : Int64, CustomStringConvertible, Codable {
+public enum DracoonApiCode : Int64, CustomStringConvertible, Codable, Sendable {
     
     case UNKNOWN = 0
     

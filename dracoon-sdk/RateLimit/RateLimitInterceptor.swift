@@ -15,7 +15,7 @@ public protocol RateLimitInterceptor : RequestInterceptor {
     func restoreExpirationDate(_ date: Date)
 }
 
-class RateLimitManager: RateLimitInterceptor {
+class RateLimitManager: RateLimitInterceptor, @unchecked Sendable {
     
     weak var delegate: RateLimitAppliedDelegate?
     

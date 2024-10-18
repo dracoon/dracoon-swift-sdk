@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct DracoonSDKErrorModel: Codable {
+public struct DracoonSDKErrorModel: Codable, Sendable {
     
     /** HTTP status code */
     public var httpStatusCode: Int?

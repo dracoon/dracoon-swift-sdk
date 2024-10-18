@@ -9,10 +9,10 @@ import Foundation
 import crypto_sdk
 
 /// - Tag: CompleteUploadRequest
-public struct CompleteUploadRequest: Codable {
+public struct CompleteUploadRequest: Codable, Sendable {
 
     /// - Tag: CompleteUploadRequest.ResolutionStrategy
-    public enum ResolutionStrategy: String, Codable { 
+    public enum ResolutionStrategy: String, Codable, Sendable {
         case autorename = "autorename"
         case overwrite = "overwrite"
         case fail = "fail"

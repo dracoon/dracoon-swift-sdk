@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct UserFileKey: Codable {
+public struct UserFileKey: Codable, Sendable {
 
     /** Unique identifier for the user */
     public var userId: Int64

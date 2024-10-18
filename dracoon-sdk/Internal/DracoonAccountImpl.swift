@@ -9,9 +9,9 @@ import Foundation
 import Alamofire
 import crypto_sdk
 
-class DracoonAccountImpl: DracoonAccount {
+final class DracoonAccountImpl: DracoonAccount, Sendable {
     
-    let session: Alamofire.Session
+    let session: Session
     let serverUrl: URL
     let apiPath: String
     let oAuthTokenManager: OAuthInterceptor
@@ -29,7 +29,7 @@ class DracoonAccountImpl: DracoonAccount {
         self.crypto = crypto
     }
     
-    func getUserAccount(completion: @escaping (Dracoon.Result<UserAccount>) -> Void) {
+    func getUserAccount(completion: @Sendable @escaping (Dracoon.Result<UserAccount>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -37,7 +37,7 @@ class DracoonAccountImpl: DracoonAccount {
             .decode(UserAccount.self, decoder: self.decoder, completion: completion)
     }
     
-    func getCustomerAccount(completion: @escaping (Dracoon.Result<CustomerData>) -> Void) {
+    func getCustomerAccount(completion: @Sendable @escaping (Dracoon.Result<CustomerData>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/account/customer"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -49,7 +49,7 @@ class DracoonAccountImpl: DracoonAccount {
         return try crypto.generateUserKeyPair(password: password, version: version)
     }
     
-    func setUserKeyPair(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+    func setUserKeyPair(version: UserKeyPairVersion, password: String, completion: @Sendable @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         do {
             let userKeyPair = try crypto.generateUserKeyPair(password: password, version: version)
             let jsonBody = try encoder.encode(userKeyPair)
@@ -80,18 +80,18 @@ class DracoonAccountImpl: DracoonAccount {
         }
     }
     
-    func getUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+    func getUserKeyPair(version: UserKeyPairVersion, completion: @Sendable @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         let parameters: Parameters = [
             "version" : "\(version.rawValue)"
         ]
         self.sendGetUserKeyPairRequest(parameters: parameters, completion: completion)
     }
     
-    func getUserKeyPair(completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+    func getUserKeyPair(completion: @Sendable @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         self.sendGetUserKeyPairRequest(parameters: Parameters(), completion: completion)
     }
     
-    private func sendGetUserKeyPairRequest(parameters: [String : Any], completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+    private func sendGetUserKeyPairRequest(parameters: [String : Sendable], completion: @Sendable @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.userAccountKeyPair
         
         self.session.request(requestUrl, method: .get, parameters: parameters)
@@ -111,19 +111,19 @@ class DracoonAccountImpl: DracoonAccount {
             })
     }
     
-    func checkUserKeyPairPassword(version: UserKeyPairVersion, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+    func checkUserKeyPairPassword(version: UserKeyPairVersion, password: String, completion: @Sendable @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         self.getUserKeyPair(version: version, completion: { result in
             self.handleCheckUserKeyPairResponse(result: result, password: password, completion: completion)
         })
     }
     
-    func checkUserKeyPairPassword(password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+    func checkUserKeyPairPassword(password: String, completion: @Sendable @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         self.getUserKeyPair(completion: { result in
             self.handleCheckUserKeyPairResponse(result: result, password: password, completion: completion)
         })
     }
     
-    private func handleCheckUserKeyPairResponse(result: Dracoon.Result<UserKeyPairContainer>, password: String, completion: @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
+    private func handleCheckUserKeyPairResponse(result: Dracoon.Result<UserKeyPairContainer>, password: String, completion: @Sendable @escaping (Dracoon.Result<UserKeyPairContainer>) -> Void) {
         switch result {
         case .error(let error):
             completion(Dracoon.Result.error(error))
@@ -139,25 +139,25 @@ class DracoonAccountImpl: DracoonAccount {
         }
     }
     
-    func deleteUserKeyPair(version: UserKeyPairVersion, completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteUserKeyPair(version: UserKeyPairVersion, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let parameters: Parameters = [
             "version" : "\(version.rawValue)"
         ]
         self.sendDeleteUserKeyPairRequest(parameters: parameters, completion: completion)
     }
     
-    func deleteUserKeyPair(completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteUserKeyPair(completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         self.sendDeleteUserKeyPairRequest(parameters: Parameters(), completion: completion)
     }
     
-    private func sendDeleteUserKeyPairRequest(parameters: [String : Any], completion: @escaping (Dracoon.Response) -> Void) {
+    private func sendDeleteUserKeyPairRequest(parameters: [String : Sendable], completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.userAccountKeyPair
         self.session.request(requestUrl, method: .delete, parameters: parameters)
             .validate()
             .handleResponse(decoder: self.decoder, completion: completion)
     }
     
-    func getUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+    func getUserAvatar(completion: @Sendable @escaping (Dracoon.Result<Avatar>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.userAccountAvatar
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -165,7 +165,7 @@ class DracoonAccountImpl: DracoonAccount {
             .decode(Avatar.self, decoder: self.decoder, completion: completion)
     }
     
-    func downloadUserAvatar(targetUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+    func downloadUserAvatar(targetUrl: URL, completion: @Sendable @escaping (Dracoon.Result<Avatar>) -> Void) {
         self.getUserAvatar(completion: { result in
             switch result {
             case .error(let error):
@@ -191,7 +191,7 @@ class DracoonAccountImpl: DracoonAccount {
         })
     }
     
-    func updateUserAvatar(fileUrl: URL, completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+    func updateUserAvatar(fileUrl: URL, completion: @Sendable @escaping (Dracoon.Result<Avatar>) -> Void) {
         guard ValidatorUtils.pathExists(at: fileUrl.path) else {
             completion(Dracoon.Result.error(DracoonError.file_does_not_exist(at: fileUrl)))
             return
@@ -221,7 +221,7 @@ class DracoonAccountImpl: DracoonAccount {
             })
     }
     
-    func deleteUserAvatar(completion: @escaping (Dracoon.Result<Avatar>) -> Void) {
+    func deleteUserAvatar(completion: @Sendable @escaping (Dracoon.Result<Avatar>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.userAccountAvatar
         
         self.session.request(requestUrl, method: .delete, parameters: Parameters())
@@ -229,7 +229,7 @@ class DracoonAccountImpl: DracoonAccount {
             .decode(Avatar.self, decoder: self.decoder, completion: completion)
     }
     
-    func getProfileAttributes(completion: @escaping (Dracoon.Result<AttributesResponse>) -> Void) {
+    func getProfileAttributes(completion: @Sendable @escaping (Dracoon.Result<AttributesResponse>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/profileAttributes"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -237,7 +237,7 @@ class DracoonAccountImpl: DracoonAccount {
             .decode(AttributesResponse.self, decoder: self.decoder, completion: completion)
     }
     
-    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<ProfileAttributes>) -> Void) {
+    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @Sendable @escaping (Dracoon.Result<ProfileAttributes>) -> Void) {
         do {
             let jsonBody = try encoder.encode(request)
             
@@ -257,7 +257,7 @@ class DracoonAccountImpl: DracoonAccount {
         }
     }
     
-    func deleteProfileAttributes(key: String, completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteProfileAttributes(key: String, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         guard let pathKey = key.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
             completion(Dracoon.Response(error: DracoonError.invalidParameter(description: key)))
             return

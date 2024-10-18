@@ -9,7 +9,7 @@ import Foundation
 import crypto_sdk
 
 
-public struct UserFileKeySetRequest: Codable {
+public struct UserFileKeySetRequest: Codable, Sendable {
 
     /** File ID */
     public var fileId: Int64

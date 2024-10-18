@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct MissingKeysResponse: Codable {
+public struct MissingKeysResponse: Codable, Sendable {
 
     /** Range */
     public var range: ModelRange?

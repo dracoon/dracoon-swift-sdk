@@ -23,7 +23,7 @@ class DracoonUsersImpl: DracoonUsers {
         self.decoder = config.decoder
     }
     
-    func downloadUserAvatar(userId: Int64, avatarUuid: String, targetUrl: URL, completion: @escaping (Dracoon.Response) -> Void) {
+    func downloadUserAvatar(userId: Int64, avatarUuid: String, targetUrl: URL, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let downloadUrl = serverUrl.absoluteString + apiPath + "/downloads/avatar/\(String(userId))/\(avatarUuid)"
         var request = URLRequest(url: URL(string: downloadUrl)!)
         request.addValue("application/octet-stream", forHTTPHeaderField: "Accept")

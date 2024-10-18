@@ -9,6 +9,6 @@
 import Foundation
 
 /// - Tag: RateLimitAppliedDelegate
-public protocol RateLimitAppliedDelegate: AnyObject {
+public protocol RateLimitAppliedDelegate: AnyObject, Sendable {
     func rateLimitApplied(expirationDate: Date)
 }

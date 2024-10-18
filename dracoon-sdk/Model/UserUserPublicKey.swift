@@ -9,7 +9,7 @@ import Foundation
 import crypto_sdk
 
 
-public struct UserUserPublicKey: Codable {
+public struct UserUserPublicKey: Codable, Sendable {
 
     /** Unique identifier for the user */
     public var _id: Int64?

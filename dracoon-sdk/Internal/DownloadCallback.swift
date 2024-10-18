@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: DownloadCallback
-public class DownloadCallback {
+public class DownloadCallback: @unchecked Sendable {
     
     public var onError: ((Error) -> Void)?
     public var onCanceled: (() -> Void)?

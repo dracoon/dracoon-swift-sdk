@@ -17,7 +17,7 @@ public enum OAuthBadRequestErrorCode: String {
     case invalid_scope
 }
 
-public struct OAuthErrorModel: Codable {
+public struct OAuthErrorModel: Codable, Sendable {
     
     public var error: String
     public var error_description: String?

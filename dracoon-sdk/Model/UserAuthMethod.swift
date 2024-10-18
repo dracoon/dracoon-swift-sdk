@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct UserAuthMethod: Codable {
+public struct UserAuthMethod: Codable, Sendable {
 
     /** Authentication method ID */
     public var authId: String

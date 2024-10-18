@@ -9,9 +9,9 @@ import Foundation
 import Alamofire
 import crypto_sdk
 
-public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDelegate {
+public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDelegate, @unchecked Sendable {
     
-    var session: Alamofire.Session
+    let session: Session
     let serverUrl: URL
     let apiPath: String
     let oAuthTokenManager: OAuthInterceptor
@@ -141,7 +141,7 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
         callback?.onProgress?(progress)
     }
     
-    fileprivate func decryptDownloadedFile(fileKey: EncryptedFileKey, completion: ((DracoonError?) -> Void)? = nil) {
+    fileprivate func decryptDownloadedFile(fileKey: EncryptedFileKey, completion: (@Sendable (DracoonError?) -> Void)? = nil) {
         guard let encryptionPassword = self.getEncryptionPassword() else {
             self.callback?.onError?(DracoonError.no_encryption_password)
             return
@@ -242,7 +242,8 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
         let nsError = error as NSError
         if nsError.code == NSURLErrorCancelled {
             let reason = (nsError.userInfo[NSURLErrorBackgroundTaskCancelledReasonKey] as? NSNumber) ?? -1
-            let dracoonError: DracoonError = DracoonError.background_download_cancelled(reason: reason.intValue, userInfo: nsError.userInfo)
+            let userInfo = nsError.userInfo.mapValues({$0 as? String ?? nil})
+            let dracoonError: DracoonError = DracoonError.background_download_cancelled(reason: reason.intValue, userInfo: userInfo)
             self.callback?.onError?(dracoonError)
             return
         }

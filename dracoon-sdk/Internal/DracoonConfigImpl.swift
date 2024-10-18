@@ -22,7 +22,7 @@ class DracoonConfigImpl: DracoonConfig {
         self.decoder = config.decoder
     }
     
-    func getSystemDefaults(completion: @escaping DataRequest.DecodeCompletion<SystemDefaults>) {
+    func getSystemDefaults(completion: @Sendable @escaping (Dracoon.Result<SystemDefaults>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/defaults"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -30,7 +30,7 @@ class DracoonConfigImpl: DracoonConfig {
             .decode(SystemDefaults.self, decoder: self.decoder, completion: completion)
     }
     
-    func getGeneralSettings(completion: @escaping DataRequest.DecodeCompletion<GeneralSettings>) {
+    func getGeneralSettings(completion: @Sendable @escaping (Dracoon.Result<GeneralSettings>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/general"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -38,7 +38,7 @@ class DracoonConfigImpl: DracoonConfig {
             .decode(GeneralSettings.self, decoder: self.decoder, completion: completion)
     }
     
-    func getInfrastructureProperties(completion: @escaping DataRequest.DecodeCompletion<InfrastructureProperties>) {
+    func getInfrastructureProperties(completion: @Sendable @escaping (Dracoon.Result<InfrastructureProperties>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/infrastructure"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -46,7 +46,7 @@ class DracoonConfigImpl: DracoonConfig {
             .decode(InfrastructureProperties.self, decoder: self.decoder, completion: completion)
     }
     
-    func getClassificationPolicies(completion: @escaping DataRequest.DecodeCompletion<ClassificationPoliciesConfig>) {
+    func getClassificationPolicies(completion: @Sendable @escaping (Dracoon.Result<ClassificationPoliciesConfig>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/policies/classifications"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -54,7 +54,7 @@ class DracoonConfigImpl: DracoonConfig {
         .decode(ClassificationPoliciesConfig.self, decoder: self.decoder, completion: completion)
     }
     
-    func getPasswordPolicies(completion: @escaping DataRequest.DecodeCompletion<PasswordPoliciesConfig>) {
+    func getPasswordPolicies(completion: @Sendable @escaping (Dracoon.Result<PasswordPoliciesConfig>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/policies/passwords"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -62,7 +62,7 @@ class DracoonConfigImpl: DracoonConfig {
         .decode(PasswordPoliciesConfig.self, decoder: self.decoder, completion: completion)
     }
     
-    func getCryptoAlgorithms(completion: @escaping DataRequest.DecodeCompletion<AlgorithmVersionInfoList>) {
+    func getCryptoAlgorithms(completion: @Sendable @escaping (Dracoon.Result<AlgorithmVersionInfoList>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/config/info/policies/algorithms"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())

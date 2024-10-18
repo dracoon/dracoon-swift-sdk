@@ -9,9 +9,9 @@
 import Foundation
 
 /// - Tag: UserAuthData
-public struct UserAuthData: Codable {
+public struct UserAuthData: Codable, Sendable {
     
-    public enum UserAuthenticationMethod: String, Codable {
+    public enum UserAuthenticationMethod: String, Codable, Sendable {
         case basic
         case active_directory
         case radius

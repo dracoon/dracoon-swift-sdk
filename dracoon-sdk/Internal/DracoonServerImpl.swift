@@ -22,7 +22,7 @@ class DracoonServerImpl: DracoonServer {
         self.decoder = config.decoder
     }
     
-    func getServerVersion(completion: @escaping DataRequest.DecodeCompletion<SoftwareVersionData>) {
+    func getServerVersion(completion: @Sendable @escaping (Dracoon.Result<SoftwareVersionData>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/public/software/version"
         
         session.request(requestUrl, method: .get)
@@ -31,7 +31,7 @@ class DracoonServerImpl: DracoonServer {
         
     }
     
-    func getServerTime(completion: @escaping DataRequest.DecodeCompletion<SdsServerTime>) {
+    func getServerTime(completion: @Sendable @escaping (Dracoon.Result<SdsServerTime>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/public/time"
         
         session.request(requestUrl, method: .get)

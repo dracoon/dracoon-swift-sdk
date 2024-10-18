@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: UploadCallback
-public class UploadCallback {
+public class UploadCallback: @unchecked Sendable {
     
     public var onError: ((Error) -> Void)?
     public var onCanceled: (() -> Void)?

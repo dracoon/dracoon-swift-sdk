@@ -19,7 +19,7 @@ protocol OAuthInterceptor: RequestInterceptor {
     func getAccessToken() -> String?
     func getRefreshToken() -> String?
     func startOAuthSession(_ session: Session)
-    func revokeTokens(completion: ((DracoonError?) -> Void)?)
+    func revokeTokens(completion: (@Sendable (DracoonError?) -> Void)?)
 }
 
 extension OAuthInterceptor {
@@ -27,9 +27,9 @@ extension OAuthInterceptor {
     func revokeTokens(completion: ((DracoonError?) -> Void)?) {}
 }
 
-class OAuthTokenManager: OAuthInterceptor {
+class OAuthTokenManager: OAuthInterceptor, @unchecked Sendable {
     
-    var oAuthClient: OAuthClient
+    let oAuthClient: OAuthClient
     var mode: DracoonAuthMode
     var session: Alamofire.Session?
     
@@ -149,7 +149,7 @@ class OAuthTokenManager: OAuthInterceptor {
         }
     }
     
-    public func revokeTokens(completion: ((DracoonError?) -> Void)?) {
+    public func revokeTokens(completion: (@Sendable (DracoonError?) -> Void)?) {
         guard let session = self.session else {
             let error = DracoonError.generic(error: nil)
             self.delegate?.tokenRevocationResult(error: error)
@@ -190,7 +190,7 @@ class OAuthTokenManager: OAuthInterceptor {
         })
     }
     
-    private func getToken(session: Session, completion: @escaping (RetryResult) -> Void) {
+    private func getToken(session: Session, completion: @Sendable @escaping (RetryResult) -> Void) {
         guard !isRefreshing else { return }
         isRefreshing = true
         

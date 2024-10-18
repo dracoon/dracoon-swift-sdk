@@ -26,8 +26,8 @@ public struct Dracoon {
 public extension DataRequest {
     
     typealias Result = Dracoon.Result
-    
-    typealias DecodeCompletion<T> = (_ result: Result<T>) -> Void
+    typealias DecodeCompletion<T> = @Sendable (_ result: Result<T>) -> Void
+    typealias DracoonResponseCompletion = @Sendable (Dracoon.Response) -> Void
     
     func decode<D: Decodable>(_ type: D.Type, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType = .other, completion: @escaping DecodeCompletion<D>) {
         self.responseData(completionHandler: { dataResponse in
@@ -47,7 +47,7 @@ public extension DataRequest {
         })
     }
     
-    func handleResponse(decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType = .other, completion: @escaping (Dracoon.Response) -> Void) {
+    func handleResponse(decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType = .other, completion: @escaping DracoonResponseCompletion) {
         self.response(completionHandler: { response in
             if let error = response.error {
                 do {

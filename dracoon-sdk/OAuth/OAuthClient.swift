@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 /// - Tag: OAuthClient
-public protocol OAuthClient {
+public protocol OAuthClient: Sendable {
     
     var serverUrl: URL { get }
     
@@ -17,15 +17,15 @@ public protocol OAuthClient {
     
     func refreshAccessToken(session: Session, clientId: String, clientSecret: String, refreshToken: String, delegate: OAuthTokenChangedDelegate?, completion: @escaping DataRequest.DecodeCompletion<OAuthTokens>)
     
-    func revokeOAuthToken(session: Session, clientId: String, clientSecret: String, tokenType: OAuthTokenType, token: String, completion: @escaping (Dracoon.Response) -> Void)
+    func revokeOAuthToken(session: Session, clientId: String, clientSecret: String, tokenType: OAuthTokenType, token: String, completion: @Sendable @escaping (Dracoon.Response) -> Void)
 }
 
 public extension OAuthClient {
     // make optional to implement
-    func revokeOAuthToken(session: Session, clientId: String, clientSecret: String, tokenType: OAuthTokenType, token: String, completion: @escaping (Dracoon.Response) -> Void) {}
+    func revokeOAuthToken(session: Session, clientId: String, clientSecret: String, tokenType: OAuthTokenType, token: String, completion: @Sendable @escaping (Dracoon.Response) -> Void) {}
 }
 
-class OAuthClientImpl: OAuthClient {
+final class OAuthClientImpl: OAuthClient {
     
     let serverUrl: URL
     
@@ -70,7 +70,7 @@ class OAuthClientImpl: OAuthClient {
             .decode(OAuthTokens.self, decoder: decoder, requestType: .oauth, completion: completion)
     }
     
-    func revokeOAuthToken(session: Session, clientId: String, clientSecret: String, tokenType: OAuthTokenType, token: String, completion: @escaping (Dracoon.Response) -> Void) {
+    func revokeOAuthToken(session: Session, clientId: String, clientSecret: String, tokenType: OAuthTokenType, token: String, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         
         let requestUrl = serverUrl.absoluteString + OAuthConstants.OAUTH_PATH + OAuthConstants.OAUTH_REVOKE_PATH
         

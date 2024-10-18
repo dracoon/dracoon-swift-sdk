@@ -25,7 +25,7 @@ public class DracoonClientImpl: DracoonClient {
     ///   - rateLimitCallback: The [RateLimitAppliedDelegate](x-source-tag://RateLimitAppliedDelegate) informs about rate limit changes.
     public init(serverUrl: URL,
                 authMode: DracoonAuthMode,
-                getEncryptionPassword: @escaping () -> String?,
+                getEncryptionPassword: @Sendable @escaping () -> String?,
                 sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
                 oauthClient: OAuthClient? = nil,
                 oauthCallback: OAuthTokenChangedDelegate? = nil,

@@ -9,9 +9,9 @@
 import Foundation
 import Alamofire
 
-public class DracoonErrorParser {
+final public class DracoonErrorParser: Sendable {
     
-    public enum RequestType {
+    public enum RequestType: Sendable {
         case other
         case createRoom
         case createFolder

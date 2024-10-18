@@ -9,7 +9,7 @@
 import Foundation
 import CommonCrypto
 
-protocol FileHelper {
+protocol FileHelper: Sendable {
     func calculateFileSize(filePath: URL) -> Int64?
     func readData(_ fileUrl: URL) throws -> Data?
     func readData(_ fileUrl: URL?, range: NSRange) throws -> Data?
@@ -19,7 +19,7 @@ protocol FileHelper {
 
 class FileUtils {
     
-    static var fileHelper: FileHelper = DracoonFileHelper()
+    nonisolated(unsafe) static var fileHelper: FileHelper = DracoonFileHelper()
     
     static func calculateFileSize(filePath: URL) -> Int64? {
         return self.fileHelper.calculateFileSize(filePath: filePath)
@@ -42,7 +42,7 @@ class FileUtils {
     }
 }
 
-class DracoonFileHelper: FileHelper {
+final class DracoonFileHelper: FileHelper {
    
     func calculateFileSize(filePath: URL) -> Int64? {
         do {

@@ -9,9 +9,9 @@ import Foundation
 import Alamofire
 import crypto_sdk
 
-class DracoonSharesImpl: DracoonShares {
+class DracoonSharesImpl: DracoonShares, @unchecked Sendable {
     
-    let session: Alamofire.Session
+    let session: Session
     let serverUrl: URL
     let apiPath: String
     let oAuthTokenManager: OAuthInterceptor
@@ -22,7 +22,7 @@ class DracoonSharesImpl: DracoonShares {
     let server: DracoonServer
     let getEncryptionPassword: () -> String?
     
-    init(requestConfig: DracoonRequestConfig, nodes: DracoonNodes, account: DracoonAccount, server: DracoonServer, getEncryptionPassword: @escaping () -> String?) {
+    init(requestConfig: DracoonRequestConfig, nodes: DracoonNodes, account: DracoonAccount, server: DracoonServer, getEncryptionPassword: @Sendable @escaping () -> String?) {
         self.session = requestConfig.session
         self.serverUrl = requestConfig.serverUrl
         self.apiPath = requestConfig.apiPath
@@ -35,7 +35,7 @@ class DracoonSharesImpl: DracoonShares {
         self.getEncryptionPassword = getEncryptionPassword
     }
     
-    func createDownloadShare(nodeId: Int64, password: String?, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+    func createDownloadShare(nodeId: Int64, password: String?, completion: @Sendable @escaping (Dracoon.Result<DownloadShare>) -> Void) {
         self.nodes.isNodeEncrypted(nodeId: nodeId, completion: { result in
             switch result {
             case .error(let error):
@@ -59,7 +59,7 @@ class DracoonSharesImpl: DracoonShares {
         })
     }
     
-    private func createEncryptedShare(nodeId: Int64, encryptionPassword: String, shareEncryptionPassword: String, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+    private func createEncryptedShare(nodeId: Int64, encryptionPassword: String, shareEncryptionPassword: String, completion: @Sendable @escaping (Dracoon.Result<DownloadShare>) -> Void) {
         self.server.getServerVersion(completion: { result in
             switch result {
             case .error(let error):
@@ -78,20 +78,20 @@ class DracoonSharesImpl: DracoonShares {
         })
     }
     
-    private func handleFileKeyResponse(nodeId: Int64, encryptedFileKey: EncryptedFileKey, encryptionPassword: String, shareEncryptionPassword: String, apiVersion: String, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+    private func handleFileKeyResponse(nodeId: Int64, encryptedFileKey: EncryptedFileKey, encryptionPassword: String, shareEncryptionPassword: String, apiVersion: String, completion: @Sendable @escaping (Dracoon.Result<DownloadShare>) -> Void) {
         let userKeyPairVersion = encryptedFileKey.getUserKeyPairVersion()
         if ApiVersionCheck.isRequiredServerVersion(requiredVersion: ApiVersionCheck.CryptoUpdateVersion, currentApiVersion: apiVersion) {
-            self.account.checkUserKeyPairPassword(version: userKeyPairVersion, password: encryptionPassword, completion: { result in
-                self.handleUserKeyPairResponse(result: result, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
+            self.account.checkUserKeyPairPassword(version: userKeyPairVersion, password: encryptionPassword, completion: { [weak self] result in
+                self?.handleUserKeyPairResponse(result: result, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
             })
         } else {
-            self.account.checkUserKeyPairPassword(password: encryptionPassword, completion: { result in
-                self.handleUserKeyPairResponse(result: result, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
+            self.account.checkUserKeyPairPassword(password: encryptionPassword, completion: { [weak self] result in
+                self?.handleUserKeyPairResponse(result: result, nodeId: nodeId, fileKey: encryptedFileKey, encryptionPassword: encryptionPassword, shareEncryptionPassword: shareEncryptionPassword, completion: completion)
             })
         }
     }
     
-    private func handleUserKeyPairResponse(result: Dracoon.Result<UserKeyPairContainer>, nodeId: Int64, fileKey: EncryptedFileKey, encryptionPassword: String, shareEncryptionPassword: String, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+    private func handleUserKeyPairResponse(result: Dracoon.Result<UserKeyPairContainer>, nodeId: Int64, fileKey: EncryptedFileKey, encryptionPassword: String, shareEncryptionPassword: String, completion: @Sendable @escaping (Dracoon.Result<DownloadShare>) -> Void) {
         switch result {
         case .error(let error):
             completion(Dracoon.Result.error(error))
@@ -118,7 +118,7 @@ class DracoonSharesImpl: DracoonShares {
         }
     }
     
-    func requestCreateDownloadShare(request: CreateDownloadShareRequest, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+    func requestCreateDownloadShare(request: CreateDownloadShareRequest, completion: @Sendable @escaping (Dracoon.Result<DownloadShare>) -> Void) {
         do {
             let jsonBody = try self.encoder.encode(request)
             
@@ -138,7 +138,7 @@ class DracoonSharesImpl: DracoonShares {
         }
     }
     
-    func getDownloadShares(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<DownloadShareList>) {
+    func getDownloadShares(nodeId: Int64, completion: @Sendable @escaping (Dracoon.Result<DownloadShareList>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/downloads"
         
         let parameters: Parameters = [
@@ -151,7 +151,7 @@ class DracoonSharesImpl: DracoonShares {
         
     }
     
-    func getDownloadShares(offset: Int?, limit: Int?, filter: String?, sorting: String?, completion: @escaping DataRequest.DecodeCompletion<DownloadShareList>) {
+    func getDownloadShares(offset: Int?, limit: Int?, filter: String?, sorting: String?, completion: @Sendable @escaping (Dracoon.Result<DownloadShareList>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/downloads"
         
         var parameters = Parameters()
@@ -175,7 +175,7 @@ class DracoonSharesImpl: DracoonShares {
         
     }
     
-    func getDownloadShareQrCode(shareId: Int64, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+    func getDownloadShareQrCode(shareId: Int64, completion: @Sendable @escaping (Dracoon.Result<DownloadShare>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/downloads/\(shareId)/qr"
         
         self.session.request(requestUrl, method: .get)
@@ -183,7 +183,7 @@ class DracoonSharesImpl: DracoonShares {
             .decode(DownloadShare.self, decoder: self.decoder, completion: completion)
     }
     
-    func updateDownloadShare(shareId: Int64, request: UpdateDownloadShareRequest, completion: @escaping (Dracoon.Result<DownloadShare>) -> Void) {
+    func updateDownloadShare(shareId: Int64, request: UpdateDownloadShareRequest, completion: @Sendable @escaping (Dracoon.Result<DownloadShare>) -> Void) {
         do {
             let jsonBody = try encoder.encode(request)
             
@@ -202,7 +202,7 @@ class DracoonSharesImpl: DracoonShares {
         }
     }
     
-    func deleteDownloadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteDownloadShare(shareId: Int64, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/downloads/\(shareId)"
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
@@ -213,7 +213,7 @@ class DracoonSharesImpl: DracoonShares {
             .handleResponse(decoder: self.decoder, completion: completion)
     }
     
-    func deleteDownloadShares(shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteDownloadShares(shareIds: [Int64], completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let requestModel = DeleteDownloadSharesRequest(shareIds: shareIds)
         do {
             let jsonBody = try encoder.encode(requestModel)
@@ -232,7 +232,7 @@ class DracoonSharesImpl: DracoonShares {
         }
     }
     
-    func createUploadShare(nodeId: Int64, name: String?, password: String?, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
+    func createUploadShare(nodeId: Int64, name: String?, password: String?, completion: @Sendable @escaping (Dracoon.Result<UploadShare>) -> Void) {
         let request = CreateUploadShareRequest(targetId: nodeId) {
             $0.name = name
             $0.password = password
@@ -240,7 +240,7 @@ class DracoonSharesImpl: DracoonShares {
         self.requestCreateUploadShare(request: request, completion: completion)
     }
     
-    func requestCreateUploadShare(request: CreateUploadShareRequest, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
+    func requestCreateUploadShare(request: CreateUploadShareRequest, completion: @Sendable @escaping (Dracoon.Result<UploadShare>) -> Void) {
         do {
             let jsonBody = try encoder.encode(request)
             
@@ -260,7 +260,7 @@ class DracoonSharesImpl: DracoonShares {
         }
     }
     
-    func getUploadShares(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<UploadShareList>) {
+    func getUploadShares(nodeId: Int64, completion: @Sendable @escaping (Dracoon.Result<UploadShareList>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/uploads"
         
         let parameters: Parameters = [
@@ -272,7 +272,7 @@ class DracoonSharesImpl: DracoonShares {
             .decode(UploadShareList.self, decoder: self.decoder, completion: completion)
     }
     
-    func getUploadShares(offset: Int?, limit: Int?, filter: String?, sorting: String?, completion: @escaping DataRequest.DecodeCompletion<UploadShareList>) {
+    func getUploadShares(offset: Int?, limit: Int?, filter: String?, sorting: String?, completion: @Sendable @escaping (Dracoon.Result<UploadShareList>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/uploads"
         
         var parameters = Parameters()
@@ -296,7 +296,7 @@ class DracoonSharesImpl: DracoonShares {
         
     }
     
-    func getUploadShareQrCode(shareId: Int64, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
+    func getUploadShareQrCode(shareId: Int64, completion: @Sendable @escaping (Dracoon.Result<UploadShare>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/uploads/\(shareId)/qr"
         
         self.session.request(requestUrl, method: .get)
@@ -304,7 +304,7 @@ class DracoonSharesImpl: DracoonShares {
             .decode(UploadShare.self, decoder: self.decoder, completion: completion)
     }
     
-    func updateUploadShare(shareId: Int64, request: UpdateUploadShareRequest, completion: @escaping (Dracoon.Result<UploadShare>) -> Void) {
+    func updateUploadShare(shareId: Int64, request: UpdateUploadShareRequest, completion: @Sendable @escaping (Dracoon.Result<UploadShare>) -> Void) {
         do {
             let jsonBody = try encoder.encode(request)
             
@@ -323,7 +323,7 @@ class DracoonSharesImpl: DracoonShares {
         }
     }
     
-    func deleteUploadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteUploadShare(shareId: Int64, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/shares/uploads/\(shareId)"
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
@@ -334,7 +334,7 @@ class DracoonSharesImpl: DracoonShares {
             .handleResponse(decoder: self.decoder, completion: completion)
     }
     
-    func deleteUploadShares(shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteUploadShares(shareIds: [Int64], completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let requestModel = DeleteUploadSharesRequest(shareIds: shareIds)
         do {
             let jsonBody = try encoder.encode(requestModel)

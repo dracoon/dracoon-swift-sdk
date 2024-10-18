@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct UserIdFileIdItem: Codable {
+public struct UserIdFileIdItem: Codable, Sendable {
 
     /** Unique identifier for the user */
     public var userId: Int64?

@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct ModelRange: Codable {
+public struct ModelRange: Codable, Sendable {
 
     /** Range information */
     public var offset: Int64
