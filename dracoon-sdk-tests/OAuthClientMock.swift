@@ -10,7 +10,7 @@ import Foundation
 @testable import dracoon_sdk
 import Alamofire
 
-class OAuthClientMock: OAuthClient {
+class OAuthClientMock: OAuthClient, @unchecked Sendable {
     
     var serverUrl: URL
     

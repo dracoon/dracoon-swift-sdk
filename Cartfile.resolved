@@ -1,2 +1,2 @@
-git "/Users/mathias.schreiner/swiftProjects/sdk-crypto-official/sdk-crypto-swift" "95c2d751ace88c61b43ba06c4becaaf9afdd9565"
-github "Alamofire/Alamofire" "5.10.0"
+github "Alamofire/Alamofire" "5.10.1"
+github "dracoon/dracoon-swift-crypto-sdk" "95c2d751ace88c61b43ba06c4becaaf9afdd9565"

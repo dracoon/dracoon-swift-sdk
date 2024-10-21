@@ -10,7 +10,7 @@ import Foundation
 import dracoon_sdk
 import Alamofire
 
-final class MockURLProtocol: URLProtocol {
+final class MockURLProtocol: URLProtocol, @unchecked Sendable {
     
     private(set) var activeTask: URLSessionDataTask?
     
@@ -55,7 +55,7 @@ extension MockURLProtocol: URLSessionDataDelegate {
             let urlResponse = HTTPURLResponse(url: URL(string: "https://dracoon.team")!, statusCode: MockURLProtocol.statusCodes.poll()!, httpVersion: nil, headerFields: nil)!
             client?.urlProtocol(self, didReceive: urlResponse, cacheStoragePolicy: .notAllowed)
             client?.urlProtocol(self, didLoad: data)
-        } else if let downloadResponse = MockURLProtocol.responseData.peek() as? DownloadResponse<Any?, AFError> {
+        } else if let downloadResponse = MockURLProtocol.responseData.peek() as? DownloadResponse<Sendable?, AFError> {
             switch downloadResponse.result {
             case .success(_):
                 client?.urlProtocol(self, didReceive: downloadResponse.response!, cacheStoragePolicy: .notAllowed)
@@ -63,7 +63,7 @@ extension MockURLProtocol: URLSessionDataDelegate {
                 client?.urlProtocol(self, didFailWithError: error)
             }
             _ = MockURLProtocol.responseData.poll()
-        } else if let dataResponse = MockURLProtocol.responseData.peek() as? DataResponse<Any?, AFError>, let httpResponse = dataResponse.response {
+        } else if let dataResponse = MockURLProtocol.responseData.peek() as? DataResponse<Sendable?, AFError>, let httpResponse = dataResponse.response {
             switch dataResponse.result {
             case .success(_):
                 client?.urlProtocol(self, didReceive: httpResponse, cacheStoragePolicy: .notAllowed)
@@ -81,9 +81,9 @@ extension MockURLProtocol: URLSessionDataDelegate {
 
 extension MockURLProtocol {
     
-    private static var responseData = TestQueue<Any>()
-    private static var responseError: Error?
-    private static var statusCodes: TestQueue<Int>!
+    nonisolated(unsafe) private static var responseData = TestQueue<Any>()
+    nonisolated(unsafe) private static var responseError: Error?
+    nonisolated(unsafe) private static var statusCodes: TestQueue<Int>!
     
     static func responseWithError(_ error: Error, statusCode: Int) {
         self.statusCodes.add(statusCode)

@@ -19,6 +19,7 @@
 		DB09660B2A2F4398003A00BB /* RoomPolicies.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB09660A2A2F4398003A00BB /* RoomPolicies.swift */; };
 		DB10205828324496004D8525 /* DracoonOAuthClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB10205728324495004D8525 /* DracoonOAuthClientTests.swift */; };
 		DB3FEBA829CC391000211655 /* ApiRequestConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FEBA729CC391000211655 /* ApiRequestConstants.swift */; };
+		DB516EE32CC63AA6002F5035 /* TestState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB516EE22CC63A9F002F5035 /* TestState.swift */; };
 		DB5BDD0D282E53850042E726 /* OAuthErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5BDD0C282E53850042E726 /* OAuthErrorModel.swift */; };
 		DB7442AE27D1FC2000CD0064 /* DracoonSubscriptionsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7442AD27D1FC2000CD0064 /* DracoonSubscriptionsImpl.swift */; };
 		DB7442B027D1FCBA00CD0064 /* SubscribedDownloadShareList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7442AF27D1FCBA00CD0064 /* SubscribedDownloadShareList.swift */; };
@@ -253,6 +254,7 @@
 		DB09660A2A2F4398003A00BB /* RoomPolicies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomPolicies.swift; sourceTree = "<group>"; };
 		DB10205728324495004D8525 /* DracoonOAuthClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonOAuthClientTests.swift; sourceTree = "<group>"; };
 		DB3FEBA729CC391000211655 /* ApiRequestConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiRequestConstants.swift; sourceTree = "<group>"; };
+		DB516EE22CC63A9F002F5035 /* TestState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestState.swift; sourceTree = "<group>"; };
 		DB5BDD0C282E53850042E726 /* OAuthErrorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthErrorModel.swift; sourceTree = "<group>"; };
 		DB7442AD27D1FC2000CD0064 /* DracoonSubscriptionsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSubscriptionsImpl.swift; sourceTree = "<group>"; };
 		DB7442AF27D1FCBA00CD0064 /* SubscribedDownloadShareList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribedDownloadShareList.swift; sourceTree = "<group>"; };
@@ -787,6 +789,7 @@
 		E0AD911922EA01EA00741634 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				DB516EE22CC63A9F002F5035 /* TestState.swift */,
 				E0AD90F922E85E9800741634 /* MockURLProtocol.swift */,
 				E0F5DF4122EF380D00844012 /* TestQueue.swift */,
 				E0AD90FD22E877C600741634 /* OAuthTokenManagerMock.swift */,
@@ -1104,6 +1107,7 @@
 				E0A9E11922EB28E4000C63DD /* DracoonErrorParserTest.swift in Sources */,
 				E07CF14424B4B7210046A3E0 /* DracoonServerMock.swift in Sources */,
 				E0AD911F22EA049300741634 /* DracoonAccountMock.swift in Sources */,
+				DB516EE32CC63AA6002F5035 /* TestState.swift in Sources */,
 				DBDE45F327E3285D00A6243B /* DracoonSubscriptionTests.swift in Sources */,
 				E033136022F43EB100A09E7F /* DracoonValidatorTests.swift in Sources */,
 				E0945A2E22F067C300C803F9 /* DracoonSharesTests.swift in Sources */,
@@ -1363,7 +1367,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1387,7 +1391,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

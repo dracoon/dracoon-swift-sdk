@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 @testable import dracoon_sdk
 
-class OAuthTokenManagerMock: OAuthInterceptor {
+class OAuthTokenManagerMock: OAuthInterceptor, @unchecked Sendable {
     
     var oAuthClient: OAuthClient
     var mode: DracoonAuthMode
