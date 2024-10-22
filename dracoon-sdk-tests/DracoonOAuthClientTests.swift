@@ -35,11 +35,10 @@ class DracoonOAuthClientTests: XCTestCase {
         
         let tokens = OAuthTokens(access_token: "access", token_type: "type", refresh_token: "refresh", expires_in: 3600, scope: "")
         MockURLProtocol.responseWithModel(OAuthTokens.self, model: tokens, statusCode: 200)
-        let testState = TestState()
-        testState.onErrorCalled = true
         
         let expectation = XCTestExpectation(description: "Returns OAuthTokens")
-        var gotNonErrorResponse = false
+        let testState = TestState()
+        testState.onErrorCalled = true
         
         self.oAuthClient.getAccessToken(session: self.testSession, clientId: "validId", clientSecret: "validSecret", code: "validCode", completion: { result in
             switch result {
@@ -61,11 +60,10 @@ class DracoonOAuthClientTests: XCTestCase {
         
         let tokens = OAuthTokens(access_token: "access", token_type: "type", refresh_token: "refresh", expires_in: 3600, scope: "")
         MockURLProtocol.responseWithModel(OAuthTokens.self, model: tokens, statusCode: 200)
-        let testState = TestState()
-        testState.onErrorCalled = true
         
         let expectation = XCTestExpectation(description: "Returns OAuthTokens")
-        var gotNonErrorResponse = false
+        let testState = TestState()
+        testState.onErrorCalled = true
         
         self.oAuthClient.refreshAccessToken(session: self.testSession, clientId: "validId", clientSecret: "validSecret", refreshToken: "validRefreshToken", delegate: nil, completion: { result in
             switch result {
