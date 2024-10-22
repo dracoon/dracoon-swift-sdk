@@ -9,13 +9,13 @@
 import Foundation
 import crypto_sdk
 
-public enum AlgorithmStatus: String, Codable {
+public enum AlgorithmStatus: String, Codable, Sendable {
     case REQUIRED
     case RECOMMENDED
     case DISCOURAGED
 }
 
-public struct FileKeyAlgorithm: Codable {
+public struct FileKeyAlgorithm: Codable, Sendable {
     
     public var version: EncryptedFileKeyVersion
     public var description: String

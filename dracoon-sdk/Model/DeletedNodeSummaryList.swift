@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct DeletedNodeSummaryList: Codable {
+public struct DeletedNodeSummaryList: Codable, Sendable {
 
     /** Range */
     public var range: ModelRange

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct S3FileUploadStatus: Codable {
+public struct S3FileUploadStatus: Codable, Sendable {
     
     public enum S3UploadStatus: String, Codable {
         case transfer = "transfer"

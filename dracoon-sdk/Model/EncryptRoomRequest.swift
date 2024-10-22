@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct EncryptRoomRequest: Codable {
+public struct EncryptRoomRequest: Codable, Sendable {
 
     /** Encryption state */
     public var isEncrypted: Bool

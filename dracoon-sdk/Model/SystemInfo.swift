@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct SystemInfo: Codable {
+public struct SystemInfo: Codable, Sendable {
 
     /** System default language cf. [RFC 5646](https://tools.ietf.org/html/rfc5646) */
     public var languageDefault: String

@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct FileKeyContainer: Codable {
+public struct FileKeyContainer: Codable, Sendable {
 
     /** Encryption key */
     public var key: String

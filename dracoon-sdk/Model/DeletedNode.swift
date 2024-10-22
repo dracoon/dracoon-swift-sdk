@@ -9,13 +9,13 @@ import Foundation
 
 
 
-public struct DeletedNode: Codable {
+public struct DeletedNode: Codable, Sendable {
 
-    public enum ModelType: String, Codable { 
+    public enum ModelType: String, Codable, Sendable {
         case room = "room"
         case folder = "folder"
     }
-    public enum Classification: Int, Codable { 
+    public enum Classification: Int, Codable, Sendable { 
         case _1 = 1
         case _2 = 2
         case _3 = 3

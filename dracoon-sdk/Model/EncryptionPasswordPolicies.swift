@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct EncryptionPasswordPolicies: Codable {
+public struct EncryptionPasswordPolicies: Codable, Sendable {
     
     public init(characterRules: CharacterRules?, minLength: Int?,
                 rejectUserInfo: Bool?, rejectKeyboardPatterns: Bool?,

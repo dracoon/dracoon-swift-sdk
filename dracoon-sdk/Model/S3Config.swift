@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct S3Config: Codable {
+public struct S3Config: Codable, Sendable {
 
     /** ID */
     public var _id: Int

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct UpdateSubscriptionsBulkRequest: Codable {
+public struct UpdateSubscriptionsBulkRequest: Codable, Sendable {
     
     /** Creates or deletes a subscription on each item in an array of objects. */
     public var isSubscribed: Bool

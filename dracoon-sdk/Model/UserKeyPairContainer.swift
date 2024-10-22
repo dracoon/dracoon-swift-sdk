@@ -9,7 +9,7 @@ import Foundation
 import crypto_sdk
 
 /// - Tag: UserKeyPairContainer
-public struct UserKeyPairContainer: Codable {
+public struct UserKeyPairContainer: Codable, Sendable {
 
     /** Private key container (private key and version) */
     public var privateKeyContainer: PrivateKeyContainer

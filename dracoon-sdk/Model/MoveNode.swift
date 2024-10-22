@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct MoveNode: Codable {
+public struct MoveNode: Codable, Sendable {
 
     /** Source node ID */
     public var _id: Int64

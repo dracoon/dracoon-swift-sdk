@@ -9,9 +9,9 @@ import Foundation
 
 
 
-public struct NewCustomerResponse: Codable {
+public struct NewCustomerResponse: Codable, Sendable {
 
-    public enum CustomerContractType: String, Codable { 
+    public enum CustomerContractType: String, Codable, Sendable { 
         case free = "free"
         case demo = "demo"
         case pay = "pay"

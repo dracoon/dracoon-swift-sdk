@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct CreateNodeCommentRequest: Codable {
+public struct CreateNodeCommentRequest: Codable, Sendable {
     
     public var text: String
     

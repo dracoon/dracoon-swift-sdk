@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct PublicDownloadTokenGenerateResponse: Codable {
+public struct PublicDownloadTokenGenerateResponse: Codable, Sendable {
 
     /** Download URL */
     public var downloadUrl: String?

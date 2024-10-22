@@ -8,9 +8,9 @@
 
 import Foundation
 
-public struct VirusProtectionInfo: Codable {
+public struct VirusProtectionInfo: Codable, Sendable {
     
-    public enum Verdict: String, Codable {
+    public enum Verdict: String, Codable, Sendable {
         case NOT_SCANNING
         case IN_PROGRESS
         case CLEAN

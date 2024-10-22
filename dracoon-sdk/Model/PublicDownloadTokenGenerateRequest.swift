@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct PublicDownloadTokenGenerateRequest: Codable {
+public struct PublicDownloadTokenGenerateRequest: Codable, Sendable {
 
     /** Password (only for password-protected shares) */
     public var password: String?

@@ -9,7 +9,7 @@
 import Foundation
 import crypto_sdk
 
-public struct KeyPairAlgorithm: Codable {
+public struct KeyPairAlgorithm: Codable, Sendable {
     
     public var version: UserKeyPairVersion
     public var description: String

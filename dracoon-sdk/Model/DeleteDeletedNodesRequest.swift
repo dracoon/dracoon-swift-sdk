@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct DeleteDeletedNodesRequest: Codable {
+public struct DeleteDeletedNodesRequest: Codable, Sendable {
 
     /** List of deleted node IDs */
     public var deletedNodeIds: [Int64]

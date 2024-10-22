@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct Group: Codable {
+public struct Group: Codable, Sendable {
 
     /** Unique identifier for the group */
     public var _id: Int64

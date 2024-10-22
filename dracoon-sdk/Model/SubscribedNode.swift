@@ -9,9 +9,9 @@
 import Foundation
 
 /// - Tag: SubscribedNode
-public struct SubscribedNode: Codable {
+public struct SubscribedNode: Codable, Sendable {
     
-    public enum ModelType: String, Codable {
+    public enum ModelType: String, Codable, Sendable {
         case room = "room"
         case folder = "folder"
         case file = "file"

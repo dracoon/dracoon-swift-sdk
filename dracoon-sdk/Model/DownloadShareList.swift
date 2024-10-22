@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: DownloadShareList
-public struct DownloadShareList: Codable {
+public struct DownloadShareList: Codable, Sendable {
 
     /** Range */
     public var range: ModelRange

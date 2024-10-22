@@ -9,9 +9,9 @@ import Foundation
 
 
 
-public struct DeletedNodeSummary: Codable {
+public struct DeletedNodeSummary: Codable, Sendable {
 
-    public enum ModelType: String, Codable { 
+    public enum ModelType: String, Codable, Sendable { 
         case room = "room"
         case folder = "folder"
     }

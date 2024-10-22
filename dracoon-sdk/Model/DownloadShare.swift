@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: DownloadShare
-public struct DownloadShare: Codable {
+public struct DownloadShare: Codable, Sendable {
 
     /** Share ID */
     public var _id: Int64

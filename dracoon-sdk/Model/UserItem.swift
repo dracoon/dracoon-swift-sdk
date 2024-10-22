@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct UserItem: Codable {
+public struct UserItem: Codable, Sendable {
 
     /** Unique identifier for the user */
     public var _id: Int64
@@ -54,7 +54,7 @@ public struct UserItem: Codable {
      Gender */
     public var gender: Gender?
     
-    public enum Gender: String, Codable {
+    public enum Gender: String, Codable, Sendable {
         case m = "m"
         case f = "f"
         case n = "n"

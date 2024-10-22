@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct PublicUploadShare: Codable {
+public struct PublicUploadShare: Codable, Sendable {
 
     /** Is share protected by password */
     public var isProtected: Bool

@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct CreateGroupRequest: Codable {
+public struct CreateGroupRequest: Codable, Sendable {
 
     /** Group name */
     public var name: String

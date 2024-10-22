@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: UpdateUploadShareRequest
-public struct UpdateUploadShareRequest: Codable {
+public struct UpdateUploadShareRequest: Codable, Sendable {
     
     /** Alias name */
     public var name: String?

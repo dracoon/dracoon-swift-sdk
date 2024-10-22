@@ -9,9 +9,9 @@ import Foundation
 
 
 
-public struct CreateUserRequest: Codable {
+public struct CreateUserRequest: Codable, Sendable {
 
-    public enum Gender: String, Codable { 
+    public enum Gender: String, Codable, Sendable {
         case m = "m"
         case f = "f"
         case n = "n"

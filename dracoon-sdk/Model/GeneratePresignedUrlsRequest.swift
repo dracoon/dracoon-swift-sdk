@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct GeneratePresignedUrlsRequest: Codable {
+public struct GeneratePresignedUrlsRequest: Codable, Sendable {
     
     /** Content-Length header size for each presigned URL (in bytes)
      MUST be >= 5 MB except the last part. */

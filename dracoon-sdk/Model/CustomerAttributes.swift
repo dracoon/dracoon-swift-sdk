@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct CustomerAttributes: Codable {
+public struct CustomerAttributes: Codable, Sendable {
 
     /** List of customer attributes */
     public var items: [KeyValueEntry]?

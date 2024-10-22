@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct PublicUploadedFileData: Codable {
+public struct PublicUploadedFileData: Codable, Sendable {
 
     /** Name */
     public var name: String

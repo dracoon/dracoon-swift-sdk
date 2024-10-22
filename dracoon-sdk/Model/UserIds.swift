@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct UserIds: Codable {
+public struct UserIds: Codable, Sendable {
 
     /** List of user IDs */
     public var ids: [Int64]

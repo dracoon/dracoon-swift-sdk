@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct SharesPasswordPolicies: Codable {
+public struct SharesPasswordPolicies: Codable, Sendable {
     
     public init(characterRules: CharacterRules?, minLength: Int?,
                 rejectDictionaryWords: Bool?, rejectUserInfo: Bool?,

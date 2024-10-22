@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct ChangeGroupMembersRequest: Codable {
+public struct ChangeGroupMembersRequest: Codable, Sendable {
 
     /** List of group IDs */
     public var ids: [Int64]

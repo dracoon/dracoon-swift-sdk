@@ -9,7 +9,7 @@
 import Foundation
 
 /// - Tag: CommentList
-public struct CommentList: Codable {
+public struct CommentList: Codable, Sendable {
     
     /** Range */
     public var range: ModelRange

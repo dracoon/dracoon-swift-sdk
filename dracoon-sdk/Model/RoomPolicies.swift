@@ -9,7 +9,7 @@
 import Foundation
 
 /// - Tag: RoomPolicies
-public struct RoomPolicies: Codable {
+public struct RoomPolicies: Codable, Sendable {
     
     /**
      Default policy room expiration period in seconds.

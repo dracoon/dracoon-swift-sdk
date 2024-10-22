@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct VirusProtectionVerdictRequest: Codable {
+public struct VirusProtectionVerdictRequest: Codable, Sendable {
     
     public var nodeIds: [Int64]
     

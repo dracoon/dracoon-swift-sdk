@@ -9,19 +9,19 @@ import Foundation
 
 
 
-public struct EncryptionInfo: Codable {
+public struct EncryptionInfo: Codable, Sendable {
 
-    public enum UserKeyState: String, Codable { 
+    public enum UserKeyState: String, Codable, Sendable {
         case _none = "none"
         case pending = "pending"
         case available = "available"
     }
-    public enum RoomKeyState: String, Codable { 
+    public enum RoomKeyState: String, Codable, Sendable {
         case _none = "none"
         case pending = "pending"
         case available = "available"
     }
-    public enum DataSpaceKeyState: String, Codable { 
+    public enum DataSpaceKeyState: String, Codable, Sendable { 
         case _none = "none"
         case pending = "pending"
         case available = "available"

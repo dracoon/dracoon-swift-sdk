@@ -8,7 +8,7 @@
 import Foundation
 import crypto_sdk
 
-public struct CompleteS3FileUploadRequest: Codable {
+public struct CompleteS3FileUploadRequest: Codable, Sendable {
     
     /** List of S3 file upload parts */
     public var parts: [S3FileUploadPart]

@@ -8,7 +8,7 @@
 import Foundation
 import crypto_sdk
 
-public struct PublicKeyContainer: Codable {
+public struct PublicKeyContainer: Codable, Sendable {
 
     /** Version */
     public var version: UserKeyPairVersion

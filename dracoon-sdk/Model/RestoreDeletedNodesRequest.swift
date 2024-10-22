@@ -9,9 +9,9 @@ import Foundation
 
 
 
-public struct RestoreDeletedNodesRequest: Codable {
+public struct RestoreDeletedNodesRequest: Codable, Sendable {
 
-    public enum ResolutionStrategy: String, Codable { 
+    public enum ResolutionStrategy: String, Codable, Sendable { 
         case autorename = "autorename"
         case overwrite = "overwrite"
         case fail = "fail"

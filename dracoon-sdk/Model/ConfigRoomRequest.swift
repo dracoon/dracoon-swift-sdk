@@ -9,9 +9,9 @@
 import Foundation
 
 /// - Tag: ConfigRoomRequest
-public struct ConfigRoomRequest: Codable {
+public struct ConfigRoomRequest: Codable, Sendable {
     
-    public enum NewGroupMemberAcceptance: String, Codable {
+    public enum NewGroupMemberAcceptance: String, Codable, Sendable {
         case autoallow = "autoallow"
         case pending = "pending"
     }

@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: CustomerSettingsRequest
-public struct CustomerSettingsRequest: Codable {
+public struct CustomerSettingsRequest: Codable, Sendable {
     
     /** the name of the container in which all user’s home rooms are located */
     public var homeRoomParentName: String?

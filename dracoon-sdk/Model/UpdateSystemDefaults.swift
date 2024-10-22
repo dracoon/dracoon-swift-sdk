@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct UpdateSystemDefaults: Codable {
+public struct UpdateSystemDefaults: Codable, Sendable {
 
     /** Define which language should be default. */
     public var languageDefault: String?
