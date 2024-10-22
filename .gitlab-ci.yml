@@ -74,7 +74,9 @@ dependency_check:
     - ruby cartfile_to_package.rb
     - dependency-check --scan Package.resolved --nvdApiKey $NVD_API_KEY --enableExperimental --failOnCVSS 7
     - rm -f cartfile_to_package.rb Package.resolved
-  retry: 2
+  #retry: 2
+  # Temporarily allow failure until OWASP dependency check is fixed
+  allow_failure: true
   tags:
     - darwin/arm64
     - ios-build
