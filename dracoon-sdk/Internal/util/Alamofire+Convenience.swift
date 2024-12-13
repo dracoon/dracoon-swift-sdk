@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 public struct Dracoon {
-    public enum Result<T: Sendable> {
+    public enum Result<T: Sendable>: Sendable {
         case value(T)
         case error(DracoonError)
     }
