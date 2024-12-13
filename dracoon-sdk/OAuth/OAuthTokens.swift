@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct OAuthTokens: Codable {
+public struct OAuthTokens: Codable, Sendable {
     
     var access_token: String
     var token_type: String

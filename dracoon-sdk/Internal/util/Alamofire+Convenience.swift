@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 public struct Dracoon {
-    public enum Result<T> {
+    public enum Result<T: Sendable> {
         case value(T)
         case error(DracoonError)
     }
@@ -29,7 +29,7 @@ public extension DataRequest {
     typealias DecodeCompletion<T> = @Sendable (_ result: Result<T>) -> Void
     typealias DracoonResponseCompletion = @Sendable (Dracoon.Response) -> Void
     
-    func decode<D: Decodable>(_ type: D.Type, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType = .other, completion: @escaping DecodeCompletion<D>) {
+    func decode<D: Decodable & Sendable>(_ type: D.Type, decoder: JSONDecoder, requestType: DracoonErrorParser.RequestType = .other, completion: @escaping DecodeCompletion<D>) {
         self.responseData(completionHandler: { dataResponse in
             do {
                 switch dataResponse.result {
