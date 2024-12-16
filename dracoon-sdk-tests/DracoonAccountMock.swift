@@ -11,7 +11,7 @@ import Alamofire
 import crypto_sdk
 @testable import dracoon_sdk
 
-class DracoonAccountMock: DracoonAccount {
+class DracoonAccountMock: DracoonAccount, @unchecked Sendable {
     
     var error: DracoonError?
     var userAccountResponse: UserAccount

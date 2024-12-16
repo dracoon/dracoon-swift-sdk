@@ -9,7 +9,7 @@
 import Foundation
 import dracoon_sdk
 
-class DracoonSubscriptionsMock: DracoonSubscriptions {
+class DracoonSubscriptionsMock: DracoonSubscriptions, @unchecked Sendable {
     
     var error: DracoonError?
     

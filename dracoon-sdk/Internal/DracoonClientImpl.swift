@@ -105,7 +105,7 @@ public class DracoonClientImpl: DracoonClient {
     
     public var subscriptions: DracoonSubscriptions
     
-    class NotImplementedYet: DracoonGroups {
+    final class NotImplementedYet: DracoonGroups, Sendable {
     }
     
     public func getAccessToken() -> String? {

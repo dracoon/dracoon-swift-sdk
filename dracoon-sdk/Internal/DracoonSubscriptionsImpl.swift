@@ -9,7 +9,7 @@
 import Foundation
 import Alamofire
 
-class DracoonSubscriptionsImpl: DracoonSubscriptions {
+final class DracoonSubscriptionsImpl: DracoonSubscriptions, Sendable {
     
     let session: Session
     let serverUrl: URL

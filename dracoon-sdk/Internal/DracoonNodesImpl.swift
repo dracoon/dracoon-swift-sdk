@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 import crypto_sdk
 
-class DracoonNodesImpl: DracoonNodes, @unchecked Sendable {
+final class DracoonNodesImpl: DracoonNodes, Sendable {
     
     let requestConfig: DracoonRequestConfig
     let session: Alamofire.Session
@@ -21,10 +21,8 @@ class DracoonNodesImpl: DracoonNodes, @unchecked Sendable {
     let crypto: CryptoProtocol
     let account: DracoonAccount
     let config: DracoonConfig
-    let getEncryptionPassword: () -> String?
-    
-    private var uploads = [String : DracoonUpload]()
-    private var downloads = [Int64 : FileDownload]()
+    let getEncryptionPassword: @Sendable () -> String?
+    let transferStorage: DracoonTransferStorage
     
     init(requestConfig: DracoonRequestConfig, crypto: CryptoProtocol, account: DracoonAccount, config: DracoonConfig, getEncryptionPassword: @Sendable @escaping () -> String?) {
         self.requestConfig = requestConfig
@@ -38,6 +36,7 @@ class DracoonNodesImpl: DracoonNodes, @unchecked Sendable {
         self.account = account
         self.config = config
         self.getEncryptionPassword = getEncryptionPassword
+        self.transferStorage = DracoonTransferStorage()
     }
     
     func getNodes(parentNodeId: Int64, limit: Int64?, offset: Int64?, completion: @Sendable @escaping (Dracoon.Result<NodeList>) -> Void) {
@@ -370,14 +369,14 @@ class DracoonNodesImpl: DracoonNodes, @unchecked Sendable {
                 })
             }
             callback.onComplete?(node)
-            self.uploads.removeValue(forKey: uploadId)
+            self.transferStorage.removeUpload(uploadId: uploadId)
         }
         innerCallback.onError = callback.onError
         innerCallback.onProgress = callback.onProgress
         
         upload.callback = innerCallback
         
-        self.uploads[uploadId] = upload
+        self.transferStorage.storeUpload(uploadId: uploadId, upload: upload)
         upload.start()
     }
     
@@ -395,14 +394,14 @@ class DracoonNodesImpl: DracoonNodes, @unchecked Sendable {
                 })
             }
             callback.onComplete?(node)
-            self.uploads.removeValue(forKey: uploadId)
+            self.transferStorage.removeUpload(uploadId: uploadId)
         }
         innerCallback.onError = callback.onError
         innerCallback.onProgress = callback.onProgress
         
         s3upload.callback = innerCallback
         
-        self.uploads[uploadId] = s3upload
+        self.transferStorage.storeUpload(uploadId: uploadId, upload: s3upload)
         s3upload.start()
     }
     
@@ -429,11 +428,12 @@ class DracoonNodesImpl: DracoonNodes, @unchecked Sendable {
     }
     
     func cancelUpload(uploadId: String) {
-        guard let upload = self.uploads[uploadId] else {
-            return
-        }
-        upload.cancel()
-        self.uploads.removeValue(forKey: uploadId)
+        self.transferStorage.getUpload(uploadId: uploadId, completionHandler: { [weak self] upload in
+            if let upload = upload {
+                upload.cancel()
+                self?.transferStorage.removeUpload(uploadId: uploadId)
+            }
+        })
     }
     
     func createFileUpload(request: CreateFileUploadRequest, fileSize: Int64, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
@@ -511,34 +511,29 @@ class DracoonNodesImpl: DracoonNodes, @unchecked Sendable {
         let innerCallback = DownloadCallback()
         innerCallback.onCanceled = callback.onCanceled
         innerCallback.onComplete = { url in
-            self.downloads.removeValue(forKey: nodeId)
+            self.transferStorage.removeDownload(nodeId: nodeId)
             callback.onComplete?(url)
         }
         innerCallback.onError = callback.onError
         innerCallback.onProgress = callback.onProgress
         
         download.callback = innerCallback
-        self.downloads[nodeId] = download
+        self.transferStorage.storeDownload(nodeId: nodeId, download: download)
         download.start()
     }
     
     func cancelDownload(nodeId: Int64) {
-        guard let download = self.downloads[nodeId] else {
-            return
-        }
-        download.cancel()
-        self.downloads.removeValue(forKey: nodeId)
+        self.transferStorage.getDownload(nodeId: nodeId, completionHandler: { [weak self] download in
+            if let download = download {
+                download.cancel()
+                self?.transferStorage.removeDownload(nodeId: nodeId)
+            }
+        })
     }
     
     func resumeBackgroundTasks() {
-        for download in self.downloads.values {
-            download.resumeFromBackground()
-        }
-        for upload in self.uploads.values {
-            if let fileUpload = upload as? FileUpload {
-                fileUpload.resumeBackgroundUpload()
-            }
-        }
+        self.transferStorage.resumeDownloads()
+        self.transferStorage.resumeUploads()
     }
     
     // MARK: Search

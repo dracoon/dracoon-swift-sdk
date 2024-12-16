@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol DracoonUpload {
+protocol DracoonUpload: Sendable {
     
     func start()
     func cancel()

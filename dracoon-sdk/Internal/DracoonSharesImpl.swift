@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 import crypto_sdk
 
-class DracoonSharesImpl: DracoonShares, @unchecked Sendable {
+final class DracoonSharesImpl: DracoonShares, Sendable {
     
     let session: Session
     let serverUrl: URL
@@ -20,7 +20,7 @@ class DracoonSharesImpl: DracoonShares, @unchecked Sendable {
     let nodes: DracoonNodes
     let account: DracoonAccount
     let server: DracoonServer
-    let getEncryptionPassword: () -> String?
+    let getEncryptionPassword: @Sendable () -> String?
     
     init(requestConfig: DracoonRequestConfig, nodes: DracoonNodes, account: DracoonAccount, server: DracoonServer, getEncryptionPassword: @Sendable @escaping () -> String?) {
         self.session = requestConfig.session

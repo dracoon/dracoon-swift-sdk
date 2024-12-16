@@ -46,7 +46,7 @@ public protocol DracoonClient {
 
 // MARK: DracoonServer
 
-public protocol DracoonServer {
+public protocol DracoonServer: Sendable {
     /// Retrieves the server's version.
     ///
     /// - Parameter completion: Returns [version data](x-source-tag://SoftwareVersionData) on success or an error.
@@ -60,7 +60,7 @@ public protocol DracoonServer {
 
 // MARK: DracoonAccount
 
-public protocol DracoonAccount {
+public protocol DracoonAccount: Sendable {
     /// Retrieves user account information.
     ///
     /// - Parameter completion: Returns [user account information](x-source-tag://UserAccount) on success or an error.
@@ -180,7 +180,7 @@ public protocol DracoonAccount {
 
 // MARK: DracoonConfig
 
-public protocol DracoonConfig {
+public protocol DracoonConfig: Sendable {
     /// Retrieves the server's system default settings.
     ///
     /// - Parameter completion: Returns [system defaults](x-source-tag://SystemDefaults) on success or an error.
@@ -217,7 +217,7 @@ public protocol DracoonConfig {
 
 // MARK: DracoonUsers
 
-public protocol DracoonUsers {
+public protocol DracoonUsers: Sendable {
     /// Downloads the user's avatar.
     ///
     /// - Parameters:
@@ -230,7 +230,7 @@ public protocol DracoonUsers {
 
 // MARK: DracoonSubscriptions
 
-public protocol DracoonSubscriptions {
+public protocol DracoonSubscriptions: Sendable {
     
     /// Retrieve a list of subscribed nodes for current user.
     ///
@@ -434,11 +434,11 @@ public protocol DracoonSubscriptions {
     func unsubscribeUploadShare(shareId: Int64, completion: @Sendable @escaping (Dracoon.Response) -> Void)
 }
 
-public protocol DracoonGroups {}
+public protocol DracoonGroups: Sendable {}
 
 // MARK: DracoonSettings
 
-public protocol DracoonSettings {
+public protocol DracoonSettings: Sendable {
     /// Retrieves the customer's settings.
     ///
     /// - Parameter completion: Returns the [customer's settings](x-source-tag://CustomerSettingsResponse) on success or an error.
@@ -454,7 +454,7 @@ public protocol DracoonSettings {
 
 // MARK: DracoonNodes
 
-public protocol DracoonNodes {
+public protocol DracoonNodes: Sendable {
     /// Retrieves child nodes of a node. Parameters _offset_ and _limit_ restrict the result to a specific range.
     ///
     /// - Parameters:
@@ -814,7 +814,7 @@ public extension DracoonNodes {
 
 // MARK: DracoonShares
 
-public protocol DracoonShares {
+public protocol DracoonShares: Sendable {
     /// Creates a download share.
     ///
     /// - Parameters:

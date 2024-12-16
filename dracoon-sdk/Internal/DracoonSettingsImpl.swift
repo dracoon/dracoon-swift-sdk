@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-class DracoonSettingsImpl: DracoonSettings {
+final class DracoonSettingsImpl: DracoonSettings, Sendable {
     let session: Alamofire.Session
     let serverUrl: URL
     let apiPath: String
