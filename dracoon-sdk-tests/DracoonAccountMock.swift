@@ -118,11 +118,11 @@ class DracoonAccountMock: DracoonAccount, @unchecked Sendable {
         }
     }
     
-    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<ProfileAttributes>) -> Void) {
+    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Response) -> Void) {
         if let error = error {
-            completion(Dracoon.Result.error(error))
+            completion(Dracoon.Response(error:(error)))
         } else {
-            completion(Dracoon.Result.value(self.userProfileAttributes))
+            completion(Dracoon.Response(error: nil))
         }
     }
     

@@ -502,20 +502,15 @@ class DracoonAccountTests: DracoonSdkTestCase {
     
     func testUpdateProfileAttributes_returnsAttributesResponseModel() {
         
-        self.setResponseModel(ProfileAttributes.self, statusCode: 200)
+        self.setResponseModel(ProfileAttributes.self, statusCode: 204)
         let testState = TestState()
         
         let expectation = XCTestExpectation(description: "Returns AttributesResponse model")
         let request = ProfileAttributesRequest(items: [KeyValueEntry(key: "key", value: "value")])
-        self.account.updateProfileAttributes(request: request, completion: { result in
-            switch result {
-            case .error(_):
-                break
-            case.value(let response):
-                testState.onValueCalled = true
-                XCTAssertNotNil(response)
-                expectation.fulfill()
-            }
+        self.account.updateProfileAttributes(request: request, completion: { response in
+            testState.onValueCalled = true
+            XCTAssertNotNil(response)
+            expectation.fulfill()
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
