@@ -12,7 +12,7 @@ import crypto_sdk
 
 /// DracoonClient is the main class of DRACOON SDK.
 /// It contains several handlers which group the SDK functions logically.
-public protocol DracoonClient {
+public protocol DracoonClient: Sendable {
     var server: DracoonServer { get }
     var account: DracoonAccount { get }
     var config: DracoonConfig { get }
@@ -168,7 +168,7 @@ public protocol DracoonAccount: Sendable {
     /// - Parameters:
     ///   - request: The [ProfileAttributesRequest](x-source-tag://ProfileAttributesRequest) model
     ///   - completion: Returns user profile attributes on success or an error.
-    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @Sendable @escaping (Dracoon.Result<ProfileAttributes>) -> Void)
+    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @Sendable @escaping (Dracoon.Response) -> Void)
 
     /// Delete custom user profile attribute.
     ///
