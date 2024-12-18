@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 import crypto_sdk
 
-public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDelegate, @unchecked Sendable {
+public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDelegate, Sendable {
     
     let session: Session
     let serverUrl: URL
@@ -20,21 +20,15 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
     let account: DracoonAccount
     let nodes: DracoonNodes
     let crypto: CryptoProtocol
-    let getEncryptionPassword: () -> String?
+    let getEncryptionPassword: @Sendable () -> String?
     
     let nodeId: Int64
     let targetUrl: URL
     
-    var urlSessionTask: URLSessionTask?
-    var downloadSessionConfig: URLSessionConfiguration?
-    var callback: DownloadCallback?
-    var fileKey: EncryptedFileKey?
-    var fileSize: Int64?
+    private let properties = FileDownloadProperties()
     
-    init(nodeId: Int64, targetUrl: URL, config: DracoonRequestConfig, account: DracoonAccount, nodes: DracoonNodes,
-         crypto: CryptoProtocol, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?, getEncryptionPassword: @escaping () -> String?) {
+    init(nodeId: Int64, targetUrl: URL, config: DracoonRequestConfig, account: DracoonAccount, nodes: DracoonNodes, crypto: CryptoProtocol, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?, getEncryptionPassword: @Sendable @escaping () -> String?, callback: DownloadCallback?) {
         self.session = config.session
-        self.downloadSessionConfig = sessionConfig
         self.serverUrl = config.serverUrl
         self.apiPath = config.apiPath
         self.oAuthTokenManager = config.oauthTokenManager
@@ -48,23 +42,31 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
         self.nodeId = nodeId
         self.targetUrl = targetUrl
         
-        self.fileKey = fileKey
-    }
-    deinit {
-        self.callback = nil
+        self.properties.setSessionConfig(sessionConfig)
+        self.properties.setFileKey(fileKey)
+        self.properties.setCallback(callback)
     }
     
     public func start() {
+        guard self.properties.isDownloadStarted() == false else {
+            return
+        }
+        self.properties.setDownloadStarted()
         self.requestDownload()
     }
     
     public func cancel() {
-        guard let downloadTask = self.urlSessionTask else {
+        guard self.properties.isDownloadStarted(),
+              let downloadTask = self.properties.urlSessionTask else {
             return
         }
         downloadTask.cancel()
-        self.urlSessionTask = nil
-        self.callback?.onCanceled?()
+        self.properties.setSessionTask(nil)
+        self.properties.callback?.onCanceled?()
+    }
+    
+    func resumeFromBackground() {
+        self.properties.urlSessionTask?.resume()
     }
     
     fileprivate func getDownloadURL(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<DownloadTokenGenerateResponse>) {
@@ -85,14 +87,14 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
             case .value(let response):
                 self.download(url: response.downloadUrl)
             case .error(let error):
-                self.callback?.onError?(error)
+                self.callOnError(error)
             }
         })
     }
     
     fileprivate func download(url: String) {
         let sessionConfiguration: URLSessionConfiguration
-        if let sessionConfig = self.downloadSessionConfig {
+        if let sessionConfig = self.properties.downloadSessionConfig {
             sessionConfiguration = sessionConfig
         } else {
             sessionConfiguration = self.session.sessionConfiguration
@@ -101,11 +103,11 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
         let urlSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
         let request = URLRequest(url: URL(string: url)!)
         let task = urlSession.downloadTask(with: request)
-        self.urlSessionTask = task
+        self.properties.setSessionTask(task)
         self.nodes.getNode(nodeId: self.nodeId, completion: { result in
             switch result {
             case .error(let error):
-                self.callback?.onError?(error)
+                self.callOnError(error)
             case .value(let node):
                 task.countOfBytesClientExpectsToReceive = node.size ?? 0
                 task.resume()
@@ -115,22 +117,26 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
     
     fileprivate func handleProgress(_ progress: Progress) {
         if progress.totalUnitCount == -1 {
-            if let fileSize = self.fileSize {
+            if let fileSize = self.properties.fileSize {
                 self.notifyProgress(completed: progress.completedUnitCount, total: fileSize)
             } else {
-                self.fileSize = -1
-                self.nodes.getNode(nodeId: self.nodeId, completion: { result in
-                    switch result {
-                    case .error(_):
-                        break
-                    case .value(let node):
-                        self.fileSize = node.size
-                    }
-                })
+                self.properties.setFileSize(-1)
+                self.retrieveFileSize()
             }
         } else {
-            self.callback?.onProgress?(Float(progress.fractionCompleted))
+            self.properties.callback?.onProgress?(Float(progress.fractionCompleted))
         }
+    }
+    
+    fileprivate func retrieveFileSize() {
+        self.nodes.getNode(nodeId: self.nodeId, completion: { result in
+            switch result {
+            case .error(_):
+                break
+            case .value(let node):
+                self.properties.setFileSize(node.size)
+            }
+        })
     }
     
     fileprivate func notifyProgress(completed: Int64, total: Int64) {
@@ -138,28 +144,28 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
             return
         }
         let progress = Float(completed)/Float(total)
-        callback?.onProgress?(progress)
+        self.properties.callback?.onProgress?(progress)
     }
     
     fileprivate func decryptDownloadedFile(fileKey: EncryptedFileKey, completion: (@Sendable (DracoonError?) -> Void)? = nil) {
         guard let encryptionPassword = self.getEncryptionPassword() else {
-            self.callback?.onError?(DracoonError.no_encryption_password)
+            self.callOnError(DracoonError.no_encryption_password)
             return
         }
         self.account.checkUserKeyPairPassword(version: fileKey.getUserKeyPairVersion() , password: encryptionPassword, completion: { result in
             switch result {
             case .error(let error):
-                self.callback?.onError?(error)
+                self.callOnError(error)
                 completion?(error)
             case .value(let userKeyPair):
                 do {
                     let privateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
                     let plainFileKey = try self.crypto.decryptFileKey(fileKey: fileKey, privateKey: privateKey, password: encryptionPassword)
                     try self.decryptFile(fileKey: plainFileKey, fileUrl: self.targetUrl)
-                    self.callback?.onComplete?(self.targetUrl)
+                    self.properties.callback?.onComplete?(self.targetUrl)
                     completion?(nil)
                 } catch {
-                    self.callback?.onError?(error)
+                    self.callOnError(error)
                     completion?(DracoonError.generic(error: error))
                 }
             }
@@ -180,7 +186,7 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
         let tempPath = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         let tempFilePath = tempPath.appendingPathComponent(UUID().uuidString)
         guard let outputStream = OutputStream(toFileAtPath: tempFilePath.path, append: false) else {
-            self.callback?.onError?(DracoonError.file_decryption_error(nodeId: self.nodeId))
+            self.callOnError(DracoonError.file_decryption_error(nodeId: self.nodeId))
             return
         }
         outputStream.open()
@@ -212,10 +218,6 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
         try FileUtils.moveItem(at: tempFilePath, to: fileUrl)
     }
     
-    func resumeFromBackground() {
-        self.urlSessionTask?.resume()
-    }
-    
     // MARK: URLSessionDelegate
     
     public func urlSession(_ session: URLSession,
@@ -227,16 +229,31 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
         }
     }
     
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        self.handleDownloadFinished(downloadTask: downloadTask, location: location)
+        if session.configuration.identifier != nil {
+            session.finishTasksAndInvalidate()
+        }
+    }
+    
+    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        guard totalBytesExpectedToWrite != NSURLSessionTransferSizeUnknown else {
+            return
+        }
+        let fractionCompleted = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
+        self.properties.callback?.onProgress?(fractionCompleted)
+    }
+    
     private func handleDownloadError(task: URLSessionTask, error: Error?) {
         guard let error = error else {
             return
         }
         guard let downloadTask = task as? URLSessionDownloadTask else {
-            self.callback?.onError?(error)
+            self.callOnError(error)
             return
         }
         guard let httpResponse = downloadTask.response as? HTTPURLResponse else {
-            self.callback?.onError?(error)
+            self.callOnError(error)
             return
         }
         let nsError = error as NSError
@@ -244,28 +261,21 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
             let reason = (nsError.userInfo[NSURLErrorBackgroundTaskCancelledReasonKey] as? NSNumber) ?? -1
             let userInfo = nsError.userInfo.mapValues({$0 as? String ?? nil})
             let dracoonError: DracoonError = DracoonError.background_download_cancelled(reason: reason.intValue, userInfo: userInfo)
-            self.callback?.onError?(dracoonError)
+            self.callOnError(dracoonError)
             return
         }
         let statusCode = httpResponse.statusCode
         switch statusCode {
         case DracoonErrorParser.HTTPStatusCode.FORBIDDEN:
             if httpResponse.allHeaderFields["X-Forbidden"] as? String == "403" {
-                self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: statusCode)))
+                self.callOnError(DracoonError.api(error: DracoonSDKErrorModel(errorCode: DracoonApiCode.SERVER_MALICIOUS_FILE_DETECTED, httpStatusCode: statusCode)))
                 return
             }
             fallthrough
         default:
             let errorResponse = ModelErrorResponse(code: statusCode, message: nil, debugInfo: nil, errorCode: nil)
             let errorCode = DracoonErrorParser.shared.parseApiErrorResponse(errorResponse, requestType: .other)
-            self.callback?.onError?(DracoonError.api(error: DracoonSDKErrorModel(errorCode: errorCode, httpStatusCode: statusCode)))
-        }
-    }
-    
-    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        self.handleDownloadFinished(downloadTask: downloadTask, location: location)
-        if session.configuration.identifier != nil {
-            session.finishTasksAndInvalidate()
+            self.callOnError(DracoonError.api(error: DracoonSDKErrorModel(errorCode: errorCode, httpStatusCode: statusCode)))
         }
     }
     
@@ -274,11 +284,11 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
         self.handleDownloadFinished()
     }
     
-    public func handleDownloadFinished() {
-        if let fileKey = self.fileKey {
+    private func handleDownloadFinished() {
+        if let fileKey = self.properties.fileKey {
             self.decryptDownloadedFile(fileKey: fileKey)
         } else {
-            self.callback?.onComplete?(self.targetUrl)
+            self.properties.callback?.onComplete?(self.targetUrl)
         }
     }
     
@@ -293,7 +303,7 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
                 try fileManager.removeItem(at: target)
             }
         } catch {
-            self.callback?.onError?(error)
+            self.callOnError(error)
         }
         let fileCoordinator = NSFileCoordinator()
         var readingError: NSError?
@@ -301,19 +311,15 @@ public class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloadDeleg
             do {
                 try FileManager.default.copyItem(at: newURL, to: target)
             }  catch {
-                self.callback?.onError?(error)
+                self.callOnError(error)
             }
         })
         if let error = readingError {
-            self.callback?.onError?(error)
+            self.callOnError(error)
         }
     }
     
-    public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        guard totalBytesExpectedToWrite != NSURLSessionTransferSizeUnknown else {
-            return
-        }
-        let fractionCompleted = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
-        self.callback?.onProgress?(fractionCompleted)
+    private func callOnError(_ error: Error) {
+        self.properties.callback?.onError?(error)
     }
 }

@@ -66,7 +66,7 @@ class DracoonTransferStorageTests: XCTestCase {
     
     func test_storeDownload() {
         let nodeId: Int64 = 42
-        let testDownload = TestDracoonDownload(nodeId: nodeId)
+        let testDownload = self.getTestDownload(nodeId: nodeId)
         self.transferStorage.storeDownload(nodeId: nodeId, download: testDownload)
         
         self.transferStorage.getDownload(nodeId: nodeId, completionHandler: { download in
@@ -76,7 +76,7 @@ class DracoonTransferStorageTests: XCTestCase {
     
     func test_removeDownload() {
         let nodeId: Int64 = 42
-        let testDownload = TestDracoonDownload(nodeId: nodeId)
+        let testDownload = self.getTestDownload(nodeId: nodeId)
         self.transferStorage.storeDownload(nodeId: nodeId, download: testDownload)
         self.transferStorage.removeDownload(nodeId: nodeId)
         
@@ -87,13 +87,13 @@ class DracoonTransferStorageTests: XCTestCase {
     
     func test_getDownload() {
         let nodeId0: Int64 = 0
-        let testDownload0 = TestDracoonDownload(nodeId: nodeId0)
+        let testDownload0 = self.getTestDownload(nodeId: nodeId0)
         self.transferStorage.storeDownload(nodeId: nodeId0, download: testDownload0)
         let nodeId2: Int64 = 2
-        let testDownload2 = TestDracoonDownload(nodeId: nodeId2)
+        let testDownload2 = self.getTestDownload(nodeId: nodeId2)
         self.transferStorage.storeDownload(nodeId: nodeId2, download: testDownload2)
         let nodeId1: Int64 = 1
-        let testDownload1 = TestDracoonDownload(nodeId: nodeId1)
+        let testDownload1 = self.getTestDownload(nodeId: nodeId1)
         self.transferStorage.storeDownload(nodeId: nodeId1, download: testDownload1)
         
         self.transferStorage.getDownload(nodeId: nodeId2, completionHandler: { download in
@@ -106,6 +106,13 @@ class DracoonTransferStorageTests: XCTestCase {
             XCTAssert(download === testDownload1)
         })
     }
+    
+    
+    private func getTestDownload(nodeId: Int64) -> FileDownload {
+        return FileDownload(nodeId: nodeId,
+                            targetUrl: Bundle(for: DracoonTransferStorageTests.self).resourceURL!.appendingPathComponent("testDownload-\(nodeId)"),
+                            config: DracoonRequestConfig(session: Session(), serverUrl: URL(string: "dracoon.team")!, apiPath: "test", oauthTokenManager: OAuthTokenManagerMock(authMode: .accessToken(accessToken: "accessToken"), oAuthClient: OAuthClientMock(serverUrl: URL(string: "https://dracoon.team")!)), encoder: JSONEncoder(), decoder: JSONDecoder()), account: DracoonAccountMock(), nodes: DracoonNodesMock(), crypto: DracoonCryptoMock(), fileKey: nil, sessionConfig: nil, getEncryptionPassword: {return ""}, callback: nil)
+    }
 }
 
 final class TestDracoonUpload: DracoonUpload {
@@ -113,13 +120,5 @@ final class TestDracoonUpload: DracoonUpload {
     func start() {}
     
     func cancel() {}
-    
-}
-
-class TestDracoonDownload: FileDownload, @unchecked Sendable {
-    
-    init(nodeId: Int64) {
-        super.init(nodeId: nodeId, targetUrl: Bundle(for: DracoonTransferStorageTests.self).resourceURL!.appendingPathComponent("testDownload-\(nodeId)"), config: DracoonRequestConfig(session: Session(), serverUrl: URL(string: "dracoon.team")!, apiPath: "test", oauthTokenManager: OAuthTokenManagerMock(authMode: .accessToken(accessToken: "accessToken"), oAuthClient: OAuthClientMock(serverUrl: URL(string: "https://dracoon.team")!)), encoder: JSONEncoder(), decoder: JSONDecoder()), account: DracoonAccountMock(), nodes: DracoonNodesMock(), crypto: DracoonCryptoMock(), fileKey: nil, sessionConfig: nil, getEncryptionPassword: {return ""})
-    }
     
 }

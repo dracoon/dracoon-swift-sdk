@@ -505,9 +505,6 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
     
     fileprivate func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?) {
         
-        let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.requestConfig, account: self.account, nodes: self,
-                                    crypto: self.crypto, fileKey: fileKey, sessionConfig: sessionConfig, getEncryptionPassword: self.getEncryptionPassword)
-        
         let innerCallback = DownloadCallback()
         innerCallback.onCanceled = callback.onCanceled
         innerCallback.onComplete = { url in
@@ -517,7 +514,8 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
         innerCallback.onError = callback.onError
         innerCallback.onProgress = callback.onProgress
         
-        download.callback = innerCallback
+        let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.requestConfig, account: self.account, nodes: self,
+                                    crypto: self.crypto, fileKey: fileKey, sessionConfig: sessionConfig, getEncryptionPassword: self.getEncryptionPassword, callback: innerCallback)
         self.transferStorage.storeDownload(nodeId: nodeId, download: download)
         download.start()
     }

@@ -220,6 +220,7 @@
 		E0C7A14122CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14022CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift */; };
 		E0C7A14322CBBDAE003D2141 /* PresignedUrlList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14222CBBDAE003D2141 /* PresignedUrlList.swift */; };
 		E0C7A14522CBBE11003D2141 /* PresignedUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14422CBBE11003D2141 /* PresignedUrl.swift */; };
+		E0D456642D12AFD9006B3011 /* FileDownloadProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D456632D12AF9E006B3011 /* FileDownloadProperties.swift */; };
 		E0D695032382F8EB00D39A42 /* AttributesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D695022382F8EB00D39A42 /* AttributesResponse.swift */; };
 		E0D695052382FC8400D39A42 /* ProfileAttributesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D695042382FC8400D39A42 /* ProfileAttributesRequest.swift */; };
 		E0ED34D62D105A260040136C /* DracoonTransferStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0ED34D52D105A1E0040136C /* DracoonTransferStorage.swift */; };
@@ -460,6 +461,7 @@
 		E0C7A14022CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePresignedUrlsRequest.swift; sourceTree = "<group>"; };
 		E0C7A14222CBBDAE003D2141 /* PresignedUrlList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresignedUrlList.swift; sourceTree = "<group>"; };
 		E0C7A14422CBBE11003D2141 /* PresignedUrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresignedUrl.swift; sourceTree = "<group>"; };
+		E0D456632D12AF9E006B3011 /* FileDownloadProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDownloadProperties.swift; sourceTree = "<group>"; };
 		E0D695022382F8EB00D39A42 /* AttributesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributesResponse.swift; sourceTree = "<group>"; };
 		E0D695042382FC8400D39A42 /* ProfileAttributesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileAttributesRequest.swift; sourceTree = "<group>"; };
 		E0ED34D52D105A1E0040136C /* DracoonTransferStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonTransferStorage.swift; sourceTree = "<group>"; };
@@ -515,6 +517,7 @@
 				E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */,
 				E03F595425D1A4C400CD9F33 /* DracoonUsersImpl.swift */,
 				E030CDFC20FCF03F001DEB31 /* FileDownload.swift */,
+				E0D456632D12AF9E006B3011 /* FileDownloadProperties.swift */,
 				E0AA72EA2089DD0B001BC290 /* FileUpload.swift */,
 				E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */,
 				E01C7A1A20F62DFF00BBC518 /* UploadCallback.swift */,
@@ -924,6 +927,7 @@
 				E00067DA2057D0BC009CDA70 /* S3Config.swift in Sources */,
 				DE52662A21AFCF3800050482 /* CustomerSettingsResponse.swift in Sources */,
 				DB3FEBA829CC391000211655 /* ApiRequestConstants.swift in Sources */,
+				E0D456642D12AFD9006B3011 /* FileDownloadProperties.swift in Sources */,
 				E00068372057D0BC009CDA70 /* GroupList.swift in Sources */,
 				E01C7A1920F5065900BBC518 /* DownloadCallback.swift in Sources */,
 				E00068142057D0BC009CDA70 /* GroupUserList.swift in Sources */,
