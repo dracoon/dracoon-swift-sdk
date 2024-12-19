@@ -1,2 +1,2 @@
-github "Alamofire/Alamofire" ~> 5.10.1
+github "Alamofire/Alamofire" ~> 5.10.2
 github "dracoon/dracoon-swift-crypto-sdk.git" "feat/SDKCRYPTSW-54"

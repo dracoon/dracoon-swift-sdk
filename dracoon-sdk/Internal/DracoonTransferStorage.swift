@@ -33,9 +33,9 @@ final class DracoonTransferStorage: @unchecked Sendable {
     }
     
     func resumeUploads() {
-        for upload in self.uploads.values {
-            if let fileUpload = upload as? FileUpload {
-                fileUpload.resumeBackgroundUpload()
+        self.serialUploadQueue.async {
+            for upload in self.uploads.values {
+                upload.resumeBackgroundUpload()
             }
         }
     }
@@ -59,8 +59,10 @@ final class DracoonTransferStorage: @unchecked Sendable {
     }
     
     func resumeDownloads() {
-        for download in self.downloads.values {
-            download.resumeFromBackground()
+        self.serialDownloadQueue.async {
+            for download in self.downloads.values {
+                download.resumeFromBackground()
+            }
         }
     }
 }

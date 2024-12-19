@@ -1,5 +1,5 @@
 //
-//  FileDownloadProperties.swift
+//  FileUploadProperties.swift
 //  dracoon-sdk
 //
 //  Created by Mathias Schreiner on 18.12.24.
@@ -10,37 +10,37 @@ import Foundation
 import Alamofire
 import crypto_sdk
 
-final class FileDownloadProperties: @unchecked Sendable {
+final class FileUploadProperties: @unchecked Sendable {
     
-    private let queue = DispatchQueue(label: "com.dracoon.download.properties")
+    private let queue = DispatchQueue(label: "com.dracoon.upload.properties")
     
     private var started = false
     private var cancelled = false
     private(set) var urlSessionTask: URLSessionTask?
-    private(set) var downloadSessionConfig: URLSessionConfiguration?
-    private(set) var callback: DownloadCallback?
-    private(set) var fileKey: EncryptedFileKey?
-    private(set) var fileSize: Int64?
+    private(set) var uploadSessionConfig: URLSessionConfiguration?
+    private(set) var encryptedFileKey: EncryptedFileKey?
+    private(set) var callback: UploadCallback?
+    private(set) var uploadUrl: String?
     
-    func isDownloadStarted() -> Bool {
+    func isUploadStarted() -> Bool {
         self.queue.sync {
             return self.started
         }
     }
     
-    func setDownloadStarted() {
+    func setUploadStarted() {
         self.queue.sync {
             self.started = true
         }
     }
     
-    func isDownloadCancelled() -> Bool {
+    func isUploadCancelled() -> Bool {
         self.queue.sync {
             return self.cancelled
         }
     }
     
-    func setDownloadCancelled() {
+    func setUploadCancelled() {
         self.queue.sync {
             self.cancelled = true
         }
@@ -51,20 +51,19 @@ final class FileDownloadProperties: @unchecked Sendable {
     }
     
     func setSessionConfig(_ config: URLSessionConfiguration?) {
-        self.downloadSessionConfig = config
-    }
-    
-    func setCallback(_ callback: DownloadCallback?) {
-        self.callback = callback
+        self.uploadSessionConfig = config
     }
     
     func setFileKey(_ fileKey: EncryptedFileKey?) {
-        self.fileKey = fileKey
+        self.encryptedFileKey = fileKey
     }
     
-    func setFileSize(_ fileSize: Int64?) {
-        self.fileSize = fileSize
+    func setCallback(_ callback: UploadCallback?) {
+        self.callback = callback
     }
     
+    func setUploadUrl(_ uploadUrl: String?) {
+        self.uploadUrl = uploadUrl
+    }
     
 }

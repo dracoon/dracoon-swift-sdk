@@ -48,7 +48,7 @@ public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloa
     }
     
     public func start() {
-        guard self.properties.isDownloadStarted() == false else {
+        guard !self.properties.isDownloadStarted() else {
             return
         }
         self.properties.setDownloadStarted()
@@ -57,11 +57,12 @@ public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloa
     
     public func cancel() {
         guard self.properties.isDownloadStarted(),
-              let downloadTask = self.properties.urlSessionTask else {
+              let downloadTask = self.properties.urlSessionTask,
+        !self.properties.isDownloadCancelled() else {
             return
         }
+        self.properties.setDownloadCancelled()
         downloadTask.cancel()
-        self.properties.setSessionTask(nil)
         self.properties.callback?.onCanceled?()
     }
     
@@ -69,7 +70,7 @@ public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloa
         self.properties.urlSessionTask?.resume()
     }
     
-    fileprivate func getDownloadURL(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<DownloadTokenGenerateResponse>) {
+    private func getDownloadURL(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<DownloadTokenGenerateResponse>) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/" + String(nodeId) + "/downloads"
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
@@ -81,7 +82,7 @@ public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloa
         
     }
     
-    fileprivate func requestDownload() {
+    private func requestDownload() {
         self.getDownloadURL(nodeId: self.nodeId, completion: { result in
             switch result {
             case .value(let response):
@@ -92,7 +93,7 @@ public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloa
         })
     }
     
-    fileprivate func download(url: String) {
+    private func download(url: String) {
         let sessionConfiguration: URLSessionConfiguration
         if let sessionConfig = self.properties.downloadSessionConfig {
             sessionConfiguration = sessionConfig
@@ -115,7 +116,7 @@ public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloa
         })
     }
     
-    fileprivate func handleProgress(_ progress: Progress) {
+    private func handleProgress(_ progress: Progress) {
         if progress.totalUnitCount == -1 {
             if let fileSize = self.properties.fileSize {
                 self.notifyProgress(completed: progress.completedUnitCount, total: fileSize)
@@ -128,7 +129,7 @@ public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloa
         }
     }
     
-    fileprivate func retrieveFileSize() {
+    private func retrieveFileSize() {
         self.nodes.getNode(nodeId: self.nodeId, completion: { result in
             switch result {
             case .error(_):
@@ -139,7 +140,7 @@ public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloa
         })
     }
     
-    fileprivate func notifyProgress(completed: Int64, total: Int64) {
+    private func notifyProgress(completed: Int64, total: Int64) {
         guard total > 0 else {
             return
         }
@@ -147,7 +148,7 @@ public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloa
         self.properties.callback?.onProgress?(progress)
     }
     
-    fileprivate func decryptDownloadedFile(fileKey: EncryptedFileKey, completion: (@Sendable (DracoonError?) -> Void)? = nil) {
+    private func decryptDownloadedFile(fileKey: EncryptedFileKey, completion: (@Sendable (DracoonError?) -> Void)? = nil) {
         guard let encryptionPassword = self.getEncryptionPassword() else {
             self.callOnError(DracoonError.no_encryption_password)
             return
@@ -172,7 +173,7 @@ public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloa
         })
     }
     
-    fileprivate func decryptFile(fileKey: PlainFileKey, fileUrl: URL) throws {
+    private func decryptFile(fileKey: PlainFileKey, fileUrl: URL) throws {
         guard ValidatorUtils.pathExists(at: fileUrl.path) else {
             throw DracoonError.file_does_not_exist(at: fileUrl)
         }

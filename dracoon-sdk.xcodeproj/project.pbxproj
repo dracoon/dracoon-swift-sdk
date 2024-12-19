@@ -221,6 +221,8 @@
 		E0C7A14322CBBDAE003D2141 /* PresignedUrlList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14222CBBDAE003D2141 /* PresignedUrlList.swift */; };
 		E0C7A14522CBBE11003D2141 /* PresignedUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14422CBBE11003D2141 /* PresignedUrl.swift */; };
 		E0D456642D12AFD9006B3011 /* FileDownloadProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D456632D12AF9E006B3011 /* FileDownloadProperties.swift */; };
+		E0D456662D1306E0006B3011 /* FileUploadProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D456652D1306D9006B3011 /* FileUploadProperties.swift */; };
+		E0D456682D1306F5006B3011 /* S3FileUploadProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D456672D1306EC006B3011 /* S3FileUploadProperties.swift */; };
 		E0D695032382F8EB00D39A42 /* AttributesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D695022382F8EB00D39A42 /* AttributesResponse.swift */; };
 		E0D695052382FC8400D39A42 /* ProfileAttributesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D695042382FC8400D39A42 /* ProfileAttributesRequest.swift */; };
 		E0ED34D62D105A260040136C /* DracoonTransferStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0ED34D52D105A1E0040136C /* DracoonTransferStorage.swift */; };
@@ -462,6 +464,8 @@
 		E0C7A14222CBBDAE003D2141 /* PresignedUrlList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresignedUrlList.swift; sourceTree = "<group>"; };
 		E0C7A14422CBBE11003D2141 /* PresignedUrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresignedUrl.swift; sourceTree = "<group>"; };
 		E0D456632D12AF9E006B3011 /* FileDownloadProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDownloadProperties.swift; sourceTree = "<group>"; };
+		E0D456652D1306D9006B3011 /* FileUploadProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUploadProperties.swift; sourceTree = "<group>"; };
+		E0D456672D1306EC006B3011 /* S3FileUploadProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUploadProperties.swift; sourceTree = "<group>"; };
 		E0D695022382F8EB00D39A42 /* AttributesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributesResponse.swift; sourceTree = "<group>"; };
 		E0D695042382FC8400D39A42 /* ProfileAttributesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileAttributesRequest.swift; sourceTree = "<group>"; };
 		E0ED34D52D105A1E0040136C /* DracoonTransferStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonTransferStorage.swift; sourceTree = "<group>"; };
@@ -519,7 +523,9 @@
 				E030CDFC20FCF03F001DEB31 /* FileDownload.swift */,
 				E0D456632D12AF9E006B3011 /* FileDownloadProperties.swift */,
 				E0AA72EA2089DD0B001BC290 /* FileUpload.swift */,
+				E0D456652D1306D9006B3011 /* FileUploadProperties.swift */,
 				E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */,
+				E0D456672D1306EC006B3011 /* S3FileUploadProperties.swift */,
 				E01C7A1A20F62DFF00BBC518 /* UploadCallback.swift */,
 				8496F3B82059206E000EE909 /* util */,
 			);
@@ -875,7 +881,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1030;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = Dracoon;
 				TargetAttributes = {
 					E00067042057C6CD009CDA70 = {
@@ -1043,6 +1049,7 @@
 				E00068362057D0BC009CDA70 /* S3ConfigCreateRequest.swift in Sources */,
 				E00068302057D0BC009CDA70 /* MissingKeysResponse.swift in Sources */,
 				E05A60A322CCDDB400DF7418 /* S3FileUploadStatus.swift in Sources */,
+				E0D456662D1306E0006B3011 /* FileUploadProperties.swift in Sources */,
 				E0AA72EB2089DD0B001BC290 /* FileUpload.swift in Sources */,
 				E00068272057D0BC009CDA70 /* Role.swift in Sources */,
 				E000683D2057D0BC009CDA70 /* UserGroup.swift in Sources */,
@@ -1090,6 +1097,7 @@
 				E000685B2057D0BC009CDA70 /* PublicDownloadTokenGenerateRequest.swift in Sources */,
 				DBBA64012A2F330C0096EB6F /* NodeVirusProtectionInfo.swift in Sources */,
 				E000686B2057D0BC009CDA70 /* RoleGroupList.swift in Sources */,
+				E0D456682D1306F5006B3011 /* S3FileUploadProperties.swift in Sources */,
 				8496F3C0205AB32B000EE909 /* DracoonError.swift in Sources */,
 				E00067E42057D0BC009CDA70 /* SdsServerTime.swift in Sources */,
 				E00068672057D0BC009CDA70 /* UserAuthMethod.swift in Sources */,

@@ -355,10 +355,7 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
         })
     }
     
-    private func startUpload(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback,
-                             resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
-        let upload = FileUpload(config: self.requestConfig, request: request, fileUrl: filePath, resolutionStrategy: resolutionStrategy,
-                                crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account)
+    private func startUpload(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
         
         let innerCallback = UploadCallback()
         innerCallback.onCanceled = callback.onCanceled
@@ -374,7 +371,7 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
         innerCallback.onError = callback.onError
         innerCallback.onProgress = callback.onProgress
         
-        upload.callback = innerCallback
+        let upload = FileUpload(config: self.requestConfig, request: request, fileUrl: filePath, resolutionStrategy: resolutionStrategy, crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account, callback: innerCallback)
         
         self.transferStorage.storeUpload(uploadId: uploadId, upload: upload)
         upload.start()
@@ -382,9 +379,6 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
     
     private func startS3Upload(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback,
                                resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
-        let s3upload = S3FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
-                                    crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account)
-        
         let innerCallback = UploadCallback()
         innerCallback.onCanceled = callback.onCanceled
         innerCallback.onComplete = { node in
@@ -399,7 +393,8 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
         innerCallback.onError = callback.onError
         innerCallback.onProgress = callback.onProgress
         
-        s3upload.callback = innerCallback
+        let s3upload = S3FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
+                                    crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account, callback: innerCallback)
         
         self.transferStorage.storeUpload(uploadId: uploadId, upload: s3upload)
         s3upload.start()
@@ -503,7 +498,7 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
         })
     }
     
-    fileprivate func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?) {
+    private func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?) {
         
         let innerCallback = DownloadCallback()
         innerCallback.onCanceled = callback.onCanceled
@@ -699,7 +694,7 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
     
     // MARK: Crypto
     
-    fileprivate func getMissingFileKeys(nodeId: Int64?, offset: Int64?, limit: Int64?, completion: @Sendable @escaping (Dracoon.Result<MissingKeysResponse>) -> Void) {
+    private func getMissingFileKeys(nodeId: Int64?, offset: Int64?, limit: Int64?, completion: @Sendable @escaping (Dracoon.Result<MissingKeysResponse>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/missingFileKeys"
         
         var parameters = Parameters()
@@ -722,7 +717,7 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
         
     }
     
-    fileprivate func setMissingFileKeysBatch(nodeId: Int64?, offset: Int64?, limit: Int64?, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
+    private func setMissingFileKeysBatch(nodeId: Int64?, offset: Int64?, limit: Int64?, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         
         self.getMissingFileKeys(nodeId: nodeId, offset: offset, limit: limit, completion: { result in
             switch result {
@@ -739,7 +734,7 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
         })
     }
     
-    fileprivate func generateMissingFileKey(missingKeys: MissingKeysResponse, progress: Progress, results: [UserFileKeySetRequest], completion: @Sendable @escaping ([UserFileKeySetRequest]) -> ()) {
+    private func generateMissingFileKey(missingKeys: MissingKeysResponse, progress: Progress, results: [UserFileKeySetRequest], completion: @Sendable @escaping ([UserFileKeySetRequest]) -> ()) {
         guard let items = missingKeys.items else {
             completion(results)
             return
@@ -785,7 +780,7 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
         })
     }
     
-    fileprivate func getUserPublicKey(userId: Int64, keys: [UserUserPublicKey]) -> UserPublicKey? {
+    private func getUserPublicKey(userId: Int64, keys: [UserUserPublicKey]) -> UserPublicKey? {
         for key in keys {
             if key._id == userId {
                 return key.publicKeyContainer
@@ -794,7 +789,7 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
         return nil
     }
     
-    fileprivate func getFileKeyForFile(fileId: Int64, keys: [FileFileKeys]) -> EncryptedFileKey? {
+    private func getFileKeyForFile(fileId: Int64, keys: [FileFileKeys]) -> EncryptedFileKey? {
         for key in keys {
             if key._id == fileId {
                 return key.fileKeyContainer
@@ -803,7 +798,7 @@ final class DracoonNodesImpl: DracoonNodes, Sendable {
         return nil
     }
     
-    fileprivate func uploadMissingFileKeys(request: UserFileKeySetBatchRequest, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
+    private func uploadMissingFileKeys(request: UserFileKeySetBatchRequest, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         do {
             let jsonBody = try encoder.encode(request)
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/keys"

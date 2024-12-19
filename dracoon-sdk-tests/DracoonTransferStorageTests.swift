@@ -121,4 +121,6 @@ final class TestDracoonUpload: DracoonUpload {
     
     func cancel() {}
     
+    func resumeBackgroundUpload() {}
+    
 }
