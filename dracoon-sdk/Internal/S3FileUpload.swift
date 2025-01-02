@@ -64,6 +64,10 @@ public final class S3FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate
     // MARK: Start S3 Upload
     
     public func start() {
+        guard !self.properties.isUploadStarted() else {
+            return
+        }
+        self.properties.setUploadStarted()
         if self.properties.uploadSessionConfig?.identifier != nil,
            self.fileSize > DracoonConstants.S3_BACKGROUND_UPLOAD_MAX_SIZE {
             self.callOnError(DracoonError.exceeds_maximum_s3_upload_size(fileSize: self.fileSize, maximumSize: DracoonConstants.S3_BACKGROUND_UPLOAD_MAX_SIZE))
