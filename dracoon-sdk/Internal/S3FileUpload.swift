@@ -179,7 +179,6 @@ public final class S3FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate
     }
     
     private func requestPresignedUrls(firstPartNumber: Int32, lastPartNumber: Int32, size: Int64, completion: @escaping DataRequest.DecodeCompletion<PresignedUrlList>) {
-        print("request urls \(firstPartNumber)-\(lastPartNumber)")
         let request = GeneratePresignedUrlsRequest(size: size, firstPartNumber: firstPartNumber, lastPartNumber: lastPartNumber)
         
         do {
@@ -204,10 +203,9 @@ public final class S3FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate
             self.properties.callback?.onCanceled?()
             return
         }
-        print("presignedUrl count \(self.s3Properties.s3Urls.count)")
         if let sessionConfig = self.properties.uploadSessionConfig,
            sessionConfig.identifier != nil {
-            print("background s3 upload")
+            // background s3 upload
             self.uploadBackgroundToPresignedURL(firstUrl)
         } else {
             if let crypto = self.crypto {
@@ -220,7 +218,7 @@ public final class S3FileUpload: NSObject, DracoonUpload, URLSessionDataDelegate
                     return
                 }
             }
-            print("foreground s3 upload")
+            // foreground s3 upload
             self.createNextChunk(uploadId: uploadId, presignedUrl: firstUrl, cipher: self.s3Properties.cipher, completion: {
                 self.completeS3Upload(uploadId: uploadId, cipher: self.s3Properties.cipher)
             })
