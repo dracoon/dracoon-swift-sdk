@@ -5,6 +5,7 @@
 //  Created by Mathias Schreiner on 16.12.24.
 //  Copyright © 2024 Dracoon. All rights reserved.
 //
+import Foundation
 
 final class DracoonTransferStorage: @unchecked Sendable {
     
