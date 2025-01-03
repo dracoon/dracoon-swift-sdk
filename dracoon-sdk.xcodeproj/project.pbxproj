@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -458,6 +458,7 @@
 		E0B0EC832566BC1D006B2D65 /* CommentList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentList.swift; sourceTree = "<group>"; };
 		E0B0EC892566CE64006B2D65 /* CreateNodeCommentRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNodeCommentRequest.swift; sourceTree = "<group>"; };
 		E0B0EC8D2566DA86006B2D65 /* ChangeNodeCommentRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeNodeCommentRequest.swift; sourceTree = "<group>"; };
+		E0B3522B2D2837D500AC3701 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUpload.swift; sourceTree = "<group>"; };
 		E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonUpload.swift; sourceTree = "<group>"; };
 		E0C7A14022CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePresignedUrlsRequest.swift; sourceTree = "<group>"; };
@@ -556,6 +557,7 @@
 		E00066FB2057C6CD009CDA70 = {
 			isa = PBXGroup;
 			children = (
+				E0B3522B2D2837D500AC3701 /* PrivacyInfo.xcprivacy */,
 				E089B0D721B02A0F00442207 /* Supporting Files */,
 				E00067072057C6CD009CDA70 /* dracoon-sdk */,
 				E0AD90EF22E85B3000741634 /* dracoon-sdk-tests */,
@@ -895,7 +897,6 @@
 				};
 			};
 			buildConfigurationList = E00066FF2057C6CD009CDA70 /* Build configuration list for PBXProject "dracoon-sdk" */;
-			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -903,6 +904,7 @@
 				Base,
 			);
 			mainGroup = E00066FB2057C6CD009CDA70;
+			preferredProjectObjectVersion = 77;
 			productRefGroup = E00067062057C6CD009CDA70 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1222,8 +1224,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 2.7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = 3.0.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1283,8 +1285,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 2.7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = 3.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1313,13 +1315,13 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.7.0;
+				MARKETING_VERSION = 3.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk";
@@ -1349,13 +1351,13 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.7.0;
+				MARKETING_VERSION = 3.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk";
@@ -1375,7 +1377,7 @@
 				DEVELOPMENT_TEAM = DCJ6BPJV88;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "dracoon-sdk-tests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1400,7 +1402,7 @@
 				DEVELOPMENT_TEAM = DCJ6BPJV88;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "dracoon-sdk-tests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
