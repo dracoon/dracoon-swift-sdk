@@ -8,14 +8,14 @@
 import Foundation
 
 /// - Tag: CreateRoomRequest
-public struct CreateRoomRequest: Codable {
+public struct CreateRoomRequest: Codable, Sendable {
 
-    public enum NewGroupMemberAcceptance: String, Codable { 
+    public enum NewGroupMemberAcceptance: String, Codable, Sendable {
         case autoallow = "autoallow"
         case pending = "pending"
     }
     
-    public enum Classification: Int, Codable {
+    public enum Classification: Int, Codable, Sendable {
         case PUBLIC = 1
         case INTERNAL_USE = 2
         case CONFIDENTAL = 3

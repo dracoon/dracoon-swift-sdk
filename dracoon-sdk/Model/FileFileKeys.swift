@@ -9,7 +9,7 @@ import Foundation
 import crypto_sdk
 
 
-public struct FileFileKeys: Codable {
+public struct FileFileKeys: Codable, Sendable {
 
     /** File ID */
     public var _id: Int64?

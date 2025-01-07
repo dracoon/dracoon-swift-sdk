@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: CustomerData
-public struct CustomerData: Codable {
+public struct CustomerData: Codable, Sendable {
 
     /** Unique identifier for the customer */
     public var _id: Int64

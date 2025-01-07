@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: UpdateRoomRequest
-public struct UpdateRoomRequest: Codable {
+public struct UpdateRoomRequest: Codable, Sendable {
 
     /** Name */
     public var name: String?

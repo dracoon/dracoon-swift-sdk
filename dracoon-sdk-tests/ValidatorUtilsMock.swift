@@ -9,7 +9,7 @@
 import Foundation
 @testable import dracoon_sdk
 
-class ValidatorUtilsMock: SDKValidator {
+class ValidatorUtilsMock: SDKValidator, @unchecked Sendable {
     
     public var pathExists = true
     public var isValidServerUrl = true

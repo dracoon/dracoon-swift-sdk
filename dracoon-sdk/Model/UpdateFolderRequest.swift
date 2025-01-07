@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: UpdateFolderRequest
-public struct UpdateFolderRequest: Codable {
+public struct UpdateFolderRequest: Codable, Sendable {
 
     /** Folder name */
     public var name: String?

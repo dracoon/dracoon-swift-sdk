@@ -9,7 +9,7 @@
 import Foundation
 @testable import dracoon_sdk
 
-class FileUtilsMock: FileHelper {
+class FileUtilsMock: FileHelper, @unchecked Sendable {
     
     var size: Int64 = 42 * 1024
     var returnsData = true

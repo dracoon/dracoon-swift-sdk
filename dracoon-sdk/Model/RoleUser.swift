@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct RoleUser: Codable {
+public struct RoleUser: Codable, Sendable {
 
     /** Unique identifier for the user */
     public var _id: Int64

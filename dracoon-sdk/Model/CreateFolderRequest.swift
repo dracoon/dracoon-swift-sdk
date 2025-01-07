@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: CreateFolderRequest
-public struct CreateFolderRequest: Codable {
+public struct CreateFolderRequest: Codable, Sendable {
     
     public init(parentId: Int64, name: String) {
         self.parentId = parentId

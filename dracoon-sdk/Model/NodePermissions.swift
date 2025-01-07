@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct NodePermissions: Codable {
+public struct NodePermissions: Codable, Sendable {
 
     /** User / Group may grant all of the above permissions to other users and groups independently, may update room metadata and create / update / delete subordinary rooms, has all permissions. */
     public var manage: Bool

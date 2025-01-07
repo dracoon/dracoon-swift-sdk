@@ -9,9 +9,9 @@
 import Foundation
 import Alamofire
 
-class DracoonSubscriptionsImpl: DracoonSubscriptions {
+final class DracoonSubscriptionsImpl: DracoonSubscriptions, Sendable {
     
-    let session: Alamofire.Session
+    let session: Session
     let serverUrl: URL
     let apiPath: String
     let encoder: JSONEncoder
@@ -31,55 +31,55 @@ class DracoonSubscriptionsImpl: DracoonSubscriptions {
         case upload_shares = "upload_shares"
     }
     
-    func getNodeSubscriptions(filter: String?, limit: Int?, offset: Int?, sort: String?, completion: @escaping (Dracoon.Result<SubscribedNodeList>) -> Void) {
+    func getNodeSubscriptions(filter: String?, limit: Int?, offset: Int?, sort: String?, completion: @Sendable @escaping (Dracoon.Result<SubscribedNodeList>) -> Void) {
         self.getSubscriptions(filter: filter, limit: limit, offset: offset, sort: sort, apiSuffix: .nodes, completion: completion)
     }
     
-    func updateNodeSubscriptions(subscribe: Bool, nodeIds: [Int64], completion: @escaping (Dracoon.Response) -> Void) {
+    func updateNodeSubscriptions(subscribe: Bool, nodeIds: [Int64], completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         self.updateSubscriptions(subscribe: subscribe, ids: nodeIds, apiSuffix: .nodes, completion: completion)
     }
     
-    func subscribeNode(nodeId: Int64, completion: @escaping (Dracoon.Result<SubscribedNode>) -> Void) {
+    func subscribeNode(nodeId: Int64, completion: @Sendable @escaping (Dracoon.Result<SubscribedNode>) -> Void) {
         self.subscribe(id: nodeId, apiSuffix: .nodes, completion: completion)
     }
     
-    func unsubscribeNode(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+    func unsubscribeNode(nodeId: Int64, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         self.unsubscribe(id: nodeId, apiSuffix: .nodes, completion: completion)
     }
     
-    func getDownloadShareSubscriptions(filter: String?, limit: Int?, offset: Int?, sort: String?, completion: @escaping (Dracoon.Result<SubscribedDownloadShareList>) -> Void) {
+    func getDownloadShareSubscriptions(filter: String?, limit: Int?, offset: Int?, sort: String?, completion: @Sendable @escaping (Dracoon.Result<SubscribedDownloadShareList>) -> Void) {
         self.getSubscriptions(filter: filter, limit: limit, offset: offset, sort: sort, apiSuffix: .download_shares, completion: completion)
     }
     
-    func updateDownloadShareSubscriptions(subscribe: Bool, shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void) {
+    func updateDownloadShareSubscriptions(subscribe: Bool, shareIds: [Int64], completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         self.updateSubscriptions(subscribe: subscribe, ids: shareIds, apiSuffix: .download_shares, completion: completion)
     }
     
-    func subscribeDownloadShare(shareId: Int64, completion: @escaping (Dracoon.Result<SubscribedDownloadShare>) -> Void) {
+    func subscribeDownloadShare(shareId: Int64, completion: @Sendable @escaping (Dracoon.Result<SubscribedDownloadShare>) -> Void) {
         self.subscribe(id: shareId, apiSuffix: .download_shares, completion: completion)
     }
     
-    func unsubscribeDownloadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+    func unsubscribeDownloadShare(shareId: Int64, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         self.unsubscribe(id: shareId, apiSuffix: .download_shares, completion: completion)
     }
     
-    func getUploadShareSubscriptions(filter: String?, limit: Int?, offset: Int?, sort: String?, completion: @escaping (Dracoon.Result<SubscribedUploadShareList>) -> Void) {
+    func getUploadShareSubscriptions(filter: String?, limit: Int?, offset: Int?, sort: String?, completion: @Sendable @escaping (Dracoon.Result<SubscribedUploadShareList>) -> Void) {
         self.getSubscriptions(filter: filter, limit: limit, offset: offset, sort: sort, apiSuffix: .upload_shares, completion: completion)
     }
     
-    func updateUploadShareSubscriptions(subscribe: Bool, shareIds: [Int64], completion: @escaping (Dracoon.Response) -> Void) {
+    func updateUploadShareSubscriptions(subscribe: Bool, shareIds: [Int64], completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         self.updateSubscriptions(subscribe: subscribe, ids: shareIds, apiSuffix: .upload_shares, completion: completion)
     }
     
-    func subscribeUploadShare(shareId: Int64, completion: @escaping (Dracoon.Result<SubscribedUploadShare>) -> Void) {
+    func subscribeUploadShare(shareId: Int64, completion: @Sendable @escaping (Dracoon.Result<SubscribedUploadShare>) -> Void) {
         self.subscribe(id: shareId, apiSuffix: .upload_shares, completion: completion)
     }
     
-    func unsubscribeUploadShare(shareId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+    func unsubscribeUploadShare(shareId: Int64, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         self.unsubscribe(id: shareId, apiSuffix: .upload_shares, completion: completion)
     }
     
-    private func getSubscriptions<T>(filter: String?, limit: Int?, offset: Int?, sort: String?, apiSuffix: ApiSuffix, completion: @escaping (Dracoon.Result<T>) -> Void) where T : Codable {
+    private func getSubscriptions<T>(filter: String?, limit: Int?, offset: Int?, sort: String?, apiSuffix: ApiSuffix, completion: @Sendable @escaping (Dracoon.Result<T>) -> Void) where T : Codable {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/subscriptions/\(apiSuffix.rawValue)"
         
         var parameters: Parameters = [:]
@@ -105,7 +105,7 @@ class DracoonSubscriptionsImpl: DracoonSubscriptions {
             .decode(T.self, decoder: self.decoder, requestType: .other, completion: completion)
     }
     
-    private func updateSubscriptions(subscribe: Bool, ids: [Int64], apiSuffix: ApiSuffix, completion: @escaping (Dracoon.Response) -> Void) {
+    private func updateSubscriptions(subscribe: Bool, ids: [Int64], apiSuffix: ApiSuffix, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let request = UpdateSubscriptionsBulkRequest(isSubscribed: subscribe, objectIds: ids)
         do {
             let jsonBody = try encoder.encode(request)
@@ -126,7 +126,7 @@ class DracoonSubscriptionsImpl: DracoonSubscriptions {
         }
     }
     
-    private func subscribe<T>(id: Int64, apiSuffix: ApiSuffix, completion: @escaping (Dracoon.Result<T>) -> Void) where T : Codable {
+    private func subscribe<T>(id: Int64, apiSuffix: ApiSuffix, completion: @Sendable @escaping (Dracoon.Result<T>) -> Void) where T : Codable {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/subscriptions/\(apiSuffix.rawValue)/\(String(id))"
         
         var urlRequest = URLRequest(url: URL(string: requestUrl)!)
@@ -137,7 +137,7 @@ class DracoonSubscriptionsImpl: DracoonSubscriptions {
             .decode(T.self, decoder: self.decoder, requestType: .other, completion: completion)
     }
     
-    private func unsubscribe(id: Int64, apiSuffix: ApiSuffix, completion: @escaping (Dracoon.Response) -> Void) {
+    private func unsubscribe(id: Int64, apiSuffix: ApiSuffix, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/user/subscriptions/\(apiSuffix.rawValue)/\(String(id))"
         
         self.session.request(requestUrl, method: .delete)

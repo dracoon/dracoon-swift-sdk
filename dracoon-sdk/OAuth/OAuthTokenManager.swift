@@ -19,7 +19,7 @@ protocol OAuthInterceptor: RequestInterceptor {
     func getAccessToken() -> String?
     func getRefreshToken() -> String?
     func startOAuthSession(_ session: Session)
-    func revokeTokens(completion: ((DracoonError?) -> Void)?)
+    func revokeTokens(completion: (@Sendable (DracoonError?) -> Void)?)
 }
 
 extension OAuthInterceptor {
@@ -27,13 +27,15 @@ extension OAuthInterceptor {
     func revokeTokens(completion: ((DracoonError?) -> Void)?) {}
 }
 
-class OAuthTokenManager: OAuthInterceptor {
+class OAuthTokenManager: OAuthInterceptor, @unchecked Sendable {
     
-    var oAuthClient: OAuthClient
-    var mode: DracoonAuthMode
-    var session: Alamofire.Session?
+    private let dispatchQueue = DispatchQueue(label: "com.dracoon.oAuthTokenManager")
     
-    weak var delegate: OAuthTokenChangedDelegate?
+    let oAuthClient: OAuthClient
+    private(set) var mode: DracoonAuthMode
+    private(set) var session: Alamofire.Session?
+    
+    private weak var delegate: OAuthTokenChangedDelegate?
     
     required init(authMode: DracoonAuthMode, oAuthClient: OAuthClient) {
         self.mode = authMode
@@ -41,7 +43,9 @@ class OAuthTokenManager: OAuthInterceptor {
     }
     
     func setOAuthDelegate(_ delegate: OAuthTokenChangedDelegate?) {
-        self.delegate = delegate
+        self.dispatchQueue.sync {
+            self.delegate = delegate
+        }
     }
     
     func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
@@ -149,26 +153,26 @@ class OAuthTokenManager: OAuthInterceptor {
         }
     }
     
-    public func revokeTokens(completion: ((DracoonError?) -> Void)?) {
+    public func revokeTokens(completion: (@Sendable (DracoonError?) -> Void)?) {
         guard let session = self.session else {
             let error = DracoonError.generic(error: nil)
-            self.delegate?.tokenRevocationResult(error: error)
+            self.callTokenRevocationError(error)
             completion?(error)
             return
         }
         switch mode {
         case .authorizationCode(clientId: _, clientSecret: _, authorizationCode: _):
             let error = DracoonError.generic(error: nil)
-            self.delegate?.tokenRevocationResult(error: error)
+            self.callTokenRevocationError(error)
             completion?(error)
             return
         case .accessToken(accessToken: _):
-            self.delegate?.tokenRevocationResult(error: DracoonError.generic(error: nil))
+            self.callTokenRevocationError(DracoonError.generic(error: nil))
             return
         case .accessRefreshToken(clientId: let clientId, clientSecret: let clientSecret, tokens: let tokens):
             oAuthClient.revokeOAuthToken(session: session, clientId: clientId, clientSecret: clientSecret, tokenType: .refreshToken, token: tokens.refreshToken, completion: { response in
                 if let revocationError = response.error {
-                    self.delegate?.tokenRevocationResult(error: revocationError)
+                    self.callTokenRevocationError(revocationError)
                     completion?(revocationError)
                     return
                 }
@@ -176,7 +180,7 @@ class OAuthTokenManager: OAuthInterceptor {
                     return
                 }
                 self.oAuthClient.revokeOAuthToken(session: session, clientId: clientId, clientSecret: clientSecret, tokenType: .accessToken, token: accessToken, completion: { response in
-                    self.delegate?.tokenRevocationResult(error: response.error)
+                    self.callTokenRevocationError(response.error)
                     completion?(response.error)
                 })
             })
@@ -190,7 +194,7 @@ class OAuthTokenManager: OAuthInterceptor {
         })
     }
     
-    private func getToken(session: Session, completion: @escaping (RetryResult) -> Void) {
+    private func getToken(session: Session, completion: @Sendable @escaping (RetryResult) -> Void) {
         guard !isRefreshing else { return }
         isRefreshing = true
         
@@ -200,7 +204,9 @@ class OAuthTokenManager: OAuthInterceptor {
                 switch result {
                 case .value(let tokens):
                     self.mode = .accessRefreshToken(clientId: clientId, clientSecret: clientSecret, tokens: DracoonTokens(oAuthTokens: tokens))
-                    self.delegate?.tokenChanged(accessToken: tokens.access_token, refreshToken: tokens.refresh_token)
+                    self.dispatchQueue.sync {
+                        self.delegate?.tokenChanged(accessToken: tokens.access_token, refreshToken: tokens.refresh_token)
+                    }
                     completion(.retry)
                 case .error(let error):
                     switch error {
@@ -211,7 +217,9 @@ class OAuthTokenManager: OAuthInterceptor {
                         break
                     default: break
                     }
-                    self.delegate?.tokenRefreshFailed(error: error)
+                    self.dispatchQueue.sync {
+                        self.delegate?.tokenRefreshFailed(error: error)
+                    }
                     completion(.doNotRetry)
                 }
                 self.isRefreshing = false
@@ -221,7 +229,9 @@ class OAuthTokenManager: OAuthInterceptor {
                 switch result {
                 case .value(let tokens):
                     self.mode = .accessRefreshToken(clientId: clientId, clientSecret: clientSecret,tokens: DracoonTokens(oAuthTokens: tokens))
-                    self.delegate?.tokenChanged(accessToken: tokens.access_token, refreshToken: tokens.refresh_token)
+                    self.dispatchQueue.sync {
+                        self.delegate?.tokenChanged(accessToken: tokens.access_token, refreshToken: tokens.refresh_token)
+                    }
                     completion(.retry)
                 case .error:
                     completion(.doNotRetry)
@@ -231,6 +241,12 @@ class OAuthTokenManager: OAuthInterceptor {
         case .accessToken:
             completion(.doNotRetry)
             self.isRefreshing = false
+        }
+    }
+    
+    private func callTokenRevocationError(_ error: DracoonError?) {
+        self.dispatchQueue.sync {
+            self.delegate?.tokenRevocationResult(error: error)
         }
     }
 }

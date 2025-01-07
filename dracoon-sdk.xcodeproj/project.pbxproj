@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,6 +19,7 @@
 		DB09660B2A2F4398003A00BB /* RoomPolicies.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB09660A2A2F4398003A00BB /* RoomPolicies.swift */; };
 		DB10205828324496004D8525 /* DracoonOAuthClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB10205728324495004D8525 /* DracoonOAuthClientTests.swift */; };
 		DB3FEBA829CC391000211655 /* ApiRequestConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3FEBA729CC391000211655 /* ApiRequestConstants.swift */; };
+		DB516EE32CC63AA6002F5035 /* TestState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB516EE22CC63A9F002F5035 /* TestState.swift */; };
 		DB5BDD0D282E53850042E726 /* OAuthErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB5BDD0C282E53850042E726 /* OAuthErrorModel.swift */; };
 		DB7442AE27D1FC2000CD0064 /* DracoonSubscriptionsImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7442AD27D1FC2000CD0064 /* DracoonSubscriptionsImpl.swift */; };
 		DB7442B027D1FCBA00CD0064 /* SubscribedDownloadShareList.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7442AF27D1FCBA00CD0064 /* SubscribedDownloadShareList.swift */; };
@@ -219,8 +220,13 @@
 		E0C7A14122CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14022CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift */; };
 		E0C7A14322CBBDAE003D2141 /* PresignedUrlList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14222CBBDAE003D2141 /* PresignedUrlList.swift */; };
 		E0C7A14522CBBE11003D2141 /* PresignedUrl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0C7A14422CBBE11003D2141 /* PresignedUrl.swift */; };
+		E0D456642D12AFD9006B3011 /* FileDownloadProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D456632D12AF9E006B3011 /* FileDownloadProperties.swift */; };
+		E0D456662D1306E0006B3011 /* FileUploadProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D456652D1306D9006B3011 /* FileUploadProperties.swift */; };
+		E0D456682D1306F5006B3011 /* S3FileUploadProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D456672D1306EC006B3011 /* S3FileUploadProperties.swift */; };
 		E0D695032382F8EB00D39A42 /* AttributesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D695022382F8EB00D39A42 /* AttributesResponse.swift */; };
 		E0D695052382FC8400D39A42 /* ProfileAttributesRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D695042382FC8400D39A42 /* ProfileAttributesRequest.swift */; };
+		E0ED34D62D105A260040136C /* DracoonTransferStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0ED34D52D105A1E0040136C /* DracoonTransferStorage.swift */; };
+		E0ED34D82D1066EA0040136C /* DracoonTransferStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0ED34D72D1066DC0040136C /* DracoonTransferStorageTests.swift */; };
 		E0F5DF3822EEF4E000844012 /* DracoonCryptoMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5DF3722EEF4E000844012 /* DracoonCryptoMock.swift */; };
 		E0F5DF3C22EF259B00844012 /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5DF3B22EF259B00844012 /* FileUtils.swift */; };
 		E0F5DF3E22EF31A300844012 /* ValidatorUtilsMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F5DF3D22EF31A300844012 /* ValidatorUtilsMock.swift */; };
@@ -253,6 +259,7 @@
 		DB09660A2A2F4398003A00BB /* RoomPolicies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomPolicies.swift; sourceTree = "<group>"; };
 		DB10205728324495004D8525 /* DracoonOAuthClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonOAuthClientTests.swift; sourceTree = "<group>"; };
 		DB3FEBA729CC391000211655 /* ApiRequestConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiRequestConstants.swift; sourceTree = "<group>"; };
+		DB516EE22CC63A9F002F5035 /* TestState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestState.swift; sourceTree = "<group>"; };
 		DB5BDD0C282E53850042E726 /* OAuthErrorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthErrorModel.swift; sourceTree = "<group>"; };
 		DB7442AD27D1FC2000CD0064 /* DracoonSubscriptionsImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonSubscriptionsImpl.swift; sourceTree = "<group>"; };
 		DB7442AF27D1FCBA00CD0064 /* SubscribedDownloadShareList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribedDownloadShareList.swift; sourceTree = "<group>"; };
@@ -451,13 +458,19 @@
 		E0B0EC832566BC1D006B2D65 /* CommentList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentList.swift; sourceTree = "<group>"; };
 		E0B0EC892566CE64006B2D65 /* CreateNodeCommentRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNodeCommentRequest.swift; sourceTree = "<group>"; };
 		E0B0EC8D2566DA86006B2D65 /* ChangeNodeCommentRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeNodeCommentRequest.swift; sourceTree = "<group>"; };
+		E0B3522B2D2837D500AC3701 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUpload.swift; sourceTree = "<group>"; };
 		E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonUpload.swift; sourceTree = "<group>"; };
 		E0C7A14022CBBB61003D2141 /* GeneratePresignedUrlsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePresignedUrlsRequest.swift; sourceTree = "<group>"; };
 		E0C7A14222CBBDAE003D2141 /* PresignedUrlList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresignedUrlList.swift; sourceTree = "<group>"; };
 		E0C7A14422CBBE11003D2141 /* PresignedUrl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresignedUrl.swift; sourceTree = "<group>"; };
+		E0D456632D12AF9E006B3011 /* FileDownloadProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDownloadProperties.swift; sourceTree = "<group>"; };
+		E0D456652D1306D9006B3011 /* FileUploadProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUploadProperties.swift; sourceTree = "<group>"; };
+		E0D456672D1306EC006B3011 /* S3FileUploadProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = S3FileUploadProperties.swift; sourceTree = "<group>"; };
 		E0D695022382F8EB00D39A42 /* AttributesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttributesResponse.swift; sourceTree = "<group>"; };
 		E0D695042382FC8400D39A42 /* ProfileAttributesRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileAttributesRequest.swift; sourceTree = "<group>"; };
+		E0ED34D52D105A1E0040136C /* DracoonTransferStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonTransferStorage.swift; sourceTree = "<group>"; };
+		E0ED34D72D1066DC0040136C /* DracoonTransferStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonTransferStorageTests.swift; sourceTree = "<group>"; };
 		E0F5DF3722EEF4E000844012 /* DracoonCryptoMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DracoonCryptoMock.swift; sourceTree = "<group>"; };
 		E0F5DF3B22EF259B00844012 /* FileUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtils.swift; sourceTree = "<group>"; };
 		E0F5DF3D22EF31A300844012 /* ValidatorUtilsMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatorUtilsMock.swift; sourceTree = "<group>"; };
@@ -491,27 +504,31 @@
 		8496F3AF205919D8000EE909 /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				8496F3B82059206E000EE909 /* util */,
-				8496F3B020591B16000EE909 /* DracoonClientImpl.swift */,
+				E01C7A1820F5065900BBC518 /* DownloadCallback.swift */,
 				E0AA72EE2089EE3C001BC290 /* DracoonAccountImpl.swift */,
+				E0146C192231263100781246 /* DracoonApiCode.swift */,
+				8496F3B020591B16000EE909 /* DracoonClientImpl.swift */,
 				E0107DC52163A19E008AAE6C /* DracoonConfigImpl.swift */,
-				8496F3B220591C53000EE909 /* DracoonServerImpl.swift */,
-				8496F3C1205C0BB6000EE909 /* DracoonSharesImpl.swift */,
-				8496F3B620591D2D000EE909 /* DracoonNodesImpl.swift */,
-				E03F595425D1A4C400CD9F33 /* DracoonUsersImpl.swift */,
-				DB7442AD27D1FC2000CD0064 /* DracoonSubscriptionsImpl.swift */,
 				E02CB9E2205AAF8100E29948 /* DracoonConstants.swift */,
 				8496F3BF205AB32B000EE909 /* DracoonError.swift */,
 				E0146C172231223200781246 /* DracoonErrorParser.swift */,
-				E0146C192231263100781246 /* DracoonApiCode.swift */,
-				E01C7A1820F5065900BBC518 /* DownloadCallback.swift */,
-				E01C7A1A20F62DFF00BBC518 /* UploadCallback.swift */,
+				8496F3B620591D2D000EE909 /* DracoonNodesImpl.swift */,
 				E030CDFA20FCBEC0001DEB31 /* DracoonRequestConfig.swift */,
+				8496F3B220591C53000EE909 /* DracoonServerImpl.swift */,
 				DE52662D21AFF2AB00050482 /* DracoonSettingsImpl.swift */,
-				E030CDFC20FCF03F001DEB31 /* FileDownload.swift */,
-				E0AA72EA2089DD0B001BC290 /* FileUpload.swift */,
-				E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */,
+				8496F3C1205C0BB6000EE909 /* DracoonSharesImpl.swift */,
+				DB7442AD27D1FC2000CD0064 /* DracoonSubscriptionsImpl.swift */,
+				E0ED34D52D105A1E0040136C /* DracoonTransferStorage.swift */,
 				E0C7A13E22CBB44F003D2141 /* DracoonUpload.swift */,
+				E03F595425D1A4C400CD9F33 /* DracoonUsersImpl.swift */,
+				E030CDFC20FCF03F001DEB31 /* FileDownload.swift */,
+				E0D456632D12AF9E006B3011 /* FileDownloadProperties.swift */,
+				E0AA72EA2089DD0B001BC290 /* FileUpload.swift */,
+				E0D456652D1306D9006B3011 /* FileUploadProperties.swift */,
+				E0C7A13C22CBB2A2003D2141 /* S3FileUpload.swift */,
+				E0D456672D1306EC006B3011 /* S3FileUploadProperties.swift */,
+				E01C7A1A20F62DFF00BBC518 /* UploadCallback.swift */,
+				8496F3B82059206E000EE909 /* util */,
 			);
 			path = Internal;
 			sourceTree = "<group>";
@@ -540,6 +557,7 @@
 		E00066FB2057C6CD009CDA70 = {
 			isa = PBXGroup;
 			children = (
+				E0B3522B2D2837D500AC3701 /* PrivacyInfo.xcprivacy */,
 				E089B0D721B02A0F00442207 /* Supporting Files */,
 				E00067072057C6CD009CDA70 /* dracoon-sdk */,
 				E0AD90EF22E85B3000741634 /* dracoon-sdk-tests */,
@@ -776,6 +794,7 @@
 				E03F595E25D1B28700CD9F33 /* DracoonUsersTests.swift */,
 				DBDE45F227E3285D00A6243B /* DracoonSubscriptionTests.swift */,
 				E0AD911A22EA026B00741634 /* DracoonSdkTestCase.swift */,
+				E0ED34D72D1066DC0040136C /* DracoonTransferStorageTests.swift */,
 				E0945A3322F08B8C00C803F9 /* DracoonApiCodeTests.swift */,
 				E0A9E11822EB28E4000C63DD /* DracoonErrorParserTest.swift */,
 				E033135F22F43EB100A09E7F /* DracoonValidatorTests.swift */,
@@ -787,6 +806,7 @@
 		E0AD911922EA01EA00741634 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				DB516EE22CC63A9F002F5035 /* TestState.swift */,
 				E0AD90F922E85E9800741634 /* MockURLProtocol.swift */,
 				E0F5DF4122EF380D00844012 /* TestQueue.swift */,
 				E0AD90FD22E877C600741634 /* OAuthTokenManagerMock.swift */,
@@ -863,7 +883,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1030;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = Dracoon;
 				TargetAttributes = {
 					E00067042057C6CD009CDA70 = {
@@ -877,7 +897,6 @@
 				};
 			};
 			buildConfigurationList = E00066FF2057C6CD009CDA70 /* Build configuration list for PBXProject "dracoon-sdk" */;
-			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -885,6 +904,7 @@
 				Base,
 			);
 			mainGroup = E00066FB2057C6CD009CDA70;
+			preferredProjectObjectVersion = 77;
 			productRefGroup = E00067062057C6CD009CDA70 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -915,6 +935,7 @@
 				E00067DA2057D0BC009CDA70 /* S3Config.swift in Sources */,
 				DE52662A21AFCF3800050482 /* CustomerSettingsResponse.swift in Sources */,
 				DB3FEBA829CC391000211655 /* ApiRequestConstants.swift in Sources */,
+				E0D456642D12AFD9006B3011 /* FileDownloadProperties.swift in Sources */,
 				E00068372057D0BC009CDA70 /* GroupList.swift in Sources */,
 				E01C7A1920F5065900BBC518 /* DownloadCallback.swift in Sources */,
 				E00068142057D0BC009CDA70 /* GroupUserList.swift in Sources */,
@@ -1030,6 +1051,7 @@
 				E00068362057D0BC009CDA70 /* S3ConfigCreateRequest.swift in Sources */,
 				E00068302057D0BC009CDA70 /* MissingKeysResponse.swift in Sources */,
 				E05A60A322CCDDB400DF7418 /* S3FileUploadStatus.swift in Sources */,
+				E0D456662D1306E0006B3011 /* FileUploadProperties.swift in Sources */,
 				E0AA72EB2089DD0B001BC290 /* FileUpload.swift in Sources */,
 				E00068272057D0BC009CDA70 /* Role.swift in Sources */,
 				E000683D2057D0BC009CDA70 /* UserGroup.swift in Sources */,
@@ -1069,6 +1091,7 @@
 				E07D1D202456CBE600AAF8CE /* PasswordPoliciesConfig.swift in Sources */,
 				E00068082057D0BC009CDA70 /* Customer.swift in Sources */,
 				E00067D42057D0BC009CDA70 /* EncryptRoomRequest.swift in Sources */,
+				E0ED34D62D105A260040136C /* DracoonTransferStorage.swift in Sources */,
 				DB8D51BA26C3BC0B002F50B6 /* ClassificationPoliciesConfig.swift in Sources */,
 				E00067CE2057D0BC009CDA70 /* PublicKeyContainer.swift in Sources */,
 				E00068842057DF8C009CDA70 /* ValidatorUtils.swift in Sources */,
@@ -1076,6 +1099,7 @@
 				E000685B2057D0BC009CDA70 /* PublicDownloadTokenGenerateRequest.swift in Sources */,
 				DBBA64012A2F330C0096EB6F /* NodeVirusProtectionInfo.swift in Sources */,
 				E000686B2057D0BC009CDA70 /* RoleGroupList.swift in Sources */,
+				E0D456682D1306F5006B3011 /* S3FileUploadProperties.swift in Sources */,
 				8496F3C0205AB32B000EE909 /* DracoonError.swift in Sources */,
 				E00067E42057D0BC009CDA70 /* SdsServerTime.swift in Sources */,
 				E00068672057D0BC009CDA70 /* UserAuthMethod.swift in Sources */,
@@ -1104,6 +1128,7 @@
 				E0A9E11922EB28E4000C63DD /* DracoonErrorParserTest.swift in Sources */,
 				E07CF14424B4B7210046A3E0 /* DracoonServerMock.swift in Sources */,
 				E0AD911F22EA049300741634 /* DracoonAccountMock.swift in Sources */,
+				DB516EE32CC63AA6002F5035 /* TestState.swift in Sources */,
 				DBDE45F327E3285D00A6243B /* DracoonSubscriptionTests.swift in Sources */,
 				E033136022F43EB100A09E7F /* DracoonValidatorTests.swift in Sources */,
 				E0945A2E22F067C300C803F9 /* DracoonSharesTests.swift in Sources */,
@@ -1112,6 +1137,7 @@
 				E0945A3022F0682200C803F9 /* DracoonNodesMock.swift in Sources */,
 				E0AD90FE22E877C600741634 /* OAuthTokenManagerMock.swift in Sources */,
 				E050B18822F9BC94001AE3D7 /* DracoonConfigMock.swift in Sources */,
+				E0ED34D82D1066EA0040136C /* DracoonTransferStorageTests.swift in Sources */,
 				E0F5DF4022EF320200844012 /* FileUtilsMock.swift in Sources */,
 				E0F5DF3E22EF31A300844012 /* ValidatorUtilsMock.swift in Sources */,
 				E0945A3422F08B8C00C803F9 /* DracoonApiCodeTests.swift in Sources */,
@@ -1198,13 +1224,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 2.7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = 3.0.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1258,12 +1285,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				MARKETING_VERSION = 2.7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				MARKETING_VERSION = 3.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1287,13 +1315,13 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.7.0;
+				MARKETING_VERSION = 3.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk";
@@ -1301,7 +1329,7 @@
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1323,20 +1351,20 @@
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "$(SRCROOT)/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.7.0;
+				MARKETING_VERSION = 3.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk";
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = NO;
 				SUPPORTS_MACCATALYST = NO;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -1349,7 +1377,7 @@
 				DEVELOPMENT_TEAM = DCJ6BPJV88;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "dracoon-sdk-tests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1361,7 +1389,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1374,7 +1402,7 @@
 				DEVELOPMENT_TEAM = DCJ6BPJV88;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "dracoon-sdk-tests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1385,7 +1413,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.dracoon.dracoon-sdk-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

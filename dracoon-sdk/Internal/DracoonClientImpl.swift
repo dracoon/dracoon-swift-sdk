@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 import crypto_sdk
 
-public class DracoonClientImpl: DracoonClient {
+public final class DracoonClientImpl: DracoonClient, Sendable {
     
     /// Initializes a DracoonClient
     ///
@@ -25,7 +25,7 @@ public class DracoonClientImpl: DracoonClient {
     ///   - rateLimitCallback: The [RateLimitAppliedDelegate](x-source-tag://RateLimitAppliedDelegate) informs about rate limit changes.
     public init(serverUrl: URL,
                 authMode: DracoonAuthMode,
-                getEncryptionPassword: @escaping () -> String?,
+                getEncryptionPassword: @Sendable @escaping () -> String?,
                 sessionConfiguration: URLSessionConfiguration = URLSessionConfiguration.default,
                 oauthClient: OAuthClient? = nil,
                 oauthCallback: OAuthTokenChangedDelegate? = nil,
@@ -87,25 +87,25 @@ public class DracoonClientImpl: DracoonClient {
     
     let rateLimitInterceptor: RateLimitInterceptor
     
-    public var server: DracoonServer
+    public let server: DracoonServer
     
-    public var account: DracoonAccount
+    public let account: DracoonAccount
     
-    public var config: DracoonConfig
+    public let config: DracoonConfig
     
-    public var users: DracoonUsers
+    public let users: DracoonUsers
     
-    public var groups: DracoonGroups
+    public let groups: DracoonGroups
     
-    public var nodes: DracoonNodes
+    public let nodes: DracoonNodes
     
-    public var shares: DracoonShares
+    public let shares: DracoonShares
     
-    public var settings: DracoonSettings
+    public let settings: DracoonSettings
     
-    public var subscriptions: DracoonSubscriptions
+    public let subscriptions: DracoonSubscriptions
     
-    class NotImplementedYet: DracoonGroups {
+    final class NotImplementedYet: DracoonGroups, Sendable {
     }
     
     public func getAccessToken() -> String? {

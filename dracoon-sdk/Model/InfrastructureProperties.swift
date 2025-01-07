@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: InfrastructureProperties
-public struct InfrastructureProperties: Codable {
+public struct InfrastructureProperties: Codable, Sendable {
 
     /** Allow sending of share passwords via SMS */
     public var smsConfigEnabled: Bool?

@@ -23,8 +23,9 @@ class DracoonNodesTests: DracoonSdkTestCase {
         let configMock = DracoonConfigMock()
         configMock.generalSettingsResponse = GeneralSettings(sharePasswordSmsEnabled: nil, cryptoEnabled: nil, emailNotificationButtonEnabled: nil, eulaEnabled: nil, weakPasswordEnabled: nil, useS3Storage: false, mediaServerEnabled: nil)
         
+        let password = self.encryptionPassword
         self.nodes = DracoonNodesImpl(requestConfig: self.requestConfig, crypto: self.crypto, account: DracoonAccountMock(), config: configMock, getEncryptionPassword: {
-            return self.encryptionPassword
+            return password
         })
     }
     
@@ -34,14 +35,14 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.setResponseModel(NodeList.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns NodeList")
-        var calledValue = false
+        let testState = TestState()
         
         self.nodes.getNodes(parentNodeId: 0, limit: nil, offset: nil, completion: { result in
             switch result {
             case .error(_):
                 break
             case.value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
@@ -49,21 +50,21 @@ class DracoonNodesTests: DracoonSdkTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testGetNode_returnsNode() {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns Node")
-        var calledValue = false
+        let testState = TestState()
         
         self.nodes.getNode(nodeId: 42, completion: { result in
             switch result {
             case .error(_):
                 break
             case.value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
@@ -71,21 +72,21 @@ class DracoonNodesTests: DracoonSdkTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testGetNodeWithPath_returnsNode() {
 
         self.setResponseModel(NodeList.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns NodeList")
-        var calledValue = false
+        let testState = TestState()
         
         self.nodes.getNode(nodePath: "/root/name", completion: { result in
             switch result {
             case .error(_):
                 break
             case.value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
@@ -93,7 +94,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         })
 
         XCTWaiter().wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     // MARK: Rooms
@@ -102,7 +103,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns node")
-        var calledValue = false
+        let testState = TestState()
         
         let request = CreateRoomRequest(name: "TestRoom")
         self.nodes.createRoom(request: request, completion: { result in
@@ -110,7 +111,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             case .error(_):
                 break
             case.value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
@@ -118,14 +119,14 @@ class DracoonNodesTests: DracoonSdkTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testUpdateRoom() {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns node")
-        var calledValue = false
+        let testState = TestState()
         
         let request = UpdateRoomRequest()
         self.nodes.updateRoom(roomId: 42, request: request, completion: { result in
@@ -133,20 +134,20 @@ class DracoonNodesTests: DracoonSdkTestCase {
             case .error(_):
                 break
             case.value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testUpdateRoomConfig() {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns node")
-        var calledValue = false
+        let testState = TestState()
         
         let request = ConfigRoomRequest()
         self.nodes.updateRoomConfig(roomId: 42, request: request, completion: { result in
@@ -154,13 +155,13 @@ class DracoonNodesTests: DracoonSdkTestCase {
             case .error(_):
                 break
             case.value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     // MARK: Folders
@@ -169,7 +170,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns node")
-        var calledValue = false
+        let testState = TestState()
         
         let request = CreateFolderRequest(parentId: 42, name: "TestFolder")
         self.nodes.createFolder(request: request, completion: { result in
@@ -177,7 +178,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
             case .error(_):
                 break
             case.value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
@@ -185,14 +186,14 @@ class DracoonNodesTests: DracoonSdkTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testUpdateFolder() {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns node")
-        var calledValue = false
+        let testState = TestState()
         
         let request = UpdateFolderRequest()
         self.nodes.updateFolder(folderId: 42, request: request, completion: { result in
@@ -200,14 +201,14 @@ class DracoonNodesTests: DracoonSdkTestCase {
             case .error(_):
                 break
             case.value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     // MARK: Files
@@ -216,7 +217,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns node")
-        var calledValue = false
+        let testState = TestState()
         
         let request = UpdateFileRequest()
         self.nodes.updateFile(fileId: 42, request: request, completion: { result in
@@ -224,39 +225,40 @@ class DracoonNodesTests: DracoonSdkTestCase {
             case .error(_):
                 break
             case.value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testDeleteNodes() {
         
         MockURLProtocol.response(with: 204)
         let expectation = XCTestExpectation(description: "Returns without error")
-        var calledError = true
+        let testState = TestState()
+        testState.onErrorCalled = true
         
         let request = DeleteNodesRequest(nodeIds: [41, 42])
         self.nodes.deleteNodes(request: request, completion: { response in
             if response.error == nil {
-                calledError = false
+                testState.onErrorCalled = false
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertFalse(calledError)
+        XCTAssertFalse(testState.onErrorCalled)
     }
     
     func testCopyNodes() {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns node")
-        var calledValue = false
+        let testState = TestState()
         
         let request = CopyNodesRequest(items: [CopyNode(nodeId: 42, name: "testNode")], resolutionStrategy: .autorename, keepShareLinks: true)
         self.nodes.copyNodes(nodeId: 43, request: request, completion: { result in
@@ -264,21 +266,21 @@ class DracoonNodesTests: DracoonSdkTestCase {
             case .error(_):
                 break
             case .value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testMoveNodes() {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns node")
-        var calledValue = false
+        let testState = TestState()
         
         let request = MoveNodesRequest(items: [MoveNode(nodeId: 42, name: "testNode")], resolutionStrategy: .autorename, keepShareLinks: true)
         self.nodes.moveNodes(nodeId: 43, request: request, completion: { result in
@@ -286,14 +288,14 @@ class DracoonNodesTests: DracoonSdkTestCase {
             case .error(_):
                 break
             case .value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     // MARK: Upload
@@ -541,42 +543,42 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.setResponseModel(NodeList.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns NodeList")
-        var calledValue = false
+        let testState = TestState()
         
         self.nodes.searchNodes(parentNodeId: 42, searchString: "searchString", offset: nil, limit: nil, completion: { result in
             switch result {
             case .error(_):
                 break
             case .value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testSearchNodesWithDepth() {
         
         self.setResponseModel(NodeList.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns NodeList")
-        var calledValue = false
+        let testState = TestState()
         
         self.nodes.searchNodes(parentNodeId: 42, searchString: "searchString", depthLevel: 0, filter: nil, offset: nil, limit: nil, completion: { result in
             switch result {
             case .error(_):
                 break
             case .value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     // MARK: Favourites
@@ -585,7 +587,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.setResponseModel(NodeList.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns NodeList")
-        var calledValue = false
+        let testState = TestState()
         
         self.nodes.getFavorites(completion: {
             result in
@@ -593,52 +595,53 @@ class DracoonNodesTests: DracoonSdkTestCase {
             case .error(_):
                 break
             case .value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testSetFavourites() {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns node")
-        var calledValue = false
+        let testState = TestState()
         
         self.nodes.setFavorite(nodeId: 42, completion: { result in
             switch result {
             case .error(_):
                 break
             case .value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testDeleteFavourite() {
         
         MockURLProtocol.response(with: 204)
         let expectation = XCTestExpectation(description: "Returns without error")
-        var calledError = true
+        let testState = TestState()
+        testState.onErrorCalled = true
         
         self.nodes.removeFavorite(nodeId: 42, completion: { response in
             if response.error == nil {
-                calledError = false
+                testState.onErrorCalled = false
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertFalse(calledError)
+        XCTAssertFalse(testState.onErrorCalled)
     }
     
     // MARK: Anti-virus protection
@@ -647,52 +650,53 @@ class DracoonNodesTests: DracoonSdkTestCase {
         
         self.setResponseModel(VirusProtectionVerdictResponse.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns VirusProtectionVerdictResponse")
-        var calledValue = false
+        let testState = TestState()
         
         self.nodes.generateVirusProtectionVerdict(for: [42], completion: { result in
             switch result {
             case .error(_):
                 break
             case .value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testDeleteMaliciousFilePermanently_returnsResponse() {
         
         MockURLProtocol.response(with: 204)
         let expectation = XCTestExpectation(description: "Returns without error")
-        var calledError = true
+        let testState = TestState()
+        testState.onErrorCalled = true
         
         self.nodes.deleteMaliciousFilePermanently(nodeId: 42, completion: { response in
             if response.error == nil {
-                calledError = false
+                testState.onErrorCalled = false
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertFalse(calledError)
+        XCTAssertFalse(testState.onErrorCalled)
     }
     
     func testGetRoomPolicies_returnsRoomPolicies() {
         
         self.setResponseModel(RoomPolicies.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns RoomPolicies")
-        var calledValue = false
+        let testState = TestState()
         
         self.nodes.getRoomPolicies(roomId: 42, completion: { result in
             switch result {
             case .error(_):
                 break
             case.value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
@@ -700,7 +704,7 @@ class DracoonNodesTests: DracoonSdkTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
 }

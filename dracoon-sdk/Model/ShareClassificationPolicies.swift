@@ -10,7 +10,7 @@ import Foundation
 
 import Foundation
 
-public struct ShareClassificationPolicies: Codable {
+public struct ShareClassificationPolicies: Codable, Sendable {
     
     /**
      Minimum classification that causes download shares to require a password. 0 means no password will be enforced.

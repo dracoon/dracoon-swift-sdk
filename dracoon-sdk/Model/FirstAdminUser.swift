@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct FirstAdminUser: Codable {
+public struct FirstAdminUser: Codable, Sendable {
 
     /** User first name */
     public var firstName: String
@@ -52,7 +52,7 @@ public struct FirstAdminUser: Codable {
      Gender */
     public var gender: Gender?
     
-    public enum Gender: String, Codable {
+    public enum Gender: String, Codable, Sendable {
         case m = "m"
         case f = "f"
         case n = "n"

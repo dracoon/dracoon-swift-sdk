@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct ObjectExpiration: Codable {
+public struct ObjectExpiration: Codable, Sendable {
 
     /** enabled / disabled */
     public var enableExpiration: Bool

@@ -36,14 +36,14 @@ class DracoonOAuthClientTests: XCTestCase {
         let tokens = OAuthTokens(access_token: "access", token_type: "type", refresh_token: "refresh", expires_in: 3600, scope: "")
         MockURLProtocol.responseWithModel(OAuthTokens.self, model: tokens, statusCode: 200)
         
-        
         let expectation = XCTestExpectation(description: "Returns OAuthTokens")
-        var gotNonErrorResponse = false
+        let testState = TestState()
+        testState.onErrorCalled = true
         
         self.oAuthClient.getAccessToken(session: self.testSession, clientId: "validId", clientSecret: "validSecret", code: "validCode", completion: { result in
             switch result {
             case .value(let response):
-                gotNonErrorResponse = true
+                testState.onErrorCalled = false
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             case .error(_):
@@ -53,7 +53,7 @@ class DracoonOAuthClientTests: XCTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(gotNonErrorResponse)
+        XCTAssertFalse(testState.onErrorCalled)
     }
     
     func testRefreshAccessToken_withValidParameters_returnsTokens() {
@@ -61,14 +61,14 @@ class DracoonOAuthClientTests: XCTestCase {
         let tokens = OAuthTokens(access_token: "access", token_type: "type", refresh_token: "refresh", expires_in: 3600, scope: "")
         MockURLProtocol.responseWithModel(OAuthTokens.self, model: tokens, statusCode: 200)
         
-        
         let expectation = XCTestExpectation(description: "Returns OAuthTokens")
-        var gotNonErrorResponse = false
+        let testState = TestState()
+        testState.onErrorCalled = true
         
         self.oAuthClient.refreshAccessToken(session: self.testSession, clientId: "validId", clientSecret: "validSecret", refreshToken: "validRefreshToken", delegate: nil, completion: { result in
             switch result {
             case .value(let response):
-                gotNonErrorResponse = true
+                testState.onErrorCalled = false
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             case .error(_):
@@ -78,7 +78,7 @@ class DracoonOAuthClientTests: XCTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(gotNonErrorResponse)
+        XCTAssertFalse(testState.onErrorCalled)
     }
     
     func testGetAccessToken_withInvalidParameters_returnsOAuthError() {
@@ -87,7 +87,7 @@ class DracoonOAuthClientTests: XCTestCase {
         MockURLProtocol.responseWithModel(OAuthErrorModel.self, model: errorModel, statusCode: 400)
         
         let expectation = XCTestExpectation(description: "Returns OAuthError")
-        var gotErrorResponse = false
+        let testState = TestState()
         
         self.oAuthClient.getAccessToken(session: self.testSession, clientId: "invalidId", clientSecret: "invalidSecret", code: "validCode", completion: { result in
             switch result {
@@ -97,7 +97,7 @@ class DracoonOAuthClientTests: XCTestCase {
                 switch error {
                 case .oauth_error(errorModel: let returnModel):
                     XCTAssert(returnModel.getErrorCode() == errorModel.getErrorCode())
-                    gotErrorResponse = true
+                    testState.onErrorCalled = true
                 default:
                     break
                 }
@@ -106,7 +106,7 @@ class DracoonOAuthClientTests: XCTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(gotErrorResponse)
+        XCTAssertTrue(testState.onErrorCalled)
     }
     
     func testGetAccessToken_failsWithUnknownError_returnsOAuthErrorUnknown() {
@@ -115,7 +115,7 @@ class DracoonOAuthClientTests: XCTestCase {
         MockURLProtocol.response(with: testStatusCode)
         
         let expectation = XCTestExpectation(description: "Returns OAuthError")
-        var gotErrorResponse = false
+        let testState = TestState()
         
         self.oAuthClient.getAccessToken(session: self.testSession, clientId: "invalidId", clientSecret: "invalidSecret", code: "validCode", completion: { result in
             switch result {
@@ -125,7 +125,7 @@ class DracoonOAuthClientTests: XCTestCase {
                 switch error {
                 case .oauth_error_unknown(statusCode: let statusCode, description: _):
                     XCTAssert(testStatusCode == statusCode)
-                    gotErrorResponse = true
+                    testState.onErrorCalled = true
                 default:
                     break
                 }
@@ -134,7 +134,7 @@ class DracoonOAuthClientTests: XCTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(gotErrorResponse)
+        XCTAssertTrue(testState.onErrorCalled)
     }
     
     func testRefreshAccessToken_withInValidParameters_returnsOAuthError() {
@@ -143,7 +143,7 @@ class DracoonOAuthClientTests: XCTestCase {
         MockURLProtocol.responseWithModel(OAuthErrorModel.self, model: errorModel, statusCode: 400)
         
         let expectation = XCTestExpectation(description: "Returns OAuthError")
-        var gotErrorResponse = false
+        let testState = TestState()
         
         self.oAuthClient.refreshAccessToken(session: self.testSession, clientId: "validId", clientSecret: "validSecret", refreshToken: "invalidRefreshToken", delegate: nil, completion: { result in
             switch result {
@@ -153,7 +153,7 @@ class DracoonOAuthClientTests: XCTestCase {
                 switch error {
                 case .oauth_error(errorModel: let returnModel):
                     XCTAssert(returnModel.getErrorCode() == errorModel.getErrorCode())
-                    gotErrorResponse = true
+                    testState.onErrorCalled = true
                 default:
                     break
                 }
@@ -162,7 +162,7 @@ class DracoonOAuthClientTests: XCTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(gotErrorResponse)
+        XCTAssertTrue(testState.onErrorCalled)
     }
     
 }

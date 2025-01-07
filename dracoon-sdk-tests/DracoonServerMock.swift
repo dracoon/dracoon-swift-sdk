@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 @testable import dracoon_sdk
 
-class DracoonServerMock: DracoonServer {
+final class DracoonServerMock: DracoonServer, Sendable {
     
     func getServerVersion(completion: @escaping DataRequest.DecodeCompletion<SoftwareVersionData>) {
         let data = ResponseModelFactory().getTestResponseModel(SoftwareVersionData.self)!

@@ -9,7 +9,7 @@
 import Foundation
 
 /// - Tag: SubscribedNodeList
-public struct SubscribedNodeList: Codable {
+public struct SubscribedNodeList: Codable, Sendable {
     
     /** Range */
     public var range: ModelRange

@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct GroupUser: Codable {
+public struct GroupUser: Codable, Sendable {
 
     /** User information */
     public var userInfo: UserInfo

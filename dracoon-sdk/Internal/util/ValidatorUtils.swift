@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SDKValidator {
+protocol SDKValidator: Sendable {
     
     func isValid(serverUrl: URL) -> Bool
     func isValid(nodeId: Int64) -> Bool
@@ -17,7 +17,7 @@ protocol SDKValidator {
 
 class ValidatorUtils {
     
-    static var validator: SDKValidator = DracoonValidator()
+    nonisolated(unsafe) static var validator: SDKValidator = DracoonValidator()
     
     static func isValid(serverUrl: URL) -> Bool {
         return self.validator.isValid(serverUrl: serverUrl)
@@ -36,7 +36,7 @@ class ValidatorUtils {
     }
 }
 
-class DracoonValidator: SDKValidator {
+final class DracoonValidator: SDKValidator {
     
     func isValid(serverUrl: URL) -> Bool {
         let scheme = serverUrl.scheme

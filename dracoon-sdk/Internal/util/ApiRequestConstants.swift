@@ -8,30 +8,30 @@
 
 import Foundation
 
-class ApiRequestConstants {
+final class ApiRequestConstants: Sendable {
     
     static let headerFields = HeaderFieldConstants()
     
     static let apiPaths = ApiPathConstants()
 }
 
-class HeaderFieldConstants {
+final class HeaderFieldConstants: Sendable {
     
     let keys = HeaderFieldKeys()
     let values = HeaderFieldValues()
 }
 
-class HeaderFieldKeys {
+final class HeaderFieldKeys: Sendable {
     
     let contentType = "Content-Type"
 }
 
-class HeaderFieldValues {
+final class HeaderFieldValues: Sendable {
     
     let applicationJsonCharsetUTF8 = "application/json; charset=utf-8"
 }
 
-class ApiPathConstants {
+final class ApiPathConstants: Sendable {
     
     private static let userAccountPath = "/user/account"
     

@@ -9,7 +9,7 @@
 import Alamofire
 import dracoon_sdk
 
-class DracoonConfigMock: DracoonConfig {
+class DracoonConfigMock: DracoonConfig, @unchecked Sendable {
     
     var error: DracoonError?
     var systemDefaultsResponse: SystemDefaults

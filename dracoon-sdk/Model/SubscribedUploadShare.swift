@@ -9,7 +9,7 @@
 import Foundation
 
 /// - Tag: SubscribedUploadShare
-public struct SubscribedUploadShare: Codable {
+public struct SubscribedUploadShare: Codable, Sendable {
     
     /** Share ID */
     public var id: Int64

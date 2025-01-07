@@ -9,7 +9,7 @@
 import Foundation
 
 /// - Tag: Comment
-public struct Comment: Codable {
+public struct Comment: Codable, Sendable {
     
     /** Comment ID */
     public var id: Int64

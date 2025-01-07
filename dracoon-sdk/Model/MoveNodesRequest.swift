@@ -8,9 +8,9 @@
 import Foundation
 
 /// - Tag: MoveNodesRequest
-public struct MoveNodesRequest: Codable {
+public struct MoveNodesRequest: Codable, Sendable {
 
-    public enum ResolutionStrategy: String, Codable { 
+    public enum ResolutionStrategy: String, Codable, Sendable { 
         case autorename = "autorename"
         case overwrite = "overwrite"
         case fail = "fail"

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct DeleteDownloadSharesRequest: Codable {
+struct DeleteDownloadSharesRequest: Codable, Sendable {
     
     public var shareIds: [Int64]
     

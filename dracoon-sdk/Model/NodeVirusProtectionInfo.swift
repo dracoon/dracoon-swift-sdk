@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct NodeVirusProtectionInfo: Codable {
+public struct NodeVirusProtectionInfo: Codable, Sendable {
     
     public var nodeId: Int64
     public var verdict: VirusProtectionInfo.Verdict

@@ -11,7 +11,7 @@ import Alamofire
 import crypto_sdk
 @testable import dracoon_sdk
 
-class DracoonAccountMock: DracoonAccount {
+class DracoonAccountMock: DracoonAccount, @unchecked Sendable {
     
     var error: DracoonError?
     var userAccountResponse: UserAccount
@@ -118,11 +118,11 @@ class DracoonAccountMock: DracoonAccount {
         }
     }
     
-    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Result<ProfileAttributes>) -> Void) {
+    func updateProfileAttributes(request: ProfileAttributesRequest, completion: @escaping (Dracoon.Response) -> Void) {
         if let error = error {
-            completion(Dracoon.Result.error(error))
+            completion(Dracoon.Response(error:(error)))
         } else {
-            completion(Dracoon.Result.value(self.userProfileAttributes))
+            completion(Dracoon.Response(error: nil))
         }
     }
     

@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct ModelErrorResponse: Codable {
+public struct ModelErrorResponse: Codable, Sendable {
 
     /** HTTP status code */
     public var code: Int?

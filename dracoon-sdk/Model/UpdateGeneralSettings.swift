@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct UpdateGeneralSettings: Codable {
+public struct UpdateGeneralSettings: Codable, Sendable {
 
     /** Allow sending of share passwords via SMS */
     public var sharePasswordSmsEnabled: Bool?

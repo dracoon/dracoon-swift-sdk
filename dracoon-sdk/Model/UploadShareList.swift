@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: UploadShareList
-public struct UploadShareList: Codable {
+public struct UploadShareList: Codable, Sendable {
 
     /** Range */
     public var range: ModelRange

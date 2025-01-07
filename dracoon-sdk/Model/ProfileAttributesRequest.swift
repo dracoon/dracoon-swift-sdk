@@ -9,7 +9,7 @@
 import Foundation
 
 /// - Tag: ProfileAttributesRequest
-public struct ProfileAttributesRequest: Codable {
+public struct ProfileAttributesRequest: Codable, Sendable {
     
     public init(items: [KeyValueEntry]) {
         self.items = items

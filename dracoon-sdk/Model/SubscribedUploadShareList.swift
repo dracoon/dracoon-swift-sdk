@@ -9,7 +9,7 @@
 import Foundation
 
 /// - Tag: SubscribedUploadShareList
-public struct SubscribedUploadShareList: Codable {
+public struct SubscribedUploadShareList: Codable, Sendable {
     
     /** Range */
     public var range: ModelRange

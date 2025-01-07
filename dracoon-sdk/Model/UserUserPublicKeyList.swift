@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct UserUserPublicKeyList: Codable {
+public struct UserUserPublicKeyList: Codable, Sendable {
 
     /** List of user public keys */
     public var items: [UserUserPublicKey]

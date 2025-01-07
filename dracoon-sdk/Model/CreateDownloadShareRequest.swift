@@ -9,7 +9,7 @@ import Foundation
 import crypto_sdk
 
 /// - Tag: CreateDownloadShareRequest
-public struct CreateDownloadShareRequest: Codable {
+public struct CreateDownloadShareRequest: Codable, Sendable {
 
     /** Source node ID */
     public var nodeId: Int64

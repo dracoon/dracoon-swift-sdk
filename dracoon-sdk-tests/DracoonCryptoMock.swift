@@ -10,7 +10,7 @@ import Foundation
 import crypto_sdk
 @testable import dracoon_sdk
 
-class DracoonCryptoMock: CryptoProtocol {
+class DracoonCryptoMock: CryptoProtocol, @unchecked Sendable {
     
     var testError: DracoonError?
     var generateKeyPairCalled = false

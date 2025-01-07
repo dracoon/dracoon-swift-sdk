@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum PasswordCharacterRules: String, Codable {
+public enum PasswordCharacterRules: String, Codable, Sendable {
     case alpha
     case uppercase
     case lowercase
@@ -18,7 +18,7 @@ public enum PasswordCharacterRules: String, Codable {
     case none
 }
 
-public struct CharacterRules: Codable {
+public struct CharacterRules: Codable, Sendable {
     /** Characters which a password must contain:
     alpha - at least one alphabetical character (uppercase OR lowercase)
     uppercase - at least one uppercase character
@@ -40,7 +40,7 @@ public struct CharacterRules: Codable {
     }
 }
 
-public struct PasswordExpiration: Codable {
+public struct PasswordExpiration: Codable, Sendable {
     /** Determines whether password expiration is enabled */
     public var enabled: Bool
     /** Maximum allowed password age (in days) */
@@ -52,7 +52,7 @@ public struct PasswordExpiration: Codable {
     }
 }
 
-public struct UserLockout: Codable {
+public struct UserLockout: Codable, Sendable {
     /** Determines whether user lockout is enabled */
     public var enabled: Bool
     /** Maximum allowed number of failed login attempts */
@@ -68,7 +68,7 @@ public struct UserLockout: Codable {
 }
 
 /// - Tag: PasswordPoliciesConfig
-public struct PasswordPoliciesConfig: Codable {
+public struct PasswordPoliciesConfig: Codable, Sendable {
     public var loginPasswordPolicies: LoginPasswordPolicies?
     public var sharesPasswordPolicies: SharesPasswordPolicies?
     public var encryptionPasswordPolicies: EncryptionPasswordPolicies?

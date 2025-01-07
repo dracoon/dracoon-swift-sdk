@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct S3ConfigUpdateRequest: Codable {
+public struct S3ConfigUpdateRequest: Codable, Sendable {
 
     /** S3 object storage endpoint URL */
     public var endpointUrl: String?

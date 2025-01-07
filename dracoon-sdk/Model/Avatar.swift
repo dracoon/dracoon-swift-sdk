@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: Avatar
-public struct Avatar: Codable {
+public struct Avatar: Codable, Sendable {
     
     /** Download URI of avatar */
     public var avatarUri: String

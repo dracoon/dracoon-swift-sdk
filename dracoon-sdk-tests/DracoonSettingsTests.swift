@@ -25,35 +25,35 @@ class DracoonSettingsTests: DracoonSdkTestCase {
         
         self.setResponseModel(CustomerSettingsResponse.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns CustomerSettingsResponse")
-        var calledValue = false
+        let testState = TestState()
         
         self.settings.getServerSettings(completion: { result in
             switch result {
             case .error(_):
                 break
             case .value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testGetCustomerSettings_withUnexpectedReturnModel_returnsDecodeError() {
         
         self.setResponseModel(Node.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns error")
-        var calledError = false
+        let testState = TestState()
         
         self.settings.getServerSettings(completion: { result in
             switch result {
             case .error(let error):
                 switch error {
                 case .decode(error: _, statusCode: _):
-                    calledError = true
+                    testState.onErrorCalled = true
                     expectation.fulfill()
                 default:
                     break
@@ -65,14 +65,14 @@ class DracoonSettingsTests: DracoonSdkTestCase {
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledError)
+        XCTAssertTrue(testState.onErrorCalled)
     }
     
     func testUpdateCustomerSettings() {
         
         self.setResponseModel(CustomerSettingsResponse.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns CustomerSettingsResponse")
-        var calledValue = false
+        let testState = TestState()
         
         let request = CustomerSettingsRequest(homeRoomParentName: "home", homeRoomQuota: 5000000000, homeRoomsActive: true)
         
@@ -81,13 +81,13 @@ class DracoonSettingsTests: DracoonSdkTestCase {
             case .error(_):
                 break
             case .value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
 }

@@ -8,9 +8,9 @@
 import Foundation
 
 /// - Tag: CreateFileUploadRequest
-public struct CreateFileUploadRequest: Codable {
+public struct CreateFileUploadRequest: Codable, Sendable {
 
-    public enum Classification: Int, Codable { 
+    public enum Classification: Int, Codable, Sendable {
         case PUBLIC = 1
         case INTERNAL_USE = 2
         case CONFIDENTAL = 3

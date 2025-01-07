@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum DracoonError: Error {
+public enum DracoonError: Error, Sendable {
     case api(error: DracoonSDKErrorModel)
     case encode(error: Error)
     case decode(error: Error, statusCode: Int?)
@@ -44,7 +44,7 @@ public enum DracoonError: Error {
      NSURLErrorCancelledReasonUserForceQuitApplication
      NSURLErrorCancelledReasonBackgroundUpdatesDisabled
      NSURLErrorCancelledReasonInsufficientSystemResources */
-    case background_download_cancelled(reason: Int, userInfo: [String: Any])
+    case background_download_cancelled(reason: Int, userInfo: [String: Sendable])
     
     case authorization_code_flow_in_progress(clientId: String, clientSecret: String, authorizationCode: String)
     case authorization_token_expired

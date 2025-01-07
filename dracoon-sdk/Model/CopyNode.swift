@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct CopyNode: Codable {
+public struct CopyNode: Codable, Sendable {
 
     /** Source node ID */
     public var _id: Int64

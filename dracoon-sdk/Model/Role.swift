@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct Role: Codable {
+public struct Role: Codable, Sendable {
     
     public init(id: Int, name: String, description: String) {
         self._id = id

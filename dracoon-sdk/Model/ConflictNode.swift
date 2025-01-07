@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct ConflictNode: Codable {
+public struct ConflictNode: Codable, Sendable {
 
     /** Node ID */
     public var nodeId: Int64?

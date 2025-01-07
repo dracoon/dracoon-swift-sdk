@@ -15,12 +15,16 @@ public protocol RateLimitInterceptor : RequestInterceptor {
     func restoreExpirationDate(_ date: Date)
 }
 
-class RateLimitManager: RateLimitInterceptor {
+class RateLimitManager: RateLimitInterceptor, @unchecked Sendable {
     
-    weak var delegate: RateLimitAppliedDelegate?
+    private let dispatchQueue = DispatchQueue(label: "com.dracoon.rateLimitManager")
+    
+    private weak var delegate: RateLimitAppliedDelegate?
     
     func setRateLimitAppliedDelegate(_ delegate: RateLimitAppliedDelegate?) {
-        self.delegate = delegate
+        self.dispatchQueue.sync {
+            self.delegate = delegate
+        }
     }
     
     func restoreExpirationDate(_ date: Date) {
@@ -60,7 +64,9 @@ class RateLimitManager: RateLimitInterceptor {
         } else {
             completion(.doNotRetry)
         }
-        self.delegate?.rateLimitApplied(expirationDate: Date(timeIntervalSinceNow: TimeInterval(waitingTimeSeconds)))
+        self.dispatchQueue.sync {
+            self.delegate?.rateLimitApplied(expirationDate: Date(timeIntervalSinceNow: TimeInterval(waitingTimeSeconds)))
+        }
         
         // prevents other failed requests to simultaneously start a timer
         lock.lock()

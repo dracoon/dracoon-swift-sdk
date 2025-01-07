@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-class DracoonSettingsImpl: DracoonSettings {
+final class DracoonSettingsImpl: DracoonSettings, Sendable {
     let session: Alamofire.Session
     let serverUrl: URL
     let apiPath: String
@@ -25,7 +25,7 @@ class DracoonSettingsImpl: DracoonSettings {
         self.encoder = config.encoder
     }
     
-    func getServerSettings(completion: @escaping (Dracoon.Result<CustomerSettingsResponse>) -> Void) {
+    func getServerSettings(completion: @Sendable @escaping (Dracoon.Result<CustomerSettingsResponse>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/settings"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -33,7 +33,7 @@ class DracoonSettingsImpl: DracoonSettings {
             .decode(CustomerSettingsResponse.self, decoder: self.decoder, completion: completion)
     }
     
-    func updateServerSettings(request: CustomerSettingsRequest, completion: @escaping (Dracoon.Result<CustomerSettingsResponse>) -> Void) {
+    func updateServerSettings(request: CustomerSettingsRequest, completion: @Sendable @escaping (Dracoon.Result<CustomerSettingsResponse>) -> Void) {
         
         do {
             let jsonBody = try encoder.encode(request)

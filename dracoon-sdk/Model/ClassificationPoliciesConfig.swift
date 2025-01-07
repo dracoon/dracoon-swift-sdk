@@ -9,7 +9,7 @@
 import Foundation
 
 /// - Tag: ClassificationPoliciesConfig
-public struct ClassificationPoliciesConfig: Codable {
+public struct ClassificationPoliciesConfig: Codable, Sendable {
     
     /** Shares classification policies [Since 4.30.0] */
     public var shareClassificationPolicies: ShareClassificationPolicies?

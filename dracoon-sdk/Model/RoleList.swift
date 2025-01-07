@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct RoleList: Codable {
+public struct RoleList: Codable, Sendable {
     
     public init(items: [Role]) {
         self.items = items

@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct UserFileKeySetBatchRequest: Codable {
+public struct UserFileKeySetBatchRequest: Codable, Sendable {
 
     /** List of user file keys */
     public var items: [UserFileKeySetRequest]

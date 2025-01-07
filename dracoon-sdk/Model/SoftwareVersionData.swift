@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: SoftwareVersionData
-public struct SoftwareVersionData: Codable {
+public struct SoftwareVersionData: Codable, Sendable {
 
     /** REST API version */
     public var restApiVersion: String

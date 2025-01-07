@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: NodeList
-public struct NodeList: Codable {
+public struct NodeList: Codable, Sendable {
 
     /** Range */
     public var range: ModelRange

@@ -9,7 +9,7 @@ import Foundation
 
 
 /// - Tag: CreateFileUploadResponse
-public struct CreateFileUploadResponse: Codable {
+public struct CreateFileUploadResponse: Codable, Sendable {
 
     /** (public) Upload URL */
     public var uploadUrl: String

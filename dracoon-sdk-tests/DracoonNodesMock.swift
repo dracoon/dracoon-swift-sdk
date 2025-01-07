@@ -10,7 +10,7 @@ import Alamofire
 import crypto_sdk
 import dracoon_sdk
 
-class DracoonNodesMock: DracoonNodes {
+class DracoonNodesMock: DracoonNodes, @unchecked Sendable {
     
     var error: DracoonError?
     var nodeIsEncrypted = false

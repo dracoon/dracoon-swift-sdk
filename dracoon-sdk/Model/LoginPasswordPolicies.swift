@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct LoginPasswordPolicies: Codable {
+public struct LoginPasswordPolicies: Codable, Sendable {
     
     public init(characterRules: CharacterRules?, minLength: Int?,
                 rejectDictionaryWords: Bool?, rejectUserInfo: Bool?,

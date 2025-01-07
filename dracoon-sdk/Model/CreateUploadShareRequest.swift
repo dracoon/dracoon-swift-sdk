@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: CreateUploadShareRequest
-public struct CreateUploadShareRequest: Codable {
+public struct CreateUploadShareRequest: Codable, Sendable {
 
     /** Target room or folder ID */
     public var targetId: Int64

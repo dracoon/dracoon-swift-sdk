@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: DeleteNodesRequest
-public struct DeleteNodesRequest: Codable {
+public struct DeleteNodesRequest: Codable, Sendable {
 
     /** List of node IDs */
     public var nodeIds: [Int64]

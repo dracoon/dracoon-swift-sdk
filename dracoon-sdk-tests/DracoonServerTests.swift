@@ -25,41 +25,41 @@ class DracoonServerTests: DracoonSdkTestCase {
         
         self.setResponseModel(SoftwareVersionData.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns SoftwareVersionData")
-        var calledValue = false
+        let testState = TestState()
         
         self.server.getServerVersion(completion: { result in
             switch result {
             case .error(_):
                 break
             case .value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
     
     func testGetServerTime() {
         
         self.setResponseModel(SdsServerTime.self, statusCode: 200)
         let expectation = XCTestExpectation(description: "Returns SdsServerTime")
-        var calledValue = false
+        let testState = TestState()
         
         self.server.getServerTime(completion: { result in
             switch result {
             case .error(_):
                 break
             case .value(let response):
-                calledValue = true
+                testState.onValueCalled = true
                 XCTAssertNotNil(response)
                 expectation.fulfill()
             }
         })
         
          self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledValue)
+        XCTAssertTrue(testState.onValueCalled)
     }
 }

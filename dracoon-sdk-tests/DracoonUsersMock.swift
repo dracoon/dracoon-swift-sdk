@@ -10,7 +10,7 @@ import Foundation
 import Alamofire
 @testable import dracoon_sdk
 
-class DracoonUsersMock: DracoonUsers {
+class DracoonUsersMock: DracoonUsers, @unchecked Sendable {
     
     var error: DracoonError?
     

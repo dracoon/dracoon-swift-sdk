@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct EnableCustomerEncryptionRequest: Codable {
+public struct EnableCustomerEncryptionRequest: Codable, Sendable {
 
     /** Set &#x60;true&#x60; to enable encryption for this customer */
     public var enableCustomerEncryption: Bool

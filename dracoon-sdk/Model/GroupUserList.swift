@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct GroupUserList: Codable {
+public struct GroupUserList: Codable, Sendable {
 
     /** Range */
     public var range: ModelRange

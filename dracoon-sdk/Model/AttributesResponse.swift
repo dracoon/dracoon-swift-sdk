@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct AttributesResponse: Codable {
+public struct AttributesResponse: Codable, Sendable {
     
     public var range: ModelRange
     public var items: [KeyValueEntry]

@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 import crypto_sdk
 
-class DracoonNodesImpl: DracoonNodes {
+final class DracoonNodesImpl: DracoonNodes, Sendable {
     
     let requestConfig: DracoonRequestConfig
     let session: Alamofire.Session
@@ -21,12 +21,10 @@ class DracoonNodesImpl: DracoonNodes {
     let crypto: CryptoProtocol
     let account: DracoonAccount
     let config: DracoonConfig
-    let getEncryptionPassword: () -> String?
+    let getEncryptionPassword: @Sendable () -> String?
+    let transferStorage: DracoonTransferStorage
     
-    private var uploads = [String : DracoonUpload]()
-    private var downloads = [Int64 : FileDownload]()
-    
-    init(requestConfig: DracoonRequestConfig, crypto: CryptoProtocol, account: DracoonAccount, config: DracoonConfig, getEncryptionPassword: @escaping () -> String?) {
+    init(requestConfig: DracoonRequestConfig, crypto: CryptoProtocol, account: DracoonAccount, config: DracoonConfig, getEncryptionPassword: @Sendable @escaping () -> String?) {
         self.requestConfig = requestConfig
         self.session = requestConfig.session
         self.serverUrl = requestConfig.serverUrl
@@ -38,9 +36,10 @@ class DracoonNodesImpl: DracoonNodes {
         self.account = account
         self.config = config
         self.getEncryptionPassword = getEncryptionPassword
+        self.transferStorage = DracoonTransferStorage()
     }
     
-    func getNodes(parentNodeId: Int64, limit: Int64?, offset: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
+    func getNodes(parentNodeId: Int64, limit: Int64?, offset: Int64?, completion: @Sendable @escaping (Dracoon.Result<NodeList>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes"
         
         var parameters: Parameters = [
@@ -62,7 +61,7 @@ class DracoonNodesImpl: DracoonNodes {
         
     }
     
-    func getNode(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func getNode(nodeId: Int64, completion: @Sendable @escaping (Dracoon.Result<Node>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(String(nodeId))"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -70,7 +69,7 @@ class DracoonNodesImpl: DracoonNodes {
             .decode(Node.self, decoder: self.decoder, requestType: .getNodes, completion: completion)
     }
     
-    func getNode(nodePath: String, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func getNode(nodePath: String, completion: @Sendable @escaping (Dracoon.Result<Node>) -> Void) {
         
         let nodeComponents = nodePath.split(separator: "/")
         
@@ -115,7 +114,7 @@ class DracoonNodesImpl: DracoonNodes {
             })
     }
     
-    func isNodeEncrypted(nodeId: Int64, completion: @escaping (Dracoon.Result<Bool>) -> Void) {
+    func isNodeEncrypted(nodeId: Int64, completion: @Sendable @escaping (Dracoon.Result<Bool>) -> Void) {
         self.getNode(nodeId: nodeId, completion: { result in
             switch result {
             case .value(let node):
@@ -128,7 +127,7 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: File Operations
     
-    func createRoom(request: CreateRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func createRoom(request: CreateRoomRequest, completion: @Sendable @escaping (Dracoon.Result<Node>) -> Void) {
         
         do {
             let jsonBody = try encoder.encode(request)
@@ -149,7 +148,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func updateRoom(roomId: Int64, request: UpdateRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func updateRoom(roomId: Int64, request: UpdateRoomRequest, completion: @Sendable @escaping (Dracoon.Result<Node>) -> Void) {
         
         do {
             let jsonBody = try encoder.encode(request)
@@ -170,7 +169,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func updateRoomConfig(roomId: Int64, request: ConfigRoomRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func updateRoomConfig(roomId: Int64, request: ConfigRoomRequest, completion: @Sendable @escaping (Dracoon.Result<Node>) -> Void) {
         
         do {
             let jsonBody = try encoder.encode(request)
@@ -191,7 +190,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func createFolder(request: CreateFolderRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func createFolder(request: CreateFolderRequest, completion: @Sendable @escaping (Dracoon.Result<Node>) -> Void) {
         
         do {
             let jsonBody = try encoder.encode(request)
@@ -212,7 +211,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func updateFolder(folderId: Int64, request: UpdateFolderRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func updateFolder(folderId: Int64, request: UpdateFolderRequest, completion: @Sendable @escaping (Dracoon.Result<Node>) -> Void) {
         
         do {
             let jsonBody = try encoder.encode(request)
@@ -234,7 +233,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func updateFile(fileId: Int64, request: UpdateFileRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func updateFile(fileId: Int64, request: UpdateFileRequest, completion: @Sendable @escaping (Dracoon.Result<Node>) -> Void) {
         
         do {
             let jsonBody = try encoder.encode(request)
@@ -255,7 +254,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func deleteNodes(request: DeleteNodesRequest, completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteNodes(request: DeleteNodesRequest, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         do {
             let jsonBody = try encoder.encode(request)
             
@@ -275,7 +274,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func copyNodes(nodeId: Int64, request: CopyNodesRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func copyNodes(nodeId: Int64, request: CopyNodesRequest, completion: @Sendable @escaping (Dracoon.Result<Node>) -> Void) {
         do {
             let jsonBody = try encoder.encode(request)
             
@@ -295,7 +294,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func moveNodes(nodeId: Int64, request: MoveNodesRequest, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func moveNodes(nodeId: Int64, request: MoveNodesRequest, completion: @Sendable @escaping (Dracoon.Result<Node>) -> Void) {
         do {
             let jsonBody = try encoder.encode(request)
             
@@ -356,10 +355,7 @@ class DracoonNodesImpl: DracoonNodes {
         })
     }
     
-    private func startUpload(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback,
-                             resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
-        let upload = FileUpload(config: self.requestConfig, request: request, fileUrl: filePath, resolutionStrategy: resolutionStrategy,
-                                crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account)
+    private func startUpload(uploadId: String, request: CreateFileUploadRequest, filePath: URL, callback: UploadCallback, resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
         
         let innerCallback = UploadCallback()
         innerCallback.onCanceled = callback.onCanceled
@@ -370,22 +366,19 @@ class DracoonNodesImpl: DracoonNodes {
                 })
             }
             callback.onComplete?(node)
-            self.uploads.removeValue(forKey: uploadId)
+            self.transferStorage.removeUpload(uploadId: uploadId)
         }
         innerCallback.onError = callback.onError
         innerCallback.onProgress = callback.onProgress
         
-        upload.callback = innerCallback
+        let upload = FileUpload(config: self.requestConfig, request: request, fileUrl: filePath, resolutionStrategy: resolutionStrategy, crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account, callback: innerCallback)
         
-        self.uploads[uploadId] = upload
+        self.transferStorage.storeUpload(uploadId: uploadId, upload: upload)
         upload.start()
     }
     
     private func startS3Upload(uploadId: String, request: CreateFileUploadRequest, fileUrl: URL, callback: UploadCallback,
                                resolutionStrategy: CompleteUploadRequest.ResolutionStrategy, cryptoImpl: CryptoProtocol?, sessionConfig: URLSessionConfiguration?) {
-        let s3upload = S3FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
-                                    crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account)
-        
         let innerCallback = UploadCallback()
         innerCallback.onCanceled = callback.onCanceled
         innerCallback.onComplete = { node in
@@ -395,18 +388,19 @@ class DracoonNodesImpl: DracoonNodes {
                 })
             }
             callback.onComplete?(node)
-            self.uploads.removeValue(forKey: uploadId)
+            self.transferStorage.removeUpload(uploadId: uploadId)
         }
         innerCallback.onError = callback.onError
         innerCallback.onProgress = callback.onProgress
         
-        s3upload.callback = innerCallback
+        let s3upload = S3FileUpload(config: self.requestConfig, request: request, fileUrl: fileUrl, resolutionStrategy: resolutionStrategy,
+                                    crypto: cryptoImpl, sessionConfig: sessionConfig, account: self.account, callback: innerCallback)
         
-        self.uploads[uploadId] = s3upload
+        self.transferStorage.storeUpload(uploadId: uploadId, upload: s3upload)
         s3upload.start()
     }
     
-    private func isS3Upload(onComplete: @escaping (Dracoon.Result<Bool>) -> Void) {
+    private func isS3Upload(onComplete: @Sendable @escaping (Dracoon.Result<Bool>) -> Void) {
         self.config.getGeneralSettings(completion: { result in
             switch result {
             case .error(let error):
@@ -429,11 +423,12 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     func cancelUpload(uploadId: String) {
-        guard let upload = self.uploads[uploadId] else {
-            return
-        }
-        upload.cancel()
-        self.uploads.removeValue(forKey: uploadId)
+        self.transferStorage.getUpload(uploadId: uploadId, completionHandler: { [weak self] upload in
+            if let upload = upload {
+                upload.cancel()
+                self?.transferStorage.removeUpload(uploadId: uploadId)
+            }
+        })
     }
     
     func createFileUpload(request: CreateFileUploadRequest, fileSize: Int64, completion: @escaping DataRequest.DecodeCompletion<CreateFileUploadResponse>) {
@@ -503,47 +498,40 @@ class DracoonNodesImpl: DracoonNodes {
         })
     }
     
-    fileprivate func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?) {
-        
-        let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.requestConfig, account: self.account, nodes: self,
-                                    crypto: self.crypto, fileKey: fileKey, sessionConfig: sessionConfig, getEncryptionPassword: self.getEncryptionPassword)
+    private func startFileDownload(nodeId: Int64, targetUrl: URL, callback: DownloadCallback, fileKey: EncryptedFileKey?, sessionConfig: URLSessionConfiguration?) {
         
         let innerCallback = DownloadCallback()
         innerCallback.onCanceled = callback.onCanceled
         innerCallback.onComplete = { url in
-            self.downloads.removeValue(forKey: nodeId)
+            self.transferStorage.removeDownload(nodeId: nodeId)
             callback.onComplete?(url)
         }
         innerCallback.onError = callback.onError
         innerCallback.onProgress = callback.onProgress
         
-        download.callback = innerCallback
-        self.downloads[nodeId] = download
+        let download = FileDownload(nodeId: nodeId, targetUrl: targetUrl, config: self.requestConfig, account: self.account, nodes: self,
+                                    crypto: self.crypto, fileKey: fileKey, sessionConfig: sessionConfig, getEncryptionPassword: self.getEncryptionPassword, callback: innerCallback)
+        self.transferStorage.storeDownload(nodeId: nodeId, download: download)
         download.start()
     }
     
     func cancelDownload(nodeId: Int64) {
-        guard let download = self.downloads[nodeId] else {
-            return
-        }
-        download.cancel()
-        self.downloads.removeValue(forKey: nodeId)
+        self.transferStorage.getDownload(nodeId: nodeId, completionHandler: { [weak self] download in
+            if let download = download {
+                download.cancel()
+                self?.transferStorage.removeDownload(nodeId: nodeId)
+            }
+        })
     }
     
     func resumeBackgroundTasks() {
-        for download in self.downloads.values {
-            download.resumeFromBackground()
-        }
-        for upload in self.uploads.values {
-            if let fileUpload = upload as? FileUpload {
-                fileUpload.resumeBackgroundUpload()
-            }
-        }
+        self.transferStorage.resumeDownloads()
+        self.transferStorage.resumeUploads()
     }
     
     // MARK: Search
     
-    func searchNodes(parentNodeId: Int64, searchString: String, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
+    func searchNodes(parentNodeId: Int64, searchString: String, offset: Int64?, limit: Int64?, completion: @Sendable @escaping (Dracoon.Result<NodeList>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.nodesSearch
         
         var parameters: Parameters = [
@@ -565,7 +553,7 @@ class DracoonNodesImpl: DracoonNodes {
         
     }
     
-    func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, sorting: String?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
+    func searchNodes(parentNodeId: Int64, searchString: String, depthLevel: Int?, filter: String?, sorting: String?, offset: Int64?, limit: Int64?, completion: @Sendable @escaping (Dracoon.Result<NodeList>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.nodesSearch
         
         var parameters: Parameters = [
@@ -595,7 +583,7 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: Favorites
     
-    func getFavorites(completion: @escaping DataRequest.DecodeCompletion<NodeList>) {
+    func getFavorites(completion: @Sendable @escaping (Dracoon.Result<NodeList>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + ApiRequestConstants.apiPaths.nodesSearch
         
         var parameters = Parameters()
@@ -608,7 +596,7 @@ class DracoonNodesImpl: DracoonNodes {
             .decode(NodeList.self, decoder: self.decoder, completion: completion)
     }
     
-    func setFavorite(nodeId: Int64, completion: @escaping DataRequest.DecodeCompletion<Node>) {
+    func setFavorite(nodeId: Int64, completion: @Sendable @escaping (Dracoon.Result<Node>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(nodeId)/favorite"
         
         self.session.request(requestUrl, method: .post)
@@ -616,7 +604,7 @@ class DracoonNodesImpl: DracoonNodes {
             .decode(Node.self, decoder: self.decoder, completion: completion)
     }
     
-    func removeFavorite(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+    func removeFavorite(nodeId: Int64, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(nodeId)/favorite"
         
         self.session.request(requestUrl, method: .delete)
@@ -626,7 +614,7 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: Comments
     
-    func getComments(for nodeId: Int64, limit: Int64?, offset: Int64?, completion: @escaping DataRequest.DecodeCompletion<CommentList>) {
+    func getComments(for nodeId: Int64, limit: Int64?, offset: Int64?, completion: @Sendable @escaping (Dracoon.Result<CommentList>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/\(String(nodeId))/comments"
         
         var parameters = Parameters()
@@ -644,7 +632,7 @@ class DracoonNodesImpl: DracoonNodes {
             .decode(CommentList.self, decoder: self.decoder, requestType: .getNodes, completion: completion)
     }
     
-    func createComment(for nodeId: Int64, commentText: String, completion: @escaping DataRequest.DecodeCompletion<Comment>) {
+    func createComment(for nodeId: Int64, commentText: String, completion: @Sendable @escaping (Dracoon.Result<Comment>) -> Void) {
         guard !commentText.isEmpty else {
             let apiError = DracoonSDKErrorModel(errorCode: .VALIDATION_FIELD_CANNOT_BE_EMPTY, httpStatusCode: 400)
             completion(Dracoon.Result.error(DracoonError.api(error: apiError)))
@@ -670,7 +658,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func updateComment(commentId: Int64, updatedText: String, completion: @escaping DataRequest.DecodeCompletion<Comment>) {
+    func updateComment(commentId: Int64, updatedText: String, completion: @Sendable @escaping (Dracoon.Result<Comment>) -> Void) {
         guard !updatedText.isEmpty else {
             let apiError = DracoonSDKErrorModel(errorCode: .VALIDATION_FIELD_CANNOT_BE_EMPTY, httpStatusCode: 400)
             completion(Dracoon.Result.error(DracoonError.api(error: apiError)))
@@ -696,7 +684,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func deleteComment(commentId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteComment(commentId: Int64, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/comments/\(String(commentId))"
         
         self.session.request(requestUrl, method: .delete)
@@ -706,7 +694,7 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: Crypto
     
-    fileprivate func getMissingFileKeys(nodeId: Int64?, offset: Int64?, limit: Int64?, completion: @escaping DataRequest.DecodeCompletion<MissingKeysResponse>) {
+    private func getMissingFileKeys(nodeId: Int64?, offset: Int64?, limit: Int64?, completion: @Sendable @escaping (Dracoon.Result<MissingKeysResponse>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/missingFileKeys"
         
         var parameters = Parameters()
@@ -729,7 +717,7 @@ class DracoonNodesImpl: DracoonNodes {
         
     }
     
-    fileprivate func setMissingFileKeysBatch(nodeId: Int64?, offset: Int64?, limit: Int64?, completion: @escaping (Dracoon.Response) -> Void) {
+    private func setMissingFileKeysBatch(nodeId: Int64?, offset: Int64?, limit: Int64?, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         
         self.getMissingFileKeys(nodeId: nodeId, offset: offset, limit: limit, completion: { result in
             switch result {
@@ -746,7 +734,7 @@ class DracoonNodesImpl: DracoonNodes {
         })
     }
     
-    fileprivate func generateMissingFileKey(missingKeys: MissingKeysResponse, progress: Progress, results: [UserFileKeySetRequest], completion: @escaping ([UserFileKeySetRequest]) -> ()) {
+    private func generateMissingFileKey(missingKeys: MissingKeysResponse, progress: Progress, results: [UserFileKeySetRequest], completion: @Sendable @escaping ([UserFileKeySetRequest]) -> ()) {
         guard let items = missingKeys.items else {
             completion(results)
             return
@@ -771,7 +759,6 @@ class DracoonNodesImpl: DracoonNodes {
             self.generateMissingFileKey(missingKeys: missingKeys, progress: progress, results: results, completion: completion)
             return
         }
-        var keyItems = results
         
         self.account.checkUserKeyPairPassword(version: fileKey.getUserKeyPairVersion(), password: encryptionPassword, completion: { result in
             
@@ -780,6 +767,7 @@ class DracoonNodesImpl: DracoonNodes {
                 progress.completedUnitCount = progress.completedUnitCount + 1
                 self.generateMissingFileKey(missingKeys: missingKeys, progress: progress, results: results, completion: completion)
             case .value(let userKeyPair):
+                var keyItems = results
                 do {
                     let privateKey = UserPrivateKey(privateKey: userKeyPair.privateKeyContainer.privateKey, version: userKeyPair.privateKeyContainer.version)
                     let plainFileKey = try self.crypto.decryptFileKey(fileKey: fileKey, privateKey: privateKey, password: encryptionPassword)
@@ -792,7 +780,7 @@ class DracoonNodesImpl: DracoonNodes {
         })
     }
     
-    fileprivate func getUserPublicKey(userId: Int64, keys: [UserUserPublicKey]) -> UserPublicKey? {
+    private func getUserPublicKey(userId: Int64, keys: [UserUserPublicKey]) -> UserPublicKey? {
         for key in keys {
             if key._id == userId {
                 return key.publicKeyContainer
@@ -801,7 +789,7 @@ class DracoonNodesImpl: DracoonNodes {
         return nil
     }
     
-    fileprivate func getFileKeyForFile(fileId: Int64, keys: [FileFileKeys]) -> EncryptedFileKey? {
+    private func getFileKeyForFile(fileId: Int64, keys: [FileFileKeys]) -> EncryptedFileKey? {
         for key in keys {
             if key._id == fileId {
                 return key.fileKeyContainer
@@ -810,7 +798,7 @@ class DracoonNodesImpl: DracoonNodes {
         return nil
     }
     
-    fileprivate func uploadMissingFileKeys(request: UserFileKeySetBatchRequest, completion: @escaping (Dracoon.Response) -> Void) {
+    private func uploadMissingFileKeys(request: UserFileKeySetBatchRequest, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         do {
             let jsonBody = try encoder.encode(request)
             let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/keys"
@@ -833,7 +821,7 @@ class DracoonNodesImpl: DracoonNodes {
     }
     
     
-    func getFileKey(nodeId: Int64, completion: @escaping (Dracoon.Result<EncryptedFileKey>) -> Void) {
+    func getFileKey(nodeId: Int64, completion: @Sendable @escaping (Dracoon.Result<EncryptedFileKey>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/files/\(String(nodeId))/user_file_key"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())
@@ -851,7 +839,7 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: Anti-virus protection
     
-    func generateVirusProtectionVerdict(for nodeIds: [Int64], completion: @escaping (DataRequest.DecodeCompletion<VirusProtectionVerdictResponse>)) {
+    func generateVirusProtectionVerdict(for nodeIds: [Int64], completion: @Sendable @escaping (Dracoon.Result<VirusProtectionVerdictResponse>) -> Void) {
         let request = VirusProtectionVerdictRequest(nodeIds: nodeIds)
         do {
             let jsonBody = try encoder.encode(request)
@@ -870,7 +858,7 @@ class DracoonNodesImpl: DracoonNodes {
         }
     }
     
-    func deleteMaliciousFilePermanently(nodeId: Int64, completion: @escaping (Dracoon.Response) -> Void) {
+    func deleteMaliciousFilePermanently(nodeId: Int64, completion: @Sendable @escaping (Dracoon.Response) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/malicious_files/\(nodeId)"
         
         self.session.request(requestUrl, method: .delete)
@@ -880,7 +868,7 @@ class DracoonNodesImpl: DracoonNodes {
     
     // MARK: Policies
     
-    func getRoomPolicies(roomId: Int64, completion: @escaping DataRequest.DecodeCompletion<RoomPolicies>) {
+    func getRoomPolicies(roomId: Int64, completion: @Sendable @escaping (Dracoon.Result<RoomPolicies>) -> Void) {
         let requestUrl = serverUrl.absoluteString + apiPath + "/nodes/rooms/\(roomId)/policies"
         
         self.session.request(requestUrl, method: .get, parameters: Parameters())

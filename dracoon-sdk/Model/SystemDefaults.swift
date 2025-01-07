@@ -8,7 +8,7 @@
 import Foundation
 
 /// - Tag: SystemDefaults
-public struct SystemDefaults: Codable {
+public struct SystemDefaults: Codable, Sendable {
 
     /** Define which language should be default. */
     public var languageDefault: String?

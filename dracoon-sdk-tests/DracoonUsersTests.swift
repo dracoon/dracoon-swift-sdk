@@ -24,16 +24,17 @@ class DracoonUsersTests: DracoonSdkTestCase {
         let targetUrl = Bundle(for: DracoonUsersTests.self).resourceURL!.appendingPathComponent("testUpload")
         MockURLProtocol.response(with: 204)
         let expectation = XCTestExpectation(description: "Returns without error")
-        var calledError = true
+        let testState = TestState()
+        testState.onErrorCalled = true
         
         self.users.downloadUserAvatar(userId: 42, avatarUuid: "testUuid", targetUrl: targetUrl, completion: { response in
             if response.error == nil {
-                calledError = false
+                testState.onErrorCalled = false
                 expectation.fulfill()
             }
         })
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertFalse(calledError)
+        XCTAssertFalse(testState.onErrorCalled)
     }
     
     func testDownloadAvatar_downloadFails_retunsError() {
@@ -41,15 +42,15 @@ class DracoonUsersTests: DracoonSdkTestCase {
         let targetUrl = Bundle(for: DracoonUsersTests.self).resourceURL!.appendingPathComponent("testUpload")
         let expectation = XCTestExpectation(description: "Returns error")
         MockURLProtocol.responseWithError(NSError(domain: "SDKTest", code: NSURLErrorNotConnectedToInternet, userInfo: nil), statusCode: 400)
-        var calledError = false
+        let testState = TestState()
         
         self.users.downloadUserAvatar(userId: 42, avatarUuid: "testUuid", targetUrl: targetUrl, completion: { response in
             if response.error != nil {
-                calledError = true
+                testState.onErrorCalled = true
                 expectation.fulfill()
             }
         })
         self.testWaiter.wait(for: [expectation], timeout: 2.0)
-        XCTAssertTrue(calledError)
+        XCTAssertTrue(testState.onErrorCalled)
     }
 }

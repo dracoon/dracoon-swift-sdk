@@ -9,7 +9,7 @@ import Foundation
 
 
 
-public struct AuthMethod: Codable {
+public struct AuthMethod: Codable, Sendable {
 
     /** Authentication methods: * &#x60;basic&#x60; (or &#x60;sql&#x60;) * &#x60;active_directory&#x60; * &#x60;radius&#x60; * &#x60;openid&#x60; */
     public var name: String
