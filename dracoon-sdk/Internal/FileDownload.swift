@@ -104,13 +104,13 @@ public final class FileDownload: NSObject, URLSessionDelegate, URLSessionDownloa
         let urlSession = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: nil)
         let request = URLRequest(url: URL(string: url)!)
         let task = urlSession.downloadTask(with: request)
-        self.properties.setSessionTask(task)
         self.nodes.getNode(nodeId: self.nodeId, completion: { result in
             switch result {
             case .error(let error):
                 self.callOnError(error)
             case .value(let node):
                 task.countOfBytesClientExpectsToReceive = node.size ?? 0
+                self.properties.setSessionTask(task)
                 task.resume()
             }
         })
