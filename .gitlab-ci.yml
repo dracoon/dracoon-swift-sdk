@@ -1,6 +1,8 @@
 include:
   # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.latest.gitlab-ci.yml
   - template: Jobs/Secret-Detection.latest.gitlab-ci.yml
+  # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.latest.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
 
 workflow:
   rules:
@@ -13,7 +15,7 @@ workflow:
 stages:
   - build
   - unit_tests
-  - validate
+  - test
   - sonar
 
 variables:
@@ -24,12 +26,16 @@ variables:
   FORCE_REBUILDING_DEPENDENCIES: 'false'
   # Gitlab Secret Detection
   ENABLE_SECRET_DETECTION: "true"
+  # Gitlab dependency scanning
+  DEPENDENCY_SCANNING_DISABLED: 'false'
+  DS_ENFORCE_NEW_ANALYZER: 'true'
+  DISABLE_FAIL_ON_VULNERABILITY_CHECK: 'false'
 
 default:
   before_script:
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/cicd/pipeline/sdk-swift-sonar.git
     - SONAR_BRANCH=$CI_COMMIT_REF_NAME
-    - sh sdk-swift-sonar/setup.sh "${SONAR_BRANCH}" "${CI_COMMIT_SHORT_SHA}"
+    - ./sdk-swift-sonar/setup.sh "${SONAR_BRANCH}" "${CI_COMMIT_SHORT_SHA}"
   id_tokens:
     ID_TOKEN:
       aud: https://vault.dracoon.net
@@ -61,28 +67,70 @@ unit_tests:
     - darwin/arm64
     - ios-build
     
-dependency_check:
-  stage: validate
-  secrets:
-    NVD_API_KEY:
-      vault: nist-nvd-ios/api-key@Build-Environment
-      file: false
+dependency-scanning:
+  stage: test
+  variables:
+    ANALYZER_SUPPORTED_FILES: "Package.resolved"
   needs:
     - job: build
+      artifacts: true
+  before_script:
+    - echo "start dependency scanning"
+  rules:
+    - if: $DEPENDENCY_SCANNING_DISABLED != 'true' && $DEPENDENCY_SCANNING_DISABLED != '1'
+      when: on_success
+    - when: never
+  allow_failure: false
+  artifacts:
+    expire_in: 1 day
+    
+sbom-vulnerability-evaluation:
+  stage: test
+  rules:
+    - if: $DISABLE_FAIL_ON_VULNERABILITY_CHECK == 'true'
+      allow_failure: true
+      when: on_success
+    - if: $DISABLE_FAIL_ON_VULNERABILITY_CHECK == 'false'
+      allow_failure: false
+      when: on_success
+  needs:
+    - job: dependency-scanning
+  before_script:
+    - apt-get -qq update
+    - apt-get install -y jq
+    - apt-get install -y git
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/cicd/pipeline/sdk-swift-sonar.git
   script:
-    - cp sdk-swift-sonar/cartfile_to_package.rb .
-    - ruby cartfile_to_package.rb
-    - dependency-check --scan Package.resolved --nvdApiKey $NVD_API_KEY --enableExperimental --failOnCVSS 7
-    - rm -f cartfile_to_package.rb Package.resolved
-  #retry: 2
-  # Temporarily allow failure until OWASP dependency check is fixed
-  allow_failure: true
-  tags:
-    - darwin/arm64
-    - ios-build
+    - |
+      chmod +x ./sdk-swift-sonar/evaluate-sbom.sh
+      ./sdk-swift-sonar/evaluate-sbom.sh gl-sbom-swift-swift.cdx.json
+
+graphql-vulnerability-evaluation:
+  stage: test
+  rules:
+    - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
+      when: never
+    - if: $DISABLE_FAIL_ON_VULNERABILITY_CHECK == 'true'
+      allow_failure: true
+      when: on_success
+    - if: $DISABLE_FAIL_ON_VULNERABILITY_CHECK == 'false'
+      allow_failure: false
+      when: on_success
+  needs:
+    - job: dependency-scanning
+  before_script:
+    - apt-get -qq update
+    - apt-get install -y jq
+    - apt-get install -y curl
+    - apt-get install -y git
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/cicd/pipeline/sdk-swift-sonar.git
+  script:
+    - |
+      chmod +x ./sdk-swift-sonar/evaluate-graphql.sh
+      ./sdk-swift-sonar/evaluate-graphql.sh $GRAPHQL_ACCESS_TOKEN $CI_PROJECT_PATH
 
 secret_detection:
-  stage: validate
+  stage: test
   before_script:
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.dracoon.com/dracoon/cicd/pipeline/sdk-swift-sonar.git
   needs:
