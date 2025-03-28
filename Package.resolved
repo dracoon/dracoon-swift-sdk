@@ -1,0 +1,24 @@
+{
+  "originHash" : "ade0cfe2b97eeb2e3f282527375240e4058eb746bea108ab1698a21bf1eb4525",
+  "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire",
+      "state" : {
+        "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
+        "version" : "5.10.2"
+      }
+    },
+    {
+      "identity" : "dracoon-swift-crypto-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dracoon/dracoon-swift-crypto-sdk",
+      "state" : {
+        "revision" : "67a73a8957d292bb8def59e59a54428f2ba3b8a2",
+        "version" : "3.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}
